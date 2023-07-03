@@ -1,7 +1,13 @@
-import './App.css';
+import Router from './Router';
+import { GlobalStyle } from './common/style';
 
 function App() {
-  return <>MOMO</>;
+  return (
+    <>
+      <GlobalStyle />
+      <Router />
+    </>
+  );
 }
 
 export default App;
