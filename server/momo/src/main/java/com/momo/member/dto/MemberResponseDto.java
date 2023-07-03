@@ -1,32 +1,28 @@
-package com.momo.member.entity;
+package com.momo.member.dto;
 
-import com.momo.category.entity.Category;
 import com.momo.comment.entity.Comment;
 import com.momo.message.entity.Message;
 import com.momo.post.entity.Post;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity
 @Getter
 @Setter
-@NoArgsConstructor
-public class Member {
+public class MemberResponseDto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
-
-//    private String name;
     private String email;
     private String password;
     private String location;
     private String welcomeMsg;
-//    private String profileImage;
     private String nickname;
     private Boolean isMale;
     private Integer age;
@@ -43,6 +39,4 @@ public class Member {
 
     @OneToMany(mappedBy = "receiver")
     private List<Message> receivedMessages;
-
-
 }
