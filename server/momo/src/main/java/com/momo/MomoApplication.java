@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MomoApplication {
+public class MomoApplication {git
 
     public static void main(String[] args) {
         SpringApplication.run(MomoApplication.class, args);
