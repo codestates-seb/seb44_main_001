@@ -26,7 +26,7 @@ public class Member {
     private String password;
     private String location;
     private String welcomeMsg;
-//    private String profileImage;
+    private String profileImage;
     private String nickname;
     private Boolean isMale;
     private Integer age;
