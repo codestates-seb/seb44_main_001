@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 import BRRegularFont from '../common/fonts/BR-Regular.ttf';
 import BRBoldFont from '../common/fonts/BR-Bold.ttf';
 
@@ -45,4 +45,9 @@ export const GlobalStyle = createGlobalStyle`
     font-family: 'BR-Bold';
     src: local('BR-Bold'), url(${BRBoldFont}) format('truetype');
   }
+`;
+
+export const Layout = styled.div`
+  display: flex;
+  justify-content: center;
 `;
