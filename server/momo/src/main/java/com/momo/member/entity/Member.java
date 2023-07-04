@@ -44,5 +44,4 @@ public class Member {
     @OneToMany(mappedBy = "receiver")
     private List<Message> receivedMessages;
 
-
 }

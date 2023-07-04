@@ -1,5 +1,6 @@
 package com.momo.post.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.momo.category.entity.Category;
 import com.momo.comment.entity.Comment;
 import com.momo.member.entity.Member;
@@ -27,11 +28,11 @@ public class Post {
     private LocalDateTime createdAt;
     private LocalDateTime editedAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
 
