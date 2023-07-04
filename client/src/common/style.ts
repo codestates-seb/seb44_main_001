@@ -1,4 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
+import BRRegularFont from '../common/fonts/BR-Regular.ttf';
+import BRBoldFont from '../common/fonts/BR-Bold.ttf';
 
 export const GlobalStyle = createGlobalStyle`
   * {
@@ -16,7 +18,7 @@ export const GlobalStyle = createGlobalStyle`
     width: 100%;
     min-height: 100%;
     background-color: var(--color-light-yellow);
-
+    font-family: BR-Regular;
   }
   :root {
   /* Color */
@@ -35,7 +37,12 @@ export const GlobalStyle = createGlobalStyle`
   --font-size-xl: 3rem;
   --font-size-xxl: 3.75rem;
   }
-  /* body{
-    background-color: var(--color-light-yellow);
-  } */
+  @font-face {
+    font-family: 'BR-Regular';
+    src: local('BR-Regular'), url(${BRRegularFont}) format('truetype');
+  }
+  @font-face {
+    font-family: 'BR-Bold';
+    src: local('BR-Bold'), url(${BRBoldFont}) format('truetype');
+  }
 `;
