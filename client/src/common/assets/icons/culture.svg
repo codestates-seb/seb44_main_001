@@ -1,0 +1,9 @@
+<svg width="78" height="78" viewBox="0 0 78 78" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="39" cy="39" r="39" fill="white"/>
+<path d="M39.0001 52.3333C46.3639 52.3333 52.3334 46.3638 52.3334 39C52.3334 31.6362 46.3639 25.6667 39.0001 25.6667C31.6363 25.6667 25.6667 31.6362 25.6667 39C25.6667 46.3638 31.6363 52.3333 39.0001 52.3333Z" fill="#FFA5AF" stroke="black" stroke-width="2" stroke-linejoin="round"/>
+<path d="M39 35C40.1046 35 41 34.1046 41 33C41 31.8954 40.1046 31 39 31C37.8954 31 37 31.8954 37 33C37 34.1046 37.8954 35 39 35Z" fill="#FFA5AF" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+<path d="M39 47C40.1046 47 41 46.1046 41 45C41 43.8954 40.1046 43 39 43C37.8954 43 37 43.8954 37 45C37 46.1046 37.8954 47 39 47Z" fill="#FFA5AF" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+<path d="M33 41C34.1046 41 35 40.1046 35 39C35 37.8954 34.1046 37 33 37C31.8954 37 31 37.8954 31 39C31 40.1046 31.8954 41 33 41Z" fill="#FFA5AF" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+<path d="M45 41C46.1046 41 47 40.1046 47 39C47 37.8954 46.1046 37 45 37C43.8954 37 43 37.8954 43 39C43 40.1046 43.8954 41 45 41Z" fill="#FFA5AF" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+<path d="M39 52.3333H52.3333" stroke="black" stroke-width="2" stroke-linecap="round"/>
+</svg>
