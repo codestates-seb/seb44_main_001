@@ -1,5 +1,3 @@
-const User = () => {
+export default function User() {
   return <></>;
-};
-
-export default User;
+}

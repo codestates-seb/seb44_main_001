@@ -1,5 +1,3 @@
-const KakaoSignup = () => {
+export default function KakaoSignup() {
   return <></>;
-};
-
-export default KakaoSignup;
+}

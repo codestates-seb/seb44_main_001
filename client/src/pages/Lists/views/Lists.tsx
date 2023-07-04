@@ -1,5 +1,3 @@
-const Lists = () => {
+export default function Lists() {
   return <></>;
-};
-
-export default Lists;
+}

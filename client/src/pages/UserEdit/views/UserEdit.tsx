@@ -1,5 +1,3 @@
-const UserEdit = () => {
+export default function UserEdit() {
   return <></>;
-};
-
-export default UserEdit;
+}

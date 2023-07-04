@@ -8,6 +8,7 @@ import User from './pages/User/views/User';
 import UserEdit from './pages/UserEdit/views/UserEdit';
 import Lists from './pages/Lists/views/Lists';
 import Details from './pages/Details/views/Details';
+import NotFound from './pages/Error/Views/NotFound';
 
 const Router = () => {
   return (
@@ -21,6 +22,7 @@ const Router = () => {
       <Route path="/lists" element={<Lists />} />
       <Route path="/details" element={<Details />} />
       <Route path="/write" element={<Write />} />
+      <Route path="/404" element={<NotFound />} />
     </Routes>
   );
 };

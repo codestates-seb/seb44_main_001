@@ -1,5 +1,3 @@
-const Details = () => {
+export default function Details() {
   return <></>;
-};
-
-export default Details;
+}

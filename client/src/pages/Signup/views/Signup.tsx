@@ -1,5 +1,3 @@
-const Signup = () => {
+export default function Signup() {
   return <></>;
-};
-
-export default Signup;
+}
