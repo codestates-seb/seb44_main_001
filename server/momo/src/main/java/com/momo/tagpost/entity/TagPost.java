@@ -18,11 +18,11 @@ public class TagPost {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long tagPostId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tag_id")
     private Tag tag;
 }
