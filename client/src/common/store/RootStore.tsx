@@ -1,11 +1,12 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { locationFilterSlice } from './LocationFilterStore';
 
 const rootReducer = combineReducers({
-  });
-  
-  export type RootState = ReturnType<typeof rootReducer>;
-  
-  export const store = configureStore({
-    reducer: rootReducer,
-  });
-  
+  locationFilter: locationFilterSlice.reducer,
+});
+
+export type RootState = ReturnType<typeof rootReducer>;
+
+export const store = configureStore({
+  reducer: rootReducer,
+});
