@@ -8,7 +8,7 @@ import User from './pages/User/views/User';
 import UserEdit from './pages/UserEdit/views/UserEdit';
 import Lists from './pages/Lists/views/Lists';
 import Details from './pages/Details/views/Details';
-import NotFound from './pages/Error/Views/NotFound';
+import NotFound from './pages/NotFound/Views/NotFound';
 
 const Router = () => {
   return (
