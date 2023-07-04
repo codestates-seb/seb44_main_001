@@ -15,8 +15,9 @@ export const GlobalStyle = createGlobalStyle`
   html, body, #root {
     width: 100%;
     min-height: 100%;
-  }
+    background-color: var(--color-light-yellow);
 
+  }
   :root {
   /* Color */
   --color-light-yellow:#FFF8D0;
@@ -34,4 +35,7 @@ export const GlobalStyle = createGlobalStyle`
   --font-size-xl: 3rem;
   --font-size-xxl: 3.75rem;
   }
+  /* body{
+    background-color: var(--color-light-yellow);
+  } */
 `;
