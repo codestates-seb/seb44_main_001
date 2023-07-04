@@ -1,14 +1,14 @@
-import { Location1 } from '../../../common/components/Locations';
+// import Regions from '../../../common/components/Regions';
 
-const Form = () => {
+export default function Form() {
   return (
     <form method="post" action="">
       <label htmlFor="title">제목</label>
       <input type="text" name="title" />
       <label htmlFor="location">지역</label>
-      <Location1 />
+      {/* <Regions /> */}
     </form>
   );
-};
+}
 
-export default Form;
+// 수정중
