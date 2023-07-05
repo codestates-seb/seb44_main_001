@@ -63,4 +63,8 @@ const ListSection = styled.section`
       font-size: var(--font-size-xs);
     }
   }
+
+  > :nth-child(2) {
+    margin-bottom: 1rem;
+  }
 `;
