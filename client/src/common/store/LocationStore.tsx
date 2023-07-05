@@ -1,7 +1,7 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit';
 
-export const locationFilterSlice = createSlice({
-  name: 'locationFilter',
+export const locationSlice = createSlice({
+  name: 'location',
   initialState: {
     region: '',
     district: '',
@@ -18,7 +18,7 @@ export const locationFilterSlice = createSlice({
 });
 
 export const store = configureStore({
-  reducer: locationFilterSlice.reducer,
+  reducer: locationSlice.reducer,
 });
 
-export const { setLocation } = locationFilterSlice.actions;
+export const { setLocation } = locationSlice.actions;
