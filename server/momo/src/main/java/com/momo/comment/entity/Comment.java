@@ -33,10 +33,18 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "post_id")
     private Post post;
 
+//    @Builder
+//    public Comment(String content, Boolean isPostWriter) {
+//        this.content = content;
+//        this.isPostWriter = isPostWriter;
+//    }
+
     @Builder
-    public Comment(String content, Boolean isPostWriter) {
+    public Comment(String content, Boolean isPostWriter, Member member, Post post) {
         this.content = content;
         this.isPostWriter = isPostWriter;
+        this.member = member;
+        this.post = post;
     }
 
     public void addMember(Member member) {
