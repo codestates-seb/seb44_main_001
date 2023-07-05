@@ -11,6 +11,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -37,10 +38,10 @@ public class Post {
     private Category category;
 
     @OneToMany(mappedBy = "post")
-    private List<TagPost> tagPosts;
+    private List<TagPost> tagPosts = new ArrayList<>();
 
     @OneToMany(mappedBy = "post")
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 
 
 }
