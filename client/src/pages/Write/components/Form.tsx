@@ -43,8 +43,8 @@ export default function Form() {
         placeholder={TITLE_INPUT_PLACEHOLDER}
         onChange={handleTitleChange}
       />
-      <LocationSelector />
-      <CategorySelector />
+      <LocationSelector data={data} />
+      <CategorySelector data={data} />
       <label htmlFor="content">{CONTENT}</label>
       <Editor data={data} />
       <TagsInput data={data} />
