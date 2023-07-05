@@ -36,7 +36,7 @@ export default function Form() {
   };
 
   return (
-    <section>
+    <>
       <TitleSection>
         <label htmlFor="title">{TITLE}</label>
         <input
@@ -48,14 +48,75 @@ export default function Form() {
       </TitleSection>
       <LocationSelector data={data} />
       <CategorySelector data={data} />
-      <label htmlFor="content">{CONTENT}</label>
-      <Editor data={data} />
+      <ContentSection>
+        <label htmlFor="content">{CONTENT}</label>
+        <Editor data={data} />
+      </ContentSection>
       <TagsInput data={data} />
-      <div>
+      <ButtonSection>
         <button onClick={() => handleSubmit()}>{REGISTER}</button>
-      </div>
-    </section>
+      </ButtonSection>
+    </>
   );
 }
 
-const TitleSection = styled.section``;
+const TitleSection = styled.section`
+  display: flex;
+  flex-direction: column;
+
+  > input {
+    width: 30rem;
+  }
+`;
+
+const ContentSection = styled.section`
+  > .quill {
+    margin: 1rem 0 2rem 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    min-height: 10rem;
+
+    > :first-child {
+      border: 1px solid var(--color-black);
+      padding: 0 0.5rem 0 0.5rem;
+      border-radius: 5px 5px 0 0;
+    }
+
+    > :nth-child(2) {
+      border: 1px solid var(--color-black);
+      border-radius: 0 0 5px 5px;
+      font-family: 'BR-Regular';
+      font-size: var(--font-size-s);
+      color: var(--color-black);
+      min-height: 10rem;
+    }
+  }
+`;
+
+const ButtonSection = styled.section`
+  display: flex;
+  justify-content: center;
+  margin: 1rem 0 1rem 0;
+
+  & button {
+    border: 2px solid var(--color-black);
+    padding: 0.5rem;
+    border-radius: 5px;
+
+    font-family: 'BR-Regular';
+    font-size: var(--font-size-s);
+    background: var(--color-pink-1);
+    color: var(--color-black);
+    width: 10rem;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--color-pink-2);
+    }
+
+    &:active {
+      background: var(--color-pink-3);
+    }
+  }
+`;
