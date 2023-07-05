@@ -7,6 +7,7 @@ import com.momo.post.entity.Post;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import com.momo.post.entity.Post;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

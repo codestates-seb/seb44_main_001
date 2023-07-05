@@ -10,6 +10,7 @@ import lombok.Setter;
 public class PostPatchDto {
     private String title;
     private String content;
-//    private String region;
+    private Long memberId;
+    private Long categoryId;
 //    private String imageUrl;
 }
