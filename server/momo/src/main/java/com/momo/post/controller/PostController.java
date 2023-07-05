@@ -37,11 +37,17 @@ public class PostController {
             @PathVariable Long postId,
             @RequestBody PostPatchDto postDto
     ) {
-        return postService.updatePost(postId, postDto);
+        PostResponseDto responseDto = postService.updatePost(postId, postDto);
+        responseDto.setMemberId(postDto.getMemberId());
+        responseDto.setCategoryId(postDto.getCategoryId());
+        return responseDto;
     }
 
-    @DeleteMapping("/{postId}")
-    public void deletePost(@PathVariable Long postId) {
-        postService.deletePost(postId);
+    @DeleteMapping("/{postId}/{memberId}")
+    public void deletePost(
+            @PathVariable Long postId,
+            @PathVariable Long memberId
+    ) {
+        postService.deletePost(postId, memberId);
     }
 }

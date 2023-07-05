@@ -18,5 +18,5 @@ public class PostResponseDto {
 //    private String imageUrl;
     private Long memberId;
     private Long categoryId;
-//    private String region;
+//    private String regionId;
 }

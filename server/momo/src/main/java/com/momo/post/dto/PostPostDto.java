@@ -10,8 +10,8 @@ import lombok.Setter;
 public class PostPostDto {
     private String title;
     private String content;
-//    private String imageUrl;
     private Long memberId;
     private Long categoryId;
-//    private String region;
+//    private String regionId;
+    //    private String imageUrl;
 }

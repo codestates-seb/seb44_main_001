@@ -35,8 +35,6 @@ dependencies {
     implementation group: 'org.mapstruct', name: 'mapstruct', version: '1.5.3.Final'
     implementation group: 'org.mapstruct', name: 'mapstruct-processor', version: '1.5.3.Final'
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
-
-
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
     annotationProcessor group: 'org.mapstruct', name: 'mapstruct-processor', version: '1.5.3.Final'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

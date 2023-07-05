@@ -1,6 +1,7 @@
 package com.momo.category.controller;
 
-import com.momo.category.dto.CategoryDTO;
+import com.momo.category.dto.CategoryPostDto;
+import com.momo.category.dto.CategoryResponseDto;
 import com.momo.category.service.CategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,20 +17,38 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<CategoryDTO> createCategory(@RequestBody CategoryDTO categoryDTO) {
-        CategoryDTO createdCategory = categoryService.createCategory(categoryDTO);
+    public ResponseEntity<CategoryResponseDto> createCategory(@RequestBody CategoryPostDto categoryPostDto) {
+        CategoryResponseDto createdCategory = categoryService.createCategory(categoryPostDto);
         if (createdCategory != null) {
             return ResponseEntity.ok(createdCategory);
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+    @PatchMapping("/{categoryId}")
+    public ResponseEntity<CategoryResponseDto> updateCategory(@PathVariable Long categoryId, @RequestBody CategoryPostDto categoryPostDto) {
+        CategoryResponseDto updatedCategory = categoryService.updateCategory(categoryId, categoryPostDto);
+        if (updatedCategory != null) {
+            return ResponseEntity.ok(updatedCategory);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    @DeleteMapping("/{categoryId}")
+    public ResponseEntity<Void> deleteCategory(@PathVariable Long categoryId) {
+        boolean deleted = categoryService.deleteCategory(categoryId);
+        if (deleted) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     @GetMapping("/{categoryId}")
-    public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Long categoryId) {
-        CategoryDTO categoryDTO = categoryService.getCategoryById(categoryId);
-        if (categoryDTO != null) {
-            return ResponseEntity.ok(categoryDTO);
+    public ResponseEntity<CategoryResponseDto> getCategoryById(@PathVariable Long categoryId) {
+        CategoryResponseDto categoryResponseDto = categoryService.getCategoryById(categoryId);
+        if (categoryResponseDto != null) {
+            return ResponseEntity.ok(categoryResponseDto);
         } else {
             return ResponseEntity.notFound().build();
         }
