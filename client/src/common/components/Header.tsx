@@ -10,7 +10,7 @@ import logo from '../assets/logo/MOMO.png';
 import profile from '../assets/profile.svg';
 
 export default function Header(){
-  const [isLogged, setIsLogged] = useState<boolean>(true);
+  const [isLogged, setIsLogged] = useState<boolean>(false);
   
   return (
     <Head>

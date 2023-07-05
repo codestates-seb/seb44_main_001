@@ -4,16 +4,22 @@ import friends from '../assets/logo/momofriends.svg'
 
 interface SemiHeaderProps {
   title: string;
+  content: string;
 }
 
-export default function SemiHeader({title}: SemiHeaderProps) {
+export default function SemiHeader({title, content}: SemiHeaderProps) {
   return (
     <SemiContainer>
       <div style={{height:"400px"}}></div>
       <SemiContainer>
-        <Title>
-          {title}
-        </Title>
+        <div style={{display:"flex", flexDirection:"column"}}>
+          <Title>
+            {title}
+          </Title>
+          <Content>
+            {content}
+          </Content>
+        </div>
         <Picture src={friends} style={{width:"500px"}}/>
       </SemiContainer>
     </SemiContainer>
@@ -34,7 +40,15 @@ const Title = styled.h2`
   color: var(--color-black);
   white-space: nowrap;
   padding-left: 100px;
-  padding-bottom: 50px;
+  padding-bottom: 10px;
+`
+
+const Content = styled.span`
+  color: var(--color-black);
+  font-size: medium;
+  white-space: nowrap;
+  padding-left: 100px;
+  padding-bottom: 40px;
 `
 
 const Picture = styled.img`
