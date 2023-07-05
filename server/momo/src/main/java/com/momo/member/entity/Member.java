@@ -25,7 +25,7 @@ public class Member {
 //    private String name;
     private String email;
     private String password;
-    private String location;
+    private Integer location;
     private String welcomeMsg;
     private String profileImage;
     private String nickname;

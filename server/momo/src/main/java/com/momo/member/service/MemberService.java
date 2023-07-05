@@ -17,23 +17,19 @@ import java.util.Optional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-//    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-//    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
-//        this.memberRepository = memberRepository;
-//        this.passwordEncoder = passwordEncoder;
-//    }
-
-
-    public MemberService(MemberRepository memberRepository) {
+    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
         this.memberRepository = memberRepository;
+        this.passwordEncoder = passwordEncoder;
     }
+
 
     /* 회원가입 */
     public Member saveMember(Member member) {
         member.setCreatedAt(LocalDateTime.now());
-//        String encodedPassword = passwordEncoder.encode(member.getPassword());
-//        member.setPassword(encodedPassword);
+        String encodedPassword = passwordEncoder.encode(member.getPassword());
+        member.setPassword(encodedPassword);
         return memberRepository.save(member);
     }
 
