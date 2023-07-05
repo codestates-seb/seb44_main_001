@@ -36,7 +36,7 @@ const SemiContainer = styled.div`
   min-width: 700px;
 `
 
-const Title = styled.h2`
+const Title = styled.h1`
   color: var(--color-black);
   white-space: nowrap;
   padding-left: 100px;

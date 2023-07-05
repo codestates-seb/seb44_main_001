@@ -45,6 +45,10 @@ export const GlobalStyle = createGlobalStyle`
     font-family: 'BR-Bold';
     src: local('BR-Bold'), url(${BRBoldFont}) format('truetype');
   }
+
+  input {
+    font-family: 'BR-Regular';
+  }
 `;
 
 export const Layout = styled.div`
