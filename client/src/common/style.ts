@@ -28,6 +28,7 @@ export const GlobalStyle = createGlobalStyle`
   --color-pink-3: #FFF1F3;
   --color-white: #FFFFFF;
   --color-black: #444444;
+  --color-gray: #CCCCCC;
 
   /* Font Size */
   --font-size-xs: 0.875rem;

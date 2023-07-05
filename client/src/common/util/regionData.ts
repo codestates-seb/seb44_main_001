@@ -1,4 +1,6 @@
-export const regionData = {
+import { RegionData } from '../type';
+
+export const regionData: RegionData = {
   서울특별시: [
     '강남구',
     '강동구',
