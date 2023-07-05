@@ -16,6 +16,7 @@ import { useMutation } from 'react-query';
 import postData from '../api/postData';
 import { PostData } from '../../../common/type';
 import Editor from './Editor';
+import { styled } from 'styled-components';
 
 export default function Form() {
   const data: PostData = useSelector((state: RootState) => state.createdPost);
@@ -36,13 +37,15 @@ export default function Form() {
 
   return (
     <section>
-      <label htmlFor="title">{TITLE}</label>
-      <input
-        type="text"
-        name="title"
-        placeholder={TITLE_INPUT_PLACEHOLDER}
-        onChange={handleTitleChange}
-      />
+      <TitleSection>
+        <label htmlFor="title">{TITLE}</label>
+        <input
+          type="text"
+          name="title"
+          placeholder={TITLE_INPUT_PLACEHOLDER}
+          onChange={handleTitleChange}
+        />
+      </TitleSection>
       <LocationSelector data={data} />
       <CategorySelector data={data} />
       <label htmlFor="content">{CONTENT}</label>
@@ -54,3 +57,5 @@ export default function Form() {
     </section>
   );
 }
+
+const TitleSection = styled.section``;

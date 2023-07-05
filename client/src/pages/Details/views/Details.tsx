@@ -14,14 +14,17 @@ export default function Details() {
         content=""
       />
       <Layout>
-        <DetailsContainer>
+        <Container>
           <Article />
           <CommentInput />
           <CommentList />
-        </DetailsContainer>
+        </Container>
       </Layout>
     </>
   );
 }
 
-const DetailsContainer = styled.main``;
+const Container = styled.main`
+  display: flex;
+  flex-direction: column;
+`;
