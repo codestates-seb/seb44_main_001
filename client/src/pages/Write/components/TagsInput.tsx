@@ -3,6 +3,7 @@ import { TAG, TAG_INPUT_PLACEHOLDER } from '../../../common/util/constantValue';
 import { RootState } from '../../../common/store/RootStore';
 import { setCreatedPost } from '../store/CreatedPost';
 import { PostData } from '../../../common/type';
+import { MdCancel } from 'react-icons/md';
 
 export default function TagsInput({ data }: { data: PostData }) {
   const dispatch = useDispatch();
@@ -40,8 +41,10 @@ export default function TagsInput({ data }: { data: PostData }) {
         {tags.map((tag) => {
           return (
             <div>
-              {`#${tag} `}
-              <span onClick={() => handleDeleteTag(tag)}>X</span>
+              {`#${tag}`}
+              <span onClick={() => handleDeleteTag(tag)}>
+                <MdCancel />
+              </span>
             </div>
           );
         })}

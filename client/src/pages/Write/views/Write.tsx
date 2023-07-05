@@ -107,6 +107,7 @@ const WriteContainer = styled.main`
       min-height: 3rem;
 
       > div {
+        display: flex;
         margin: 0 0.5rem 1rem 0;
         font-size: var(--font-size-s);
         padding: 0.5rem;
@@ -114,7 +115,10 @@ const WriteContainer = styled.main`
         background: var(--color-gray);
 
         > span {
+          display: flex;
+          align-items: center;
           cursor: pointer;
+          padding-left: 0.5rem;
         }
       }
     }
