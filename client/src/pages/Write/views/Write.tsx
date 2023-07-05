@@ -53,7 +53,7 @@ const WriteContainer = styled.main`
       }
     }
 
-    :nth-child(7) {
+    > :nth-child(7) {
       min-height: 10rem;
     }
 
@@ -66,10 +66,6 @@ const WriteContainer = styled.main`
       font-family: 'BR-Regular';
       font-size: var(--font-size-s);
       color: var(--color-black);
-    }
-
-    & input::placeholder {
-      color: var(--color-gray);
     }
 
     .quill {
@@ -94,15 +90,11 @@ const WriteContainer = styled.main`
       }
     }
 
-    & textarea {
-      resize: vertical;
-    }
-
     > :nth-child(2) {
       width: 40rem;
     }
 
-    :nth-child(10) {
+    > :nth-child(10) {
       display: flex;
       min-height: 3rem;
 

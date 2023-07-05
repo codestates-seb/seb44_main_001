@@ -10,15 +10,14 @@ import {
   REGION_MESSAGE,
 } from '../../../common/util/constantValue';
 import { setCreatedPost } from '../store/CreatedPost';
+import { PostData } from '../../../common/type';
 
-export default function LocationSelector() {
+export default function LocationSelector({ data }: { data: PostData }) {
   const dispatch = useDispatch();
 
   const region = useSelector((state: RootState) => state.location.region);
 
   const district = useSelector((state: RootState) => state.location.district);
-
-  const data = useSelector((state: RootState) => state.createdPost);
 
   const handleRegionChange = (event: ChangeEvent<HTMLSelectElement>) => {
     dispatch(setLocation({ region: event.target.value, district: '' }));
