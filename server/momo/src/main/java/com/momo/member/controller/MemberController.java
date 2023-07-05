@@ -47,7 +47,7 @@ public class MemberController {
         Member member = mapper.memberPostDtoToMember(memberPostDto);
         Member savedMember = memberService.saveMember(member);
 
-        return new ResponseEntity(mapper.memberToMemberResponseDto(savedMember), HttpStatus.OK);
+        return new ResponseEntity(mapper.memberToMemberResponseDto(savedMember), HttpStatus.CREATED);
     }
 
     /* 회원 정보 수정 */
