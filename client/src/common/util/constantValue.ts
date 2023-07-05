@@ -22,6 +22,10 @@ export const CATEGORY = '카테고리';
 
 export const TAG = '태그';
 
-export const POST = '등록';
+export const REGISTER = '등록';
 
 export const URL = '';
+
+export const REGISTER_COMMENT = '댓글 등록하기';
+
+export const COMMENT = '댓글';
