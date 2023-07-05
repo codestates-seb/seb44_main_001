@@ -23,7 +23,7 @@ const WriteContainer = styled.main`
 
   & > section {
     border: 2px solid var(--color-black);
-    width: 60rem;
+    width: 50rem;
     padding: 2rem;
     margin: 2rem 0 2rem 0;
     border-radius: 10px;
@@ -34,6 +34,10 @@ const WriteContainer = styled.main`
 
     select {
       width: 15rem;
+    }
+
+    select option[value=''][disabled] {
+      display: none;
     }
 
     > section {
