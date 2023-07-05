@@ -48,7 +48,13 @@ export const GlobalStyle = createGlobalStyle`
 
   input {
     font-family: 'BR-Regular';
+    border-radius: 5px;
+    padding: 0.5rem;
+    border: var(--color-black);
+    font-size: small;
   }
+
+  input:focus { outline:none; }
 `;
 
 export const Layout = styled.div`
