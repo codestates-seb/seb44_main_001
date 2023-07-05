@@ -16,17 +16,16 @@ import java.util.List;
 @Getter
 @Setter
 public class MemberResponseDto {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long memberId;
     private String email;
-    private String password;
-    private String location;
+    private Integer location;
     private String welcomeMsg;
     private String nickname;
     private Boolean isMale;
     private Integer age;
     private LocalDateTime createdAt;
+    private String profileImage;
 
     @OneToMany(mappedBy = "member")
     private List<Post> posts;

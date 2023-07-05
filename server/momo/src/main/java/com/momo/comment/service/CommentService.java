@@ -53,7 +53,7 @@ public class CommentService {
     }
 
     private Boolean checkSameWriter(Post post, Member member) {
-        return post.getMember().getMemberId() == member.getMemberId();
+        return post.getMember().getMemberId().equals(member.getMemberId());
     }
 
     public Comment updateComment(Long commentId, CommentPatchDto patchDto) {
@@ -67,27 +67,24 @@ public class CommentService {
     }
 
     private void verifyCommentWriter(Comment comment, Member member) {
-        if (comment.getMember().getMemberId() != member.getMemberId()) {
+        if (!comment.getMember().getMemberId().equals(member.getMemberId())) {
             throw new BusinessLogicException(ExceptionCode.COMMENT_MEMBER_NOT_MATCH);
         }
     }
 
     private Comment getExistingComment(Long commentId) {
-        return Optional.ofNullable(commentRepository.findById(commentId))
-                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.COMMENT_NOT_FOUND))
-                .get();
+        return commentRepository.findById(commentId)
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.COMMENT_NOT_FOUND));
     }
 
     private Post getExistingPost(Long postId) {
-        return Optional.ofNullable(postRepository.findById(postId))
-                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.POST_NOT_FOUND))
-                .get();
+        return postRepository.findById(postId)
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.POST_NOT_FOUND));
     }
 
     private Member getExistingMember(Long memberId) {
-        return Optional.ofNullable(memberRepository.findById(memberId))
-                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND))
-                .get();
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
     }
 
 
