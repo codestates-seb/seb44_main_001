@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { FaArrowRightFromBracket } from 'react-icons/fa6';
@@ -11,7 +11,6 @@ import profile from '../assets/profile.svg';
 
 export default function Header(){
   const [isLogged, setIsLogged] = useState<boolean>(true);
-  const navigate = useNavigate();
   
   return (
     <Head>
@@ -49,7 +48,7 @@ export default function Header(){
                       <Button children={"로그인"}></Button>
                     </Link>
                     <Link to="/signup" className="text margin-left">
-                    <Button children={"회원가입"}></Button>
+                      <Button children={"회원가입"}></Button>
                     </Link>
                 </MenuContainer>
             )}
