@@ -1,7 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import {
   CONTENT,
-  CONTENT_INPUT_PLACEHOLDER,
   POST,
   TITLE,
   TITLE_INPUT_PLACEHOLDER,
@@ -16,6 +15,7 @@ import CategorySelector from './CategorySelector';
 import { useMutation } from 'react-query';
 import postData from '../api/postData';
 import { PostData } from '../../../common/type';
+import Editor from './Editor';
 
 export default function Form() {
   const data: PostData = useSelector((state: RootState) => state.createdPost);
@@ -34,10 +34,6 @@ export default function Form() {
     dispatch(setCreatedPost({ ...data, title: event.target.value }));
   };
 
-  const handleContentChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    dispatch(setCreatedPost({ ...data, content: event.target.value }));
-  };
-
   return (
     <section>
       <label htmlFor="title">{TITLE}</label>
@@ -50,11 +46,7 @@ export default function Form() {
       <LocationSelector />
       <CategorySelector />
       <label htmlFor="content">{CONTENT}</label>
-      <textarea
-        name="content"
-        placeholder={CONTENT_INPUT_PLACEHOLDER}
-        onChange={handleContentChange}
-      />
+      <Editor data={data} />
       <TagsInput data={data} />
       <div>
         <button onClick={() => handleSubmit()}>{POST}</button>
