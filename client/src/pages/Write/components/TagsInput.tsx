@@ -40,7 +40,7 @@ export default function TagsInput({ data }: { data: PostData }) {
       <div>
         {tags.map((tag) => {
           return (
-            <div>
+            <div key={tag}>
               {`#${tag}`}
               <span onClick={() => handleDeleteTag(tag)}>
                 <MdCancel />
