@@ -169,13 +169,13 @@ export default function Signup() {
   );
 }
 
-const Background = styled.div`
+export const Background = styled.div`
 display: flex;
 flex-direction: column;
 justify-content: center;
 align-items: center;
 padding: 30px;
-border: solid 3px var(--color-black);
+border: solid 2px var(--color-black);
 border-radius: 10px;
 background-color: white;
 width: 40rem;
@@ -197,11 +197,11 @@ const InputBox = styled.div`
   margin: 20px;
 `
 
-const Text = styled.span`
+export const Text = styled.span`
   font-size: medium;
 `
 
-const TextInput = styled.input<TextInputProps>`
+export const TextInput = styled.input<TextInputProps>`
   width: 300px;
   border: ${(props) => (props.isValidate ? '2px solid var(--color-black)' : '2px solid red')};
   margin-top: 10px;
