@@ -1,8 +1,10 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import { locationFilterSlice } from './LocationFilterStore';
+import { locationSlice } from './LocationStore';
+import { createdPostSlice } from '../../pages/Write/store/CreatedPost';
 
 const rootReducer = combineReducers({
-  locationFilter: locationFilterSlice.reducer,
+  location: locationSlice.reducer,
+  createdPost: createdPostSlice.reducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
