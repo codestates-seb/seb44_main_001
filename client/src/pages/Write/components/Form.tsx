@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import {
   CONTENT,
-  POST,
+  REGISTER,
   TITLE,
   TITLE_INPUT_PLACEHOLDER,
   URL,
@@ -49,7 +49,7 @@ export default function Form() {
       <Editor data={data} />
       <TagsInput data={data} />
       <div>
-        <button onClick={() => handleSubmit()}>{POST}</button>
+        <button onClick={() => handleSubmit()}>{REGISTER}</button>
       </div>
     </section>
   );
