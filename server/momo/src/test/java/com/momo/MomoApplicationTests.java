@@ -9,5 +9,4 @@ class MomoApplicationTests {
     @Test
     void contextLoads() {
     }
-
 }
