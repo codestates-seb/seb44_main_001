@@ -10,6 +10,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -26,22 +27,22 @@ public class Member {
     private String password;
     private String location;
     private String welcomeMsg;
-//    private String profileImage;
+    private String profileImage;
     private String nickname;
     private Boolean isMale;
     private Integer age;
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "member")
-    private List<Post> posts;
+    private List<Post> posts = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "sender")
-    private List<Message> sentMessages;
+    private List<Message> sentMessages = new ArrayList<>();
 
     @OneToMany(mappedBy = "receiver")
-    private List<Message> receivedMessages;
+    private List<Message> receivedMessages = new ArrayList<>();
 
 }

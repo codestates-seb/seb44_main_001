@@ -11,6 +11,7 @@ import Details from './pages/Details/views/Details';
 import NotFound from './pages/NotFound/Views/NotFound';
 import Search from './pages/Search/views/Search';
 
+
 const Router = () => {
   return (
     <Routes>

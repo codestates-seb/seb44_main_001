@@ -7,7 +7,6 @@ import org.springframework.context.annotation.ComponentScan;
 
 @EnableJpaAuditing
 @SpringBootApplication
-@ComponentScan({"com.momo", "com.momo.category.mapper"})
 public class MomoApplication {
 
     public static void main(String[] args) {
