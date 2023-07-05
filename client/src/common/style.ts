@@ -52,7 +52,3 @@ export const Layout = styled.div`
   display: flex;
   justify-content: center;
 `;
-
-export const TagBox = styled.div`
-  min-width: 5rem;
-`;
