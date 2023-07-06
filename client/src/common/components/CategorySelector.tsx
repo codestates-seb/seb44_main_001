@@ -45,6 +45,7 @@ const Container = styled.div`
   & select {
     width: 15rem;
     color: var(--color-black);
+    outline: none;
   }
 
   & select option[value=''][disabled] {

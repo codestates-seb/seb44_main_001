@@ -39,6 +39,7 @@ const InputSection = styled.section`
     padding: 0.5rem;
     min-height: 5rem;
     resize: none;
+    outline: none;
   }
 `;
 
