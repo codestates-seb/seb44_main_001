@@ -35,6 +35,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .httpBasic()
+                .and()
                 .headers().frameOptions().sameOrigin() // 설정 추가된 부분
                 .and()
                 .csrf().disable()
@@ -42,6 +44,7 @@ public class SecurityConfig {
                 .loginPage("/auths/login-form")
                 .loginProcessingUrl("/process_login")
                 .failureUrl("/auths/login-form?error")
+                .defaultSuccessUrl("/")
                 .and()
                 .logout()
                 .logoutUrl("/logout")
