@@ -32,11 +32,11 @@ const SemiContainer = styled.div`
   justify-content: space-between;
   background-color: var(--color-pink-1);
   width: 100%;
-  height: 300px;
+  height: 200px;
   min-width: 700px;
 `
 
-const Title = styled.h2`
+const Title = styled.h1`
   color: var(--color-black);
   white-space: nowrap;
   padding-left: 100px;
