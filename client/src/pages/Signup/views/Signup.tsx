@@ -1,11 +1,19 @@
 import { useState } from "react";
 import { styled } from "styled-components";
 import { useMutation } from "react-query";
-import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
 
 import SemiHeader from "../../../common/components/SemiHeader";
 import { Layout } from "../../../common/style";
 import Button from "../../../common/components/Button";
+import signupData from '../api/postSignup';
+import { SignupData } from '../../../common/type';
+import { RootState } from "../../../common/store/RootStore";
+import { setSignupUser } from "../store/createSignupUser";
+
+import {
+  URL,
+} from '../../../common/util/constantValue';
 
 interface User {
   email: string;
@@ -43,46 +51,48 @@ export default function Signup() {
   const [gender, setGender] = useState<boolean | null>(null);
   const [myMsg, setMyMsg] = useState("");
 
-  const regexEmail = /^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/;
-  const regexPassword = /^[a-zA-Z0-9]{7,}$/;
+  const dispatch = useDispatch();
+
+  const data: SignupData = useSelector((state: RootState) => state.signup);
+
+  const signupMutation = useMutation<void, unknown, SignupData>(() =>
+    signupData(URL, data),
+  );
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
-    return regexEmail.test(e.target.value)
-      ? setIsValidEmail(true) : setIsValidEmail(false)
-    // setIsValidEmail(e.target.value.includes(`@` && `.`) && e.target.value.includes(`com`));
+    dispatch(setSignupUser({ ...data, email: e.target.value }));
+    setIsValidEmail(e.target.value.includes(`@` && `.`) && e.target.value.includes(`com`));
   }
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
-    return regexPassword.test(e.target.value)
-      ? setIsValidPassword(true) : setIsValidPassword(false)
-    // setIsValidPassword(e.target.value.length >= 8);
+    dispatch(setSignupUser({ ...data, password: e.target.value }));
+    setIsValidPassword(e.target.value.length >= 8);
   }
 
   const handleNickNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickName(e.target.value);
+    dispatch(setSignupUser({ ...data, nickName: e.target.value }));
   }
 
   const handleBirthYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setBirthYear(parseInt(e.target.value));
+    dispatch(setSignupUser({ ...data, birthYear: e.target.value }));
   };
 
   const handleGenderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const isMale = e.target.value === 'male';
     setGender(isMale);
+    dispatch(setSignupUser({ ...data, gender: isMale }));
   };
 
   const handleMyMsgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMyMsg(e.target.value);
+    dispatch(setSignupUser({ ...data, welcome_msg: e.target.value }));
   }
 
-  const signUpMutation = useMutation(async (user: User) => {
-    await axios.post("http://localhost:8080/members/register", user);
-  });
-
-  const handleSignUp =async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSignUp =() => {
     if (!isValidEmail || !isValidPassword) {
       alert("이메일또는 패스워드의 조건을 다시 확인해주세요.");
     }
@@ -92,123 +102,106 @@ export default function Signup() {
       birthYear === null ||
       gender === null) { alert("빈칸을 모두 채워주세요.")}
     
-      try {
-        const user: User = {
-          email: email,
-          password: password,
-          nickName: nickName,
-          birthYear: birthYear,
-          gender: gender,
-          location: "Seoul",
-          welcome_msg: myMsg,
-        };
-        await signUpMutation.mutateAsync(user);
-        alert("회원가입이 완료되었습니다. 로그인 후 서비스를 이용하실 수 있습니다.");
-      } catch (error) {
-        console.error("Error during sign up:", error);
-        alert("회원가입 도중 오류가 발생했습니다. 다시 시도해주세요.");
-      }
+      signupMutation.mutate(data);
   }
 
   return (
     <div style={{display:"flex", flexDirection:"column", alignItems:"center"}}>
-      <form onSubmit={handleSignUp}>
-        <SemiHeader title="회원가입" content="모모에 오신것을 환영합니다!"/>
-        <Layout>
-          <Background>
-            <ContentWrapper>
-              <InputBox>
-                <Text>이메일</Text>
-                <TextInput
-                  value={email}
-                  style={{width:"400px"}}
-                  onChange={handleEmailChange}
-                  isValidate={isValidEmail}
-                  placeholder="이메일을 입력하세요. (ex. momo@gmail.com)"
-                />
-                {!isValidEmail && <ErrorMessage>올바르지 않은 이메일 형식입니다.</ErrorMessage>}
-              </InputBox>
-              <InputBox>
-                <Text>비밀번호</Text>
-                <TextInput
-                  value={password}
-                  type="password"
-                  onChange={handlePasswordChange}
-                  isValidate={isValidPassword}
-                  placeholder="비밀번호를 입력하세요."
-                />
-                {!isValidPassword && <ErrorMessage>비밀번호는 8글자 이상이여야 합니다.</ErrorMessage>}
-              </InputBox>
-              <InputBox>
-                <Text>닉네임</Text>
-                <TextInput
-                  value={nickName}
-                  onChange={handleNickNameChange}
-                  isValidate={true}
-                  placeholder="닉네임을 입력하세요. (나중에 수정할 수 있어요!)"
-                />
-              </InputBox>
-              <InputBox>
-                <Text>출생년도</Text>
-                <DropdownInput
-                  value={birthYear === null ? "" : birthYear}
-                  onChange={handleBirthYearChange}
-                >
-                  <option value="">출생년도를 선택하세요</option>
-                  {Array.from({ length: 100 }, (_, i) => {
-                    const year = new Date().getFullYear() - i;
-                    return (
-                      <option key={year} value={year}>
-                        {year}
-                      </option>
-                    );
-                  })}
-                </DropdownInput>
-              </InputBox>
-              <InputBox>
-                <Text>성별</Text>
-                <div style={{display:"flex"}}>
-                  <div style={{marginTop:"10px", marginRight:"30px"}}>
-                    <label htmlFor="male" style={{fontSize:"15px"}}>남</label>
-                    &nbsp;
-                    <input
-                      type="radio"
-                      name="gender"
-                      value="male"
-                      onChange={handleGenderChange}
-                      checked={gender === true}
-                    />
-                  </div>
-                  <div style={{margin:"10px"}}>
-                    <label htmlFor="female" style={{fontSize:"15px"}}>여</label>
-                    &nbsp;
-                    <input
-                      type="radio"
-                      name="gender"
-                      value="female"
-                      onChange={handleGenderChange}
-                      checked={gender === false}
-                    />
-                  </div>
+      <SemiHeader title="회원가입" content="모모에 오신것을 환영합니다!"/>
+      <Layout>
+        <Background>
+          <ContentWrapper>
+            <InputBox>
+              <Text>이메일</Text>
+              <TextInput
+                value={email}
+                style={{width:"400px"}}
+                onChange={handleEmailChange}
+                isValidate={isValidEmail}
+                placeholder="이메일을 입력하세요. (ex. momo@gmail.com)"
+              />
+              {!isValidEmail && <ErrorMessage>올바르지 않은 이메일 형식입니다.</ErrorMessage>}
+            </InputBox>
+            <InputBox>
+              <Text>비밀번호</Text>
+              <TextInput
+                value={password}
+                type="password"
+                onChange={handlePasswordChange}
+                isValidate={isValidPassword}
+                placeholder="비밀번호를 입력하세요."
+              />
+              {!isValidPassword && <ErrorMessage>비밀번호는 8글자 이상이여야 합니다.</ErrorMessage>}
+            </InputBox>
+            <InputBox>
+              <Text>닉네임</Text>
+              <TextInput
+                value={nickName}
+                onChange={handleNickNameChange}
+                isValidate={true}
+                placeholder="닉네임을 입력하세요. (나중에 수정할 수 있어요!)"
+              />
+            </InputBox>
+            <InputBox>
+              <Text>출생년도</Text>
+              <DropdownInput
+                value={birthYear === null ? "" : birthYear}
+                onChange={handleBirthYearChange}
+              >
+                <option value="">출생년도를 선택하세요</option>
+                {Array.from({ length: 100 }, (_, i) => {
+                  const year = new Date().getFullYear() - i;
+                  return (
+                    <option key={year} value={year}>
+                      {year}
+                    </option>
+                  );
+                })}
+              </DropdownInput>
+            </InputBox>
+            <InputBox>
+              <Text>성별</Text>
+              <div style={{display:"flex"}}>
+                <div style={{marginTop:"10px", marginRight:"30px"}}>
+                  <label htmlFor="male" style={{fontSize:"15px"}}>남</label>
+                  &nbsp;
+                  <input
+                    type="radio"
+                    name="gender"
+                    value="male"
+                    onChange={handleGenderChange}
+                    checked={gender === true}
+                  />
                 </div>
-              </InputBox>
-              <InputBox>
-                <Text>지역</Text>
-                <input />
-              </InputBox>
-              <InputBox>
-                <Text>자기소개</Text>
-                <TextAreaInput
-                  value={myMsg}
-                  onChange={handleMyMsgChange}
-                  placeholder="자유롭게 자기소개를 작성해보세요."
-                />
-              </InputBox>
-            </ContentWrapper>
-            <Button children={"가입하기"} type="submit"/>
-          </Background>
-        </Layout>
-      </form>
+                <div style={{margin:"10px"}}>
+                  <label htmlFor="female" style={{fontSize:"15px"}}>여</label>
+                  &nbsp;
+                  <input
+                    type="radio"
+                    name="gender"
+                    value="female"
+                    onChange={handleGenderChange}
+                    checked={gender === false}
+                  />
+                </div>
+              </div>
+            </InputBox>
+            <InputBox>
+              <Text>지역</Text>
+              <input />
+            </InputBox>
+            <InputBox>
+              <Text>자기소개</Text>
+              <TextAreaInput
+                value={myMsg}
+                onChange={handleMyMsgChange}
+                placeholder="자유롭게 자기소개를 작성해보세요."
+              />
+            </InputBox>
+          </ContentWrapper>
+          <Button children={"가입하기"} onClick={handleSignUp}/>
+        </Background>
+      </Layout>
     </div>
   );
 }

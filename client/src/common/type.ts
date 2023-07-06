@@ -17,3 +17,13 @@ export type CardData = {
   userImg: string;
   userName: string;
 }
+
+export type SignupData = {
+  email: string;
+  password: string;
+  nickName: string;
+  birthYear: number | null;
+  gender: boolean | null;
+  location: string | null;
+  welcome_msg: string;
+}
