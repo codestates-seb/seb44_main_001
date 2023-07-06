@@ -41,12 +41,6 @@ export default function CategorySelector({
 const Container = styled.div`
   & select {
     width: 15rem;
-    border: 1px solid var(--color-black);
-    padding: 0.5rem;
-    border-radius: 5px;
-    margin: 1rem 2rem 2rem 0;
-    font-family: 'BR-Regular';
-    font-size: var(--font-size-s);
     color: var(--color-black);
   }
 
