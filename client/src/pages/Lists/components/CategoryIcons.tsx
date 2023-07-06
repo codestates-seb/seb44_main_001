@@ -1,39 +1,23 @@
 import { styled } from 'styled-components';
-import pet from '../../../common/assets/icons/pet.svg';
-import food from '../../../common/assets/icons/food.svg';
-import culture from '../../../common/assets/icons/culture.svg';
-import study from '../../../common/assets/icons/study.svg';
-import sports from '../../../common/assets/icons/sports.svg';
-import game from '../../../common/assets/icons/game.svg';
-import music from '../../../common/assets/icons/music.svg';
-import etc from '../../../common/assets/icons/etc.svg';
-import {getData} from '../api/getData';
+import { categoryData } from '../../../common/util/categoryData';
+import { Icons, English } from './Icons';
+import { useDispatch } from 'react-redux';
+import { setFilteredList } from '../store/filteredList';
 
-export default function CategoryIcons({ setLists }:any) {
-  const icons = [pet, food, culture, study, sports, game, music, etc];
-  const english = ["pet","food","culture","study","sports","game","music","etc"]
-  const korean = [
-    '반려동물',
-    '음식',
-    '문화생활',
-    '스터디',
-    '운동',
-    '게임',
-    '음악',
-    '기타',
-  ];
+export default function CategoryIcons() {
+  const dispatch = useDispatch();
+
   return (
     <Wrapper>
-      {icons.map((icon, index) => (
-        <IconWrapper 
-        onClick={()=>{
-          setLists(getData(english[index]))
-        }}
-        key={`Icon ${index}`}>
+      {Icons.map((icon, index) => (
+        <IconWrapper
+          onClick={() => dispatch(setFilteredList(`${English[index]}`))}
+          key={`Icon ${index}`}
+        >
           <Button>
             <Img src={icon} alt={`Icon ${index}`} />
           </Button>
-          <div className='categoryName'>{korean[index]}</div>
+          <div className="categoryName">{categoryData[index]}</div>
         </IconWrapper>
       ))}
     </Wrapper>
@@ -53,16 +37,21 @@ const IconWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  .categoryName{
+  .categoryName {
     margin-top: 0.5rem;
   }
 `;
 const Button = styled.button`
   background: none;
-  border: none;
   padding: 0;
+  border-radius: 50%;
+  border: none;
   cursor: pointer;
+  &:hover {
+    //호버시 움직이는거 수정해야함
+    border: 5px solid var(--color-pink-1);
+  }
 `;
 const Img = styled.img`
-border-radius: 50%;
-`
+  border-radius: 50%;
+`;
