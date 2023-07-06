@@ -10,3 +10,10 @@ export type PostData = {
   category: string;
   memberId: number;
 };
+
+export type CardData = {
+  title: string;
+  content: string;
+  userImg: string;
+  userName: string;
+}
