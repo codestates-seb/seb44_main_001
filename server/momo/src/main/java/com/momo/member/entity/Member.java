@@ -34,6 +34,9 @@ public class Member {
     private Integer age;
     private LocalDateTime createdAt;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> roles = new ArrayList<>();
+
     @OneToMany(mappedBy = "member")
     private List<Post> posts = new ArrayList<>();
 

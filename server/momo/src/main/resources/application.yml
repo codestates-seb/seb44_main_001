@@ -16,3 +16,6 @@ spring:
           logging:
             level:
               root: DEBUG
+mail:
+  address:
+    admin: admin@gmail.com
