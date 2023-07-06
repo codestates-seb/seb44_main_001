@@ -8,19 +8,28 @@ import { Background, Text, TextInput,  } from "../../Signup/views/Signup";
 import kakao from "../../../common/assets/logo/kakao-logo.png"
 import Button from "../../../common/components/Button";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+
+const initialInfo: {
+  email: string;
+  password: string;
+} = { email: '', password: '' };
 
 export default function Login() {
+  const [loginInfo, setLoginInfo] = useState(initialInfo);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loginMsg, setLoginMsg] = useState("");
+
+  const dispatch = useDispatch();
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
+    setLoginInfo({ ...loginInfo, email: e.target.value });
   }
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
+    setLoginInfo({ ...loginInfo, password: e.target.value });
   }
-
 
   return (
     <div>
