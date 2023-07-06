@@ -1,13 +1,12 @@
 import Router from './Router';
+import Header from './common/components/Header';
 import { GlobalStyle } from './common/style';
-import { Layout } from './common/style';
 export default function App() {
   return (
     <>
       <GlobalStyle />
-      <Layout>
-        <Router />
-      </Layout>
+      <Header />
+      <Router />
     </>
   );
 }

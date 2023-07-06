@@ -3,12 +3,12 @@ package com.momo.post.entity;
 import com.momo.category.entity.Category;
 import com.momo.comment.entity.Comment;
 import com.momo.member.entity.Member;
-import com.momo.tagpost.entity.TagPost;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.swing.plaf.synth.Region;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +25,10 @@ public class Post {
     private String title;
     private String content;
 
+    @ElementCollection
+    @Column(name = "tag")
+    private List<String> tags;
+
     private LocalDateTime createdAt;
     private LocalDateTime editedAt;
 //    private String imageUrl;
@@ -39,9 +43,6 @@ public class Post {
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "region_id")
 //    private Region region;
-
-    @OneToMany(mappedBy = "post")
-    private List<TagPost> tagPosts = new ArrayList<>();
 
     @OneToMany(mappedBy = "post")
     private List<Comment> comments = new ArrayList<>();

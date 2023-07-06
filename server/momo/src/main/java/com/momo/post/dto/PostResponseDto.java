@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,5 +19,6 @@ public class PostResponseDto {
 //    private String imageUrl;
     private Long memberId;
     private Long categoryId;
-//    private String region;
+    private List<String> tags;
+//    private String regionId;
 }

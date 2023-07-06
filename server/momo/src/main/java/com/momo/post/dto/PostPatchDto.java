@@ -4,12 +4,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
 public class PostPatchDto {
     private String title;
     private String content;
-//    private String region;
+    private Long memberId;
+    private Long categoryId;
+    private List<String> tags;
 //    private String imageUrl;
 }

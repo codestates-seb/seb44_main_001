@@ -7,6 +7,7 @@ import com.momo.post.entity.Post;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import com.momo.post.entity.Post;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -32,6 +33,9 @@ public class Member {
     private Boolean isMale;
     private Integer age;
     private LocalDateTime createdAt;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> roles = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")
     private List<Post> posts = new ArrayList<>();

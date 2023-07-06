@@ -4,6 +4,7 @@ import com.momo.exception.BusinessLogicException;
 import com.momo.exception.ExceptionCode;
 import com.momo.member.entity.Member;
 import com.momo.member.repository.MemberRepository;
+import com.momo.security.utils.MomoAuthorityUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,18 +19,22 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final MomoAuthorityUtils authorityUtils;
 
-    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
+    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, MomoAuthorityUtils authorityUtils) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
+        this.authorityUtils = authorityUtils;
     }
-
 
     /* 회원가입 */
     public Member saveMember(Member member) {
         member.setCreatedAt(LocalDateTime.now());
         String encodedPassword = passwordEncoder.encode(member.getPassword());
         member.setPassword(encodedPassword);
+        List<String> roles = authorityUtils.createRoles(member.getEmail());
+        member.setRoles(roles);
+
         return memberRepository.save(member);
     }
 
@@ -53,8 +58,8 @@ public class MemberService {
                 .ifPresent(findMember::setPassword);
         Optional.ofNullable(member.getWelcomeMsg())
                 .ifPresent(findMember::setWelcomeMsg);
-        Optional.ofNullable(member.getLocation())
-                .ifPresent(findMember::setLocation);
+//        Optional.ofNullable(member.getLocation())
+//                .ifPresent(findMember::setLocation);
         Optional.ofNullable(member.getNickname())
                 .ifPresent(findMember::setNickname);
         Optional.ofNullable(member.getIsMale())

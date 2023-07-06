@@ -4,11 +4,10 @@ import { RootState } from '../../../common/store/RootStore';
 import { ChangeEvent } from 'react';
 import { setCreatedPost } from '../store/CreatedPost';
 import { categoryData } from '../../../common/util/categoryData';
+import { PostData } from '../../../common/type';
 
-export default function CategorySelector() {
+export default function CategorySelector({ data }: { data: PostData }) {
   const dispatch = useDispatch();
-
-  const data = useSelector((state: RootState) => state.createdPost);
 
   const category = useSelector(
     (state: RootState) => state.createdPost.category,
