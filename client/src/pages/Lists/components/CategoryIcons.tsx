@@ -2,25 +2,29 @@ import { styled } from 'styled-components';
 import { categoryData } from '../../../common/util/categoryData';
 import { Icons, English } from './Icons';
 import { useDispatch } from 'react-redux';
-import { setFilteredList } from '../store/filteredList';
+import { setCurrentCategory } from '../store/CurrentCategory';
 
 export default function CategoryIcons() {
   const dispatch = useDispatch();
 
   return (
-    <Wrapper>
-      {Icons.map((icon, index) => (
-        <IconWrapper
-          onClick={() => dispatch(setFilteredList(`${English[index]}`))}
-          key={`Icon ${index}`}
-        >
-          <Button>
-            <Img src={icon} alt={`Icon ${index}`} />
-          </Button>
-          <div className="categoryName">{categoryData[index]}</div>
-        </IconWrapper>
-      ))}
-    </Wrapper>
+    <div>
+      <Wrapper>
+        {Icons.map((icon, index) => (
+          <IconWrapper
+            onClick={() => {
+              dispatch(setCurrentCategory(`${English[index]}`));
+            }}
+            key={`Icon ${index}`}
+          >
+            <Button>
+              <Img src={icon} alt={`Icon ${index}`} />
+            </Button>
+            <div className="categoryName">{categoryData[index]}</div>
+          </IconWrapper>
+        ))}
+      </Wrapper>
+    </div>
   );
 }
 

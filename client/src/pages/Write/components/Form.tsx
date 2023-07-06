@@ -1,6 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  CATEGORY,
   CONTENT,
+  REGION,
   REGISTER,
   TITLE,
   TITLE_INPUT_PLACEHOLDER,
@@ -10,13 +12,14 @@ import { RootState } from '../../../common/store/RootStore';
 import { ChangeEvent } from 'react';
 import { setCreatedPost } from '../store/CreatedPost';
 import TagsInput from './TagsInput';
-import LocationSelector from './LocationSelector';
-import CategorySelector from './CategorySelector';
+import LocationSelector from '../../../common/components/LocationSelector';
+import CategorySelector from '../../../common/components/CategorySelector';
 import { useMutation } from 'react-query';
 import postData from '../api/postData';
 import { PostData } from '../../../common/type';
 import Editor from './Editor';
 import { styled } from 'styled-components';
+import Button from '../../../common/components/Button';
 
 export default function Form() {
   const data: PostData = useSelector((state: RootState) => state.createdPost);
@@ -27,12 +30,24 @@ export default function Form() {
     postData(URL, data),
   );
 
+  const region = useSelector((state: RootState) => state.location.region);
+
   const handleSubmit = () => {
     postMutation.mutate(data);
   };
 
   const handleTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     dispatch(setCreatedPost({ ...data, title: event.target.value }));
+  };
+
+  const onLocationChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    dispatch(
+      setCreatedPost({ ...data, location: `${region} ${event.target.value}` }),
+    );
+  };
+
+  const onCategoryChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    dispatch(setCreatedPost({ ...data, category: event.target.value }));
   };
 
   return (
@@ -44,17 +59,20 @@ export default function Form() {
           name="title"
           placeholder={TITLE_INPUT_PLACEHOLDER}
           onChange={handleTitleChange}
+          maxLength={40}
         />
       </TitleSection>
-      <LocationSelector data={data} />
-      <CategorySelector data={data} />
+      <label htmlFor="region">{REGION}</label>
+      <LocationSelector onLocationChange={onLocationChange} />
+      <label htmlFor="category">{CATEGORY}</label>
+      <CategorySelector onCategoryChange={onCategoryChange} />
       <ContentSection>
         <label htmlFor="content">{CONTENT}</label>
         <Editor data={data} />
       </ContentSection>
       <TagsInput data={data} />
       <ButtonSection>
-        <button onClick={() => handleSubmit()}>{REGISTER}</button>
+        <Button children={REGISTER} onClick={() => handleSubmit()} />
       </ButtonSection>
     </>
   );
@@ -98,25 +116,4 @@ const ButtonSection = styled.section`
   display: flex;
   justify-content: center;
   margin: 1rem 0 1rem 0;
-
-  & button {
-    border: 2px solid var(--color-black);
-    padding: 0.5rem;
-    border-radius: 5px;
-
-    font-family: 'BR-Regular';
-    font-size: var(--font-size-s);
-    background: var(--color-pink-1);
-    color: var(--color-black);
-    width: 10rem;
-    cursor: pointer;
-
-    &:hover {
-      background: var(--color-pink-2);
-    }
-
-    &:active {
-      background: var(--color-pink-3);
-    }
-  }
 `;

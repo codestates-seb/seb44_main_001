@@ -1,18 +1,22 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { regionData } from '../../../common/util/regionData';
+import { regionData } from '../util/regionData';
 import { ChangeEvent } from 'react';
-import { RootState } from '../../../common/store/RootStore';
-import { setLocation } from '../../../common/store/LocationStore';
+import { RootState } from '../store/RootStore';
+import { setLocation } from '../store/LocationStore';
 import {
   DISTRICT_ALERT_MESSAGE,
   DISTRICT_MESSAGE,
-  REGION,
   REGION_MESSAGE,
-} from '../../../common/util/constantValue';
-import { setCreatedPost } from '../store/CreatedPost';
-import { PostData } from '../../../common/type';
+} from '../util/constantValue';
+import { styled } from 'styled-components';
 
-export default function LocationSelector({ data }: { data: PostData }) {
+interface LocationSelectorProps {
+  onLocationChange: (event: ChangeEvent<HTMLSelectElement>) => void;
+}
+
+export default function LocationSelector({
+  onLocationChange,
+}: LocationSelectorProps) {
   const dispatch = useDispatch();
 
   const region = useSelector((state: RootState) => state.location.region);
@@ -25,14 +29,11 @@ export default function LocationSelector({ data }: { data: PostData }) {
 
   const handleDistrictChange = (event: ChangeEvent<HTMLSelectElement>) => {
     dispatch(setLocation({ region, district: event.target.value }));
-    dispatch(
-      setCreatedPost({ ...data, location: `${region} ${event.target.value}` }),
-    );
+    onLocationChange(event);
   };
 
   return (
-    <section>
-      <label htmlFor="region">{REGION}</label>
+    <Container>
       <div>
         <select id="region" value={region} onChange={handleRegionChange}>
           <option disabled value="">
@@ -59,6 +60,23 @@ export default function LocationSelector({ data }: { data: PostData }) {
           )}
         </select>
       </div>
-    </section>
+    </Container>
   );
 }
+
+const Container = styled.div`
+  & select {
+    width: 15rem;
+    border: 1px solid var(--color-black);
+    padding: 0.5rem;
+    border-radius: 5px;
+    margin: 1rem 2rem 2rem 0;
+    font-family: 'BR-Regular';
+    font-size: var(--font-size-s);
+    color: var(--color-black);
+  }
+
+  & select option[value=''][disabled] {
+    display: none;
+  }
+`;

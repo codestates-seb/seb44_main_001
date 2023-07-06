@@ -1,8 +1,9 @@
-import React, { ButtonHTMLAttributes, Children } from 'react';
+import React, { ButtonHTMLAttributes, MouseEvent } from 'react';
 import { styled } from 'styled-components';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
+  onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
 }
 
 export default function Button({ children,...attributes }: ButtonProps) {
@@ -34,4 +35,4 @@ const ButtonContainer = styled.button`
   &:active {
     background-color: var(--color-pink-3);
   }
-`
+`;
