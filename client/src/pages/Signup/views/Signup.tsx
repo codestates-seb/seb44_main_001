@@ -1,19 +1,17 @@
-import { useState } from "react";
-import { styled } from "styled-components";
-import { useMutation } from "react-query";
-import { useDispatch, useSelector } from "react-redux";
+import { useState } from 'react';
+import { styled } from 'styled-components';
+import { useMutation } from 'react-query';
+import { useDispatch, useSelector } from 'react-redux';
 
-import SemiHeader from "../../../common/components/SemiHeader";
-import { Layout } from "../../../common/style";
-import Button from "../../../common/components/Button";
+import SemiHeader from '../../../common/components/SemiHeader';
+import { Layout } from '../../../common/style';
+import Button from '../../../common/components/Button';
 import signupData from '../api/postSignup';
 import { SignupData } from '../../../common/type';
-import { RootState } from "../../../common/store/RootStore";
-import { setSignupUser } from "../store/createSignupUser";
+import { RootState } from '../../../common/store/RootStore';
+import { setSignupUser } from '../store/createSignupUser';
 
-import {
-  URL,
-} from '../../../common/util/constantValue';
+import { BASE_URL } from '../../../common/util/constantValue';
 
 interface User {
   email: string;
@@ -42,39 +40,41 @@ interface TextAreaProps {
 }
 
 export default function Signup() {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState('');
   const [isValidEmail, setIsValidEmail] = useState(true);
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState('');
   const [isValidPassword, setIsValidPassword] = useState(true);
-  const [nickName, setNickName] = useState("");
+  const [nickName, setNickName] = useState('');
   const [birthYear, setBirthYear] = useState<number | null>(null);
   const [gender, setGender] = useState<boolean | null>(null);
-  const [myMsg, setMyMsg] = useState("");
+  const [myMsg, setMyMsg] = useState('');
 
   const dispatch = useDispatch();
 
   const data: SignupData = useSelector((state: RootState) => state.signup);
 
   const signupMutation = useMutation<void, unknown, SignupData>(() =>
-    signupData(URL, data),
+    signupData(BASE_URL, data),
   );
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
     dispatch(setSignupUser({ ...data, email: e.target.value }));
-    setIsValidEmail(e.target.value.includes(`@` && `.`) && e.target.value.includes(`com`));
-  }
+    setIsValidEmail(
+      e.target.value.includes(`@` && `.`) && e.target.value.includes(`com`),
+    );
+  };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
     dispatch(setSignupUser({ ...data, password: e.target.value }));
     setIsValidPassword(e.target.value.length >= 8);
-  }
+  };
 
   const handleNickNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickName(e.target.value);
     dispatch(setSignupUser({ ...data, nickName: e.target.value }));
-  }
+  };
 
   const handleBirthYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setBirthYear(parseInt(e.target.value));
@@ -90,24 +90,30 @@ export default function Signup() {
   const handleMyMsgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMyMsg(e.target.value);
     dispatch(setSignupUser({ ...data, welcome_msg: e.target.value }));
-  }
+  };
 
-  const handleSignUp =() => {
+  const handleSignUp = () => {
     if (!isValidEmail || !isValidPassword) {
-      alert("이메일또는 패스워드의 조건을 다시 확인해주세요.");
+      alert('이메일또는 패스워드의 조건을 다시 확인해주세요.');
     }
-    if (email === "" ||
-      password === "" ||
-      nickName === "" ||
+    if (
+      email === '' ||
+      password === '' ||
+      nickName === '' ||
       birthYear === null ||
-      gender === null) { alert("빈칸을 모두 채워주세요.")}
-    
-      signupMutation.mutate(data);
-  }
+      gender === null
+    ) {
+      alert('빈칸을 모두 채워주세요.');
+    }
+
+    signupMutation.mutate(data);
+  };
 
   return (
-    <div style={{display:"flex", flexDirection:"column", alignItems:"center"}}>
-      <SemiHeader title="회원가입" content="모모에 오신것을 환영합니다!"/>
+    <div
+      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+    >
+      <SemiHeader title="회원가입" content="모모에 오신것을 환영합니다!" />
       <Layout>
         <Background>
           <ContentWrapper>
@@ -115,12 +121,14 @@ export default function Signup() {
               <Text>이메일</Text>
               <TextInput
                 value={email}
-                style={{width:"400px"}}
+                style={{ width: '400px' }}
                 onChange={handleEmailChange}
                 isValidate={isValidEmail}
                 placeholder="이메일을 입력하세요. (ex. momo@gmail.com)"
               />
-              {!isValidEmail && <ErrorMessage>올바르지 않은 이메일 형식입니다.</ErrorMessage>}
+              {!isValidEmail && (
+                <ErrorMessage>올바르지 않은 이메일 형식입니다.</ErrorMessage>
+              )}
             </InputBox>
             <InputBox>
               <Text>비밀번호</Text>
@@ -131,7 +139,9 @@ export default function Signup() {
                 isValidate={isValidPassword}
                 placeholder="비밀번호를 입력하세요."
               />
-              {!isValidPassword && <ErrorMessage>비밀번호는 8글자 이상이여야 합니다.</ErrorMessage>}
+              {!isValidPassword && (
+                <ErrorMessage>비밀번호는 8글자 이상이여야 합니다.</ErrorMessage>
+              )}
             </InputBox>
             <InputBox>
               <Text>닉네임</Text>
@@ -145,7 +155,7 @@ export default function Signup() {
             <InputBox>
               <Text>출생년도</Text>
               <DropdownInput
-                value={birthYear === null ? "" : birthYear}
+                value={birthYear === null ? '' : birthYear}
                 onChange={handleBirthYearChange}
               >
                 <option value="">출생년도를 선택하세요</option>
@@ -161,9 +171,11 @@ export default function Signup() {
             </InputBox>
             <InputBox>
               <Text>성별</Text>
-              <div style={{display:"flex"}}>
-                <div style={{marginTop:"10px", marginRight:"30px"}}>
-                  <label htmlFor="male" style={{fontSize:"15px"}}>남</label>
+              <div style={{ display: 'flex' }}>
+                <div style={{ marginTop: '10px', marginRight: '30px' }}>
+                  <label htmlFor="male" style={{ fontSize: '15px' }}>
+                    남
+                  </label>
                   &nbsp;
                   <input
                     type="radio"
@@ -173,8 +185,10 @@ export default function Signup() {
                     checked={gender === true}
                   />
                 </div>
-                <div style={{margin:"10px"}}>
-                  <label htmlFor="female" style={{fontSize:"15px"}}>여</label>
+                <div style={{ margin: '10px' }}>
+                  <label htmlFor="female" style={{ fontSize: '15px' }}>
+                    여
+                  </label>
                   &nbsp;
                   <input
                     type="radio"
@@ -199,7 +213,7 @@ export default function Signup() {
               />
             </InputBox>
           </ContentWrapper>
-          <Button children={"가입하기"} onClick={handleSignUp}/>
+          <Button children={'가입하기'} onClick={handleSignUp} />
         </Background>
       </Layout>
     </div>
@@ -207,17 +221,17 @@ export default function Signup() {
 }
 
 export const Background = styled.div`
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center;
-padding: 30px;
-border: solid 2px var(--color-black);
-border-radius: 10px;
-background-color: white;
-width: 40rem;
-margin: 100px;
-`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  border: solid 2px var(--color-black);
+  border-radius: 10px;
+  background-color: white;
+  width: 40rem;
+  margin: 100px;
+`;
 
 const ContentWrapper = styled.div`
   display: flex;
@@ -225,29 +239,30 @@ const ContentWrapper = styled.div`
   justify-content: start;
   width: 40rem;
   margin-left: 50px;
-`
+`;
 
 const InputBox = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: start;
   margin: 20px;
-`
+`;
 
 export const Text = styled.span`
   font-size: medium;
-`
+`;
 
 export const TextInput = styled.input<TextInputProps>`
   width: 300px;
-  border: ${(props) => (props.isValidate ? '2px solid var(--color-black)' : '2px solid red')};
+  border: ${(props) =>
+    props.isValidate ? '2px solid var(--color-black)' : '2px solid red'};
   margin-top: 10px;
-`
+`;
 const ErrorMessage = styled.div`
   color: red;
   font-size: small;
   margin-top: 5px;
-`
+`;
 
 const DropdownInput = styled.select`
   width: 300px;
@@ -257,18 +272,22 @@ const DropdownInput = styled.select`
   padding: 0.5rem;
   font-size: small;
   font-family: 'BR-Regular';
-  &:focus { outline:none; }
-`
+  &:focus {
+    outline: none;
+  }
+`;
 
 const TextAreaInput = styled.textarea<TextAreaProps>`
-width: 90%;
-height: 200px;
-padding: 0.5rem;
-border: 2px solid var(--color-black);
-border-radius: 5px;
-margin-top: 10px;
-font-size: small;
-font-family: 'BR-Regular';
-resize: none;
-&:focus { outline:none; }
-`
+  width: 90%;
+  height: 200px;
+  padding: 0.5rem;
+  border: 2px solid var(--color-black);
+  border-radius: 5px;
+  margin-top: 10px;
+  font-size: small;
+  font-family: 'BR-Regular';
+  resize: none;
+  &:focus {
+    outline: none;
+  }
+`;

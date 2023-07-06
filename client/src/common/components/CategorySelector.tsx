@@ -7,7 +7,7 @@ import { setCategory } from '../store/CategoryStore';
 import { styled } from 'styled-components';
 
 interface CategorySelectorProps {
-  onCategoryChange: (event: ChangeEvent<HTMLSelectElement>) => void;
+  onCategoryChange: (categoryId: number) => void;
 }
 
 export default function CategorySelector({
@@ -18,8 +18,11 @@ export default function CategorySelector({
   const category = useSelector((state: RootState) => state.category);
 
   const handleCategoryChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const categoryId = categoryData.findIndex(
+      (category) => category === event.target.value,
+    );
     dispatch(setCategory(event.target.value));
-    onCategoryChange(event);
+    onCategoryChange(categoryId);
   };
 
   return (

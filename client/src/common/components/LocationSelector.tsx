@@ -29,7 +29,8 @@ export default function LocationSelector({
 
   const handleDistrictChange = (event: ChangeEvent<HTMLSelectElement>) => {
     dispatch(setLocation({ region, district: event.target.value }));
-    onLocationChange(event);
+    // onLocationChange(event);
+    //! 지역 ID 나오면 수정 예정
   };
 
   return (

@@ -1,3 +1,5 @@
+export const BASE_URL = 'http://localhost:8080';
+
 export const TITLE_INPUT_PLACEHOLDER = '내가 원하는 친구를 모집해봐요!';
 
 export const CONTENT_INPUT_PLACEHOLDER = '어떤 친구를 만나고 싶나요?';
@@ -23,8 +25,6 @@ export const CATEGORY = '카테고리';
 export const TAG = '태그';
 
 export const REGISTER = '등록';
-
-export const URL = '';
 
 export const REGISTER_COMMENT = '댓글 등록하기';
 

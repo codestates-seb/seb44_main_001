@@ -1,12 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  BASE_URL,
   CATEGORY,
   CONTENT,
   REGION,
   REGISTER,
   TITLE,
   TITLE_INPUT_PLACEHOLDER,
-  URL,
 } from '../../../common/util/constantValue';
 import { RootState } from '../../../common/store/RootStore';
 import { ChangeEvent } from 'react';
@@ -27,7 +27,7 @@ export default function Form() {
   const dispatch = useDispatch();
 
   const postMutation = useMutation<void, unknown, PostData>(() =>
-    postData(URL, data),
+    postData(`${BASE_URL}/post`, data),
   );
 
   const region = useSelector((state: RootState) => state.location.region);
@@ -37,11 +37,12 @@ export default function Form() {
       window.alert('제목을 입력해주세요!');
       return;
     }
-    if (!data.location) {
+    if (!data.locationId) {
       window.alert('지역을 선택해주세요!');
       return;
     }
-    if (!data.category) {
+    // 지역ID 부여 후에는 조건식 변경해야함
+    if (!data.categoryId) {
       window.alert('카테고리를 선택해주세요!');
       return;
     }
@@ -62,8 +63,8 @@ export default function Form() {
     );
   };
 
-  const onCategoryChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    dispatch(setCreatedPost({ ...data, category: event.target.value }));
+  const onCategoryChange = (categoryId: number) => {
+    dispatch(setCreatedPost({ ...data, categoryId: categoryId }));
   };
 
   return (
