@@ -4,6 +4,7 @@ import { RootState } from '../../../common/store/RootStore';
 import { setCreatedPost } from '../store/CreatedPost';
 import { PostData } from '../../../common/type';
 import { MdCancel } from 'react-icons/md';
+import { styled } from 'styled-components';
 
 export default function TagsInput({ data }: { data: PostData }) {
   const dispatch = useDispatch();
@@ -37,7 +38,7 @@ export default function TagsInput({ data }: { data: PostData }) {
         placeholder={TAG_INPUT_PLACEHOLDER}
         onKeyUp={(e) => handleKeyUp(e)}
       />
-      <div>
+      <Tags>
         {tags.map((tag) => {
           return (
             <div key={tag}>
@@ -48,7 +49,26 @@ export default function TagsInput({ data }: { data: PostData }) {
             </div>
           );
         })}
-      </div>
+      </Tags>
     </>
   );
 }
+
+const Tags = styled.div`
+  display: flex;
+  font-size: var(--font-size-s);
+
+  > div {
+    display: flex;
+    align-items: center;
+    margin-right: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 5px;
+    background: var(--color-gray);
+
+    > span {
+      margin-left: 0.5rem;
+      cursor: pointer;
+    }
+  }
+`;
