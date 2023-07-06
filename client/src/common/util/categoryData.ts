@@ -1,10 +1,10 @@
 import { CategoryData } from './enums';
 
 export const categoryData: CategoryData[] = [
+  CategoryData.All,
   CategoryData.Pet,
   CategoryData.Sports,
   CategoryData.Study,
-  CategoryData.Music,
   CategoryData.Game,
   CategoryData.Food,
   CategoryData.Culture,
