@@ -13,7 +13,7 @@ export default function Card({ title, content, userImg, userName }: CardData) {
       <Content>
         <Link to="/detail/postsId">
           <div className="title">{title}</div>
-          <div className="content">{`${content?.slice(0, 90)}...`}</div>
+          <div className="content">{content.length>=90?`${content?.slice(0, 90)}...`:content}</div>
         </Link>
       </Content>
     </Wrapper>
