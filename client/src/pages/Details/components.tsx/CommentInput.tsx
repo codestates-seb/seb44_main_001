@@ -25,8 +25,8 @@ const Container = styled.section`
 `;
 
 const TitleSection = styled.section`
-  font-size: var(--font-size-s);
   margin-bottom: 1rem;
+  font-family: 'BR-Bold';
 `;
 
 const InputSection = styled.section`

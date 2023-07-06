@@ -38,7 +38,7 @@ export default function Article() {
       </ContentSection>
       <TagSection>
         {data.tags.map((tag) => (
-          <div>{`#${tag}`}</div>
+          <div key={tag}>{`#${tag}`}</div>
         ))}
       </TagSection>
       <InfoSection>
