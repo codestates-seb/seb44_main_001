@@ -33,6 +33,22 @@ export default function Form() {
   const region = useSelector((state: RootState) => state.location.region);
 
   const handleSubmit = () => {
+    if (!data.title) {
+      window.alert('제목을 입력해주세요!');
+      return;
+    }
+    if (!data.location) {
+      window.alert('지역을 선택해주세요!');
+      return;
+    }
+    if (!data.category) {
+      window.alert('카테고리를 선택해주세요!');
+      return;
+    }
+    if (!data.content) {
+      window.alert('내용을 입력해주세요!');
+      return;
+    }
     postMutation.mutate(data);
   };
 
@@ -96,13 +112,13 @@ const ContentSection = styled.section`
     min-height: 10rem;
 
     > :first-child {
-      border: 1px solid var(--color-black);
+      border: 2px solid var(--color-black);
       padding: 0 0.5rem 0 0.5rem;
       border-radius: 5px 5px 0 0;
     }
 
     > :nth-child(2) {
-      border: 1px solid var(--color-black);
+      border: 2px solid var(--color-black);
       border-radius: 0 0 5px 5px;
       font-family: 'BR-Regular';
       font-size: var(--font-size-s);
