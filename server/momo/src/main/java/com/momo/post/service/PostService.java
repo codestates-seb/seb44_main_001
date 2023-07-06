@@ -33,7 +33,6 @@ public class PostService {
         this.categoryRepository = categoryRepository;
     }
 
-
     public List<PostResponseDto> getPostsByCategoryAndRegion(Long categoryId, Long memberId) {
         return null;
     }
@@ -43,13 +42,16 @@ public class PostService {
         String content = postDto.getContent();
         Long memberId = postDto.getMemberId();
         Long categoryId = postDto.getCategoryId();
-        LocalDateTime createdAt = LocalDateTime.now();
+        List<String> tags = postDto.getTags(); // 새로운 태그 추가
 
+        LocalDateTime createdAt = LocalDateTime.now();
         String processedContent = processContent(content);
+        List<String> processedTags = processTags(tags); // 태그 처리 추가
 
         Post post = new Post();
         post.setTitle(title);
         post.setContent(processedContent);
+        post.setTags(processedTags); // 태그 설정
         post.setCreatedAt(createdAt);
 
         Member member = memberRepository.findById(memberId)
@@ -72,10 +74,9 @@ public class PostService {
         return content;
     }
 
-    // hashtags 처리 로직 예시
-    private List<String> processHashtags(List<String> hashtags) {
-        // 처리 로직 추가
-        return hashtags;
+    private List<String> processTags(List<String> tags) {
+        // 태그 처리 로직 추가
+        return tags;
     }
 
     public PostResponseDto updatePost(Long postId, PostPatchDto postDto) {
@@ -92,6 +93,11 @@ public class PostService {
             Category category = categoryRepository.findById(postDto.getCategoryId())
                     .orElseThrow(() -> new NotFoundException("ID가 " + postDto.getCategoryId() + "인 카테고리를 찾을 수 없습니다."));
             post.setCategory(category);
+        }
+
+        if (postDto.getTags() != null) {
+            List<String> tags = processTags(postDto.getTags());
+            post.setTags(tags);
         }
 
         post.setEditedAt(LocalDateTime.now());
