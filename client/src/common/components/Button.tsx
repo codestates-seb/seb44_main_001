@@ -6,8 +6,12 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
 }
 
-export default function Button({ children, ...attributes }: ButtonProps) {
-  return <ButtonContainer {...attributes}>{children}</ButtonContainer>;
+export default function Button({ children,...attributes }: ButtonProps) {
+  return (
+    <ButtonContainer {...attributes}>
+      {children}
+    </ButtonContainer>
+  )
 }
 
 const ButtonContainer = styled.button`
