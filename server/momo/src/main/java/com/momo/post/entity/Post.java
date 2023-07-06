@@ -2,6 +2,7 @@ package com.momo.post.entity;
 
 import com.momo.category.entity.Category;
 import com.momo.comment.entity.Comment;
+import com.momo.location.entity.Location;
 import com.momo.member.entity.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,10 +41,15 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "region_id")
-//    private Region region;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "location_id")
+    private Location location;
 
     @OneToMany(mappedBy = "post")
     private List<Comment> comments = new ArrayList<>();
+    public void setMemberId(Long memberId) {
+        this.member = new Member();
+        this.member.setMemberId(memberId);
+    }
 }
+

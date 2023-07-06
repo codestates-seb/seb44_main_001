@@ -19,12 +19,14 @@ public class PostController {
         this.postService = postService;
     }
 
-    @GetMapping("/{categoryId}/{memberId}")
-    public List<PostResponseDto> getPostsByCategoryAndRegion(
+    @GetMapping("/{categoryId}/{postId}/{memberId}/{locationId}")
+    public List<PostResponseDto> getPostsByCategoryAndPost(
             @PathVariable Long categoryId,
-            @PathVariable Long memberId
+            @PathVariable Long postId,
+            @PathVariable Long memberId,
+            @PathVariable Long locationId
     ) {
-        return postService.getPostsByCategoryAndRegion(categoryId, memberId);
+        return postService.getPostsByCategoryAndPost(categoryId, postId, memberId, locationId);
     }
 
     @PostMapping
@@ -37,10 +39,9 @@ public class PostController {
             @PathVariable Long postId,
             @RequestBody PostPatchDto postDto
     ) {
-        PostResponseDto responseDto = postService.updatePost(postId, postDto);
-        responseDto.setMemberId(postDto.getMemberId());
-        responseDto.setCategoryId(postDto.getCategoryId());
-        return responseDto;
+        Long memberId = postDto.getMemberId();
+        Long locationId = postDto.getLocationId(); // 추가된 부분
+        return postService.updatePost(postId, memberId, locationId, postDto);
     }
 
     @DeleteMapping("/{postId}/{memberId}")
