@@ -59,6 +59,7 @@ export default function Form() {
           name="title"
           placeholder={TITLE_INPUT_PLACEHOLDER}
           onChange={handleTitleChange}
+          maxLength={40}
         />
       </TitleSection>
       <label htmlFor="region">{REGION}</label>
