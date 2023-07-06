@@ -26,6 +26,8 @@ export const TAG = '태그';
 
 export const REGISTER = '등록';
 
+export const UPDATE = '수정';
+
 export const REGISTER_COMMENT = '댓글 등록하기';
 
 export const COMMENT = '댓글';

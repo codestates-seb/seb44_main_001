@@ -1,6 +1,6 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { locationSlice } from './LocationStore';
-import { createdPostSlice } from '../../pages/Write/store/CreatedPost';
+import { createdPostSlice } from '../../pages/Write,Edit/store/CreatedPost';
 import { currentCategorySlice } from '../../pages/Lists/store/CurrentCategory';
 import { setSignupSlice } from '../../pages/Signup/store/createSignupUser';
 import { categorySlice } from './CategoryStore';
