@@ -6,24 +6,15 @@ import { useDispatch, useSelector } from "react-redux";
 import SemiHeader from "../../../common/components/SemiHeader";
 import { Layout } from "../../../common/style";
 import Button from "../../../common/components/Button";
+import LocationSelector from "../../../common/components/LocationSelector";
 import signupData from '../api/postSignup';
 import { SignupData } from '../../../common/type';
 import { RootState } from "../../../common/store/RootStore";
-import { setSignupUser } from "../store/createSignupUser";
+import { setSignupUser } from "../store/SignupUser";
 
 import {
   URL,
 } from '../../../common/util/constantValue';
-
-interface User {
-  email: string;
-  password: string;
-  nickName: string;
-  birthYear: number | null;
-  gender: boolean | null;
-  location: string;
-  welcome_msg: string;
-}
 
 interface TextInputProps {
   type?: string;
@@ -54,6 +45,7 @@ export default function Signup() {
   const dispatch = useDispatch();
 
   const data: SignupData = useSelector((state: RootState) => state.signup);
+  const region = useSelector((state: RootState) => state.location.region);
 
   const signupMutation = useMutation<void, unknown, SignupData>(() =>
     signupData(URL, data),
@@ -85,6 +77,12 @@ export default function Signup() {
     const isMale = e.target.value === 'male';
     setGender(isMale);
     dispatch(setSignupUser({ ...data, gender: isMale }));
+  };
+
+  const onLocationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    dispatch(
+      setSignupUser({ ...data, location: `${region} ${e.target.value}` }),
+    );
   };
 
   const handleMyMsgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -188,7 +186,7 @@ export default function Signup() {
             </InputBox>
             <InputBox>
               <Text>지역</Text>
-              <input />
+              <LocationSelector onLocationChange={onLocationChange}/>
             </InputBox>
             <InputBox>
               <Text>자기소개</Text>
@@ -217,6 +215,10 @@ border-radius: 10px;
 background-color: white;
 width: 40rem;
 margin: 100px;
+
+& select {
+  margin: 1rem 2rem 1rem 0;
+}
 `
 
 const ContentWrapper = styled.div`
@@ -251,12 +253,8 @@ const ErrorMessage = styled.div`
 
 const DropdownInput = styled.select`
   width: 300px;
-  border: 2px solid var(--color-black);
-  border-radius: 5px;
   margin-top: 10px;
-  padding: 0.5rem;
-  font-size: small;
-  font-family: 'BR-Regular';
+  color: var(--color-black);
   &:focus { outline:none; }
 `
 

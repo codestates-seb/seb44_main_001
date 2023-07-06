@@ -27,3 +27,8 @@ export type SignupData = {
   location: string | null;
   welcome_msg: string;
 }
+
+export type LoginData = {
+  email: string;
+  password: string;
+}

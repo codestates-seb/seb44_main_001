@@ -1,34 +1,49 @@
 import { useState } from "react";
 import { styled } from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { useMutation } from "react-query";
 
 import { Layout } from "../../../common/style";
 import SemiHeader from "../../../common/components/SemiHeader";
 import { Background, Text, TextInput,  } from "../../Signup/views/Signup";
+import { RootState } from "../../../common/store/RootStore";
+import { LoginData } from "../../../common/type";
+import loginData from "../api/postLogin";
+import { setLoginUser } from "../store/LoginUser";
 
 import kakao from "../../../common/assets/logo/kakao-logo.png"
 import Button from "../../../common/components/Button";
-import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
 
-const initialInfo: {
-  email: string;
-  password: string;
-} = { email: '', password: '' };
+import {
+  URL,
+} from '../../../common/util/constantValue';
 
 export default function Login() {
-  const [loginInfo, setLoginInfo] = useState(initialInfo);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loginMsg, setLoginMsg] = useState("");
+
 
   const dispatch = useDispatch();
 
+  const data: LoginData = useSelector((state: RootState) => state.login);
+
+  const loginMutation = useMutation<void, unknown, LoginData>(() =>
+    loginData(URL, data),
+  );
+
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLoginInfo({ ...loginInfo, email: e.target.value });
+    setEmail(e.target.value);
+    dispatch(setLoginUser({ ...data, email: e.target.value }));
   }
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLoginInfo({ ...loginInfo, password: e.target.value });
+    setPassword(e.target.value);
+    dispatch(setLoginUser({ ...data, password: e.target.value }));
+  }
+
+  const handleLogin = () => {
+    loginMutation.mutate(data);
   }
 
   return (
@@ -61,7 +76,7 @@ export default function Login() {
                 />
               </InputBox>
               <div style={{padding:"10px"}}></div>
-              <Button children={"로그인"} />
+              <Button children={"로그인"} onClick={handleLogin}/>
               <div style={{display:"flex", marginTop:"40px", marginBottom:"20px"}}>
                 <div style={{fontSize:"small"}}>아직 모모의 회원이 아니신가요?</div>
                 <Link to="/signup">
