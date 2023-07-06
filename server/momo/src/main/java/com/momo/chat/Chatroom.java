@@ -1,4 +1,4 @@
-package com.example.websocketex;
+package com.momo.chat;
 
 
 import org.springframework.stereotype.Component;
@@ -7,7 +7,7 @@ import org.springframework.web.socket.WebSocketSession;
 import java.util.HashSet;
 import java.util.Set;
 
-@Component
+//@Component
 public class Chatroom {
     Set<WebSocketSession> sessions = new HashSet<>();
 
