@@ -2,21 +2,25 @@ import { styled } from 'styled-components';
 import { COMMENT } from '../../../common/util/constantValue';
 
 export default function CommentList() {
+  const user = { memberId: 1 };
   const data = [
     {
       nickname: '나는 닉네임',
       createdAt: '나는 날짜',
       content: '나는 내용',
+      memberId: 1,
     },
     {
       nickname: '나는 닉네임',
       createdAt: '나는 날짜',
       content: '나는 내용',
+      memberId: 2,
     },
     {
       nickname: '나는 닉네임',
       createdAt: '나는 날짜',
       content: '나는 내용',
+      memberId: 3,
     },
   ];
 
@@ -27,7 +31,11 @@ export default function CommentList() {
         return (
           <ListSection>
             <div>
-              <div>{data.nickname}</div>
+              <div>
+                {user.memberId === data.memberId
+                  ? data.nickname
+                  : `${data.nickname} (작성자)`}
+              </div>
               <div>{data.createdAt}</div>
             </div>
             <div>{data.content}</div>
