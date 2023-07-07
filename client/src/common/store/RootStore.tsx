@@ -2,14 +2,16 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { locationSlice } from './LocationStore';
 import { createdPostSlice } from '../../pages/Write,Edit/store/CreatedPost';
 import { currentCategorySlice } from '../../pages/Lists/store/CurrentCategory';
-import { setSignupSlice } from '../../pages/Signup/store/createSignupUser';
+import { setSignupSlice } from '../../pages/Signup/store/SignupUser';
 import { categorySlice } from './CategoryStore';
+import { setLoginSlice } from '../../pages/Login/store/LoginUser';
 
 const rootReducer = combineReducers({
   location: locationSlice.reducer,
   createdPost: createdPostSlice.reducer,
   signup: setSignupSlice.reducer,
-  currentCategory: currentCategorySlice.reducer,
+  login: setLoginSlice.reducer,
+  currentCategory : currentCategorySlice.reducer,
   category: categorySlice.reducer,
 });
 
