@@ -221,7 +221,7 @@ public class PostService {
         return tags;
     }
 
-    public PostResponseDto updatePost(Long postId, Long memberId, Long locationId, PostPatchDto postDto) {
+    public PostResponseDto updatePost(Long postId, Long memberId, PostPatchDto postDto) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException("ID가 " + postId + "인 게시물을 찾을 수 없습니다."));
 
@@ -236,15 +236,18 @@ public class PostService {
                     .orElseThrow(() -> new NotFoundException("ID가 " + postDto.getCategoryId() + "인 카테고리를 찾을 수 없습니다."));
             post.setCategory(category);
         }
-        if (postDto.getLocationId() != null) {
-            Location location = locationRepository.findById(postDto.getLocationId())
-                    .orElseThrow(() -> new NotFoundException("ID가 " + postDto.getLocationId() + "인 위치를 찾을 수 없습니다."));
-            post.setLocation(location);
-        }
 
         if (postDto.getTags() != null) {
             List<String> tags = processTags(postDto.getTags());
             post.setTags(tags);
+        }
+
+        if (postDto.getTitle() != null) {
+            post.setTitle(postDto.getTitle());
+        }
+
+        if (postDto.getContent() != null) {
+            post.setContent(postDto.getContent());
         }
 
         post.setEditedAt(LocalDateTime.now());
@@ -255,7 +258,6 @@ public class PostService {
         // 업데이트된 값들을 응답 객체에 설정
         responseDto.setMemberId(memberId);
         responseDto.setCategoryId(postDto.getCategoryId());
-        responseDto.setLocationId(postDto.getLocationId());
         return responseDto;
     }
 
