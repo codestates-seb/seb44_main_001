@@ -8,7 +8,7 @@ export const createdPostSlice = createSlice({
     memberId: 0,
     categoryId: 0,
     tags: [],
-    locationId: 1,
+    location: '',
   },
   reducers: {
     setCreatedPost: (_state, action) => {
@@ -19,7 +19,7 @@ export const createdPostSlice = createSlice({
         memberId: action.payload.memberId,
         categoryId: action.payload.categoryId,
         tags: action.payload.tags,
-        locationId: action.payload.locationId,
+        location: action.payload.location,
       };
     },
   },

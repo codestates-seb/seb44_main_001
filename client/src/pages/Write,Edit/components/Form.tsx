@@ -9,26 +9,29 @@ import {
   TITLE_INPUT_PLACEHOLDER,
   UPDATE,
 } from '../../../common/util/constantValue';
-import { RootState } from '../../../common/store/RootStore';
 import { ChangeEvent, useEffect } from 'react';
-import { setCreatedPost } from '../store/CreatedPost';
-import TagsInput from './TagsInput';
+import { useMutation, useQuery } from 'react-query';
+import { useParams } from 'react-router-dom';
+import { styled } from 'styled-components';
+import postData from '../api/postData';
+import patchData from '../api/patchData';
+import getData from '../api/getData';
 import LocationSelector from '../../../common/components/LocationSelector';
 import CategorySelector from '../../../common/components/CategorySelector';
-import { useMutation, useQuery } from 'react-query';
-import postData from '../api/postData';
-import { PostData } from '../../../common/type';
+import TagsInput from './TagsInput';
 import Editor from './Editor';
-import { styled } from 'styled-components';
 import Button from '../../../common/components/Button';
-import { useParams } from 'react-router-dom';
-import { getData } from '../api/getData';
+import { RootState } from '../../../common/store/RootStore';
+import { ArticleToGet, ArticleToPost } from '../../../common/type';
+import { setCreatedPost } from '../store/CreatedPost';
 import { setLocation } from '../../../common/store/LocationStore';
 import { setCategory } from '../../../common/store/CategoryStore';
-import { patchData } from '../api/patchData';
+import { categoryData } from '../../../common/util/categoryData';
 
 export default function Form() {
-  const data: PostData = useSelector((state: RootState) => state.createdPost);
+  const data: ArticleToPost = useSelector(
+    (state: RootState) => state.createdPost,
+  );
 
   const { id } = useParams();
 
@@ -36,28 +39,28 @@ export default function Form() {
 
   const region = useSelector((state: RootState) => state.location.region);
 
-  const postMutation = useMutation<void, unknown, PostData>(() =>
-    postData(`${BASE_URL}/post`, data),
+  const postMutation = useMutation<void, unknown, ArticleToPost>(() =>
+    postData(`${BASE_URL}/posts`, data),
   );
 
-  const patchMutation = useMutation<void, unknown, PostData>(() =>
-    patchData(`${BASE_URL}/patch${id}`, data),
+  const patchMutation = useMutation<void, unknown, ArticleToPost>(() =>
+    patchData(`${BASE_URL}/posts/${id}`, data),
   );
 
-  // const { data: initialData } = useQuery(['getData', id], () =>
-  //   id ? getData(`${BASE_URL}/get/${id}`) : null,
+  // const initialData = useQuery(['getData', id], () =>
+  //   id ? getData(`${BASE_URL}/get/${id}/${userInfo.memberId}`) : null,
   // );
 
-  const initialData = {
-    categoryId: 4,
-    content: '<p>여자 친구</p>',
-    locationId: 1,
-    region: '경상남도',
-    district: '거제시',
-    category: '반려동물',
-    memberId: 0,
-    tags: ['나는', '바보'],
+  const initialData: ArticleToGet = {
+    postId: 1,
     title: '나는 바보',
+    content: '<p>여자 친구</p>',
+    createdAt: '2023-07-06T13:00:28.377963',
+    editedAt: '2023-07-06T13:00:28.377963',
+    memberId: 0,
+    categoryId: 4,
+    location: '경상남도 거제시',
+    tags: ['나는', '바보'],
   };
 
   useEffect(() => {
@@ -69,16 +72,16 @@ export default function Form() {
           memberId: initialData.memberId,
           categoryId: initialData.categoryId,
           tags: initialData.tags,
-          locationId: initialData.locationId,
+          location: initialData.location,
         }),
       );
       dispatch(
         setLocation({
-          region: initialData.region,
-          district: initialData.district,
+          region: initialData.location.split(' ')[0],
+          district: initialData.location.split(' ')[1],
         }),
       );
-      dispatch(setCategory(initialData.category));
+      dispatch(setCategory(categoryData[initialData.categoryId]));
     }
     //! api 명세서 수정 후 dispatch 할 부분들 전체적으로 수정해야함
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -89,11 +92,10 @@ export default function Form() {
       window.alert('제목을 입력해주세요!');
       return;
     }
-    if (!data.locationId) {
+    if (!data.location) {
       window.alert('지역을 선택해주세요!');
       return;
     }
-    // 지역ID 부여 후에는 조건식 변경해야함
     if (!data.categoryId) {
       window.alert('카테고리를 선택해주세요!');
       return;
