@@ -24,6 +24,8 @@ import Button from '../../../common/components/Button';
 import { RootState } from '../../../common/store/RootStore';
 import { ArticleToPost } from '../../../common/type';
 import { setCreatedPost } from '../store/CreatedPost';
+import { categoryData } from '../../../common/util/categoryData';
+import { setCategory } from '../../../common/store/CategoryStore';
 
 export default function Form() {
   const data: ArticleToPost = useSelector(
@@ -54,6 +56,8 @@ export default function Form() {
         `${BASE_URL}/posts/${data.categoryId}/${id}/${userInfo.memberId}/${data.locationId}`,
       );
       dispatch(setCreatedPost(initialData));
+      dispatch(setCategory(categoryData[initialData.categoryId - 8]));
+      //! 나중에 카테고리 번호 수정하면 여기도 수정
     };
 
     if (id) {
