@@ -1,16 +1,50 @@
 import { styled } from 'styled-components';
-import { REGISTER, REGISTER_COMMENT } from '../../../common/util/constantValue';
+import {
+  BASE_URL,
+  REGISTER,
+  REGISTER_COMMENT,
+} from '../../../common/util/constantValue';
 import Button from '../../../common/components/Button';
+import { ChangeEvent, useState } from 'react';
+import { useMutation } from 'react-query';
+import { CommentToPost } from '../../../common/type';
+import postComment from '../api/postComment';
+import { useParams } from 'react-router-dom';
 
 export default function CommentInput() {
+  const [content, setContent] = useState('');
+
+  const { id } = useParams();
+
+  const userInfo = {
+    memberId: 1,
+  };
+
+  const data = {
+    memberId: userInfo.memberId,
+    content: content,
+  };
+
+  const postMutation = useMutation<void, unknown, CommentToPost>(() =>
+    postComment(`${BASE_URL}/comments/${id}`, data),
+  );
+
+  const handleCommentChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    setContent(event.target.value);
+  };
+
+  const handleSubmit = () => {
+    postMutation.mutate(data);
+  };
+
   return (
     <Container>
       <TitleSection>{REGISTER_COMMENT}</TitleSection>
       <InputSection>
-        <textarea />
+        <textarea value={content} onChange={handleCommentChange} />
       </InputSection>
       <ButtonSection>
-        <Button children={REGISTER} />
+        <Button children={REGISTER} onClick={handleSubmit} />
       </ButtonSection>
     </Container>
   );
