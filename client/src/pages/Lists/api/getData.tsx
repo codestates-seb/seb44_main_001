@@ -1,14 +1,16 @@
 import axios from 'axios';
 
-export const getData =  (
+export const getData = async (
   url: string,
-  region: string,
+  location: string,
   category: string,
+  pageParam: number,
 ) => {
   const params = {
-    region: region,
-    category: category,
+    location,
+    category,
+    page:pageParam,
   };
-  return axios(url, { params })
-  .then(res=> res.data)
+  const res = await axios(url, { params });
+  return res.data;
 };
