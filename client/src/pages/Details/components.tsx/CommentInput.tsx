@@ -32,6 +32,7 @@ export default function CommentInput() {
     {
       onSuccess: () => {
         queryClient.invalidateQueries('comments');
+        setContent('');
       },
     },
   );

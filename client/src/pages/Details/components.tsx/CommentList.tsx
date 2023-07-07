@@ -13,7 +13,7 @@ import { getComment } from '../api/getComment';
 import { CommentListToGet } from '../../../common/type';
 
 export default function CommentList() {
-  const userInfo = { memberId: 1 };
+  const userInfo = { memberId: 31 };
 
   const [page, setPage] = useState(1);
 
@@ -25,8 +25,6 @@ export default function CommentList() {
     useQuery(['comments', id, page, size], () =>
       getComment(`${BASE_URL}/comments/${id}?page=${page}&size=${size}`),
     );
-
-  console.log(response);
 
   const { pageInfo, data } = response || {};
 
