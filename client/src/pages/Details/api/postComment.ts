@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { PostData } from '../../../common/type';
+import { CommentToPost } from '../../../common/type';
 
-export default async function postComment(url: string, data: PostData) {
+export default async function postComment(url: string, data: CommentToPost) {
   try {
     const headers = {};
 

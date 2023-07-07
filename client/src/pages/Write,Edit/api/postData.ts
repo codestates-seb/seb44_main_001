@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { PostData } from '../../../common/type';
+import { ArticleToPost } from '../../../common/type';
 
-export default async function postData(url: string, data: PostData) {
+export default async function postData(url: string, data: ArticleToPost) {
   try {
     const headers = {};
 

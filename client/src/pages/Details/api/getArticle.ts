@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export async function getArticle(url: string) {
+export default async function getArticle(url: string) {
   try {
     const headers = {};
 

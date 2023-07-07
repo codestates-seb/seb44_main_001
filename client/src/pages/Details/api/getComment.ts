@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export async function getComment(url: string) {
+export default async function getComment(url: string) {
   try {
     const headers = {};
 
