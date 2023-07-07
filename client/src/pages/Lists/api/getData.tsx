@@ -2,18 +2,15 @@ import axios from 'axios';
 
 export const getData = async (
   url: string,
-  region: string,
+  location: string,
   category: string,
+  pageParam: number,
 ) => {
-  try {
-    const params = {
-      region: region,
-      category: category,
-    };
-
-    const res = await axios(url, { params });
-    return res.data;
-  } catch (err) {
-    console.error(`Fail to get. ${err}`);
-  }
+  const params = {
+    location,
+    category,
+    page:pageParam,
+  };
+  const res = await axios(url, { params });
+  return res.data;
 };

@@ -19,6 +19,7 @@ public class PostResponseDto {
 //    private String imageUrl;
     private Long memberId;
     private Long categoryId;
+    private Long locationId;
     private List<String> tags;
 //    private String regionId;
 }

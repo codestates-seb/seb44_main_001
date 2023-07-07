@@ -1,22 +1,27 @@
 import { styled } from 'styled-components';
 import { COMMENT } from '../../../common/util/constantValue';
+import { AiFillDelete, AiFillEdit } from 'react-icons/ai';
 
 export default function CommentList() {
+  const user = { memberId: 1 };
   const data = [
     {
       nickname: '나는 닉네임',
       createdAt: '나는 날짜',
       content: '나는 내용',
+      memberId: 1,
     },
     {
       nickname: '나는 닉네임',
       createdAt: '나는 날짜',
       content: '나는 내용',
+      memberId: 2,
     },
     {
       nickname: '나는 닉네임',
       createdAt: '나는 날짜',
       content: '나는 내용',
+      memberId: 3,
     },
   ];
 
@@ -25,12 +30,22 @@ export default function CommentList() {
       <div>{COMMENT}</div>
       {data.map((data) => {
         return (
-          <ListSection>
+          <ListSection key={data.memberId}>
             <div>
-              <div>{data.nickname}</div>
+              <div>
+                {user.memberId === data.memberId
+                  ? `${data.nickname} (작성자)`
+                  : data.nickname}
+              </div>
               <div>{data.createdAt}</div>
             </div>
-            <div>{data.content}</div>
+            <div>
+              <div>{data.content}</div>
+              <div>
+                {user.memberId === data.memberId && <AiFillEdit />}
+                {user.memberId === data.memberId && <AiFillDelete />}
+              </div>
+            </div>
           </ListSection>
         );
       })}
@@ -44,6 +59,7 @@ const Container = styled.section`
 
   > :first-child {
     margin-bottom: 1rem;
+    font-family: 'BR-Bold';
   }
 `;
 
@@ -65,6 +81,13 @@ const ListSection = styled.section`
   }
 
   > :nth-child(2) {
-    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+
+    > :nth-child(2) {
+      > * {
+        margin-left: 0.5rem;
+      }
+    }
   }
 `;

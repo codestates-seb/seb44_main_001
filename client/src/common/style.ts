@@ -47,11 +47,11 @@ export const GlobalStyle = createGlobalStyle`
     src: local('BR-Bold'), url(${BRBoldFont}) format('truetype');
   }
 
-  input {
+  input,select {
     font-family: 'BR-Regular';
     border-radius: 5px;
     padding: 0.5rem;
-    border: var(--color-black);
+    border: 2px solid var(--color-black);
     font-size: small;
   }
 

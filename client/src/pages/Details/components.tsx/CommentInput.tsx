@@ -1,5 +1,6 @@
 import { styled } from 'styled-components';
 import { REGISTER, REGISTER_COMMENT } from '../../../common/util/constantValue';
+import Button from '../../../common/components/Button';
 
 export default function CommentInput() {
   return (
@@ -9,7 +10,7 @@ export default function CommentInput() {
         <textarea />
       </InputSection>
       <ButtonSection>
-        <button>{REGISTER}</button>
+        <Button children={REGISTER} />
       </ButtonSection>
     </Container>
   );
@@ -24,8 +25,8 @@ const Container = styled.section`
 `;
 
 const TitleSection = styled.section`
-  font-size: var(--font-size-s);
   margin-bottom: 1rem;
+  font-family: 'BR-Bold';
 `;
 
 const InputSection = styled.section`
@@ -38,29 +39,11 @@ const InputSection = styled.section`
     padding: 0.5rem;
     min-height: 5rem;
     resize: none;
+    outline: none;
   }
 `;
 
 const ButtonSection = styled.section`
   display: flex;
   justify-content: end;
-
-  > button {
-    font-family: 'BR-Regular';
-    font-size: var(--font-size-s);
-    border: 2px solid var(--color-black);
-    border-radius: 5px;
-    padding: 0.5rem;
-    background: var(--color-pink-1);
-    width: 10rem;
-    cursor: pointer;
-
-    &:hover {
-      background: var(--color-pink-2);
-    }
-
-    &:active {
-      background: var(--color-pink-3);
-    }
-  }
 `;
