@@ -1,4 +1,5 @@
-export const BASE_URL = 'http://localhost:8080';
+export const BASE_URL =
+  'http://ec2-52-78-106-127.ap-northeast-2.compute.amazonaws.com:8080';
 
 export const TITLE_INPUT_PLACEHOLDER = '내가 원하는 친구를 모집해봐요!';
 
