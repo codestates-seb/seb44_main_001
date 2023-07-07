@@ -34,8 +34,6 @@ public class MemberDetailsService implements UserDetailsService {
         Optional<Member> optionalMember = memberRepository.findByEmail(username);
         Member findMember = optionalMember.orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
 
-        Collection<? extends GrantedAuthority> authorities = authorityUtils.createAuthorities(findMember.getEmail());
-
         return new MomoUserDetails(findMember);
     }
 
@@ -45,6 +43,7 @@ public class MemberDetailsService implements UserDetailsService {
             setEmail(member.getEmail());
             setPassword(member.getPassword());
             setRoles(member.getRoles());
+            System.out.println(member.getMemberId());
         }
 
         @Override

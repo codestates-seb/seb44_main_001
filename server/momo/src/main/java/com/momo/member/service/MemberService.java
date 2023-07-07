@@ -29,7 +29,8 @@ public class MemberService {
 
     /* 회원가입 */
     public Member saveMember(Member member) {
-        member.setCreatedAt(LocalDateTime.now());
+//        member.setCreatedAt(LocalDateTime.now());
+        verifiedEmailExists(member.getEmail());
         String encodedPassword = passwordEncoder.encode(member.getPassword());
         member.setPassword(encodedPassword);
         List<String> roles = authorityUtils.createRoles(member.getEmail());
@@ -90,5 +91,13 @@ public class MemberService {
                         new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
 
         return findMember;
+    }
+
+    // 중복검사
+    private void verifiedEmailExists(String email) {
+        memberRepository.findByEmail(email)
+                .ifPresent(existingUser -> {
+                    throw new RuntimeException("이미 존재하는 이메일입니다.");
+                });
     }
 }

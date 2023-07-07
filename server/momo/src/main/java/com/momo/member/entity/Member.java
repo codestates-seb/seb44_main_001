@@ -1,5 +1,6 @@
 package com.momo.member.entity;
 
+import com.momo.audit.BaseEntity;
 import com.momo.category.entity.Category;
 import com.momo.comment.entity.Comment;
 import com.momo.message.entity.Message;
@@ -18,7 +19,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Member {
+public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
@@ -32,7 +33,7 @@ public class Member {
     private String nickname;
     private Boolean isMale;
     private Integer age;
-    private LocalDateTime createdAt;
+//    private LocalDateTime createdAt;
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();
