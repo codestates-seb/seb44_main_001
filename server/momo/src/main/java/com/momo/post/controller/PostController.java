@@ -21,19 +21,14 @@ public class PostController {
         this.postService = postService;
     }
 
-    @GetMapping("/{categoryId}/{postId}/{memberId}/{locationId}")
-    public ResponseEntity<PostResponseDto> getPostsByCategoryAndPost(
-            @PathVariable(required = false) Long categoryId,
-            @PathVariable(required = false) Long postId,
-            @PathVariable(required = false) Long memberId,
-            @PathVariable(required = false) Long locationId,
-            @RequestParam(defaultValue = "1") int page
+    @GetMapping("/{postId}")
+    public ResponseEntity<PostResponseDto> getPostById(
+            @PathVariable Long postId
     ) {
-        List<PostResponseDto> responseDtoList = postService.getPostsByCategoryAndPost(categoryId, postId, memberId, locationId, page);
-        if (responseDtoList.isEmpty()) {
+        PostResponseDto responseDto = postService.getPostById(postId);
+        if (responseDto == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
-            PostResponseDto responseDto = responseDtoList.get(0);
             return new ResponseEntity<>(responseDto, HttpStatus.OK);
         }
     }
@@ -83,7 +78,8 @@ public class PostController {
         List<PostResponseDto> responseDtoList = postService.searchPosts(keyword, page);
         return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
     }
-    @GetMapping("/search")
+
+    @GetMapping("/search/location")
     public ResponseEntity<List<PostResponseDto>> searchPostsByLocation(
             @RequestParam String keyword,
             @RequestParam(required = false) Long locationId,
@@ -97,7 +93,8 @@ public class PostController {
         }
         return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
     }
-    @GetMapping("/search")
+
+    @GetMapping("/search/category")
     public ResponseEntity<List<PostResponseDto>> searchPostsByCategory(
             @RequestParam String keyword,
             @RequestParam(required = false) Long categoryId,
@@ -111,7 +108,8 @@ public class PostController {
         }
         return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
     }
-    @GetMapping("/search")
+
+    @GetMapping("/search/location-category")
     public ResponseEntity<List<PostResponseDto>> searchPostsByLocationAndCategory(
             @RequestParam String keyword,
             @RequestParam(required = false) Long locationId,
@@ -131,14 +129,13 @@ public class PostController {
         return postService.createPost(postDto);
     }
 
-    @PatchMapping("/{postId}")
+    @PatchMapping("/{postId}/update")
     public PostResponseDto updatePost(
-            @PathVariable Long postId,
+            @PathVariable("postId") Long postId,
             @RequestBody PostPatchDto postDto
     ) {
         Long memberId = postDto.getMemberId();
-        Long locationId = postDto.getLocationId(); // 추가된 부분
-        return postService.updatePost(postId, memberId, locationId, postDto);
+        return postService.updatePost(postId, memberId, postDto);
     }
 
     @DeleteMapping("/{postId}/{memberId}")
