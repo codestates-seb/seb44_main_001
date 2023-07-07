@@ -1,10 +1,13 @@
 import axios from 'axios';
 
-export default async function getComment(url: string) {
+export async function getComment(url: string, page = 1, size = 5) {
   try {
     const headers = {};
 
-    const res = await axios.get(url, { headers });
+    const res = await axios.get(url, {
+      headers,
+      params: { page, size },
+    });
     console.log(res);
   } catch (err) {
     console.log(err);

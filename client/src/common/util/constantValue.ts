@@ -32,3 +32,7 @@ export const UPDATE = '수정';
 export const REGISTER_COMMENT = '댓글 등록하기';
 
 export const COMMENT = '댓글';
+
+export const NEXT = '다음';
+
+export const PREV = '이전';
