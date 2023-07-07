@@ -7,7 +7,7 @@ import { setCategory } from '../store/CategoryStore';
 import { styled } from 'styled-components';
 
 interface CategorySelectorProps {
-  onCategoryChange: (categoryId: number) => void;
+  onCategoryChange?: (categoryId: number) => void;
 }
 
 export default function CategorySelector({
@@ -22,7 +22,9 @@ export default function CategorySelector({
       (category) => category === event.target.value,
     );
     dispatch(setCategory(event.target.value));
-    onCategoryChange(categoryId);
+    if (onCategoryChange) {
+      onCategoryChange(categoryId);
+    }
   };
 
   return (

@@ -11,7 +11,7 @@ import {
 import { styled } from 'styled-components';
 
 interface LocationSelectorProps {
-  onLocationChange: (event: ChangeEvent<HTMLSelectElement>) => void;
+  onLocationChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
 }
 
 export default function LocationSelector({
@@ -29,8 +29,9 @@ export default function LocationSelector({
 
   const handleDistrictChange = (event: ChangeEvent<HTMLSelectElement>) => {
     dispatch(setLocation({ region, district: event.target.value }));
-    // onLocationChange(event);
-    //! 지역 ID 나오면 수정 예정
+    if (onLocationChange) {
+      onLocationChange(event);
+    }
   };
 
   return (
