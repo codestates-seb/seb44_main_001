@@ -16,21 +16,24 @@ import kakao from "../../../common/assets/logo/kakao-logo.png"
 import Button from "../../../common/components/Button";
 
 import {
-  URL,
+  BASE_URL,
 } from '../../../common/util/constantValue';
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-
   const dispatch = useDispatch();
 
   const data: LoginData = useSelector((state: RootState) => state.login);
+  const member = useSelector((state: RootState) => state.member);
+  
 
   const loginMutation = useMutation<void, unknown, LoginData>(() =>
-    loginData(URL, data),
+    loginData(BASE_URL, data),
   );
+
+
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);

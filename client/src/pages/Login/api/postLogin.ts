@@ -3,7 +3,7 @@ import { LoginData } from '../../../common/type';
 
 export default async function loginData(url: string, data: LoginData) {
   try {
-    const headers = {};
+    const headers = {'ngrok-skip-browser-warning': '69420',};
 
     const res = await axios.post(url, data, { headers });
     console.log(res);

@@ -1,7 +1,7 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit';
 
 export const setLoginSlice = createSlice({
-  name: 'signup',
+  name: 'login',
   initialState: {
     email: '',
     password: '',

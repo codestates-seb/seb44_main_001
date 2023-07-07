@@ -9,7 +9,7 @@ export const setSignupSlice = createSlice({
     birthYear: 0,
     gender: null,
     location: null,
-    welcome_msg: '',
+    welcomeMsg: '',
   },
   reducers: {
     setSignupUser: (_state, action) => {
@@ -21,7 +21,7 @@ export const setSignupSlice = createSlice({
         birthYear: action.payload.birthYear,
         gender: action.payload.gender,
         location: action.payload.location,
-        welcome_msg: action.payload.welcome_msg,
+        welcomeMsg: action.payload.welcome_msg,
       };
     },
   },
