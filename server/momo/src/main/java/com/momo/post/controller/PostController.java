@@ -21,19 +21,14 @@ public class PostController {
         this.postService = postService;
     }
 
-    @GetMapping("/{categoryId}/{postId}/{memberId}/{locationId}")
-    public ResponseEntity<PostResponseDto> getPostsByCategoryAndPost(
-            @PathVariable(required = false) Long categoryId,
-            @PathVariable(required = false) Long postId,
-            @PathVariable(required = false) Long memberId,
-            @PathVariable(required = false) Long locationId,
-            @RequestParam(defaultValue = "1") int page
+    @GetMapping("/{postId}")
+    public ResponseEntity<PostResponseDto> getPostById(
+            @PathVariable Long postId
     ) {
-        List<PostResponseDto> responseDtoList = postService.getPostsByCategoryAndPost(categoryId, postId, memberId, locationId, page);
-        if (responseDtoList.isEmpty()) {
+        PostResponseDto responseDto = postService.getPostById(postId);
+        if (responseDto == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
-            PostResponseDto responseDto = responseDtoList.get(0);
             return new ResponseEntity<>(responseDto, HttpStatus.OK);
         }
     }

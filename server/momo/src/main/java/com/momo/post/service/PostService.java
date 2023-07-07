@@ -47,32 +47,46 @@ public class PostService {
         this.categoryRepository = categoryRepository;
         this.locationRepository = locationRepository;
     }
+    public PostResponseDto getPostById(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElse(null);
 
-    public List<PostResponseDto> getPostsByCategoryAndPost(Long categoryId, Long postId, Long memberId, Long locationId, int page) {
-        int pageSize = 12;
-        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("postId").descending());
-
-        Page<Post> postPage;
-        if (categoryId == null && postId == null && memberId == null && locationId == null) {
-            // 전체 글 목록을 가져오는 경우
-            postPage = postRepository.findAll(pageable);
-        } else {
-            // 특정 카테고리, 글, 멤버, 위치에 해당하는 글 목록을 가져오는 경우
-            postPage = postRepository.findByCategory_CategoryIdAndPostIdAndMember_MemberIdAndLocation_LocationId(categoryId, postId, memberId, locationId, pageable);
+        if (post == null) {
+            return null;
         }
 
-        List<PostResponseDto> responseDtoList = postPage.getContent().stream()
-                .map(post -> {
-                    PostResponseDto responseDto = postMapper.postToPostResponseDto(post);
-                    responseDto.setMemberId(post.getMember().getMemberId());
-                    responseDto.setCategoryId(post.getCategory().getCategoryId());
-                    responseDto.setLocationId(post.getLocation().getLocationId());
-                    return responseDto;
-                })
-                .collect(Collectors.toList());
-
-        return responseDtoList;
+        PostResponseDto responseDto = postMapper.postToPostResponseDto(post);
+        responseDto.setMemberId(post.getMember().getMemberId());
+        responseDto.setCategoryId(post.getCategory().getCategoryId());
+        responseDto.setLocationId(post.getLocation().getLocationId());
+        return responseDto;
     }
+
+//    public List<PostResponseDto> getPostsByCategoryAndPost(Long categoryId, Long postId, Long memberId, Long locationId, int page) {
+//        int pageSize = 12;
+//        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("postId").descending());
+//
+//        Page<Post> postPage;
+//        if (categoryId == null && postId == null && memberId == null && locationId == null) {
+//            // 전체 글 목록을 가져오는 경우
+//            postPage = postRepository.findAll(pageable);
+//        } else {
+//            // 특정 카테고리, 글, 멤버, 위치에 해당하는 글 목록을 가져오는 경우
+//            postPage = postRepository.findByCategory_CategoryIdAndPostIdAndMember_MemberIdAndLocation_LocationId(categoryId, postId, memberId, locationId, pageable);
+//        }
+//
+//        List<PostResponseDto> responseDtoList = postPage.getContent().stream()
+//                .map(post -> {
+//                    PostResponseDto responseDto = postMapper.postToPostResponseDto(post);
+//                    responseDto.setMemberId(post.getMember().getMemberId());
+//                    responseDto.setCategoryId(post.getCategory().getCategoryId());
+//                    responseDto.setLocationId(post.getLocation().getLocationId());
+//                    return responseDto;
+//                })
+//                .collect(Collectors.toList());
+//
+//        return responseDtoList;
+//    }
 
 
     public List<PostResponseDto> getAllPosts(int page) {
