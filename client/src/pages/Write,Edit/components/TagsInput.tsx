@@ -2,11 +2,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { TAG, TAG_INPUT_PLACEHOLDER } from '../../../common/util/constantValue';
 import { RootState } from '../../../common/store/RootStore';
 import { setCreatedPost } from '../store/CreatedPost';
-import { PostData } from '../../../common/type';
 import { MdCancel } from 'react-icons/md';
 import { styled } from 'styled-components';
+import { ArticleToPost } from '../../../common/type';
 
-export default function TagsInput({ data }: { data: PostData }) {
+export default function TagsInput({ data }: { data: ArticleToPost }) {
   const dispatch = useDispatch();
 
   const tags: string[] = useSelector(
