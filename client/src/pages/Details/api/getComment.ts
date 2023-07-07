@@ -1,14 +1,14 @@
 import axios from 'axios';
 
-export async function getComment(url: string, page = 1, size = 5) {
+export async function getComment(url: string) {
   try {
     const headers = { 'ngrok-skip-browser-warning': '69420' };
 
     const res = await axios.get(url, {
       headers,
-      params: { page, size },
     });
     console.log(res);
+    return res.data;
   } catch (err) {
     console.log(err);
   }

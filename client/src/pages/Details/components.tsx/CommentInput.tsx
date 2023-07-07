@@ -6,7 +6,7 @@ import {
 } from '../../../common/util/constantValue';
 import Button from '../../../common/components/Button';
 import { ChangeEvent, useState } from 'react';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { CommentToPost } from '../../../common/type';
 import postComment from '../api/postComment';
 import { useParams } from 'react-router-dom';
@@ -17,7 +17,7 @@ export default function CommentInput() {
   const { id } = useParams();
 
   const userInfo = {
-    memberId: 1,
+    memberId: 31,
   };
 
   const data = {
@@ -25,8 +25,15 @@ export default function CommentInput() {
     content: content,
   };
 
-  const postMutation = useMutation<void, unknown, CommentToPost>(() =>
-    postComment(`${BASE_URL}/comments/${id}`, data),
+  const queryClient = useQueryClient();
+
+  const postMutation = useMutation<void, unknown, CommentToPost>(
+    () => postComment(`${BASE_URL}/comments/${id}`, data),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('comments');
+      },
+    },
   );
 
   const handleCommentChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
@@ -67,6 +74,8 @@ const InputSection = styled.section`
   margin-bottom: 1rem;
 
   > textarea {
+    font-family: 'BR-regular';
+    font-size: var(--font-size-s);
     width: 100%;
     border: 2px solid var(--color-black);
     border-radius: 5px;
