@@ -2,10 +2,16 @@ import { styled } from 'styled-components';
 import { categoryData } from '../../../common/util/categoryData';
 import { Icons, English } from './Icons';
 import { useDispatch } from 'react-redux';
-import { setCurrentCategory } from '../store/CurrentCategory';
+import { setSelectedCategory } from '../store/SelectedCategory';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../common/store/RootStore';
 
 export default function CategoryIcons() {
+  
   const dispatch = useDispatch();
+  const selectedCategory = useSelector(
+    (state: RootState) => state.selectedCategory.selectedCategory,
+  );
 
   return (
     <div>
@@ -13,11 +19,11 @@ export default function CategoryIcons() {
         {Icons.map((icon, index) => (
           <IconWrapper
             onClick={() => {
-              dispatch(setCurrentCategory(`${English[index]}`));
+              dispatch(setSelectedCategory(`${English[index]}`));
             }}
             key={`Icon ${index}`}
           >
-            <Button>
+            <Button isselected={selectedCategory===English[index]?1:0}>
               <Img src={icon} alt={`Icon ${index}`} />
             </Button>
             <div className="categoryName">{categoryData[index]}</div>
@@ -51,9 +57,9 @@ const Button = styled.button`
   border-radius: 50%;
   border: none;
   cursor: pointer;
+  border: ${props => props.isselected? '3px solid var(--color-pink-1)': '3px solid transparent'};
   &:hover {
-    //호버시 움직이는거 수정해야함
-    border: 5px solid var(--color-pink-1);
+    border: 3px solid var(--color-pink-1);
   }
 `;
 const Img = styled.img`

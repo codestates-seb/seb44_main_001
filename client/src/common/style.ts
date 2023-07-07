@@ -47,7 +47,7 @@ export const GlobalStyle = createGlobalStyle`
     src: local('BR-Bold'), url(${BRBoldFont}) format('truetype');
   }
 
-  input, select {
+  input,select {
     font-family: 'BR-Regular';
     border-radius: 5px;
     padding: 0.5rem;

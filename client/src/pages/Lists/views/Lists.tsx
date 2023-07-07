@@ -9,16 +9,16 @@ export default function Lists() {
     <Wrapper>
       <SearchBar />
       <CategoryIcons />
-      <ListHeader/>
-      <Cards/>
+      <ListHeader />
+      <Cards />
     </Wrapper>
   );
 }
 
-const Wrapper = styled.div`
+const Wrapper = styled.main`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
+  margin-bottom: 5rem;
 `;
-
