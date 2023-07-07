@@ -1,6 +1,7 @@
 import { styled } from "styled-components";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { useMutation } from "react-query";
 
 import SemiHeader from "../../../common/components/SemiHeader";
 import Button from "../../../common/components/Button";
@@ -8,28 +9,33 @@ import { Layout } from "../../../common/style";
 import { Background } from "../../Signup/views/Signup";
 import profile from "../../../common/assets/profile.svg"
 import { RootState } from "../../../common/store/RootStore";
+import { Member } from "../../../common/type";
+import { getMember } from "../api/getMember";
+import { BASE_URL } from "../../../common/util/constantValue";
 
 export default function User() {
   const [isMine, setIsMine] = useState(true);
 
-  const member = useSelector(
-    (state: RootState) => state.member.member,
+  const data = useSelector((state: RootState) => state.member.member);
+
+  const userMutation = useMutation<void, unknown, Member>(() =>
+    getMember(BASE_URL, memberId)
   );
   
   return (
     <div>
-      <SemiHeader title={`${member?.nickname} 의 프로필`} content=""/>
+      <SemiHeader title={`${data?.nickname} 의 프로필`} content=""/>
       <Layout>
         <Background>
           <ProfileBox>
             <ProfileContentBox style={{display:"flex"}}>
-              <ProfileImg src={member?.nickname ? `${member?.nickname}` : profile} />
+              <ProfileImg src={data?.nickname ? `${data?.nickname}` : profile} />
               <div style={{display:"flex", flexDirection:"column", marginTop:"2rem"}}>
-                <div>{member?.nickname}</div>
-                <div>{member?.location}</div>
+                <div>{data?.nickname}</div>
+                <div>{data?.location}</div>
                 <div>
-                  <div>{(member?.isMale ? `남자` : `여자`)}</div>
-                  <div>{`${member?.age}년생`}</div>
+                  <div>{(data?.isMale ? `남자` : `여자`)}</div>
+                  <div>{`${data?.age}년생`}</div>
                 </div>
               </div>
             </ProfileContentBox>
@@ -39,7 +45,7 @@ export default function User() {
           </ProfileBox>
           <MsgBox>
             <div>
-              {member?.welcomeMsg}
+              {data?.welcomeMsg}
             </div>
           </MsgBox>
         </Background>

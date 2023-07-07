@@ -44,7 +44,7 @@ export default function Signup() {
   const region = useSelector((state: RootState) => state.location.region);
 
   const signupMutation = useMutation<void, unknown, SignupData>(() =>
-    signupData(BASE_URL, data),
+    signupData(`${BASE_URL}/members/register`, data),
   );
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {

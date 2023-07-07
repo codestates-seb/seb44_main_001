@@ -23,14 +23,17 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-
   const dispatch = useDispatch();
 
   const data: LoginData = useSelector((state: RootState) => state.login);
+  const member = useSelector((state: RootState) => state.member);
+  
 
   const loginMutation = useMutation<void, unknown, LoginData>(() =>
     loginData(BASE_URL, data),
   );
+
+
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
