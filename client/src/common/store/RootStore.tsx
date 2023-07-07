@@ -1,11 +1,10 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { locationSlice } from './LocationStore';
-import { createdPostSlice } from '../../pages/Write/store/CreatedPost';
+import { createdPostSlice } from '../../pages/Write,Edit/store/CreatedPost';
 import { currentCategorySlice } from '../../pages/Lists/store/CurrentCategory';
 import { setSignupSlice } from '../../pages/Signup/store/SignupUser';
 import { categorySlice } from './CategoryStore';
 import { setLoginSlice } from '../../pages/Login/store/LoginUser';
-
 
 const rootReducer = combineReducers({
   location: locationSlice.reducer,

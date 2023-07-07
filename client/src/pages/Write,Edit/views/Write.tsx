@@ -26,15 +26,18 @@ const Container = styled.main`
   margin: 2rem 0 2rem 0;
   border-radius: 10px;
   background: var(--color-white);
-  font-size: var(--font-size-m);
+
+  & label {
+    font-family: 'BR-Bold';
+  }
 
   & input {
-    border: 1px solid var(--color-black);
-    padding: 0.5rem;
-    border-radius: 5px;
     margin: 1rem 0 2rem 0;
-    font-family: 'BR-Regular';
     font-size: var(--font-size-s);
-    color: var(--color-black);
+  }
+
+  & select {
+    margin: 1rem 2rem 2rem 0;
+    font-size: var(--font-size-s);
   }
 `;

@@ -51,7 +51,6 @@ export const GlobalStyle = createGlobalStyle`
     font-family: 'BR-Regular';
     border-radius: 5px;
     padding: 0.5rem;
-    border: var(--color-black);
     border: 2px solid var(--color-black);
     font-size: small;
   }

@@ -57,11 +57,12 @@ export default function TagsInput({ data }: { data: PostData }) {
 const Tags = styled.div`
   display: flex;
   font-size: var(--font-size-s);
+  flex-wrap: wrap;
 
   > div {
     display: flex;
     align-items: center;
-    margin-right: 0.5rem;
+    margin: 0 0.5rem 0.5rem 0;
     padding: 0.5rem;
     border-radius: 5px;
     background: var(--color-gray);

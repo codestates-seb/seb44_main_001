@@ -1,11 +1,18 @@
 import { AiFillDelete, AiFillEdit } from 'react-icons/ai';
+import { useMutation, useQueryClient } from 'react-query';
 import { Link } from 'react-router-dom';
 import { styled } from 'styled-components';
+import deleteArticle from '../api/deleteArticle';
+import { PostData } from '../../../common/type';
+import { BASE_URL } from '../../../common/util/constantValue';
 
 export default function Article() {
+  const queryClient = useQueryClient();
+
   const user = { memberId: 1 };
 
   const data = {
+    postId: 1,
     title: '나는 제목',
     createdAt: '나는 날짜',
     updatedAt: '나는 수정 날짜',
@@ -18,6 +25,19 @@ export default function Article() {
     memberId: 1,
   };
 
+  const deleteItemMutation = useMutation<void, unknown, PostData>(
+    () => deleteArticle(`${BASE_URL}/delete/${data.postId}`, data),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('filteredLists');
+      },
+    },
+  );
+
+  const handleDelete = () => {
+    deleteItemMutation.mutate(data);
+  };
+
   return (
     <Container>
       <TitleSection>
@@ -27,8 +47,8 @@ export default function Article() {
         </div>
       </TitleSection>
       <AuthorSection>
-        <Link to={`/user/${data.nickname}`}>
-          {/* 유저페이지 url에 따라 수정해야함 */}
+        <Link to={`/user/${data.memberId}`}>
+          {/* 미니 모달 뜨게끔 수정해야함 */}
           <img src={data.prfileimgURL} alt="user" />
           <div>{data.nickname}</div>
         </Link>
@@ -38,12 +58,18 @@ export default function Article() {
       </ContentSection>
       <TagSection>
         {data.tags.map((tag) => (
-          <div>{`#${tag}`}</div>
+          <div key={tag}>{`#${tag}`}</div>
         ))}
       </TagSection>
       <InfoSection>
-        {user.memberId === data.memberId && <AiFillEdit />}
-        {user.memberId === data.memberId && <AiFillDelete />}
+        {user.memberId === data.memberId && (
+          <Link to={`/write/${data.postId}`}>
+            <AiFillEdit />
+          </Link>
+        )}
+        {user.memberId === data.memberId && (
+          <AiFillDelete onClick={handleDelete} />
+        )}
         <div>{data.likeCount}</div>
         <div>{data.commentCount}</div>
       </InfoSection>
@@ -119,6 +145,12 @@ const InfoSection = styled.section`
   display: flex;
   justify-content: end;
   align-items: center;
+
+  & a {
+    display: flex;
+    align-items: center;
+    color: var(--color-black);
+  }
 
   > * {
     margin-left: 1rem;

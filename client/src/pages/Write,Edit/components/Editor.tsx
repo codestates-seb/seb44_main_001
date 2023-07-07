@@ -52,6 +52,7 @@ function Editor({ data }: { data: PostData }) {
       formats={formats}
       placeholder={CONTENT_INPUT_PLACEHOLDER}
       onChange={handleContentChange}
+      value={data.content}
     />
   );
 }

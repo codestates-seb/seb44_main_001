@@ -7,7 +7,7 @@ import { setCategory } from '../store/CategoryStore';
 import { styled } from 'styled-components';
 
 interface CategorySelectorProps {
-  onCategoryChange: (event: ChangeEvent<HTMLSelectElement>) => void;
+  onCategoryChange?: (categoryId: number) => void;
 }
 
 export default function CategorySelector({
@@ -18,8 +18,13 @@ export default function CategorySelector({
   const category = useSelector((state: RootState) => state.category);
 
   const handleCategoryChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const categoryId = categoryData.findIndex(
+      (category) => category === event.target.value,
+    );
     dispatch(setCategory(event.target.value));
-    onCategoryChange(event);
+    if (onCategoryChange) {
+      onCategoryChange(categoryId);
+    }
   };
 
   return (
@@ -41,13 +46,8 @@ export default function CategorySelector({
 const Container = styled.div`
   & select {
     width: 15rem;
-    border: 1px solid var(--color-black);
-    padding: 0.5rem;
-    border-radius: 5px;
-    margin: 1rem 2rem 2rem 0;
-    font-family: 'BR-Regular';
-    font-size: var(--font-size-s);
     color: var(--color-black);
+    outline: none;
   }
 
   & select option[value=''][disabled] {
