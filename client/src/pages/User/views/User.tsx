@@ -1,45 +1,52 @@
+import { styled } from "styled-components";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+
 import SemiHeader from "../../../common/components/SemiHeader";
+import Button from "../../../common/components/Button";
 import { Layout } from "../../../common/style";
 import { Background } from "../../Signup/views/Signup";
 import profile from "../../../common/assets/profile.svg"
-import { styled } from "styled-components";
-import Button from "../../../common/components/Button";
-import { useState } from "react";
+import { RootState } from "../../../common/store/RootStore";
 
 export default function User() {
   const [isMine, setIsMine] = useState(true);
+
+  const member = useSelector(
+    (state: RootState) => state.member.member,
+  );
+  
   return (
     <div>
-      <SemiHeader title="나의 프로필" content=""/>
+      <SemiHeader title={`${member?.nickname} 의 프로필`} content=""/>
       <Layout>
-        <ProfileBackground>
+        <Background>
           <ProfileBox>
-            <div style={{display:"flex"}}>
-              <ProfileImg src={profile} />
+            <ProfileContentBox style={{display:"flex"}}>
+              <ProfileImg src={member?.nickname ? `${member?.nickname}` : profile} />
               <div style={{display:"flex", flexDirection:"column", marginTop:"2rem"}}>
-                <div>혜수는졸려잉</div>
-                <div>경기도 화성시</div>
-                <div>태그목록</div>
+                <div>{member?.nickname}</div>
+                <div>{member?.location}</div>
+                <div>
+                  <div>{(member?.isMale ? `남자` : `여자`)}</div>
+                  <div>{`${member?.age}년생`}</div>
+                </div>
               </div>
-            </div>
+            </ProfileContentBox>
             {isMine
               ? <Button children={"프로필 수정"} />
             : <>&nbsp;</>}
           </ProfileBox>
           <MsgBox>
             <div>
-              자기소개입니다!!
+              {member?.welcomeMsg}
             </div>
           </MsgBox>
-        </ProfileBackground>
+        </Background>
       </Layout>
     </div>
   )
 }
-
-const ProfileBackground = styled(Background)`
-  
-`
 
 const ProfileBox = styled.div`
   display: flex;
