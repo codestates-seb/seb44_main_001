@@ -11,7 +11,7 @@ import {
 import { styled } from 'styled-components';
 
 interface LocationSelectorProps {
-  onLocationChange: (event: ChangeEvent<HTMLSelectElement>) => void;
+  onLocationChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
 }
 
 export default function LocationSelector({
@@ -29,7 +29,9 @@ export default function LocationSelector({
 
   const handleDistrictChange = (event: ChangeEvent<HTMLSelectElement>) => {
     dispatch(setLocation({ region, district: event.target.value }));
-    onLocationChange(event);
+    if (onLocationChange) {
+      onLocationChange(event);
+    }
   };
 
   return (
@@ -67,12 +69,6 @@ export default function LocationSelector({
 const Container = styled.div`
   & select {
     width: 15rem;
-    border: 1px solid var(--color-black);
-    padding: 0.5rem;
-    border-radius: 5px;
-    margin: 1rem 2rem 2rem 0;
-    font-family: 'BR-Regular';
-    font-size: var(--font-size-s);
     color: var(--color-black);
   }
 
