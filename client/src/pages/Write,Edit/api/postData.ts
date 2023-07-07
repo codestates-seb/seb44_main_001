@@ -3,7 +3,7 @@ import { ArticleToPost } from '../../../common/type';
 
 export default async function postData(url: string, data: ArticleToPost) {
   try {
-    const headers = {};
+    const headers = { 'ngrok-skip-browser-warning': '69420' };
 
     const res = await axios.post(url, data, { headers });
     console.log(res);

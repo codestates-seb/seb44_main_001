@@ -8,7 +8,7 @@ export type ArticleToPost = {
   memberId: number;
   categoryId: number;
   tags: string[];
-  location: string;
+  locationId: number;
 };
 
 export type ArticleToGet = {
@@ -20,7 +20,7 @@ export type ArticleToGet = {
   memberId: number;
   categoryId: number;
   tags: string[];
-  location: string;
+  locationId: number;
 };
 
 export type CommentToPost = {

@@ -2,10 +2,10 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useDispatch } from 'react-redux';
 import { setCreatedPost } from '../store/CreatedPost';
-import { PostData } from '../../../common/type';
+import { ArticleToPost } from '../../../common/type';
 import { CONTENT_INPUT_PLACEHOLDER } from '../../../common/util/constantValue';
 
-function Editor({ data }: { data: PostData }) {
+function Editor({ data }: { data: ArticleToPost }) {
   const dispatch = useDispatch();
 
   const handleContentChange = (value: string) => {

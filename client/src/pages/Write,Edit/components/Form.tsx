@@ -10,7 +10,7 @@ import {
   UPDATE,
 } from '../../../common/util/constantValue';
 import { ChangeEvent, useEffect } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation } from 'react-query';
 import { useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
 import postData from '../api/postData';
@@ -22,16 +22,17 @@ import TagsInput from './TagsInput';
 import Editor from './Editor';
 import Button from '../../../common/components/Button';
 import { RootState } from '../../../common/store/RootStore';
-import { ArticleToGet, ArticleToPost } from '../../../common/type';
+import { ArticleToPost } from '../../../common/type';
 import { setCreatedPost } from '../store/CreatedPost';
-import { setLocation } from '../../../common/store/LocationStore';
-import { setCategory } from '../../../common/store/CategoryStore';
-import { categoryData } from '../../../common/util/categoryData';
 
 export default function Form() {
   const data: ArticleToPost = useSelector(
     (state: RootState) => state.createdPost,
   );
+
+  const userInfo = {
+    memberId: 31,
+  };
 
   const { id } = useParams();
 
@@ -47,52 +48,33 @@ export default function Form() {
     patchData(`${BASE_URL}/posts/${id}`, data),
   );
 
-  // const initialData = useQuery(['getData', id], () =>
-  //   id ? getData(`${BASE_URL}/get/${id}/${userInfo.memberId}`) : null,
-  // );
-
-  const initialData: ArticleToGet = {
-    postId: 1,
-    title: '나는 바보',
-    content: '<p>여자 친구</p>',
-    createdAt: '2023-07-06T13:00:28.377963',
-    editedAt: '2023-07-06T13:00:28.377963',
-    memberId: 0,
-    categoryId: 4,
-    location: '경상남도 거제시',
-    tags: ['나는', '바보'],
-  };
-
   useEffect(() => {
-    if (id && initialData) {
-      dispatch(
-        setCreatedPost({
-          title: initialData.title,
-          content: initialData.content,
-          memberId: initialData.memberId,
-          categoryId: initialData.categoryId,
-          tags: initialData.tags,
-          location: initialData.location,
-        }),
+    const fetchData = async () => {
+      const initialData = await getData(
+        `${BASE_URL}/posts/${data.categoryId}/${id}/${userInfo.memberId}/${data.locationId}`,
       );
-      dispatch(
-        setLocation({
-          region: initialData.location.split(' ')[0],
-          district: initialData.location.split(' ')[1],
-        }),
-      );
-      dispatch(setCategory(categoryData[initialData.categoryId]));
+      dispatch(setCreatedPost(initialData));
+    };
+
+    if (id) {
+      fetchData();
     }
-    //! api 명세서 수정 후 dispatch 할 부분들 전체적으로 수정해야함
+
+    dispatch(
+      setCreatedPost({
+        ...data,
+        memberId: userInfo.memberId,
+      }),
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, []);
 
   const handleSubmit = () => {
     if (!data.title) {
       window.alert('제목을 입력해주세요!');
       return;
     }
-    if (!data.location) {
+    if (!data.locationId) {
       window.alert('지역을 선택해주세요!');
       return;
     }
@@ -107,8 +89,9 @@ export default function Form() {
     //! 추후 alert 대신 모달이나 토스트로 알림 변경해야함
     if (id) {
       patchMutation.mutate(data);
+    } else {
+      postMutation.mutate(data);
     }
-    postMutation.mutate(data);
   };
 
   const handleTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -163,6 +146,7 @@ const TitleSection = styled.section`
 
   > input {
     width: 30rem;
+    color: var(--color-black);
   }
 `;
 

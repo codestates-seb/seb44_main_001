@@ -30,7 +30,7 @@ export default function TagsInput({ data }: { data: ArticleToPost }) {
   };
 
   return (
-    <>
+    <Container>
       <label htmlFor="tags">{TAG}</label>
       <input
         type="text"
@@ -50,9 +50,18 @@ export default function TagsInput({ data }: { data: ArticleToPost }) {
           );
         })}
       </Tags>
-    </>
+    </Container>
   );
 }
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  > input {
+    color: var(--color-black);
+  }
+`;
 
 const Tags = styled.div`
   display: flex;
