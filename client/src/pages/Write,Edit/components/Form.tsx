@@ -47,14 +47,12 @@ export default function Form() {
   );
 
   const patchMutation = useMutation<void, unknown, ArticleToPost>(() =>
-    patchData(`${BASE_URL}/posts/${id}`, data),
+    patchData(`${BASE_URL}/posts/${id}/update`, data),
   );
 
   useEffect(() => {
     const fetchData = async () => {
-      const initialData = await getData(
-        `${BASE_URL}/posts/${data.categoryId}/${id}/${userInfo.memberId}/${data.locationId}`,
-      );
+      const initialData = await getData(`${BASE_URL}/posts/${id}`);
       dispatch(setCreatedPost(initialData));
       dispatch(setCategory(categoryData[initialData.categoryId - 8]));
       //! 나중에 카테고리 번호 수정하면 여기도 수정

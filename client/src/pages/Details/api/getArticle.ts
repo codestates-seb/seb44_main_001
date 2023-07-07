@@ -6,6 +6,7 @@ export default async function getArticle(url: string) {
 
     const res = await axios.get(url, { headers });
     console.log(res);
+    return res.data;
   } catch (err) {
     console.log(err);
   }
