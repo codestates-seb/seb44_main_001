@@ -57,9 +57,12 @@ const Button = styled.button`
   border-radius: 50%;
   border: none;
   cursor: pointer;
-  border: ${props => props.isselected? '3px solid var(--color-pink-1)': '3px solid transparent'};
+  border: ${props => props.isselected? '4px solid var(--color-pink-1)': '4px solid transparent'};
   &:hover {
-    border: 3px solid var(--color-pink-1);
+    border: 4px solid var(--color-pink-1);
+  }
+  &:active{
+    border: 4px solid var(--color-pink-2);
   }
 `;
 const Img = styled.img`

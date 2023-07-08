@@ -1,11 +1,11 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit';
 
 export interface LocationState {
-  selectedLocation: string;
+  selectedLocation: number;
 }
 //유저의 지역으로 바꾸기
 const initialState: LocationState = {
-  selectedLocation: '광진구',
+  selectedLocation: 2,
 };
 
 export const selectedLocationSlice = createSlice({
