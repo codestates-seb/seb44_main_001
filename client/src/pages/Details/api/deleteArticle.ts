@@ -1,11 +1,10 @@
 import axios from 'axios';
-import { PostData } from '../../../common/type';
 
-export default async function deleteArticle(url: string, data: PostData) {
+export default async function deleteArticle(url: string) {
   try {
-    const headers = {};
+    const headers = { 'ngrok-skip-browser-warning': '69420' };
 
-    const res = await axios.delete(url, { data, headers });
+    const res = await axios.patch(url, { headers });
     console.log(res);
   } catch (err) {
     console.log(err);

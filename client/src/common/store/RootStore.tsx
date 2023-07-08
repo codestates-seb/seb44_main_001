@@ -6,6 +6,7 @@ import { selectedLocationSlice } from '../../pages/Lists/store/SelectedLocation'
 import { createdPostSlice } from '../../pages/Write,Edit/store/CreatedPost';
 import { setSignupSlice } from '../../pages/Signup/store/SignupUser';
 import { setLoginSlice } from '../../pages/Login/store/LoginUser';
+import { memberSlice } from '../../pages/User/store/MemberStore';
 
 const rootReducer = combineReducers({
   category: categorySlice.reducer,
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
   createdPost: createdPostSlice.reducer,
   signup: setSignupSlice.reducer,
   login: setLoginSlice.reducer,
+  member: memberSlice.reducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

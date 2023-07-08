@@ -8,7 +8,6 @@ import { CardData } from '../type';
 import { BASE_URL } from '../util/constantValue';
 import Card from './Card';
 
-
 export default function Cards() {
   // const selectedLocation = useSelector(
   //   (state: RootState) => state.selectedLocation.selectedLocation,
@@ -31,6 +30,7 @@ export default function Cards() {
         }
       },
     );
+
   // 무한 스크롤 이벤트 핸들러
   console.log(data?.pageParams); //undefined로 뜸
   console.log(data?.pages.flatMap((page) => page)); // 찐 데이터
