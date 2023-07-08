@@ -35,7 +35,7 @@ export default function ListHeader() {
           <LocationSelector/>
         </div>
         <Button
-          children={'찾기'}
+          children={'지역 선택 하기'}
           onClick={() => dispatch(setSelectedLocation(location))}
         />
       </LocationInfo>

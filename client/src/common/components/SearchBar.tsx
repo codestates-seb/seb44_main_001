@@ -1,11 +1,20 @@
 import { SetStateAction, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
-import { AiOutlineSearch } from "react-icons/ai";
+import { AiOutlineSearch } from 'react-icons/ai';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/RootStore';
+import { MdCancel } from 'react-icons/md';
 
 export default function SearchBar() {
   const [inputValue, setInputValue] = useState('');
+  const selectedLocation = useSelector(
+    (state: RootState) => state.selectedLocation.selectedLocation,
+  );
 
+  const selectedCategory = useSelector(
+    (state: RootState) => state.selectedCategory.selectedCategory,
+  );
   const navigate = useNavigate();
 
   const handleInputChange = (e: {
@@ -20,6 +29,11 @@ export default function SearchBar() {
       return;
     }
     navigate(`/search/${inputValue}`);
+    setInputValue('');
+  };
+
+  const handleInputDelete = () => {
+    setInputValue('');
   };
 
   return (
@@ -29,10 +43,16 @@ export default function SearchBar() {
           type="text"
           value={inputValue}
           onChange={handleInputChange}
+          placeholder={`${selectedLocation} 지역의 ${selectedCategory} 카테고리에서 검색하기`}
         />
-        <Button type="submit">
-          <AiOutlineSearch/>
-        </Button>
+        {inputValue && (
+          <InputButton type="reset" onClick={handleInputDelete}>
+            <MdCancel />
+          </InputButton>
+        )}
+        <SearchButton type="submit">
+          <AiOutlineSearch />
+        </SearchButton>
       </form>
     </Wrapper>
   );
@@ -42,32 +62,38 @@ const Wrapper = styled.div`
   display: flex;
   margin-top: 3rem;
   position: relative;
+  & button {
+    position: absolute;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
 `;
 
 const SearchInput = styled.input`
   display: flex;
   width: 37.5rem;
   height: 3.125rem;
-  border-radius: 10px;
   padding: 0.5rem;
-  font-family: 'BR-Regular';
-  border-radius: 5px;
-  padding: 0.5rem;
-  border: 2px solid var(--color-black);
-  font-size: small;
-
   &:focus {
     outline: none;
   }
 `;
 
-const Button = styled.button`
-  position: absolute;
+const InputButton = styled.button`
+  top: 0.8rem;
+  right: 4rem;
+  font-size: var(--font-size-m);
+  &:hover {
+    top: 0.7rem;
+    right: 3.8rem;
+    font-size: var(--font-size-l);
+  }
+`;
+
+const SearchButton = styled.button`
   top: 0.6rem;
   right: 1rem;
-  background: none;
-  border: none;
-  padding: 0;
-  font-size:2rem;
-  cursor: pointer;
+  font-size: var(--font-size-l);
 `;

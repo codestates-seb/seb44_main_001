@@ -16,7 +16,7 @@ import kakao from "../../../common/assets/logo/kakao-logo.png"
 import Button from "../../../common/components/Button";
 
 import {
-  URL,
+  BASE_URL,
 } from '../../../common/util/constantValue';
 
 export default function Login() {
@@ -29,7 +29,7 @@ export default function Login() {
   const data: LoginData = useSelector((state: RootState) => state.login);
 
   const loginMutation = useMutation<void, unknown, LoginData>(() =>
-    loginData(URL, data),
+    loginData(BASE_URL, data),
   );
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
