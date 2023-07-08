@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://localhost:8080';
+export const BASE_URL = 'https://600b-49-163-135-89.ngrok-free.app';
 
 export const TITLE_INPUT_PLACEHOLDER = '내가 원하는 친구를 모집해봐요!';
 
@@ -31,3 +31,7 @@ export const UPDATE = '수정';
 export const REGISTER_COMMENT = '댓글 등록하기';
 
 export const COMMENT = '댓글';
+
+export const NEXT = '다음';
+
+export const PREV = '이전';

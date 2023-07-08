@@ -6,7 +6,7 @@ import { CardData } from '../type';
 import { RootState } from '../store/RootStore';
 import { getData } from '../../pages/Lists/api/getData';
 import Card from './Card';
-import { URL } from '../util/constantValue';
+import { BASE_URL } from '../util/constantValue';
 
 export default function Cards() {
   const selectedLocation = useSelector(
@@ -25,7 +25,12 @@ export default function Cards() {
     useInfiniteQuery(
       'filteredLists',
       ({ pageParam = 0 }) =>
-        getData(`${URL}/posts`, selectedLocation, selectedCategory, pageParam),
+        getData(
+          `${BASE_URL}/posts`,
+          selectedLocation,
+          selectedCategory,
+          pageParam,
+        ),
       {
         getNextPageParam: (lastPage, pages) => {
           return lastPage.page !== pages[0].totalPage
@@ -34,7 +39,7 @@ export default function Cards() {
         },
       },
     );
-console.log(data);
+  console.log(data);
   // useEffect(() => {
   //   refetch();
   // }, [selectedLocation, selectedCategory, refetch]);
@@ -43,16 +48,16 @@ console.log(data);
     const handleScroll = (entries) => {
       const target = entries[0];
       if (target.isIntersecting && hasNextPage) {
-        console.log("닿았나?")
+        console.log('닿았나?');
         fetchNextPage();
       }
     };
     const options = {
-      root: null, 
+      root: null,
       rootMargin: '0px 0px 200px 0px',
-      threshold: 0.1
+      threshold: 0.1,
     };
-    const observer = new IntersectionObserver(handleScroll,options);
+    const observer = new IntersectionObserver(handleScroll, options);
     const target = scrollTargetRef.current;
 
     if (target) {

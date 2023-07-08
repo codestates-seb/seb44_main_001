@@ -6,9 +6,9 @@ export const createdPostSlice = createSlice({
     title: '',
     content: '',
     memberId: 0,
-    categoryId: 0,
+    categoryId: 9,
     tags: [],
-    locationId: 1,
+    locationId: 4,
   },
   reducers: {
     setCreatedPost: (_state, action) => {

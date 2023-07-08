@@ -1,54 +1,98 @@
 import { styled } from 'styled-components';
-import { COMMENT } from '../../../common/util/constantValue';
+import {
+  BASE_URL,
+  COMMENT,
+  NEXT,
+  PREV,
+} from '../../../common/util/constantValue';
 import { AiFillDelete, AiFillEdit } from 'react-icons/ai';
+import { UseQueryResult, useQuery } from 'react-query';
+import { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { getComment } from '../api/getComment';
+import { CommentListToGet } from '../../../common/type';
 
 export default function CommentList() {
-  const user = { memberId: 1 };
-  const data = [
-    {
-      nickname: '나는 닉네임',
-      createdAt: '나는 날짜',
-      content: '나는 내용',
-      memberId: 1,
-    },
-    {
-      nickname: '나는 닉네임',
-      createdAt: '나는 날짜',
-      content: '나는 내용',
-      memberId: 2,
-    },
-    {
-      nickname: '나는 닉네임',
-      createdAt: '나는 날짜',
-      content: '나는 내용',
-      memberId: 3,
-    },
-  ];
+  const userInfo = { memberId: 31 };
+
+  const [page, setPage] = useState(1);
+
+  const { id } = useParams();
+
+  const size = 5;
+
+  const { data: response }: UseQueryResult<CommentListToGet, unknown> =
+    useQuery(['comments', id, page, size], () =>
+      getComment(`${BASE_URL}/comments/${id}?page=${page}&size=${size}`),
+    );
+
+  const { pageInfo, data } = response || {};
+
+  const pageNumbers = pageInfo
+    ? Array.from({ length: pageInfo.totalPages }, (_, index) => index + 1)
+    : [];
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
 
   return (
     <Container>
       <div>{COMMENT}</div>
-      {data.map((data) => {
-        return (
-          <ListSection key={data.memberId}>
-            <div>
-              <div>
-                {user.memberId === data.memberId
-                  ? `${data.nickname} (작성자)`
-                  : data.nickname}
-              </div>
-              <div>{data.createdAt}</div>
-            </div>
-            <div>
-              <div>{data.content}</div>
-              <div>
-                {user.memberId === data.memberId && <AiFillEdit />}
-                {user.memberId === data.memberId && <AiFillDelete />}
-              </div>
-            </div>
-          </ListSection>
-        );
-      })}
+      {data ? (
+        <>
+          {data.map((data) => {
+            return (
+              <ListSection key={data.commentId}>
+                <div>
+                  <div>
+                    {data.isPostWriter
+                      ? `${data.memberInfo.nickname} (작성자)`
+                      : data.memberInfo.nickname}
+                  </div>
+                  <div>{data.createdAt}</div>
+                </div>
+                <div>
+                  <div>{data.content}</div>
+                  <div>
+                    {userInfo.memberId === data.memberInfo.memberId && (
+                      <AiFillEdit />
+                    )}
+                    {userInfo.memberId === data.memberInfo.memberId && (
+                      <AiFillDelete />
+                    )}
+                  </div>
+                </div>
+              </ListSection>
+            );
+          })}
+          <Pagination>
+            <button
+              disabled={page === 1}
+              onClick={() => handlePageChange(page - 1)}
+            >
+              {PREV}
+            </button>
+            {pageNumbers.map((pageNumber) => (
+              <button
+                key={pageNumber}
+                disabled={page === pageNumber}
+                onClick={() => handlePageChange(pageNumber)}
+              >
+                {pageNumber}
+              </button>
+            ))}
+            <button
+              disabled={page === pageInfo?.totalPages}
+              onClick={() => handlePageChange(page + 1)}
+            >
+              {NEXT}
+            </button>
+          </Pagination>
+        </>
+      ) : (
+        <div>Loading...</div>
+      )}
     </Container>
   );
 }
@@ -88,6 +132,36 @@ const ListSection = styled.section`
       > * {
         margin-left: 0.5rem;
       }
+    }
+  }
+`;
+
+const Pagination = styled.section`
+  display: flex;
+  justify-content: center;
+
+  & button {
+    cursor: pointer;
+    margin: 0 0.3rem 0 0.3rem;
+    padding: 0.3rem;
+    border-radius: 5px;
+    border: 2px solid var(--color-black);
+    background: var(--color-pink-1);
+    color: var(--color-black);
+
+    &:disabled {
+      cursor: default;
+      color: var(--color-gray);
+      background: var(--color-pink-2) !important;
+      border: 2px solid var(--color-gray);
+    }
+
+    &:hover {
+      background-color: var(--color-pink-2);
+    }
+
+    &:active {
+      background-color: var(--color-pink-3);
     }
   }
 `;
