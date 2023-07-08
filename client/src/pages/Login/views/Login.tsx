@@ -3,22 +3,6 @@ import { styled } from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { useMutation } from "react-query";
-
-import { Layout } from "../../../common/style";
-import SemiHeader from "../../../common/components/SemiHeader";
-import { Background, Text, TextInput,  } from "../../Signup/views/Signup";
-import { RootState } from "../../../common/store/RootStore";
-import { LoginData } from "../../../common/type";
-import loginData from "../api/postLogin";
-import { setLoginUser } from "../store/LoginUser";
-
-import kakao from "../../../common/assets/logo/kakao-logo.png"
-import Button from "../../../common/components/Button";
-
-import {
-  BASE_URL,
-} from '../../../common/util/constantValue';
-
 import { Layout } from '../../../common/style';
 import SemiHeader from '../../../common/components/SemiHeader';
 import { Background, Text, TextInput } from '../../Signup/views/Signup';
