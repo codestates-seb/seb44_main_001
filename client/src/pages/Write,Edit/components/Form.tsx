@@ -10,8 +10,8 @@ import {
   UPDATE,
 } from '../../../common/util/constantValue';
 import { ChangeEvent, useEffect } from 'react';
-import { useMutation } from 'react-query';
-import { useParams } from 'react-router-dom';
+import { UseQueryResult, useMutation, useQuery } from 'react-query';
+import { useNavigate, useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
 import postData from '../api/postData';
 import patchData from '../api/patchData';
@@ -22,12 +22,32 @@ import TagsInput from './TagsInput';
 import Editor from './Editor';
 import Button from '../../../common/components/Button';
 import { RootState } from '../../../common/store/RootStore';
-import { ArticleToPost } from '../../../common/type';
-import { setCreatedPost } from '../store/CreatedPost';
+import { ArticleToGet, ArticleToPost } from '../../../common/type';
+import { resetCreatedPost, setCreatedPost } from '../store/CreatedPost';
 import { categoryData } from '../../../common/util/categoryData';
 import { setCategory } from '../../../common/store/CategoryStore';
 
 export default function Form() {
+  const navigate = useNavigate();
+
+  const dispatch = useDispatch();
+
+  const { id } = useParams();
+
+  const { data: initialData }: UseQueryResult<ArticleToGet, unknown> = useQuery(
+    ['getData', id],
+    () => getData(`${BASE_URL}/posts/${id}`),
+    {
+      onSuccess: (data) => {
+        if (id && data) {
+          dispatch(setCreatedPost(data));
+          dispatch(setCategory(categoryData[data.categoryId]));
+          //! 나중에 카테고리 번호 수정하면 여기도 수정
+        }
+      },
+    },
+  );
+
   const data: ArticleToPost = useSelector(
     (state: RootState) => state.createdPost,
   );
@@ -36,11 +56,15 @@ export default function Form() {
     memberId: 31,
   };
 
-  const { id } = useParams();
-
-  const dispatch = useDispatch();
-
   const region = useSelector((state: RootState) => state.location.region);
+
+  useEffect(() => {
+    dispatch(setCreatedPost({ ...data, memberId: userInfo.memberId }));
+    return () => {
+      dispatch(resetCreatedPost());
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const postMutation = useMutation<void, unknown, ArticleToPost>(() =>
     postData(`${BASE_URL}/posts`, data),
@@ -49,27 +73,6 @@ export default function Form() {
   const patchMutation = useMutation<void, unknown, ArticleToPost>(() =>
     patchData(`${BASE_URL}/posts/${id}/update`, data),
   );
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const initialData = await getData(`${BASE_URL}/posts/${id}`);
-      dispatch(setCreatedPost(initialData));
-      dispatch(setCategory(categoryData[initialData.categoryId - 8]));
-      //! 나중에 카테고리 번호 수정하면 여기도 수정
-    };
-
-    if (id) {
-      fetchData();
-    }
-
-    dispatch(
-      setCreatedPost({
-        ...data,
-        memberId: userInfo.memberId,
-      }),
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const handleSubmit = () => {
     if (!data.title) {
@@ -90,9 +93,17 @@ export default function Form() {
     }
     //! 추후 alert 대신 모달이나 토스트로 알림 변경해야함
     if (id) {
-      patchMutation.mutate(data);
+      patchMutation.mutate(data, {
+        onSuccess: () => {
+          navigate(-1);
+        },
+      });
     } else {
-      postMutation.mutate(data);
+      postMutation.mutate(data, {
+        onSuccess: () => {
+          navigate(-1);
+        },
+      });
     }
   };
 
@@ -120,7 +131,7 @@ export default function Form() {
           placeholder={TITLE_INPUT_PLACEHOLDER}
           onChange={handleTitleChange}
           maxLength={40}
-          defaultValue={data.title}
+          value={data.title}
         />
       </TitleSection>
       <label htmlFor="region">{REGION}</label>
@@ -133,10 +144,7 @@ export default function Form() {
       </ContentSection>
       <TagsInput data={data} />
       <ButtonSection>
-        <Button
-          children={id ? UPDATE : REGISTER}
-          onClick={() => handleSubmit()}
-        />
+        <Button children={id ? UPDATE : REGISTER} onClick={handleSubmit} />
       </ButtonSection>
     </>
   );

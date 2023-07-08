@@ -4,13 +4,27 @@ import { Layout } from '../../../common/style';
 import Article from '../components/Article';
 import CommentInput from '../components/CommentInput';
 import CommentList from '../components/CommentList';
+import { UseQueryResult, useQuery } from 'react-query';
+import { ArticleToGet } from '../../../common/type';
+import getArticle from '../api/getArticle';
+import { BASE_URL } from '../../../common/util/constantValue';
+import { useParams } from 'react-router-dom';
+import { categoryData } from '../../../common/util/categoryData';
 
 export default function Details() {
-  const data = { title: '나는 제목', category: '나는 카테고리' };
+  const { id } = useParams();
+
+  const { data }: UseQueryResult<ArticleToGet, unknown> = useQuery(
+    ['getData', id],
+    () => getArticle(`${BASE_URL}/posts/${id}`),
+  );
+
+  const category = data && categoryData[data.categoryId];
+
   return (
     <>
       <SemiHeader
-        title={`전체 게시판 > ${data.category} > ${data.title}`}
+        title={`전체 게시판 > ${category} > ${data?.title}`}
         content=""
       />
       <Layout>
