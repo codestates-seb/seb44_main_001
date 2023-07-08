@@ -1,9 +1,9 @@
 import { styled } from 'styled-components';
 import SemiHeader from '../../../common/components/SemiHeader';
 import { Layout } from '../../../common/style';
-import Article from '../components.tsx/Article';
-import CommentInput from '../components.tsx/CommentInput';
-import CommentList from '../components.tsx/CommentList';
+import Article from '../components/Article';
+import CommentInput from '../components/CommentInput';
+import CommentList from '../components/CommentList';
 
 export default function Details() {
   const data = { title: '나는 제목', category: '나는 카테고리' };
