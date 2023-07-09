@@ -12,23 +12,36 @@ import {
   useQuery,
   useQueryClient,
 } from 'react-query';
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getComment } from '../api/getComment';
-import { CommentListToGet } from '../../../common/type';
+import {
+  CommentListToGet,
+  CommentToGet,
+  CommentToPost,
+} from '../../../common/type';
 import { setTotalComments } from '../../../common/store/CommentPageStore';
 import { useDispatch } from 'react-redux';
 import { MdModeEditOutline } from 'react-icons/md';
 import deleteComment from '../api/deleteComment';
+import Button from '../../../common/components/Button';
+import patchComment from '../api/patchComment';
 
 export default function CommentList() {
   const queryClient = useQueryClient();
 
   const [commentId, setCommentId] = useState(0);
 
-  const dispatch = useDispatch();
+  const [editingCommentId, setEditingCommentId] = useState(0);
 
   const userInfo = { memberId: 1 };
+
+  const [editedComment, setEditedComment] = useState({
+    memberId: userInfo.memberId,
+    content: '',
+  });
+
+  const dispatch = useDispatch();
 
   const [page, setPage] = useState(1);
 
@@ -45,6 +58,16 @@ export default function CommentList() {
     {
       onSuccess: (response) => {
         dispatch(setTotalComments(response.pageInfo.totalElements));
+      },
+    },
+  );
+
+  const patchItemMutation = useMutation<void, unknown, CommentToPost>(
+    () => patchComment(`${BASE_URL}/comments/${commentId}`, editedComment),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('comments');
+        setEditingCommentId(0);
       },
     },
   );
@@ -79,6 +102,27 @@ export default function CommentList() {
     }
   };
 
+  const handleEditButtonClick = (data: CommentToGet) => {
+    setEditingCommentId(data.commentId);
+    setEditedComment({
+      memberId: userInfo.memberId,
+      content: data.content,
+    });
+    setCommentId(data.commentId);
+  };
+
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setEditedComment({ ...editedComment, content: event.target.value });
+  };
+
+  const handlePatchEdit = () => {
+    patchItemMutation.mutate(editedComment);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingCommentId(0);
+  };
+
   if (isLoading) return <div>Loading...</div>;
 
   return (
@@ -87,30 +131,49 @@ export default function CommentList() {
       {data?.length !== 0 ? (
         <>
           {data?.map((data) => {
+            const isEditing = editingCommentId === data.commentId;
             return (
               <ListSection key={data.commentId}>
-                <div>
-                  <div>
-                    {data.isPostWriter
-                      ? `${data.memberInfo.nickname} (작성자)`
-                      : data.memberInfo.nickname}
-                  </div>
-                  <div>{data.createdAt.slice(0, 10)}</div>
-                </div>
-                <div>
-                  <div>{data.content}</div>
-                  <div>
-                    {userInfo.memberId === data.memberInfo.memberId && (
-                      <MdModeEditOutline />
-                    )}
-                    {userInfo.memberId === data.memberInfo.memberId && (
-                      <AiFillDelete
-                        onMouseOver={() => handleMouseOver(data.commentId)}
-                        onClick={handleDeleteComment}
-                      />
-                    )}
-                  </div>
-                </div>
+                {userInfo.memberId === data.memberInfo.memberId && isEditing ? (
+                  <>
+                    <input
+                      type="text"
+                      value={editedComment.content}
+                      onChange={handleInputChange}
+                    />
+                    <div className="editButton">
+                      <Button onClick={handlePatchEdit}>저장</Button>
+                      <Button onClick={handleCancelEdit}>취소</Button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div>
+                      <div>
+                        {data.isPostWriter
+                          ? `${data.memberInfo.nickname} (작성자)`
+                          : data.memberInfo.nickname}
+                      </div>
+                      <div>{data.createdAt.slice(0, 10)}</div>
+                    </div>
+                    <div>
+                      <div>{data.content}</div>
+                      <div>
+                        {userInfo.memberId === data.memberInfo.memberId && (
+                          <MdModeEditOutline
+                            onClick={() => handleEditButtonClick(data)}
+                          />
+                        )}
+                        {userInfo.memberId === data.memberInfo.memberId && (
+                          <AiFillDelete
+                            onMouseOver={() => handleMouseOver(data.commentId)}
+                            onClick={handleDeleteComment}
+                          />
+                        )}
+                      </div>
+                    </div>
+                  </>
+                )}
               </ListSection>
             );
           })}
@@ -167,6 +230,19 @@ const ListSection = styled.section`
   border-radius: 5px;
   padding: 0.5rem;
   background: var(--color-white);
+
+  > input {
+    width: 100%;
+  }
+
+  > .editButton {
+    display: flex !important;
+    justify-content: end !important;
+
+    > :last-child {
+      margin-left: 0.5rem;
+    }
+  }
 
   > :first-child {
     display: flex;
