@@ -89,6 +89,9 @@ const DeleteButton = styled.button`
   top: 0.8rem;
   right: 4rem;
   font-size: var(--font-size-m);
+  &:hover{
+    color: var(--color-gray);
+  }
 `;
 
 const SearchButton = styled.button`
