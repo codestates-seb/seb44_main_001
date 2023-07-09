@@ -17,7 +17,7 @@ export default function CommentInput() {
   const { id } = useParams();
 
   const userInfo = {
-    memberId: 31,
+    memberId: 1,
   };
 
   const data = {

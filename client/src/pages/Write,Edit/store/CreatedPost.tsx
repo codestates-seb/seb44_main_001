@@ -1,15 +1,17 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit';
 
+const initialState = {
+  title: '',
+  content: '',
+  memberId: 0,
+  categoryId: 4,
+  tags: [],
+  locationId: 4,
+};
+
 export const createdPostSlice = createSlice({
   name: 'createdPost',
-  initialState: {
-    title: '',
-    content: '',
-    memberId: 0,
-    categoryId: 9,
-    tags: [],
-    locationId: 4,
-  },
+  initialState,
   reducers: {
     setCreatedPost: (_state, action) => {
       console.log(action.payload); //! 배포 시 삭제
@@ -22,6 +24,8 @@ export const createdPostSlice = createSlice({
         locationId: action.payload.locationId,
       };
     },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    resetCreatedPost: (_state) => initialState,
   },
 });
 
@@ -29,4 +33,4 @@ export const store = configureStore({
   reducer: createdPostSlice.reducer,
 });
 
-export const { setCreatedPost } = createdPostSlice.actions;
+export const { setCreatedPost, resetCreatedPost } = createdPostSlice.actions;

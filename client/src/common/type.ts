@@ -76,18 +76,18 @@ export type LoginData = {
 };
 
 export type Member = {
-  memberId: number,
-  email: string,
-  password: string,
-  location: string,
-  welcomeMsg: number,
-  profileImage: string | null,
-  nickname: string,
-  isMale: boolean,
-  age: number,
-  createdAt: string,
-  posts: CardData[],
-  comments: string[],
-  sentMessages: string[],
-  receivedMessages: string[]
+  memberId: number;
+  email: string;
+  password: string;
+  location: string;
+  welcomeMsg: number;
+  profileImage: string | null;
+  nickname: string;
+  isMale: boolean;
+  age: number;
+  createdAt: string;
+  posts: CardData[];
+  comments: string[];
+  sentMessages: string[];
+  receivedMessages: string[];
 };
