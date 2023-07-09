@@ -6,7 +6,12 @@ import {
   PREV,
 } from '../../../common/util/constantValue';
 import { AiFillDelete } from 'react-icons/ai';
-import { UseQueryResult, useQuery } from 'react-query';
+import {
+  UseQueryResult,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from 'react-query';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getComment } from '../api/getComment';
@@ -14,11 +19,16 @@ import { CommentListToGet } from '../../../common/type';
 import { setTotalComments } from '../../../common/store/CommentPageStore';
 import { useDispatch } from 'react-redux';
 import { MdModeEditOutline } from 'react-icons/md';
+import deleteComment from '../api/deleteComment';
 
 export default function CommentList() {
+  const queryClient = useQueryClient();
+
+  const [commentId, setCommentId] = useState(0);
+
   const dispatch = useDispatch();
 
-  const userInfo = { memberId: 31 };
+  const userInfo = { memberId: 1 };
 
   const [page, setPage] = useState(1);
 
@@ -39,6 +49,16 @@ export default function CommentList() {
     },
   );
 
+  const deleteItemMutation = useMutation<void, unknown, void>(
+    () =>
+      deleteComment(`${BASE_URL}/comments/${commentId}/${userInfo.memberId}`),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('comments');
+      },
+    },
+  );
+
   const { pageInfo, data } = response || {};
 
   const pageNumbers = pageInfo
@@ -49,9 +69,17 @@ export default function CommentList() {
     setPage(newPage);
   };
 
-  if (isLoading) return <div>Loading...</div>;
+  const handleMouseOver = (commentId: number) => {
+    setCommentId(commentId);
+  };
 
-  console.log(data);
+  const handleDeleteComment = () => {
+    if (window.confirm('정말로 삭제하시겠습니까?')) {
+      deleteItemMutation.mutate();
+    }
+  };
+
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <Container>
@@ -76,7 +104,10 @@ export default function CommentList() {
                       <MdModeEditOutline />
                     )}
                     {userInfo.memberId === data.memberInfo.memberId && (
-                      <AiFillDelete />
+                      <AiFillDelete
+                        onMouseOver={() => handleMouseOver(data.commentId)}
+                        onClick={handleDeleteComment}
+                      />
                     )}
                   </div>
                 </div>
@@ -154,6 +185,7 @@ const ListSection = styled.section`
     > :nth-child(2) {
       > * {
         margin-left: 0.5rem;
+        cursor: pointer;
       }
     }
   }

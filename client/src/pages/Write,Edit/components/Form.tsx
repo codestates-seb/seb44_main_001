@@ -10,7 +10,7 @@ import {
   UPDATE,
 } from '../../../common/util/constantValue';
 import { ChangeEvent, useEffect } from 'react';
-import { UseQueryResult, useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
 import postData from '../api/postData';
@@ -22,7 +22,7 @@ import TagsInput from './TagsInput';
 import Editor from './Editor';
 import Button from '../../../common/components/Button';
 import { RootState } from '../../../common/store/RootStore';
-import { ArticleToGet, ArticleToPost } from '../../../common/type';
+import { ArticleToPost } from '../../../common/type';
 import { resetCreatedPost, setCreatedPost } from '../store/CreatedPost';
 import { categoryData } from '../../../common/util/categoryData';
 import { setCategory } from '../../../common/store/CategoryStore';
@@ -34,9 +34,14 @@ export default function Form() {
 
   const { id } = useParams();
 
-  const { data: initialData }: UseQueryResult<ArticleToGet, unknown> = useQuery(
+  useQuery(
     ['getData', id],
-    () => getData(`${BASE_URL}/posts/${id}`),
+    () => {
+      if (id) {
+        return getData(`${BASE_URL}/posts/${id}`);
+      }
+      return undefined;
+    },
     {
       onSuccess: (data) => {
         if (id && data) {
@@ -53,7 +58,7 @@ export default function Form() {
   );
 
   const userInfo = {
-    memberId: 31,
+    memberId: 1,
   };
 
   const region = useSelector((state: RootState) => state.location.region);

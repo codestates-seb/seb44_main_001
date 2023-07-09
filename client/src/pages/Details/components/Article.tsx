@@ -20,7 +20,7 @@ import { RootState } from '../../../common/store/RootStore';
 export default function Article() {
   const queryClient = useQueryClient();
 
-  const userInfo = { memberId: 31 };
+  const userInfo = { memberId: 1 };
 
   const { id } = useParams();
 
