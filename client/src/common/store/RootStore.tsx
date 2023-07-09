@@ -8,6 +8,8 @@ import { setSignupSlice } from '../../pages/Signup/store/SignupUser';
 import { setLoginSlice } from '../../pages/Login/store/LoginUser';
 import { memberSlice } from '../../pages/User/store/MemberStore';
 import { keywordSice } from './keywordStore';
+import { totalCommentsSlice } from './CommentPageStore';
+
 
 const rootReducer = combineReducers({
   category: categorySlice.reducer,
@@ -19,6 +21,7 @@ const rootReducer = combineReducers({
   login: setLoginSlice.reducer,
   member: memberSlice.reducer,
   keyword : keywordSice.reducer,
+  totalComments: totalCommentsSlice.reducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

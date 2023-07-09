@@ -5,15 +5,30 @@ import {
   NEXT,
   PREV,
 } from '../../../common/util/constantValue';
-import { AiFillDelete, AiFillEdit } from 'react-icons/ai';
-import { UseQueryResult, useQuery } from 'react-query';
+import { AiFillDelete } from 'react-icons/ai';
+import {
+  UseQueryResult,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from 'react-query';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getComment } from '../api/getComment';
 import { CommentListToGet } from '../../../common/type';
+import { setTotalComments } from '../../../common/store/CommentPageStore';
+import { useDispatch } from 'react-redux';
+import { MdModeEditOutline } from 'react-icons/md';
+import deleteComment from '../api/deleteComment';
 
 export default function CommentList() {
-  const userInfo = { memberId: 31 };
+  const queryClient = useQueryClient();
+
+  const [commentId, setCommentId] = useState(0);
+
+  const dispatch = useDispatch();
+
+  const userInfo = { memberId: 1 };
 
   const [page, setPage] = useState(1);
 
@@ -21,10 +36,28 @@ export default function CommentList() {
 
   const size = 5;
 
-  const { data: response }: UseQueryResult<CommentListToGet, unknown> =
-    useQuery(['comments', id, page, size], () =>
-      getComment(`${BASE_URL}/comments/${id}?page=${page}&size=${size}`),
-    );
+  const {
+    data: response,
+    isLoading,
+  }: UseQueryResult<CommentListToGet, unknown> = useQuery(
+    ['comments', id, page, size],
+    () => getComment(`${BASE_URL}/comments/${id}?page=${page}&size=${size}`),
+    {
+      onSuccess: (response) => {
+        dispatch(setTotalComments(response.pageInfo.totalElements));
+      },
+    },
+  );
+
+  const deleteItemMutation = useMutation<void, unknown, void>(
+    () =>
+      deleteComment(`${BASE_URL}/comments/${commentId}/${userInfo.memberId}`),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('comments');
+      },
+    },
+  );
 
   const { pageInfo, data } = response || {};
 
@@ -36,12 +69,24 @@ export default function CommentList() {
     setPage(newPage);
   };
 
+  const handleMouseOver = (commentId: number) => {
+    setCommentId(commentId);
+  };
+
+  const handleDeleteComment = () => {
+    if (window.confirm('정말로 삭제하시겠습니까?')) {
+      deleteItemMutation.mutate();
+    }
+  };
+
+  if (isLoading) return <div>Loading...</div>;
+
   return (
     <Container>
       <div>{COMMENT}</div>
-      {data ? (
+      {data?.length !== 0 ? (
         <>
-          {data.map((data) => {
+          {data?.map((data) => {
             return (
               <ListSection key={data.commentId}>
                 <div>
@@ -50,16 +95,19 @@ export default function CommentList() {
                       ? `${data.memberInfo.nickname} (작성자)`
                       : data.memberInfo.nickname}
                   </div>
-                  <div>{data.createdAt}</div>
+                  <div>{data.createdAt.slice(0, 10)}</div>
                 </div>
                 <div>
                   <div>{data.content}</div>
                   <div>
                     {userInfo.memberId === data.memberInfo.memberId && (
-                      <AiFillEdit />
+                      <MdModeEditOutline />
                     )}
                     {userInfo.memberId === data.memberInfo.memberId && (
-                      <AiFillDelete />
+                      <AiFillDelete
+                        onMouseOver={() => handleMouseOver(data.commentId)}
+                        onClick={handleDeleteComment}
+                      />
                     )}
                   </div>
                 </div>
@@ -83,7 +131,9 @@ export default function CommentList() {
               </button>
             ))}
             <button
-              disabled={page === pageInfo?.totalPages}
+              disabled={
+                page === pageInfo?.totalPages || pageInfo?.totalPages === 0
+              }
               onClick={() => handlePageChange(page + 1)}
             >
               {NEXT}
@@ -91,7 +141,7 @@ export default function CommentList() {
           </Pagination>
         </>
       ) : (
-        <div>Loading...</div>
+        <div>등록된 댓글이 없습니다.</div>
       )}
     </Container>
   );
@@ -104,6 +154,10 @@ const Container = styled.section`
   > :first-child {
     margin-bottom: 1rem;
     font-family: 'BR-Bold';
+  }
+
+  > :nth-child(2) {
+    text-align: center;
   }
 `;
 
@@ -131,6 +185,7 @@ const ListSection = styled.section`
     > :nth-child(2) {
       > * {
         margin-left: 0.5rem;
+        cursor: pointer;
       }
     }
   }

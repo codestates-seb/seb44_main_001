@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export default async function deleteArticle(url: string) {
+export default async function deleteComment(url: string) {
   try {
     const headers = { 'ngrok-skip-browser-warning': '69420' };
 

@@ -11,17 +11,22 @@ import deleteArticle from '../api/deleteArticle';
 import { ArticleToGet } from '../../../common/type';
 import { BASE_URL } from '../../../common/util/constantValue';
 import getArticle from '../api/getArticle';
-import { GiPeach } from 'react-icons/gi';
 import { MdModeEditOutline } from 'react-icons/md';
+import peach_on from '../../../common/assets/icons/peach_on.svg';
+import comment from '../../../common/assets/icons/comment.svg';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../common/store/RootStore';
 
 export default function Article() {
   const queryClient = useQueryClient();
 
-  const userInfo = { memberId: 31 };
+  const userInfo = { memberId: 1 };
 
   const { id } = useParams();
 
   const navigate = useNavigate();
+
+  const totalComments = useSelector((state: RootState) => state.totalComments);
 
   const { data }: UseQueryResult<ArticleToGet, unknown> = useQuery(
     ['getData', id],
@@ -39,7 +44,9 @@ export default function Article() {
   );
 
   const handleDelete = () => {
-    deleteItemMutation.mutate();
+    if (window.confirm('정말로 삭제하시겠습니까?')) {
+      deleteItemMutation.mutate();
+    }
   };
 
   return (
@@ -49,7 +56,9 @@ export default function Article() {
           <TitleSection>
             <div>{data.title}</div>
             <div>
-              {data.editedAt ? `${data.editedAt} (수정됨)` : data.createdAt}
+              {data.editedAt
+                ? `${data.editedAt.slice(0, 10)} (수정됨)`
+                : data.createdAt.slice(0, 10)}
             </div>
           </TitleSection>
           <AuthorSection>
@@ -72,18 +81,26 @@ export default function Article() {
             ))}
           </TagSection>
           <InfoSection>
-            {userInfo.memberId === data?.memberId && (
-              <Link to={`/write/${data?.postId}`}>
-                <MdModeEditOutline size={25} />
-              </Link>
-            )}
-            {userInfo.memberId === data?.memberId && (
-              <AiFillDelete size={25} onClick={handleDelete} />
-            )}
-            {/* 클릭 시 삭제 확인 창 뜨게 수정해야함 */}
             <div>
-              <GiPeach size={25} />
-              <div>0</div>
+              {userInfo.memberId === data?.memberId && (
+                <Link to={`/write/${data?.postId}`}>
+                  <MdModeEditOutline size={24} />
+                </Link>
+              )}
+              {userInfo.memberId === data?.memberId && (
+                <AiFillDelete size={24} onClick={handleDelete} />
+              )}
+              {/* 클릭 시 삭제 확인 창 뜨게 수정해야함 */}
+            </div>
+            <div>
+              <div>
+                <img src={peach_on} alt="liked" />
+                <div>999</div>
+              </div>
+              <div>
+                <img src={comment} alt="comment" />
+                <div>{totalComments}</div>
+              </div>
             </div>
             {/* 위 좋아요 수는 lv3 때 구현 */}
             {/* <div>{commenteData.pageInfo.totalElements}</div> */}
@@ -163,26 +180,38 @@ const TagSection = styled.section`
 
 const InfoSection = styled.section`
   display: flex;
-  justify-content: end;
+  justify-content: space-between;
   align-items: center;
 
-  & a {
-    display: flex;
-    align-items: center;
-    color: var(--color-black);
+  > :first-child {
+    > a {
+      margin-right: 1rem;
+      display: flex;
+      align-items: center;
+      color: var(--color-black);
+    }
+
+    > :nth-child(2) {
+      cursor: pointer;
+    }
   }
 
   > :nth-child(2) {
-    cursor: pointer;
-  }
+    > div {
+      margin-left: 1rem;
 
-  > * {
-    margin-left: 1rem;
+      > div {
+        margin-left: 0.25rem;
+      }
+    }
   }
-
   & div {
     display: flex;
     align-items: center;
-    margin-left: 1rem;
+    font-size: 1rem;
+  }
+
+  & img {
+    height: 1.5rem;
   }
 `;
