@@ -45,7 +45,7 @@ public class Post {
     @JoinColumn(name = "location_id")
     private Location location;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
     public void setMemberId(Long memberId) {
         this.member = new Member();
