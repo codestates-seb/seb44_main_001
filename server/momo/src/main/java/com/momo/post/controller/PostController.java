@@ -109,7 +109,7 @@ public class PostController {
         return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
     }
 
-    @GetMapping("/search/location-category")
+    @GetMapping("/search/category-location")
     public ResponseEntity<List<PostResponseDto>> searchPostsByLocationAndCategory(
             @RequestParam String keyword,
             @RequestParam(required = false) Long locationId,
