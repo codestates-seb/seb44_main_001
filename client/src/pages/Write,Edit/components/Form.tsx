@@ -34,6 +34,18 @@ export default function Form() {
 
   const { id } = useParams();
 
+  const userInfo = {
+    memberId: 1,
+  };
+
+  useEffect(() => {
+    dispatch(setCreatedPost({ ...data, memberId: userInfo.memberId }));
+    return () => {
+      dispatch(resetCreatedPost());
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useQuery(
     ['getData', id],
     () => {
@@ -44,6 +56,7 @@ export default function Form() {
     },
     {
       onSuccess: (data) => {
+        console.log(data);
         if (id && data) {
           dispatch(setCreatedPost(data));
           dispatch(setCategory(categoryData[data.categoryId]));
@@ -57,19 +70,7 @@ export default function Form() {
     (state: RootState) => state.createdPost,
   );
 
-  const userInfo = {
-    memberId: 1,
-  };
-
   const region = useSelector((state: RootState) => state.location.region);
-
-  useEffect(() => {
-    dispatch(setCreatedPost({ ...data, memberId: userInfo.memberId }));
-    return () => {
-      dispatch(resetCreatedPost());
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const postMutation = useMutation<void, unknown, ArticleToPost>(() =>
     postData(`${BASE_URL}/posts`, data),
@@ -117,13 +118,13 @@ export default function Form() {
   };
 
   const onLocationChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    dispatch(
-      setCreatedPost({ ...data, location: `${region} ${event.target.value}` }),
-    );
+    // dispatch(
+    //   setCreatedPost({ ...data, location: `${region} ${event.target.value}` }),
+    // );
   };
 
   const onCategoryChange = (categoryId: number) => {
-    dispatch(setCreatedPost({ ...data, categoryId: categoryId }));
+    // dispatch(setCreatedPost({ ...data, categoryId: categoryId }));
   };
 
   return (
@@ -135,8 +136,8 @@ export default function Form() {
           name="title"
           placeholder={TITLE_INPUT_PLACEHOLDER}
           onChange={handleTitleChange}
-          maxLength={40}
-          value={data.title}
+          maxLength={20}
+          defaultValue={data.title}
         />
       </TitleSection>
       <label htmlFor="region">{REGION}</label>
