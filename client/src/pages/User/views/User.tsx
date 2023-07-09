@@ -19,7 +19,7 @@ export default function User() {
   const data = useSelector((state: RootState) => state.member.member);
 
   const userMutation = useMutation<void, unknown, Member>(() =>
-    getMember(BASE_URL, memberId)
+    getMember(`${BASE_URL}/members/${data.memberId}`, data)
   );
   
   return (

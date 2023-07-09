@@ -79,13 +79,14 @@ export default function Signup() {
 
   const onLocationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     dispatch(
-      setSignupUser({ ...data, location: `${region} ${e.target.value}` }),
+      // setSignupUser({ ...data, location: `${region} ${e.target.value}` }),
+      setSignupUser({ ...data, location: 111111 }),
     );
   };
 
   const handleMyMsgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMyMsg(e.target.value);
-    dispatch(setSignupUser({ ...data, welcome_msg: e.target.value }));
+    dispatch(setSignupUser({ ...data, welcomeMsg: e.target.value }));
   };
 
   const handleSignUp = () => {

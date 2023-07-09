@@ -67,8 +67,8 @@ export type SignupData = {
   nickName: string;
   birthYear: number | null;
   gender: boolean | null;
-  location: string | null;
-  welcome_msg: string;
+  location: number | null;
+  welcomeMsg: string;
 };
 
 export type LoginData = {
