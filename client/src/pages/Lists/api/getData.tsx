@@ -2,12 +2,14 @@ import axios from 'axios';
 
 export const getData = async (
   url: string,
-  selectedLocation: number,
+  keyword: string,
   selectedCategory: number,
+  selectedLocation: number,
   pageParam: number,
 ) => {
   const res = await axios(url, {
     params: {
+      ...(keyword && { keyword }),
       categoryId:selectedCategory,
       locationId:selectedLocation,
       page: pageParam,

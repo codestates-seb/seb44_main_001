@@ -7,6 +7,7 @@ import { createdPostSlice } from '../../pages/Write,Edit/store/CreatedPost';
 import { setSignupSlice } from '../../pages/Signup/store/SignupUser';
 import { setLoginSlice } from '../../pages/Login/store/LoginUser';
 import { memberSlice } from '../../pages/User/store/MemberStore';
+import { keywordSice } from './keywordStore';
 
 const rootReducer = combineReducers({
   category: categorySlice.reducer,
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   signup: setSignupSlice.reducer,
   login: setLoginSlice.reducer,
   member: memberSlice.reducer,
+  keyword : keywordSice.reducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

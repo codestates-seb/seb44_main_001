@@ -3,7 +3,13 @@ import { Link } from 'react-router-dom';
 import profile from '../assets/profile.svg';
 import { CardData } from '../type';
 
-export default function Card({ title, content, userImg, userName }: CardData) {
+export default function Card({
+  title,
+  content,
+  userImg,
+  userName,
+  postId,
+}: CardData) {
   return (
     <Wrapper>
       <UserInfo>
@@ -11,9 +17,11 @@ export default function Card({ title, content, userImg, userName }: CardData) {
         <span className="userName">{userName}</span>
       </UserInfo>
       <Content>
-        <Link to="/detail/postsId">
+        <Link to={`/details/${postId}`}>
           <div className="title">{title}</div>
-          <div className="content">{content.length>=90?`${content?.slice(0, 90)}...`:content}</div>
+          <div className="content">
+            {content.length >= 90 ? `${content?.slice(0, 90)}...` : content}
+          </div>
         </Link>
       </Content>
     </Wrapper>

@@ -1,13 +1,16 @@
 import { styled } from 'styled-components';
 import { Link } from 'react-router-dom';
 import Button from '../../../common/components/Button';
+import { useParams } from 'react-router-dom';
 
-export default function SearchListHeader({ keyword }: string) {
+export default function SearchListHeader() {
+ const param = useParams();
+
   return (
     <ListsHeader>
       <LocationInfo>
         <div className="listName">
-          <span className="keyword">"{keyword}"</span>
+          <span className="keyword">{param.keyword}</span>
           <span> 검색결과</span>
         </div>
         <div className="locationSelector"></div>
