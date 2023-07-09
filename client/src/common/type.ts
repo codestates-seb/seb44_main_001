@@ -58,6 +58,7 @@ export type CardData = {
   content: string;
   userImg: string;
   userName: string;
+  postId:number;
 };
 
 export type SignupData = {

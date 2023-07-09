@@ -1,9 +1,8 @@
-import { useState } from 'react';
-import { styled } from 'styled-components';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { useMutation } from 'react-query';
-
+import { useState } from "react";
+import { styled } from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { useMutation } from "react-query";
 import { Layout } from '../../../common/style';
 import SemiHeader from '../../../common/components/SemiHeader';
 import { Background, Text, TextInput } from '../../Signup/views/Signup';

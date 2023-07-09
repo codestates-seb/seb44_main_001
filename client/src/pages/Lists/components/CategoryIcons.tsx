@@ -10,7 +10,7 @@ export default function CategoryIcons() {
   
   const dispatch = useDispatch();
   const selectedCategory = useSelector(
-    (state: RootState) => state.selectedCategory.selectedCategory,
+    (state: RootState) => state.selectedCategory,
   );
 
   return (
@@ -23,7 +23,9 @@ export default function CategoryIcons() {
             }}
             key={`Icon ${index}`}
           >
-            <Button isselected={selectedCategory===English[index]?1:0}>
+            <Button 
+            // isselected={selectedCategory===English[index]?1:0}
+            >
               <Img src={icon} alt={`Icon ${index}`} />
             </Button>
             <div className="categoryName">{categoryData[index]}</div>

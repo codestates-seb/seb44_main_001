@@ -2,18 +2,21 @@ import { SetStateAction, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { AiOutlineSearch } from 'react-icons/ai';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setKeyword } from '../store/keywordStore';
 import { RootState } from '../store/RootStore';
 import { MdCancel } from 'react-icons/md';
 
 export default function SearchBar() {
   const [inputValue, setInputValue] = useState('');
+  const dispatch = useDispatch();
+
   const selectedLocation = useSelector(
-    (state: RootState) => state.selectedLocation.selectedLocation,
+    (state: RootState) => state.selectedLocation,
   );
 
   const selectedCategory = useSelector(
-    (state: RootState) => state.selectedCategory.selectedCategory,
+    (state: RootState) => state.selectedCategory,
   );
   const navigate = useNavigate();
 
@@ -28,6 +31,7 @@ export default function SearchBar() {
     if (inputValue === '') {
       return;
     }
+    dispatch(setKeyword(inputValue));
     navigate(`/search/${inputValue}`);
     setInputValue('');
   };
@@ -46,9 +50,9 @@ export default function SearchBar() {
           placeholder={`${selectedLocation} 지역의 ${selectedCategory} 카테고리에서 검색하기`}
         />
         {inputValue && (
-          <InputButton type="reset" onClick={handleInputDelete}>
+          <DeleteButton type="reset" onClick={handleInputDelete}>
             <MdCancel />
-          </InputButton>
+          </DeleteButton>
         )}
         <SearchButton type="submit">
           <AiOutlineSearch />
@@ -81,15 +85,10 @@ const SearchInput = styled.input`
   }
 `;
 
-const InputButton = styled.button`
+const DeleteButton = styled.button`
   top: 0.8rem;
   right: 4rem;
   font-size: var(--font-size-m);
-  &:hover {
-    top: 0.7rem;
-    right: 3.8rem;
-    font-size: var(--font-size-l);
-  }
 `;
 
 const SearchButton = styled.button`
