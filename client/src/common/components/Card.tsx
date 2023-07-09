@@ -14,7 +14,7 @@ export default function Card({
     <Wrapper>
       <UserInfo>
         <img className="userImg" src={profile}></img>
-        <span className="userName">{userName}</span>
+        <span className="userName">유저의 닉네임</span>
       </UserInfo>
       <Content>
         <Link to={`/details/${postId}`}>
@@ -55,6 +55,7 @@ const UserInfo = styled.div`
 
 const Content = styled.div`
   margin-top: 1rem;
+  flex-grow: 1;
   .title {
     font-family: 'BR-Bold';
     font-size: var(--font-size-m);
