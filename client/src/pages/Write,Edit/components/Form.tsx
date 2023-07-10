@@ -3,7 +3,7 @@ import {
   BASE_URL,
   CATEGORY,
   CONTENT,
-  REGION,
+  LOCATION,
   REGISTER,
   TITLE,
   TITLE_INPUT_PLACEHOLDER,
@@ -70,8 +70,6 @@ export default function Form() {
     (state: RootState) => state.createdPost,
   );
 
-  const region = useSelector((state: RootState) => state.location.region);
-
   const postMutation = useMutation<void, unknown, ArticleToPost>(() =>
     postData(`${BASE_URL}/posts`, data),
   );
@@ -117,14 +115,12 @@ export default function Form() {
     dispatch(setCreatedPost({ ...data, title: event.target.value }));
   };
 
-  const onLocationChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    // dispatch(
-    //   setCreatedPost({ ...data, location: `${region} ${event.target.value}` }),
-    // );
+  const onLocationChange = (locationId: number | null) => {
+    dispatch(setCreatedPost({ ...data, locationId: locationId }));
   };
 
-  const onCategoryChange = (categoryId: number) => {
-    // dispatch(setCreatedPost({ ...data, categoryId: categoryId }));
+  const onCategoryChange = (categoryId: number | null) => {
+    dispatch(setCreatedPost({ ...data, categoryId: categoryId }));
   };
 
   return (
@@ -140,7 +136,7 @@ export default function Form() {
           defaultValue={data.title}
         />
       </TitleSection>
-      <label htmlFor="region">{REGION}</label>
+      <label htmlFor="location">{LOCATION}</label>
       <LocationSelector onLocationChange={onLocationChange} />
       <label htmlFor="category">{CATEGORY}</label>
       <CategorySelector onCategoryChange={onCategoryChange} />

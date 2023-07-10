@@ -1,14 +1,14 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { CATEGORY_MESSAGE } from '../util/constantValue';
 import { RootState } from '../store/RootStore';
-import { ChangeEvent } from 'react';
-import { categoryData } from '../util/categoryData';
+import { ChangeEvent, useEffect } from 'react';
 import { setCategory } from '../store/CategoryStore';
 import { styled } from 'styled-components';
 import useCategorySetter from '../util/customHook/useCategorySetter';
+import { Categories, Category } from '../type';
 
 interface CategorySelectorProps {
-  onCategoryChange?: (categoryId: number) => void;
+  onCategoryChange?: (categoryId: number | null) => void;
 }
 
 export default function CategorySelector({
@@ -18,17 +18,29 @@ export default function CategorySelector({
 
   const dispatch = useDispatch();
 
-  const category = useSelector((state: RootState) => state.category);
+  const categories: Categories | null = JSON.parse(
+    localStorage.getItem('categories') || 'null',
+  );
+
+  const category = useSelector((state: RootState) => state.category.name);
 
   const handleCategoryChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    const categoryId = categoryData.findIndex(
-      (category) => category === event.target.value,
-    );
-    dispatch(setCategory(event.target.value));
+    const categoryId: number | null = JSON.parse(
+      localStorage.getItem('categories') || 'null',
+    )?.find(
+      (category: Category) => category.name === event.target.value,
+    )?.categoryId;
+    dispatch(setCategory({ name: event.target.value, categoryId: categoryId }));
     if (onCategoryChange) {
       onCategoryChange(categoryId);
     }
   };
+
+  useEffect(() => {
+    return () => {
+      dispatch(setCategory({ name: '', categoryId: 0 }));
+    };
+  });
 
   return (
     <Container>
@@ -36,9 +48,9 @@ export default function CategorySelector({
         <option disabled value="">
           {CATEGORY_MESSAGE}
         </option>
-        {categoryData.map((category, idx) => (
-          <option key={idx} value={category}>
-            {category}
+        {categories?.map((category) => (
+          <option key={category.categoryId} value={category.name}>
+            {category.name}
           </option>
         ))}
       </select>

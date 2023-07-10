@@ -1,6 +1,17 @@
-export type RegionData = {
-  [key: string]: string[];
+export type Location = {
+  locationId: number;
+  city: string;
+  province: string;
 };
+
+export type Locations = Location[];
+
+export type Category = {
+  name: string;
+  categoryId: number;
+};
+
+export type Categories = Category[];
 
 export type ArticleToPost = {
   title: string;
@@ -58,7 +69,7 @@ export type CardData = {
   content: string;
   userImg: string;
   userName: string;
-  postId:number;
+  postId: number;
 };
 
 export type SignupData = {
