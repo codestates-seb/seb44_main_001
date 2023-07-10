@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { ChangeEvent, useEffect } from 'react';
+import { ChangeEvent } from 'react';
 import { RootState } from '../store/RootStore';
 import { setLocation } from '../store/LocationStore';
 import {
@@ -48,13 +48,6 @@ export default function LocationSelector({
       onLocationChange(locationId);
     }
   };
-
-  useEffect(() => {
-    return () => {
-      dispatch(setLocation({ locationId: 0, city: '', province: '' }));
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <Container>

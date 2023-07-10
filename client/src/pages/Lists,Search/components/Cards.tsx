@@ -26,27 +26,32 @@ export default function Cards() {
     selectedLocation,
   );
 
-  const { data, fetchNextPage, hasNextPage, isLoading, isError }:UseInfiniteQueryResult<CardData[],unknown> =
-    useInfiniteQuery(
-      ['filteredList', keyword, selectedCategory, selectedLocation],
-      ({ pageParam = 1 }) =>
-        getData(
-          `${BASE_URL}/posts${keyword && '/search'}/category-location`,
-          keyword && keyword,
-          selectedCategory,
-          selectedLocation,
-          pageParam,
-        ),
-      {
-        getNextPageParam: (lastPage, allPages) => {
-          const nextPage = allPages.length + 1;
-          return lastPage.length === 0 ? undefined : nextPage;
-        },
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isLoading,
+    isError,
+  }: UseInfiniteQueryResult<CardData[], unknown> = useInfiniteQuery(
+    ['filteredList', keyword, selectedCategory, selectedLocation],
+    ({ pageParam = 1 }) =>
+      getData(
+        `${BASE_URL}/posts`,
+        keyword && keyword,
+        selectedCategory,
+        selectedLocation,
+        pageParam,
+      ),
+    {
+      getNextPageParam: (lastPage, allPages) => {
+        const nextPage = allPages.length + 1;
+        return lastPage.length === 0 ? undefined : nextPage;
       },
-    );
+    },
+  );
 
   const scrollTargetRef = useRef(null);
-console.log(data);
+  console.log(data);
   useEffect(() => {
     const handleScroll: IntersectionObserverCallback = (entries) => {
       const target = entries[0];
@@ -77,7 +82,7 @@ console.log(data);
         <Lists>
           {data?.pages
             .flatMap((page) => page)
-            .map((post: CardData, index:number) => (
+            .map((post: CardData, index: number) => (
               <Card
                 key={index}
                 title={post.title}
