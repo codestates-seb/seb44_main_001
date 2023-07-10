@@ -1,20 +1,17 @@
 import { styled } from 'styled-components';
 import { Link } from 'react-router-dom';
 import profile from '../assets/profile.svg';
-import { CardData } from '../type';
+import { CardData,MemberInfo } from '../type';
 
-export default function Card({
-  title,
-  content,
-  userImg,
-  userName,
-  postId,
-}: CardData) {
+export default function Card({ title, content, postId, memberInfo }: CardData) {
+  const { profileImage, nickname }: MemberInfo = memberInfo;
   return (
     <Wrapper>
       <UserInfo>
-        <img className="userImg" src={profile}></img>
-        <span className="userName">유저의 닉네임</span>
+        <img className="profileImage" src={profile}></img>
+        {/* profileImage 로 수정해야함 */}
+        <span className="nickname">{nickname}</span>
+        {/* nickname 로 수정해야함 */}
       </UserInfo>
       <Content>
         <Link to={`/details/${postId}`}>
@@ -45,7 +42,7 @@ const Wrapper = styled.div`
 const UserInfo = styled.div`
   display: flex;
   align-items: center;
-  .userImg {
+  .profileImage {
     width: 2.5rem;
     height: 2.5rem;
     margin-right: 0.5rem;

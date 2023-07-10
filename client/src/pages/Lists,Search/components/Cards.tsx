@@ -1,13 +1,12 @@
 import { useEffect, useRef } from 'react';
 import { styled } from 'styled-components';
 import { useSelector } from 'react-redux';
-import { useInfiniteQuery } from 'react-query';
-import { RootState } from '../store/RootStore';
-import { getData } from '../../pages/Lists/api/getData';
-import { CardData } from '../type';
-import { BASE_URL } from '../util/constantValue';
-import Card from './Card';
-
+import { UseInfiniteQueryResult, useInfiniteQuery } from 'react-query';
+import { RootState } from '../../../common/store/RootStore';
+import { getData } from '../api/getData';
+import { CardData } from '../../../common/type';
+import { BASE_URL } from '../../../common/util/constantValue';
+import Card from '../../../common/components/Card';
 export default function Cards() {
   const keyword = useSelector((state: RootState) => state.keyword);
 
@@ -18,14 +17,21 @@ export default function Cards() {
   const selectedCategory = useSelector(
     (state: RootState) => state.selectedCategory,
   );
-  console.log('이건 Cards:', keyword, selectedCategory, selectedLocation);
 
-  const { data, fetchNextPage, hasNextPage, isLoading, isError } =
+  // 배포 전 지우기
+  console.log(
+    '이건 Cards컴포넌트:',
+    keyword,
+    selectedCategory,
+    selectedLocation,
+  );
+
+  const { data, fetchNextPage, hasNextPage, isLoading, isError }:UseInfiniteQueryResult<CardData[],unknown> =
     useInfiniteQuery(
       ['filteredList', keyword, selectedCategory, selectedLocation],
       ({ pageParam = 1 }) =>
         getData(
-          `${BASE_URL}/posts${keyword&&'/search'}/category-location`,
+          `${BASE_URL}/posts${keyword && '/search'}/category-location`,
           keyword && keyword,
           selectedCategory,
           selectedLocation,
@@ -39,11 +45,8 @@ export default function Cards() {
       },
     );
 
-  // console.log(data?.pageParams); //undefined로 뜸
-  // console.log(data?.pages.flatMap((page) => page)); // 찐 데이터
-
   const scrollTargetRef = useRef(null);
-
+console.log(data);
   useEffect(() => {
     const handleScroll: IntersectionObserverCallback = (entries) => {
       const target = entries[0];
@@ -74,14 +77,13 @@ export default function Cards() {
         <Lists>
           {data?.pages
             .flatMap((page) => page)
-            .map((el: CardData, index: number) => (
+            .map((post: CardData, index:number) => (
               <Card
                 key={index}
-                title={el.title}
-                content={el.content.replace(/<[^>]*>/g, '')}
-                userImg={el.userImg}
-                userName={el.userName}
-                postId={el.postId}
+                title={post.title}
+                content={post.content.replace(/<[^>]*>/g, '')}
+                memberInfo={post.memberInfo}
+                postId={post.postId}
               />
             ))}
         </Lists>
@@ -99,6 +101,12 @@ const Lists = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 2rem;
+  @media (max-width: 1264px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (max-width: 464px) {
+    grid-template-columns: repeat(1);
+  }
 `;
 
 const Message = styled.div`

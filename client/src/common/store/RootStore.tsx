@@ -1,8 +1,8 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { categorySlice } from './CategoryStore';
 import { locationSlice } from './LocationStore';
-import { selectedCategorySlice } from '../../pages/Lists/store/SelectedCategory';
-import { selectedLocationSlice } from '../../pages/Lists/store/SelectedLocation';
+import { selectedCategorySlice } from '../../pages/Lists,Search/store/SelectedCategory';
+import { selectedLocationSlice } from '../../pages/Lists,Search/store/SelectedLocation';
 import { createdPostSlice } from '../../pages/Write,Edit/store/CreatedPost';
 import { setSignupSlice } from '../../pages/Signup/store/SignupUser';
 import { setLoginSlice } from '../../pages/Login/store/LoginUser';

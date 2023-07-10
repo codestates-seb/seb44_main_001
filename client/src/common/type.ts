@@ -56,9 +56,13 @@ export type CommentListToGet = {
 export type CardData = {
   title: string;
   content: string;
-  userImg: string;
-  userName: string;
   postId: number;
+  memberInfo: MemberInfo;
+};
+
+export type MemberInfo = {
+  profileImage: string | null;
+  nickname: string | null;
 };
 
 export type SignupData = {
