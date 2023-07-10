@@ -112,7 +112,7 @@ public class MemberController {
 
     private String saveImageToS3(MultipartFile image) throws IOException {
         if (image == null) {
-            return "https://momobucket.s3.ap-northeast-2.amazonaws.com/profile/defaultImage.png";
+            return "https://momobucket.s3.ap-northeast-2.amazonaws.com/profile/profile.svg";
         }
         String randomName = UUID.randomUUID().toString();
         long size = image.getSize();
