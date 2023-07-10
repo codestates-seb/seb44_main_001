@@ -5,7 +5,7 @@ export const setSignupSlice = createSlice({
   initialState: {
     email: '',
     password: '',
-    nickName: '',
+    nickname: '',
     birthYear: 0,
     gender: null,
     location: null,
@@ -17,7 +17,7 @@ export const setSignupSlice = createSlice({
       return {
         email: action.payload.email,
         password: action.payload.password,
-        nickName: action.payload.nickName,
+        nickname: action.payload.nickname,
         birthYear: action.payload.birthYear,
         gender: action.payload.gender,
         location: action.payload.location,
