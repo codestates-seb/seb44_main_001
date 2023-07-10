@@ -1,23 +1,31 @@
 import { styled } from 'styled-components';
-import SearchBar from '../../../common/components/SearchBar';
+import SearchBar from '../components/SearchBar';
 import CategoryIcons from '../components/CategoryIcons';
-import Cards from '../../../common/components/Cards';
-import ListHeader from '../components/ListHeader';
+import Cards from '../components/Cards';
+import ListsHeader from '../components/ListsHeader';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { setKeyword } from '../../../common/store/keywordStore';
+import { useLocation } from 'react-router-dom';
 
 export default function Lists() {
+  const location = useLocation();
+  const isPathLists = location.pathname  === '/lists';
+
   const dispatch = useDispatch();
+
   useEffect(() => {
-      dispatch(setKeyword(''))
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (isPathLists) {
+      dispatch(setKeyword(''));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   return (
     <Wrapper>
       <SearchBar />
-      <CategoryIcons />
-      <ListHeader />
+      {isPathLists ? <CategoryIcons /> : null}
+      <ListsHeader/>
       <Cards />
     </Wrapper>
   );

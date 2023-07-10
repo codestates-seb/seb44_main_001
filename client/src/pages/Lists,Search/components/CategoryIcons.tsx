@@ -7,7 +7,6 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../../common/store/RootStore';
 
 export default function CategoryIcons() {
-  
   const dispatch = useDispatch();
   const selectedCategory = useSelector(
     (state: RootState) => state.selectedCategory,
@@ -23,10 +22,10 @@ export default function CategoryIcons() {
             }}
             key={`Icon ${index}`}
           >
-            <Button 
+            <Button
             // isselected={selectedCategory===English[index]?1:0}
             >
-              <Img src={icon} alt={`Icon ${index}`} />
+              <img src={icon} alt={`Icon ${index}`} />
             </Button>
             <div className="categoryName">{categoryData[index]}</div>
           </IconWrapper>
@@ -42,7 +41,6 @@ const Wrapper = styled.div`
   grid-gap: 1rem;
   width: 37.5rem;
   margin-top: 3rem;
-  margin-bottom: 3rem;
 `;
 const IconWrapper = styled.div`
   display: flex;
@@ -54,19 +52,21 @@ const IconWrapper = styled.div`
   }
 `;
 const Button = styled.button`
-  background: none;
+  width: 78px;
+  height: 78px;
+  background: var(--color-white);
   padding: 0;
   border-radius: 50%;
   border: none;
   cursor: pointer;
-  border: ${props => props.isselected? '4px solid var(--color-pink-1)': '4px solid transparent'};
+  /* border: ${(props) =>
+    props.isselected
+      ? '4px solid var(--color-pink-1)'
+      : '4px solid transparent'}; */
   &:hover {
     border: 4px solid var(--color-pink-1);
   }
-  &:active{
+  &:active {
     border: 4px solid var(--color-pink-2);
   }
-`;
-const Img = styled.img`
-  border-radius: 50%;
 `;
