@@ -56,7 +56,10 @@ public class MemberService {
         Optional.ofNullable(member.getEmail())
                 .ifPresent(findMember::setEmail);
         Optional.ofNullable(member.getPassword())
-                .ifPresent(findMember::setPassword);
+                .ifPresent(newPass -> {
+                    String encodedPassword = passwordEncoder.encode(newPass);
+                    member.setPassword(encodedPassword);
+                });
         Optional.ofNullable(member.getWelcomeMsg())
                 .ifPresent(findMember::setWelcomeMsg);
         Optional.ofNullable(member.getProfileImage())
