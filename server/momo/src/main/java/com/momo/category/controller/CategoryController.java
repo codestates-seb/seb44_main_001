@@ -3,9 +3,12 @@ package com.momo.category.controller;
 import com.momo.category.dto.CategoryPostDto;
 import com.momo.category.dto.CategoryResponseDto;
 import com.momo.category.service.CategoryService;
+import com.momo.location.dto.LocationDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/categories")
@@ -15,7 +18,11 @@ public class CategoryController {
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
-
+    @GetMapping
+    public ResponseEntity<List<CategoryResponseDto>> getAllCategories() {
+        List<CategoryResponseDto> categories = categoryService.getAllCategories();
+        return ResponseEntity.ok(categories);
+    }
     @PostMapping
     public ResponseEntity<CategoryResponseDto> createCategory(@RequestBody CategoryPostDto categoryPostDto) {
         CategoryResponseDto createdCategory = categoryService.createCategory(categoryPostDto);

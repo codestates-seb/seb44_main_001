@@ -1,14 +1,15 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { categorySlice } from './CategoryStore';
 import { locationSlice } from './LocationStore';
-import { selectedCategorySlice } from '../../pages/Lists/store/SelectedCategory';
-import { selectedLocationSlice } from '../../pages/Lists/store/SelectedLocation';
+import { selectedCategorySlice } from '../../pages/Lists,Search/store/SelectedCategory';
+import { selectedLocationSlice } from '../../pages/Lists,Search/store/SelectedLocation';
 import { createdPostSlice } from '../../pages/Write,Edit/store/CreatedPost';
 import { setSignupSlice } from '../../pages/Signup/store/SignupUser';
 import { setLoginSlice } from '../../pages/Login/store/LoginUser';
 import { memberSlice } from '../../pages/User/store/MemberStore';
 import { keywordSice } from './keywordStore';
 import { totalCommentsSlice } from './CommentPageStore';
+import { tokenSlice } from '../../pages/Login/store/userTokenStore';
 
 
 const rootReducer = combineReducers({
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
   createdPost: createdPostSlice.reducer,
   signup: setSignupSlice.reducer,
   login: setLoginSlice.reducer,
+  token: tokenSlice.reducer,
   member: memberSlice.reducer,
   keyword : keywordSice.reducer,
   totalComments: totalCommentsSlice.reducer,

@@ -67,15 +67,19 @@ export type CommentListToGet = {
 export type CardData = {
   title: string;
   content: string;
-  userImg: string;
-  userName: string;
   postId: number;
+  memberInfo: MemberInfo;
+};
+
+export type MemberInfo = {
+  profileImage: string | null;
+  nickname: string | null;
 };
 
 export type SignupData = {
   email: string;
   password: string;
-  nickName: string;
+  nickname: string;
   birthYear: number | null;
   gender: boolean | null;
   location: number | null;
@@ -83,23 +87,19 @@ export type SignupData = {
 };
 
 export type LoginData = {
-  email: string;
+  username: string;
   password: string;
 };
 
 export type Member = {
   memberId: number;
   email: string;
-  password: string;
-  location: string;
-  welcomeMsg: number;
+  location: number;
+  welcomeMsg: string;
   profileImage: string | null;
   nickname: string;
   isMale: boolean;
   age: number;
   createdAt: string;
   posts: CardData[];
-  comments: string[];
-  sentMessages: string[];
-  receivedMessages: string[];
 };
