@@ -59,6 +59,8 @@ public class MemberService {
                 .ifPresent(findMember::setPassword);
         Optional.ofNullable(member.getWelcomeMsg())
                 .ifPresent(findMember::setWelcomeMsg);
+        Optional.ofNullable(member.getProfileImage())
+                .ifPresent(findMember::setProfileImage);
 //        Optional.ofNullable(member.getLocation())
 //                .ifPresent(findMember::setLocation);
         Optional.ofNullable(member.getNickname())
