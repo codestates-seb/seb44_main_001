@@ -1,5 +1,6 @@
 package com.momo.post.entity;
 
+import com.momo.audit.BaseEntity;
 import com.momo.category.entity.Category;
 import com.momo.comment.entity.Comment;
 import com.momo.location.entity.Location;
@@ -18,7 +19,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Post {
+public class Post extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postId;
