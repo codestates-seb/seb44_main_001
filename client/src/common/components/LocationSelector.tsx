@@ -9,6 +9,7 @@ import {
   REGION_MESSAGE,
 } from '../util/constantValue';
 import { styled } from 'styled-components';
+import useLocationSetter from '../util/customHook/useLocationSetter';
 
 interface LocationSelectorProps {
   onLocationChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
@@ -17,6 +18,8 @@ interface LocationSelectorProps {
 export default function LocationSelector({
   onLocationChange,
 }: LocationSelectorProps) {
+  useLocationSetter();
+
   const dispatch = useDispatch();
 
   const region = useSelector((state: RootState) => state.location.region);

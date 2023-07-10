@@ -5,6 +5,7 @@ import { ChangeEvent } from 'react';
 import { categoryData } from '../util/categoryData';
 import { setCategory } from '../store/CategoryStore';
 import { styled } from 'styled-components';
+import useCategorySetter from '../util/customHook/useCategorySetter';
 
 interface CategorySelectorProps {
   onCategoryChange?: (categoryId: number) => void;
@@ -13,6 +14,8 @@ interface CategorySelectorProps {
 export default function CategorySelector({
   onCategoryChange,
 }: CategorySelectorProps) {
+  useCategorySetter();
+
   const dispatch = useDispatch();
 
   const category = useSelector((state: RootState) => state.category);
