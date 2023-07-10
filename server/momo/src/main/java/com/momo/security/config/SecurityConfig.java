@@ -78,6 +78,7 @@ public class SecurityConfig {
                         .antMatchers(HttpMethod.GET, "/members/**").hasAnyRole("USER", "ADMIN")
                         .antMatchers(HttpMethod.DELETE, "/members/**").hasRole("USER")
                         .anyRequest().permitAll()
+
                 );
 
         return http.build();

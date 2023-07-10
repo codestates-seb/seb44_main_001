@@ -7,6 +7,7 @@ import com.momo.location.entity.Location;
 import com.momo.location.repository.LocationRepository;
 import com.momo.member.entity.Member;
 import com.momo.member.repository.MemberRepository;
+import com.momo.post.dto.MemberInfo;
 import com.momo.post.dto.PostPatchDto;
 import com.momo.post.dto.PostPostDto;
 import com.momo.post.dto.PostResponseDto;
@@ -56,38 +57,15 @@ public class PostService {
         }
 
         PostResponseDto responseDto = postMapper.postToPostResponseDto(post);
-        responseDto.setMemberId(post.getMember().getMemberId());
+        responseDto.setMemberInfo(MemberInfo.builder()
+                .memberId(post.getMember().getMemberId())
+                .nickname(post.getMember().getNickname())
+                .profileImage(post.getMember().getProfileImage())
+                .build());
         responseDto.setCategoryId(post.getCategory().getCategoryId());
         responseDto.setLocationId(post.getLocation().getLocationId());
         return responseDto;
     }
-
-//    public List<PostResponseDto> getPostsByCategoryAndPost(Long categoryId, Long postId, Long memberId, Long locationId, int page) {
-//        int pageSize = 12;
-//        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("postId").descending());
-//
-//        Page<Post> postPage;
-//        if (categoryId == null && postId == null && memberId == null && locationId == null) {
-//            // 전체 글 목록을 가져오는 경우
-//            postPage = postRepository.findAll(pageable);
-//        } else {
-//            // 특정 카테고리, 글, 멤버, 위치에 해당하는 글 목록을 가져오는 경우
-//            postPage = postRepository.findByCategory_CategoryIdAndPostIdAndMember_MemberIdAndLocation_LocationId(categoryId, postId, memberId, locationId, pageable);
-//        }
-//
-//        List<PostResponseDto> responseDtoList = postPage.getContent().stream()
-//                .map(post -> {
-//                    PostResponseDto responseDto = postMapper.postToPostResponseDto(post);
-//                    responseDto.setMemberId(post.getMember().getMemberId());
-//                    responseDto.setCategoryId(post.getCategory().getCategoryId());
-//                    responseDto.setLocationId(post.getLocation().getLocationId());
-//                    return responseDto;
-//                })
-//                .collect(Collectors.toList());
-//
-//        return responseDtoList;
-//    }
-
 
     public List<PostResponseDto> getAllPosts(int page) {
         int pageSize = 12;
@@ -97,7 +75,11 @@ public class PostService {
         return postPage.getContent().stream()
                 .map(post -> {
                     PostResponseDto responseDto = postMapper.postToPostResponseDto(post);
-                    responseDto.setMemberId(post.getMember().getMemberId());
+                    responseDto.setMemberInfo(MemberInfo.builder()
+                            .memberId(post.getMember().getMemberId())
+                            .nickname(post.getMember().getNickname())
+                            .profileImage(post.getMember().getProfileImage())
+                            .build());
                     responseDto.setCategoryId(post.getCategory().getCategoryId());
                     responseDto.setLocationId(post.getLocation().getLocationId());
                     return responseDto;
@@ -115,7 +97,11 @@ public class PostService {
         List<PostResponseDto> responseDtoList = postPage.getContent().stream()
                 .map(post -> {
                     PostResponseDto responseDto = postMapper.postToPostResponseDto(post);
-                    responseDto.setMemberId(post.getMember().getMemberId());
+                    responseDto.setMemberInfo(MemberInfo.builder()
+                            .memberId(post.getMember().getMemberId())
+                            .nickname(post.getMember().getNickname())
+                            .profileImage(post.getMember().getProfileImage())
+                            .build());
                     responseDto.setCategoryId(post.getCategory().getCategoryId());
                     responseDto.setLocationId(post.getLocation().getLocationId());
                     return responseDto;
@@ -135,7 +121,11 @@ public class PostService {
         List<PostResponseDto> responseDtoList = postPage.getContent().stream()
                 .map(post -> {
                     PostResponseDto responseDto = postMapper.postToPostResponseDto(post);
-                    responseDto.setMemberId(post.getMember().getMemberId());
+                    responseDto.setMemberInfo(MemberInfo.builder()
+                            .memberId(post.getMember().getMemberId())
+                            .nickname(post.getMember().getNickname())
+                            .profileImage(post.getMember().getProfileImage())
+                            .build());
                     responseDto.setCategoryId(post.getCategory().getCategoryId());
                     responseDto.setLocationId(post.getLocation().getLocationId());
                     return responseDto;
@@ -155,7 +145,11 @@ public class PostService {
         List<PostResponseDto> responseDtoList = postPage.getContent().stream()
                 .map(post -> {
                     PostResponseDto responseDto = postMapper.postToPostResponseDto(post);
-                    responseDto.setMemberId(post.getMember().getMemberId());
+                    responseDto.setMemberInfo(MemberInfo.builder()
+                            .memberId(post.getMember().getMemberId())
+                            .nickname(post.getMember().getNickname())
+                            .profileImage(post.getMember().getProfileImage())
+                            .build());
                     responseDto.setCategoryId(post.getCategory().getCategoryId());
                     responseDto.setLocationId(post.getLocation().getLocationId());
                     return responseDto;
@@ -175,7 +169,11 @@ public class PostService {
         List<PostResponseDto> responseDtoList = postPage.getContent().stream()
                 .map(post -> {
                     PostResponseDto responseDto = postMapper.postToPostResponseDto(post);
-                    responseDto.setMemberId(post.getMember().getMemberId());
+                    responseDto.setMemberInfo(MemberInfo.builder()
+                            .memberId(post.getMember().getMemberId())
+                            .nickname(post.getMember().getNickname())
+                            .profileImage(post.getMember().getProfileImage())
+                            .build());
                     responseDto.setCategoryId(post.getCategory().getCategoryId());
                     responseDto.setLocationId(post.getLocation().getLocationId());
                     return responseDto;
@@ -219,7 +217,11 @@ public class PostService {
 
         Post savedPost = postRepository.save(post);
         PostResponseDto responseDto = postMapper.postToPostResponseDto(savedPost);
-        responseDto.setMemberId(memberId);
+        responseDto.setMemberInfo(MemberInfo.builder()
+                .memberId(post.getMember().getMemberId())
+                .nickname(post.getMember().getNickname())
+                .profileImage(post.getMember().getProfileImage())
+                .build());
         responseDto.setCategoryId(categoryId);
         responseDto.setLocationId(locationId);
         return responseDto;
@@ -270,7 +272,11 @@ public class PostService {
         PostResponseDto responseDto = postMapper.postToPostResponseDto(updatedPost);
 
         // 업데이트된 값들을 응답 객체에 설정
-        responseDto.setMemberId(memberId);
+        responseDto.setMemberInfo(MemberInfo.builder()
+                .memberId(post.getMember().getMemberId())
+                .nickname(post.getMember().getNickname())
+                .profileImage(post.getMember().getProfileImage())
+                .build());
         responseDto.setCategoryId(postDto.getCategoryId());
         return responseDto;
     }
@@ -305,7 +311,11 @@ public class PostService {
         List<PostResponseDto> responseDtoList = postPage.getContent().stream()
                 .map(post -> {
                     PostResponseDto responseDto = postMapper.postToPostResponseDto(post);
-                    responseDto.setMemberId(post.getMember().getMemberId());
+                    responseDto.setMemberInfo(MemberInfo.builder()
+                            .memberId(post.getMember().getMemberId())
+                            .nickname(post.getMember().getNickname())
+                            .profileImage(post.getMember().getProfileImage())
+                            .build());
                     responseDto.setCategoryId(post.getCategory().getCategoryId());
                     responseDto.setLocationId(post.getLocation().getLocationId());
                     return responseDto;
@@ -334,7 +344,11 @@ public class PostService {
         List<PostResponseDto> responseDtoList = postPage.getContent().stream()
                 .map(post -> {
                     PostResponseDto responseDto = postMapper.postToPostResponseDto(post);
-                    responseDto.setMemberId(post.getMember().getMemberId());
+                    responseDto.setMemberInfo(MemberInfo.builder()
+                            .memberId(post.getMember().getMemberId())
+                            .nickname(post.getMember().getNickname())
+                            .profileImage(post.getMember().getProfileImage())
+                            .build());
                     responseDto.setCategoryId(post.getCategory().getCategoryId());
                     responseDto.setLocationId(post.getLocation().getLocationId());
                     return responseDto;
@@ -363,7 +377,11 @@ public class PostService {
         List<PostResponseDto> responseDtoList = postPage.getContent().stream()
                 .map(post -> {
                     PostResponseDto responseDto = postMapper.postToPostResponseDto(post);
-                    responseDto.setMemberId(post.getMember().getMemberId());
+                    responseDto.setMemberInfo(MemberInfo.builder()
+                            .memberId(post.getMember().getMemberId())
+                            .nickname(post.getMember().getNickname())
+                            .profileImage(post.getMember().getProfileImage())
+                            .build());
                     responseDto.setCategoryId(post.getCategory().getCategoryId());
                     responseDto.setLocationId(post.getLocation().getLocationId());
                     return responseDto;
@@ -393,7 +411,11 @@ public class PostService {
         List<PostResponseDto> responseDtoList = postPage.getContent().stream()
                 .map(post -> {
                     PostResponseDto responseDto = postMapper.postToPostResponseDto(post);
-                    responseDto.setMemberId(post.getMember().getMemberId());
+                    responseDto.setMemberInfo(MemberInfo.builder()
+                            .memberId(post.getMember().getMemberId())
+                            .nickname(post.getMember().getNickname())
+                            .profileImage(post.getMember().getProfileImage())
+                            .build());
                     responseDto.setCategoryId(post.getCategory().getCategoryId());
                     responseDto.setLocationId(post.getLocation().getLocationId());
                     return responseDto;
