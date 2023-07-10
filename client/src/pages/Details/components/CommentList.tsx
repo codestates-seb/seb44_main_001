@@ -154,7 +154,11 @@ export default function CommentList() {
                           ? `${data.memberInfo.nickname} (작성자)`
                           : data.memberInfo.nickname}
                       </div>
-                      <div>{data.createdAt.slice(0, 10)}</div>
+                      {data.editedAt === data.createdAt ? (
+                        <div>{data.createdAt.slice(0, 10)}</div>
+                      ) : (
+                        <div>{`${data.editedAt.slice(0, 10)} (수정됨)`}</div>
+                      )}
                     </div>
                     <div>
                       <div>{data.content}</div>

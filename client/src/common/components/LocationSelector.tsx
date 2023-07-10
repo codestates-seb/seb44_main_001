@@ -1,64 +1,97 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { regionData } from '../util/regionData';
-import { ChangeEvent } from 'react';
+import { ChangeEvent, useEffect } from 'react';
 import { RootState } from '../store/RootStore';
 import { setLocation } from '../store/LocationStore';
 import {
-  DISTRICT_ALERT_MESSAGE,
-  DISTRICT_MESSAGE,
-  REGION_MESSAGE,
+  CITY_MESSAGE,
+  PROVINCE_ALERT_MESSAGE,
+  PROVINCE_MESSAGE,
 } from '../util/constantValue';
 import { styled } from 'styled-components';
+import useLocationSetter from '../util/customHook/useLocationSetter';
+import { Locations } from '../type';
+import { Location } from '../type';
 
 interface LocationSelectorProps {
-  onLocationChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
+  onLocationChange?: (locationId: number | null) => void;
 }
 
 export default function LocationSelector({
   onLocationChange,
 }: LocationSelectorProps) {
+  useLocationSetter();
+
+  const pathname = window.location.pathname;
+
   const dispatch = useDispatch();
 
-  const region = useSelector((state: RootState) => state.location.region);
+  const locations: Locations | null = JSON.parse(
+    localStorage.getItem('locations') || 'null',
+  );
 
-  const district = useSelector((state: RootState) => state.location.district);
+  const city = useSelector((state: RootState) => state.location.city);
 
-  const handleRegionChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    dispatch(setLocation({ region: event.target.value, district: '' }));
+  const province = useSelector((state: RootState) => state.location.province);
+
+  const handleCityChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    dispatch(setLocation({ city: event.target.value, province: '' }));
   };
 
-  const handleDistrictChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    dispatch(setLocation({ region, district: event.target.value }));
+  const handleProvinceChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const locationId: number | null = JSON.parse(
+      localStorage.getItem('locations') || 'null',
+    )?.find(
+      (location: Location) => location.province === event.target.value,
+    )?.locationId;
+    dispatch(setLocation({ city, province: event.target.value, locationId }));
     if (onLocationChange) {
-      onLocationChange(event);
+      onLocationChange(locationId);
     }
   };
+
+  useEffect(() => {
+    return () => {
+      dispatch(setLocation({ locationId: 0, city: '', province: '' }));
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Container>
       <div>
-        <select id="region" value={region} onChange={handleRegionChange}>
+        <select id="city" value={city} onChange={handleCityChange}>
           <option disabled value="">
-            {REGION_MESSAGE}
+            {CITY_MESSAGE}
           </option>
-          {Object.keys(regionData).map((region) => (
-            <option key={region} value={region}>
-              {region}
-            </option>
-          ))}
-        </select>
-        <select id="district" value={district} onChange={handleDistrictChange}>
-          <option disabled value="">
-            {DISTRICT_MESSAGE}
-          </option>
-          {region && regionData[region] ? (
-            regionData[region].map((district) => (
-              <option key={district} value={district}>
-                {district}
+          {locations
+            ?.filter(
+              (location, index, self) =>
+                self.findIndex((l) => l.city === location.city) === index,
+            )
+            .map((location) => (
+              <option key={location.locationId} value={location.city}>
+                {location.city}
               </option>
-            ))
+            ))}
+        </select>
+        <select id="province" value={province} onChange={handleProvinceChange}>
+          <option disabled value="">
+            {PROVINCE_MESSAGE}
+          </option>
+          {city ? (
+            locations
+              ?.filter(
+                (location) =>
+                  location.city === city &&
+                  (pathname !== '/lists' ? location.province !== '전체' : true),
+              )
+              .map((location) => (
+                <option key={location.locationId} value={location.province}>
+                  {location.province}
+                </option>
+              ))
           ) : (
-            <option disabled>{DISTRICT_ALERT_MESSAGE}</option>
+            <option disabled>{PROVINCE_ALERT_MESSAGE}</option>
           )}
         </select>
       </div>
