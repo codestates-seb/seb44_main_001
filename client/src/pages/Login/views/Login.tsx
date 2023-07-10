@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { styled } from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { useMutation } from "react-query";
+import { useState } from 'react';
+import { styled } from 'styled-components';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { useMutation } from 'react-query';
 import { Layout } from '../../../common/style';
 import SemiHeader from '../../../common/components/SemiHeader';
 import { Background, Text, TextInput } from '../../Signup/views/Signup';
@@ -10,6 +10,7 @@ import { RootState } from '../../../common/store/RootStore';
 import { LoginData } from '../../../common/type';
 import loginData from '../api/postLogin';
 import { setLoginUser } from '../store/LoginUser';
+import { setTokenData } from '../store/userTokenStore';
 
 import kakao from '../../../common/assets/logo/kakao-logo.png';
 import Button from '../../../common/components/Button';
@@ -17,21 +18,29 @@ import Button from '../../../common/components/Button';
 import { BASE_URL } from '../../../common/util/constantValue';
 
 export default function Login() {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const dispatch = useDispatch();
 
+  // const member: Member = useSelector((state: RootState) => state.member);
   const data: LoginData = useSelector((state: RootState) => state.login);
-  const member = useSelector((state: RootState) => state.member);
 
-  const loginMutation = useMutation<void, unknown, LoginData>(() =>
-    loginData(BASE_URL, data),
-  );
+  const loginMutation = useMutation<void, unknown, LoginData>(async () => {
+    loginData(`${BASE_URL}/auth/login`, data);
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-    dispatch(setLoginUser({ ...data, email: e.target.value }));
+    // console.log("Authorization:", Authorization);
+    // console.log("MemberId:", memberId);
+
+    // // 리덕스 저장
+    // dispatch(setTokenData({ Authorization, memberId }));
+    // localStorage.setItem("Authorization", Authorization);
+    // localStorage.setItem("MemberId", memberId);
+  });
+
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUsername(e.target.value);
+    dispatch(setLoginUser({ ...data, username: e.target.value }));
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,9 +66,9 @@ export default function Login() {
               <InputBox>
                 <Text>이메일</Text>
                 <TextInput
-                  value={email}
+                  value={username}
                   style={{ width: '300px' }}
-                  onChange={handleEmailChange}
+                  onChange={handleUsernameChange}
                   isValidate={true}
                 />
               </InputBox>

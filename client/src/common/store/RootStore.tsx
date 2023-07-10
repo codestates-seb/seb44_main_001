@@ -9,6 +9,7 @@ import { setLoginSlice } from '../../pages/Login/store/LoginUser';
 import { memberSlice } from '../../pages/User/store/MemberStore';
 import { keywordSice } from './keywordStore';
 import { totalCommentsSlice } from './CommentPageStore';
+import { tokenSlice } from '../../pages/Login/store/userTokenStore';
 
 
 const rootReducer = combineReducers({
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
   createdPost: createdPostSlice.reducer,
   signup: setSignupSlice.reducer,
   login: setLoginSlice.reducer,
+  token: tokenSlice.reducer,
   member: memberSlice.reducer,
   keyword : keywordSice.reducer,
   totalComments: totalCommentsSlice.reducer,
