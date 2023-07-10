@@ -24,7 +24,6 @@ public class Member extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
 
-//    private String name;
     private String email;
     private String password;
     private Integer location;
@@ -33,7 +32,6 @@ public class Member extends BaseEntity {
     private String nickname;
     private Boolean isMale;
     private Integer age;
-//    private LocalDateTime createdAt;
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();
