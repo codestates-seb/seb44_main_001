@@ -4,15 +4,17 @@ import Button from '../../../common/components/Button';
 import LocationSelector from '../../../common/components/LocationSelector';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../common/store/RootStore';
-import { useEffect } from 'react';
+import { useEffect,useState } from 'react';
 import { setSelectedLocation } from '../store/SelectedLocation';
 import { useParams } from 'react-router-dom';
 
 export default function ListsHeader() {
   const dispatch = useDispatch();
   const params = useParams();
-  
-  const location = useSelector((state: RootState) => state.location.district);
+
+  const location = useSelector((state: RootState) => state.location);
+
+  console.log(location)
   const selectedLocation = useSelector(
     (state: RootState) => state.selectedLocation,
   );
@@ -25,8 +27,8 @@ export default function ListsHeader() {
 
   // useEffect(() => {
   //   dispatch(setSelectedLocation("유저의 지역"));
-  // }, [dispatch]);
-
+  // }, []);
+console.log(selectedLocation,selectedCategory)
   return (
     <Wrapper>
       <LocationInfo>

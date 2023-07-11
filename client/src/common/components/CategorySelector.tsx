@@ -40,7 +40,8 @@ export default function CategorySelector({
     return () => {
       dispatch(setCategory({ name: '', categoryId: 0 }));
     };
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Container>
