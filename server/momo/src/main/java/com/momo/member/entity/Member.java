@@ -1,5 +1,6 @@
 package com.momo.member.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.momo.audit.BaseEntity;
 import com.momo.category.entity.Category;
 import com.momo.comment.entity.Comment;
@@ -26,6 +27,7 @@ public class Member extends BaseEntity {
 
 //    private String name;
     private String email;
+    @JsonIgnore
     private String password;
     private Integer location;
     private String welcomeMsg;
@@ -38,15 +40,19 @@ public class Member extends BaseEntity {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "member")
     private List<Post> posts = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "member")
     private List<Comment> comments = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "sender")
     private List<Message> sentMessages = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "receiver")
     private List<Message> receivedMessages = new ArrayList<>();
 
