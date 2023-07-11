@@ -28,10 +28,21 @@ export type ArticleToGet = {
   content: string;
   createdAt: string;
   editedAt: string;
-  memberId: number;
-  categoryId: number;
+  memberInfo: {
+    memberId: number;
+    nickname: string;
+    profileImage: string;
+  };
+  categoryInfo: {
+    categoryId: number;
+    name: string;
+  };
   tags: string[];
-  locationId: number;
+  locationInfo: {
+    locationId: number;
+    city: string;
+    province: string;
+  };
 };
 
 export type CommentToPost = {

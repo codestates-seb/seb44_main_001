@@ -4,9 +4,9 @@ const initialState = {
   title: '',
   content: '',
   memberId: 0,
-  categoryId: 4,
+  categoryId: 0,
   tags: [],
-  locationId: 4,
+  locationId: 0,
 };
 
 export const createdPostSlice = createSlice({
