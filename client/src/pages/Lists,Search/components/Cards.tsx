@@ -1,15 +1,22 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { styled } from 'styled-components';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { UseInfiniteQueryResult, useInfiniteQuery } from 'react-query';
 import { RootState } from '../../../common/store/RootStore';
 import { getData } from '../api/getData';
 import { CardData } from '../../../common/type';
 import { BASE_URL } from '../../../common/util/constantValue';
 import Card from '../../../common/components/Card';
-export default function Cards() {
-  const keyword = useSelector((state: RootState) => state.keyword);
+import { setCategory } from '../../../common/store/CategoryStore';
+import { setLocation } from '../../../common/store/LocationStore';
+import { resetCreatedPost } from '../../Write,Edit/store/CreatedPost';
 
+export default function Cards() {
+  //로그인 전역상태 구현되면 지우기
+  const [isLogin, setIslogin] = useState(false);
+  const keyword = useSelector((state: RootState) => state.keyword);
+  console.log('로그인댓나?', isLogin);
+  const dispatch = useDispatch();
   const selectedLocation = useSelector(
     (state: RootState) => state.selectedLocation,
   );
@@ -23,7 +30,7 @@ export default function Cards() {
     '이건 Cards컴포넌트:',
     keyword,
     selectedCategory,
-    selectedLocation,
+    selectedLocation.locationId,
   );
 
   const {
@@ -33,13 +40,17 @@ export default function Cards() {
     isLoading,
     isError,
   }: UseInfiniteQueryResult<CardData[], unknown> = useInfiniteQuery(
-    ['filteredList', keyword, selectedCategory, selectedLocation],
+    ['filteredList', keyword, selectedCategory, selectedLocation, isLogin],
     ({ pageParam = 1 }) =>
       getData(
-        `${BASE_URL}/posts`,
+        `${BASE_URL}/posts${
+          isLogin
+            ? `${keyword && '/search'}/category-location`
+            : keyword && '/search/category-location'
+        }`,
         keyword && keyword,
         selectedCategory,
-        selectedLocation,
+        selectedLocation.locationId,
         pageParam,
       ),
     {
@@ -51,7 +62,7 @@ export default function Cards() {
   );
 
   const scrollTargetRef = useRef(null);
-  console.log(data);
+
   useEffect(() => {
     const handleScroll: IntersectionObserverCallback = (entries) => {
       const target = entries[0];
@@ -65,7 +76,6 @@ export default function Cards() {
     if (target) {
       observer.observe(target);
     }
-
     return () => {
       if (target) {
         observer.unobserve(target);
@@ -73,11 +83,28 @@ export default function Cards() {
     };
   }, [fetchNextPage, hasNextPage]);
 
-  if (isLoading) return <LoadingMsg>로딩중...</LoadingMsg>;
-  if (isError) return <LoadingMsg>서버와의 연결이 끊어졌어요😢</LoadingMsg>;
+  useEffect(() => {
+    return () => {
+      dispatch(setCategory({ categoryId: 0, name: '' }));
+      dispatch(setLocation({ locationId: 0, city: '', province: '' }));
+      dispatch(resetCreatedPost());
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // if (isLoading) return <LoadingMsg>로딩중...</LoadingMsg>;
+  // if (isError) return <LoadingMsg>서버와의 연결이 끊어졌어요😢</LoadingMsg>;
 
   return (
     <Wrapper>
+      <Button
+        onClick={() => {
+          setIslogin(!isLogin);
+        }}
+      >
+        {`${isLogin}`}
+      </Button>
+      {/* 로그인 전역상태 구현되면 지우기 */}
       {data && data?.pages.flatMap((page) => page).length ? (
         <Lists>
           {data?.pages
@@ -121,4 +148,9 @@ const Message = styled.div`
 const LoadingMsg = styled.div`
   margin-top: 3rem;
   font-size: var(--font-size-l);
+`;
+
+const Button = styled.button`
+  width: 30px;
+  height: 3.125rem;
 `;

@@ -4,6 +4,9 @@ import { useDispatch } from 'react-redux';
 import { setSelectedCategory } from '../store/SelectedCategory';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../common/store/RootStore';
+import { Categories, Category } from '../../../common/type';
+
+import useCategorySetter from '../../../common/util/customHook/useCategorySetter';
 import pet from '../../../common/assets/icons/pet.svg';
 import food from '../../../common/assets/icons/food.svg';
 import culture from '../../../common/assets/icons/culture.svg';
@@ -14,11 +17,18 @@ import all from '../../../common/assets/icons/home.svg';
 import etc from '../../../common/assets/icons/etc.svg';
 
 export default function CategoryIcons() {
+  useCategorySetter();
+
   const dispatch = useDispatch();
+
   const Icons = [all, pet, sports, study, game, food, culture, etc];
 
   const selectedCategory = useSelector(
     (state: RootState) => state.selectedCategory,
+  );
+
+  const categories: Categories | null = JSON.parse(
+    localStorage.getItem('categories') || 'null',
   );
 
   return (
@@ -27,13 +37,16 @@ export default function CategoryIcons() {
         {Icons.map((icon, index) => (
           <IconWrapper
             onClick={() => {
-              // dispatch(setSelectedCategory(`${categoryData[index]}`));
-              dispatch(setSelectedCategory(`${4}`));
+              dispatch(
+                setSelectedCategory(
+                  `${icon === all ? '' : categories[index - 1].categoryId}`,
+                ),
+              );
             }}
             key={`Icon ${index}`}
           >
             <Button
-            // isselected={selectedCategory===categoryData[index]?1:0}
+              isselected={selectedCategory === categoryData[index - 1] ? 1 : 0}
             >
               <img src={icon} alt={`Icon ${index}`} />
             </Button>

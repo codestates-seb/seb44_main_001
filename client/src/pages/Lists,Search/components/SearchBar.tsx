@@ -47,7 +47,7 @@ export default function SearchBar() {
           type="text"
           value={inputValue}
           onChange={handleInputChange}
-          placeholder={`${selectedLocation} 지역의 ${selectedCategory} 카테고리에서 검색하기`}
+          placeholder={`${selectedLocation.city} ${selectedLocation.province} 지역의 ${selectedCategory} 카테고리에서 검색하기`}
         />
         {inputValue && (
           <DeleteButton type="reset" onClick={handleInputDelete}>

@@ -1,13 +1,24 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit';
 
+const initialState = {
+  locationId: 0,
+  city: '',
+  province: '',
+};
+
 export const selectedLocationSlice = createSlice({
   name: 'selectedLocation',
   //유저의 지역으로 바꾸기
-  initialState: 4,
+  initialState,
   reducers: {
     setSelectedLocation: (_state, action) => {
-      return action.payload;
-    }
+      const payload = action.payload;
+      return {
+        locationId: payload.locationId,
+        city: payload.city,
+        province: payload.province,
+      };
+    },
   },
 });
 
