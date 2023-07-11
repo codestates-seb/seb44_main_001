@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import { useMutation } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,6 +11,9 @@ import { SignupData } from '../../../common/type';
 import { RootState } from '../../../common/store/RootStore';
 import { setSignupUser } from '../store/SignupUser';
 import { BASE_URL } from '../../../common/util/constantValue';
+import { setCategory } from '../../../common/store/CategoryStore';
+import { setLocation } from '../../../common/store/LocationStore';
+import { resetCreatedPost } from '../../Write,Edit/store/CreatedPost';
 
 interface TextInputProps {
   type?: string;
@@ -46,6 +49,15 @@ export default function Signup() {
     signupData(`${BASE_URL}/members/register`, data),
   );
 
+  useEffect(() => {
+    return () => {
+      dispatch(setCategory({ categoryId: 0, name: '' }));
+      dispatch(setLocation({ locationId: 0, city: '', province: '' }));
+      dispatch(resetCreatedPost());
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
     dispatch(setSignupUser({ ...data, email: e.target.value }));
@@ -77,7 +89,7 @@ export default function Signup() {
   };
 
   const onLocationChange = (locationId: number | null) => {
-    dispatch(setSignupUser({ ...data, locationId: locationId }));
+    dispatch(setSignupUser({ ...data, location: locationId }));
   };
 
   const handleMyMsgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
