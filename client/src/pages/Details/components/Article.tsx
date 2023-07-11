@@ -1,37 +1,31 @@
 import { AiFillDelete } from 'react-icons/ai';
-import {
-  UseQueryResult,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
 import deleteArticle from '../api/deleteArticle';
 import { ArticleToGet } from '../../../common/type';
 import { BASE_URL } from '../../../common/util/constantValue';
-import getArticle from '../api/getArticle';
 import { MdModeEditOutline } from 'react-icons/md';
 import peach_on from '../../../common/assets/icons/peach_on.svg';
 import comment from '../../../common/assets/icons/comment.svg';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../common/store/RootStore';
+import { setCreatedPost } from '../../Write,Edit/store/CreatedPost';
+import { setLocation } from '../../../common/store/LocationStore';
+import { setCategory } from '../../../common/store/CategoryStore';
 
-export default function Article() {
+export default function Article({ data }: { data?: ArticleToGet }) {
   const queryClient = useQueryClient();
 
   const userInfo = { memberId: 1 };
 
   const { id } = useParams();
 
+  const dispatch = useDispatch();
+
   const navigate = useNavigate();
 
   const totalComments = useSelector((state: RootState) => state.totalComments);
-
-  const { data }: UseQueryResult<ArticleToGet, unknown> = useQuery(
-    ['getData', id],
-    () => getArticle(`${BASE_URL}/posts/${id}`),
-  );
 
   const deleteItemMutation = useMutation<void, unknown, void>(
     () => deleteArticle(`${BASE_URL}/posts/${id}/${userInfo.memberId}`),
@@ -42,6 +36,32 @@ export default function Article() {
       },
     },
   );
+
+  const handleEditClick = () => {
+    dispatch(
+      setCreatedPost({
+        title: data?.title,
+        content: data?.content,
+        tags: data?.tags,
+        categoryId: data?.categoryInfo.categoryId,
+        locationId: data?.locationInfo.locationId,
+        memberId: data?.memberInfo.memberId,
+      }),
+    );
+    dispatch(
+      setLocation({
+        locationId: data?.locationInfo.locationId,
+        city: data?.locationInfo.city,
+        province: data?.locationInfo.province,
+      }),
+    );
+    dispatch(
+      setCategory({
+        name: data?.categoryInfo.name,
+        categoryId: data?.categoryInfo.categoryId,
+      }),
+    );
+  };
 
   const handleDelete = () => {
     if (window.confirm('정말로 삭제하시겠습니까?')) {
@@ -62,13 +82,10 @@ export default function Article() {
             </div>
           </TitleSection>
           <AuthorSection>
-            <Link to={`/user/${data.memberId}`}>
+            <Link to={`/user/${data.memberInfo.memberId}`}>
               {/* 미니 모달 뜨게끔 수정해야함 */}
-              <img
-                src="https://avatars.githubusercontent.com/u/124570875?s=400&u=9d5e547ecc4366c617f03a86a2936afe509edba3&v=4"
-                alt="user"
-              />
-              <div>나는 닉네임</div>
+              <img src={data.memberInfo.profileImage} alt="user" />
+              <div>{data.memberInfo.nickname}</div>
               {/* 위 유저 정보는 api 명세서 수정 후 수정 */}
             </Link>
           </AuthorSection>
@@ -82,12 +99,12 @@ export default function Article() {
           </TagSection>
           <InfoSection>
             <div>
-              {userInfo.memberId === data?.memberId && (
-                <Link to={`/write/${data?.postId}`}>
+              {userInfo.memberId === data?.memberInfo.memberId && (
+                <Link to={`/write/${data?.postId}`} onClick={handleEditClick}>
                   <MdModeEditOutline size={24} />
                 </Link>
               )}
-              {userInfo.memberId === data?.memberId && (
+              {userInfo.memberId === data?.memberInfo.memberId && (
                 <AiFillDelete size={24} onClick={handleDelete} />
               )}
               {/* 클릭 시 삭제 확인 창 뜨게 수정해야함 */}

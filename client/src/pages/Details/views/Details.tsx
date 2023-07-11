@@ -19,7 +19,7 @@ export default function Details() {
     () => getArticle(`${BASE_URL}/posts/${id}`),
   );
 
-  const category = data && categoryData[data.categoryId];
+  const category = data && categoryData[data.categoryInfo.categoryId];
 
   return (
     <>
@@ -29,7 +29,7 @@ export default function Details() {
       />
       <Layout>
         <Container>
-          <Article />
+          <Article data={data && data} />
           <CommentInput />
           <CommentList />
         </Container>

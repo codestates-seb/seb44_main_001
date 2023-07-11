@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { CATEGORY_MESSAGE } from '../util/constantValue';
 import { RootState } from '../store/RootStore';
-import { ChangeEvent, useEffect } from 'react';
+import { ChangeEvent } from 'react';
 import { setCategory } from '../store/CategoryStore';
 import { styled } from 'styled-components';
 import useCategorySetter from '../util/customHook/useCategorySetter';
@@ -35,12 +35,6 @@ export default function CategorySelector({
       onCategoryChange(categoryId);
     }
   };
-
-  useEffect(() => {
-    return () => {
-      dispatch(setCategory({ name: '', categoryId: 0 }));
-    };
-  });
 
   return (
     <Container>
