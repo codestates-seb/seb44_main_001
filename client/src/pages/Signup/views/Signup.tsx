@@ -1,16 +1,19 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import { useMutation } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
-import SemiHeader from "../../../common/components/SemiHeader";
-import { Layout } from "../../../common/style";
-import Button from "../../../common/components/Button";
-import LocationSelector from "../../../common/components/LocationSelector";
+import SemiHeader from '../../../common/components/SemiHeader';
+import { Layout } from '../../../common/style';
+import Button from '../../../common/components/Button';
+import LocationSelector from '../../../common/components/LocationSelector';
 import signupData from '../api/postSignup';
 import { SignupData } from '../../../common/type';
-import { RootState } from "../../../common/store/RootStore";
-import { setSignupUser } from "../store/SignupUser";
+import { RootState } from '../../../common/store/RootStore';
+import { setSignupUser } from '../store/SignupUser';
 import { BASE_URL } from '../../../common/util/constantValue';
+import { setCategory } from '../../../common/store/CategoryStore';
+import { setLocation } from '../../../common/store/LocationStore';
+import { resetCreatedPost } from '../../Write,Edit/store/CreatedPost';
 
 interface TextInputProps {
   type?: string;
@@ -41,11 +44,19 @@ export default function Signup() {
   const dispatch = useDispatch();
 
   const data: SignupData = useSelector((state: RootState) => state.signup);
-  const region = useSelector((state: RootState) => state.location.region);
 
   const signupMutation = useMutation<void, unknown, SignupData>(() =>
     signupData(`${BASE_URL}/members/register`, data),
   );
+
+  useEffect(() => {
+    return () => {
+      dispatch(setCategory({ categoryId: 0, name: '' }));
+      dispatch(setLocation({ locationId: 0, city: '', province: '' }));
+      dispatch(resetCreatedPost());
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -63,7 +74,7 @@ export default function Signup() {
 
   const handleNickNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickName(e.target.value);
-    dispatch(setSignupUser({ ...data, nickName: e.target.value }));
+    dispatch(setSignupUser({ ...data, nickname: e.target.value }));
   };
 
   const handleBirthYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -77,11 +88,8 @@ export default function Signup() {
     dispatch(setSignupUser({ ...data, gender: isMale }));
   };
 
-  const onLocationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    dispatch(
-      // setSignupUser({ ...data, location: `${region} ${e.target.value}` }),
-      setSignupUser({ ...data, location: 111111 }),
-    );
+  const onLocationChange = (locationId: number | null) => {
+    dispatch(setSignupUser({ ...data, location: locationId }));
   };
 
   const handleMyMsgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -199,7 +207,7 @@ export default function Signup() {
             </InputBox>
             <InputBox>
               <Text>지역</Text>
-              <LocationSelector onLocationChange={onLocationChange}/>
+              <LocationSelector onLocationChange={onLocationChange} />
             </InputBox>
             <InputBox>
               <Text>자기소개</Text>
@@ -218,20 +226,20 @@ export default function Signup() {
 }
 
 export const Background = styled.div`
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center;
-padding: 30px;
-border: solid 2px var(--color-black);
-border-radius: 10px;
-background-color: white;
-width: 40rem;
-margin: 100px;
-& select {
-  margin: 1rem 2rem 1rem 0;
-}
-`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  border: solid 2px var(--color-black);
+  border-radius: 10px;
+  background-color: white;
+  width: 40rem;
+  margin: 100px;
+  & select {
+    margin: 1rem 2rem 1rem 0;
+  }
+`;
 
 const ContentWrapper = styled.div`
   display: flex;
@@ -268,8 +276,10 @@ const DropdownInput = styled.select`
   width: 300px;
   margin-top: 10px;
   color: var(--color-black);
-  &:focus { outline:none; }
-`
+  &:focus {
+    outline: none;
+  }
+`;
 
 const TextAreaInput = styled.textarea<TextAreaProps>`
   width: 90%;

@@ -22,20 +22,18 @@ export default function Login() {
   const [password, setPassword] = useState('');
 
   const dispatch = useDispatch();
+  const navigation = useNavigate();
 
-  // const member: Member = useSelector((state: RootState) => state.member);
   const data: LoginData = useSelector((state: RootState) => state.login);
+  const memberId: number = useSelector(
+    (state: RootState) => state.token.memberId,
+  );
 
   const loginMutation = useMutation<void, unknown, LoginData>(async () => {
-    loginData(`${BASE_URL}/auth/login`, data);
-
-    // console.log("Authorization:", Authorization);
-    // console.log("MemberId:", memberId);
-
-    // // 리덕스 저장
-    // dispatch(setTokenData({ Authorization, memberId }));
-    // localStorage.setItem("Authorization", Authorization);
-    // localStorage.setItem("MemberId", memberId);
+    const result = await loginData(`${BASE_URL}/auth/login`, data);
+    console.log(result);
+    localStorage.setItem('Authorization', result.token);
+    localStorage.setItem('MemberId', result.memberId);
   });
 
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,6 +48,21 @@ export default function Login() {
 
   const handleLogin = () => {
     loginMutation.mutate(data);
+
+    const storedToken = localStorage.getItem('Authorization');
+    const storedMemberId = localStorage.getItem('MemberId');
+    if (storedToken && storedMemberId) {
+      dispatch(
+        setTokenData({
+          token: storedToken,
+          memberId: parseInt(storedMemberId, 10),
+        }),
+      );
+    } else {
+      // 토큰과 memberId 가져오기 실패
+      dispatch(setTokenData({ ...data, token: '', memberId: 0 }));
+    }
+    navigation(`/members/${memberId}`);
   };
 
   return (
