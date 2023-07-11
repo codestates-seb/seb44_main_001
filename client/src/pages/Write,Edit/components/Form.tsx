@@ -10,12 +10,11 @@ import {
   UPDATE,
 } from '../../../common/util/constantValue';
 import { ChangeEvent, useEffect } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
 import postData from '../api/postData';
 import patchData from '../api/patchData';
-import getData from '../api/getData';
 import LocationSelector from '../../../common/components/LocationSelector';
 import CategorySelector from '../../../common/components/CategorySelector';
 import TagsInput from './TagsInput';
@@ -24,8 +23,8 @@ import Button from '../../../common/components/Button';
 import { RootState } from '../../../common/store/RootStore';
 import { ArticleToPost } from '../../../common/type';
 import { resetCreatedPost, setCreatedPost } from '../store/CreatedPost';
-import { categoryData } from '../../../common/util/categoryData';
 import { setCategory } from '../../../common/store/CategoryStore';
+import { setLocation } from '../../../common/store/LocationStore';
 
 export default function Form() {
   const navigate = useNavigate();
@@ -33,38 +32,6 @@ export default function Form() {
   const dispatch = useDispatch();
 
   const { id } = useParams();
-
-  const userInfo = {
-    memberId: 1,
-  };
-
-  useEffect(() => {
-    dispatch(setCreatedPost({ ...data, memberId: userInfo.memberId }));
-    return () => {
-      dispatch(resetCreatedPost());
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useQuery(
-    ['getData', id],
-    () => {
-      if (id) {
-        return getData(`${BASE_URL}/posts/${id}`);
-      }
-      return undefined;
-    },
-    {
-      onSuccess: (data) => {
-        console.log(data);
-        if (id && data) {
-          dispatch(setCreatedPost(data));
-          dispatch(setCategory(categoryData[data.categoryId]));
-          //! 나중에 카테고리 번호 수정하면 여기도 수정
-        }
-      },
-    },
-  );
 
   const data: ArticleToPost = useSelector(
     (state: RootState) => state.createdPost,
@@ -77,6 +44,17 @@ export default function Form() {
   const patchMutation = useMutation<void, unknown, ArticleToPost>(() =>
     patchData(`${BASE_URL}/posts/${id}/update`, data),
   );
+
+  useEffect(() => {
+    if (!id) {
+      return () => {
+        dispatch(resetCreatedPost());
+        dispatch(setCategory({ categoryId: 0, name: '' }));
+        dispatch(setLocation({ locationId: 0, city: '', province: '' }));
+      };
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSubmit = () => {
     if (!data.title) {
@@ -102,12 +80,14 @@ export default function Form() {
           navigate(-1);
         },
       });
+      dispatch(resetCreatedPost());
     } else {
       postMutation.mutate(data, {
         onSuccess: () => {
           navigate(-1);
         },
       });
+      dispatch(resetCreatedPost());
     }
   };
 
