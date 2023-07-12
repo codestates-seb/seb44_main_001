@@ -80,11 +80,23 @@ export type CardData = {
   content: string;
   postId: number;
   memberInfo: MemberInfo;
+  locationInfo: LocationInfo;
+  categoryInfo : CategoryInfo;
 };
 
 export type MemberInfo = {
   profileImage: string | null;
   nickname: string | null;
+};
+
+export type LocationInfo = {
+  city: string;
+  province: string;
+};
+
+export type CategoryInfo = {
+  categoryId: number;
+  name: string;
 };
 
 export type SignupData = {

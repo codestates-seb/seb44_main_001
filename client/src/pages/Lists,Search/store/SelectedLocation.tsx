@@ -1,9 +1,9 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  locationId: 0,
-  city: '',
-  province: '',
+  locationId: 1,
+  city: '서울특별시',
+  province: '전체',
 };
 
 export const selectedLocationSlice = createSlice({

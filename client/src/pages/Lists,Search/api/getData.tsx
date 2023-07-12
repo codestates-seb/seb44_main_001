@@ -1,8 +1,5 @@
 import axios from 'axios';
-//로그인 안했을때 전역상태 들와서
-// categoryId:selectedCategory,
-// locationId:selectedLocation,
-// 조건부 요청 보내기
+
 export const getData = async (
   url: string,
   keyword: string,
