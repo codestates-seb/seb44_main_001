@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import { useMutation } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import SemiHeader from '../../../common/components/SemiHeader';
 import { Layout } from '../../../common/style';
 import Button from '../../../common/components/Button';
@@ -36,12 +37,13 @@ export default function Signup() {
   const [isValidEmail, setIsValidEmail] = useState(true);
   const [password, setPassword] = useState('');
   const [isValidPassword, setIsValidPassword] = useState(true);
-  const [nickName, setNickName] = useState('');
-  const [birthYear, setBirthYear] = useState<number | null>(null);
-  const [gender, setGender] = useState<boolean | null>(null);
-  const [myMsg, setMyMsg] = useState('');
+  const [nickname, setNickname] = useState('');
+  const [age, setAge] = useState<number | null>(null);
+  const [isMale, setIsMale] = useState<boolean | null>(null);
+  const [welcomeMsg, setWelcomeMsg] = useState('');
 
   const dispatch = useDispatch();
+  const navigation = useNavigate();
 
   const data: SignupData = useSelector((state: RootState) => state.signup);
 
@@ -72,20 +74,20 @@ export default function Signup() {
     setIsValidPassword(e.target.value.length >= 8);
   };
 
-  const handleNickNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNickName(e.target.value);
+  const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNickname(e.target.value);
     dispatch(setSignupUser({ ...data, nickname: e.target.value }));
   };
 
   const handleBirthYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setBirthYear(parseInt(e.target.value));
-    dispatch(setSignupUser({ ...data, birthYear: e.target.value }));
+    setAge(parseInt(e.target.value));
+    dispatch(setSignupUser({ ...data, age: e.target.value }));
   };
 
-  const handleGenderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleIsMaleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const isMale = e.target.value === 'male';
-    setGender(isMale);
-    dispatch(setSignupUser({ ...data, gender: isMale }));
+    setIsMale(isMale);
+    dispatch(setSignupUser({ ...data, isMale: isMale }));
   };
 
   const onLocationChange = (locationId: number | null) => {
@@ -93,7 +95,7 @@ export default function Signup() {
   };
 
   const handleMyMsgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMyMsg(e.target.value);
+    setWelcomeMsg(e.target.value);
     dispatch(setSignupUser({ ...data, welcomeMsg: e.target.value }));
   };
 
@@ -104,14 +106,16 @@ export default function Signup() {
     if (
       email === '' ||
       password === '' ||
-      nickName === '' ||
-      birthYear === null ||
-      gender === null
+      nickname === '' ||
+      age === null ||
+      isMale === null ||
+      welcomeMsg === ''
     ) {
       alert('빈칸을 모두 채워주세요.');
     }
 
     signupMutation.mutate(data);
+    navigation(`/login`);
   };
 
   return (
@@ -151,8 +155,8 @@ export default function Signup() {
             <InputBox>
               <Text>닉네임</Text>
               <TextInput
-                value={nickName}
-                onChange={handleNickNameChange}
+                value={nickname}
+                onChange={handleNicknameChange}
                 isValidate={true}
                 placeholder="닉네임을 입력하세요. (나중에 수정할 수 있어요!)"
               />
@@ -160,7 +164,7 @@ export default function Signup() {
             <InputBox>
               <Text>출생년도</Text>
               <DropdownInput
-                value={birthYear === null ? '' : birthYear}
+                value={age === null ? '' : age}
                 onChange={handleBirthYearChange}
               >
                 <option value="">출생년도를 선택하세요</option>
@@ -184,10 +188,10 @@ export default function Signup() {
                   &nbsp;
                   <input
                     type="radio"
-                    name="gender"
+                    name="isMale"
                     value="male"
-                    onChange={handleGenderChange}
-                    checked={gender === true}
+                    onChange={handleIsMaleChange}
+                    checked={isMale === true}
                   />
                 </div>
                 <div style={{ margin: '10px' }}>
@@ -197,10 +201,10 @@ export default function Signup() {
                   &nbsp;
                   <input
                     type="radio"
-                    name="gender"
+                    name="isMale"
                     value="female"
-                    onChange={handleGenderChange}
-                    checked={gender === false}
+                    onChange={handleIsMaleChange}
+                    checked={isMale === false}
                   />
                 </div>
               </div>
@@ -212,7 +216,7 @@ export default function Signup() {
             <InputBox>
               <Text>자기소개</Text>
               <TextAreaInput
-                value={myMsg}
+                value={welcomeMsg}
                 onChange={handleMyMsgChange}
                 placeholder="자유롭게 자기소개를 작성해보세요."
               />
