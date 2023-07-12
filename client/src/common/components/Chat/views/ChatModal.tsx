@@ -7,7 +7,7 @@ import ChatMain from '../components/ChatMain';
 import ChatRoom from '../components/ChatRoom';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../store/RootStore';
-import StompJs from '@stomp/stompjs';
+import * as StompJs from '@stomp/stompjs';
 
 export default function ChatButton() {
   const [isOpen, setIsOpen] = useState(false);
