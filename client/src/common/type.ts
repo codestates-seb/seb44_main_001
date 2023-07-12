@@ -103,8 +103,8 @@ export type SignupData = {
   email: string;
   password: string;
   nickname: string;
-  birthYear: number | null;
-  gender: boolean | null;
+  age: number | null;
+  isMale: boolean | null;
   location: number | null;
   welcomeMsg: string;
 };
