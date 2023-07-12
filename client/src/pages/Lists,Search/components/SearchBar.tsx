@@ -1,14 +1,15 @@
 import { SetStateAction, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { AiOutlineSearch } from 'react-icons/ai';
-import { useDispatch, useSelector } from 'react-redux';
 import { setKeyword } from '../../../common/store/keywordStore';
 import { RootState } from '../../../common/store/RootStore';
 import { MdCancel } from 'react-icons/md';
 
 export default function SearchBar() {
   const [inputValue, setInputValue] = useState('');
+  
   const dispatch = useDispatch();
 
   const selectedLocation = useSelector(
@@ -18,6 +19,7 @@ export default function SearchBar() {
   const selectedCategory = useSelector(
     (state: RootState) => state.selectedCategory,
   );
+
   const navigate = useNavigate();
 
   const handleInputChange = (e: {
@@ -47,7 +49,7 @@ export default function SearchBar() {
           type="text"
           value={inputValue}
           onChange={handleInputChange}
-          placeholder={`${selectedLocation.city} ${selectedLocation.province} 지역의 ${selectedCategory} 카테고리에서 검색하기`}
+          placeholder={`${selectedLocation.city} ${selectedLocation.province} 지역의 ${selectedCategory.name} 카테고리에서 검색하기`}
         />
         {inputValue && (
           <DeleteButton type="reset" onClick={handleInputDelete}>

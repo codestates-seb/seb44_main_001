@@ -1,14 +1,24 @@
 import { styled } from 'styled-components';
 import { Link } from 'react-router-dom';
-import profile from '../assets/profile.svg';
-import { CardData,MemberInfo } from '../type';
+import { CardData, MemberInfo } from '../type';
 
-export default function Card({ title, content, postId, memberInfo }: CardData) {
+export default function Card({
+  title,
+  content,
+  postId,
+  memberInfo,
+  locationInfo,
+  categoryInfo,
+}: CardData) {
+
   const { profileImage, nickname }: MemberInfo = memberInfo;
+  const { city, province } = locationInfo;
+  const category = categoryInfo.name;
+  
   return (
     <Wrapper>
       <UserInfo>
-        <img className="profileImage" src={profile}></img>
+        <img className="profileImage" src={profileImage}></img>
         {/* profileImage 로 수정해야함 */}
         <span className="nickname">{nickname}</span>
         {/* nickname 로 수정해야함 */}
@@ -17,10 +27,14 @@ export default function Card({ title, content, postId, memberInfo }: CardData) {
         <Link to={`/details/${postId}`}>
           <div className="title">{title}</div>
           <div className="content">
-            {content.length >= 90 ? `${content?.slice(0, 90)}...` : content}
+            {content.length >= 90 ? `${content?.slice(0, 75)}...` : content}
           </div>
         </Link>
       </Content>
+      <SortArea>
+        <div className="location">{`${city} ${province}`}</div>
+        <div className="category">{category}</div>
+      </SortArea>
     </Wrapper>
   );
 }
@@ -33,7 +47,7 @@ const Wrapper = styled.div`
   background-color: var(--color-white);
   border: 2px solid var(--color-black);
   border-radius: 10px;
-  padding: 2rem;
+  padding: 1.5rem;
   * {
     color: var(--color-black);
   }
@@ -56,9 +70,21 @@ const Content = styled.div`
   .title {
     font-family: 'BR-Bold';
     font-size: var(--font-size-m);
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
   }
   .content {
-    line-height: 1.3;
+    line-height: 1.5;
+  }
+`;
+
+const SortArea = styled.div`
+  display: flex;
+  .location {
+    margin-right: 1rem;
+  }
+  * {
+    padding: 0.5rem;
+    background-color: var(--color-pink-1);
+    border-radius: 10px;
   }
 `;

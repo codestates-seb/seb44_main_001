@@ -1,12 +1,20 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit';
 
+const initialState = {
+  categoryId: 1,
+  name: '전체',
+};
+
 export const selectedCategorySlice = createSlice({
   name: 'selectedCategory',
-  //전체 카테고리로 바꾸기
-  initialState: 0,
+  initialState: initialState,
   reducers: {
     setSelectedCategory: (_state, action) => {
-      return action.payload;
+      const payload = action.payload;
+      return {
+        categoryId: payload.categoryId,
+        name: payload.name,
+      }
     },
   },
 });
