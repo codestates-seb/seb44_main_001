@@ -94,7 +94,7 @@ export default function Signup() {
     dispatch(setSignupUser({ ...data, location: locationId }));
   };
 
-  const handleMyMsgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleWelcomeMsgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setWelcomeMsg(e.target.value);
     dispatch(setSignupUser({ ...data, welcomeMsg: e.target.value }));
   };
@@ -217,7 +217,7 @@ export default function Signup() {
               <Text>자기소개</Text>
               <TextAreaInput
                 value={welcomeMsg}
-                onChange={handleMyMsgChange}
+                onChange={handleWelcomeMsgChange}
                 placeholder="자유롭게 자기소개를 작성해보세요."
               />
             </InputBox>
