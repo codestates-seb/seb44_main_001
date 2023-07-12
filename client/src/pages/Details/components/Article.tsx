@@ -7,14 +7,18 @@ import { ArticleToGet } from '../../../common/type';
 import { BASE_URL } from '../../../common/util/constantValue';
 import { MdModeEditOutline } from 'react-icons/md';
 import peach_on from '../../../common/assets/icons/peach_on.svg';
+import peach_off from '../../../common/assets/icons/peach_off.svg';
 import comment from '../../../common/assets/icons/comment.svg';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../common/store/RootStore';
 import { setCreatedPost } from '../../Write,Edit/store/CreatedPost';
 import { setLocation } from '../../../common/store/LocationStore';
 import { setCategory } from '../../../common/store/CategoryStore';
+import { useState } from 'react';
 
 export default function Article({ data }: { data?: ArticleToGet }) {
+  const [isLiked, setIsLiked] = useState(false);
+
   const queryClient = useQueryClient();
 
   const userInfo = { memberId: 2 };
@@ -111,7 +115,11 @@ export default function Article({ data }: { data?: ArticleToGet }) {
             </div>
             <div>
               <div>
-                <img src={peach_on} alt="liked" />
+                <Button type="button" onClick={()=>{
+                    console.log("좋아요클릭!")
+                }}>
+                  <img src={isLiked?`${peach_on}`:`${peach_off}`} alt="liked" />
+                </Button>
                 <div>999</div>
               </div>
               <div>
@@ -232,4 +240,11 @@ const InfoSection = styled.section`
   & img {
     height: 1.5rem;
   }
+`;
+
+const Button = styled.button`
+  background-color: transparent;
+  border: none;
+  height: 24px;
+  cursor: pointer;
 `;
