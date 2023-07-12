@@ -17,7 +17,7 @@ export default function CommentInput() {
   const { id } = useParams();
 
   const userInfo = {
-    memberId: 1,
+    memberId: 2,
   };
 
   const data = {
@@ -82,8 +82,10 @@ const InputSection = styled.section`
     border-radius: 5px;
     padding: 0.5rem;
     min-height: 5rem;
-    resize: none;
+    resize: vertical;
     outline: none;
+    line-height: 1.5;
+    color: var(--color-black);
   }
 `;
 

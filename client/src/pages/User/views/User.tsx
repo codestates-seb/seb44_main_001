@@ -12,6 +12,7 @@ import { RootState } from '../../../common/store/RootStore';
 import { Member } from '../../../common/type';
 import { BASE_URL } from '../../../common/util/constantValue';
 import { getMember } from '../store/MemberStore';
+import ChatButton from '../../../common/components/Chat/views/ChatModal';
 
 export default function User() {
   const [isMine, setIsMine] = useState(true);
@@ -55,6 +56,7 @@ export default function User() {
             <div>{data?.welcomeMsg}</div>
           </MsgBox>
         </Background>
+        <ChatButton />
       </Layout>
     </div>
   );

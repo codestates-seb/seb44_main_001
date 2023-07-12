@@ -34,7 +34,7 @@ export default function CommentList() {
 
   const [editingCommentId, setEditingCommentId] = useState(0);
 
-  const userInfo = { memberId: 1 };
+  const userInfo = { memberId: 2 };
 
   const [editedComment, setEditedComment] = useState({
     memberId: userInfo.memberId,
@@ -111,7 +111,7 @@ export default function CommentList() {
     setCommentId(data.commentId);
   };
 
-  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setEditedComment({ ...editedComment, content: event.target.value });
   };
 
@@ -135,9 +135,8 @@ export default function CommentList() {
             return (
               <ListSection key={data.commentId}>
                 {userInfo.memberId === data.memberInfo.memberId && isEditing ? (
-                  <>
-                    <input
-                      type="text"
+                  <CommentEdit>
+                    <textarea
                       value={editedComment.content}
                       onChange={handleInputChange}
                     />
@@ -145,10 +144,10 @@ export default function CommentList() {
                       <Button onClick={handlePatchEdit}>저장</Button>
                       <Button onClick={handleCancelEdit}>취소</Button>
                     </div>
-                  </>
+                  </CommentEdit>
                 ) : (
                   <>
-                    <div>
+                    <CommentInfo>
                       <div>
                         {data.isPostWriter
                           ? `${data.memberInfo.nickname} (작성자)`
@@ -159,10 +158,10 @@ export default function CommentList() {
                       ) : (
                         <div>{`${data.editedAt.slice(0, 10)} (수정됨)`}</div>
                       )}
-                    </div>
-                    <div>
+                    </CommentInfo>
+                    <CommentContent>
                       <div>{data.content}</div>
-                      <div>
+                      <CommentEditIcons>
                         {userInfo.memberId === data.memberInfo.memberId && (
                           <MdModeEditOutline
                             onClick={() => handleEditButtonClick(data)}
@@ -174,8 +173,8 @@ export default function CommentList() {
                             onClick={handleDeleteComment}
                           />
                         )}
-                      </div>
-                    </div>
+                      </CommentEditIcons>
+                    </CommentContent>
                   </>
                 )}
               </ListSection>
@@ -234,9 +233,52 @@ const ListSection = styled.section`
   border-radius: 5px;
   padding: 0.5rem;
   background: var(--color-white);
+  line-height: 1.5;
+  width: 50rem;
+`;
 
-  > input {
+const CommentInfo = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+
+  > :nth-child(2) {
+    font-size: var(--font-size-xs);
+  }
+`;
+
+const CommentContent = styled.div`
+  display: flex;
+  justify-content: space-between;
+
+  > :first-child {
+    width: 90%;
+    display: flex;
+    justify-content: start;
+  }
+`;
+
+const CommentEditIcons = styled.div`
+  > * {
+    margin-left: 0.5rem;
+    cursor: pointer;
+  }
+`;
+
+const CommentEdit = styled.div`
+  > textarea {
+    margin-bottom: 1rem;
+    font-family: 'BR-regular';
+    font-size: var(--font-size-s);
     width: 100%;
+    border: 2px solid var(--color-black);
+    border-radius: 5px;
+    padding: 0.5rem;
+    min-height: 5rem;
+    resize: vertical;
+    outline: none;
+    line-height: 1.5;
+    color: var(--color-black);
   }
 
   > .editButton {
@@ -245,28 +287,6 @@ const ListSection = styled.section`
 
     > :last-child {
       margin-left: 0.5rem;
-    }
-  }
-
-  > :first-child {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-
-    > :nth-child(2) {
-      font-size: var(--font-size-xs);
-    }
-  }
-
-  > :nth-child(2) {
-    display: flex;
-    justify-content: space-between;
-
-    > :nth-child(2) {
-      > * {
-        margin-left: 0.5rem;
-        cursor: pointer;
-      }
     }
   }
 `;
