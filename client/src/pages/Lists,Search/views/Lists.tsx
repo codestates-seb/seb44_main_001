@@ -7,6 +7,7 @@ import SearchBar from '../components/SearchBar';
 import CategoryIcons from '../components/CategoryIcons';
 import Cards from '../components/Cards';
 import ListsHeader from '../components/ListsHeader';
+import ChatButton from '../../../common/components/Chat/views/ChatModal';
 
 export default function Lists() {
   const dispatch = useDispatch();
@@ -26,8 +27,9 @@ export default function Lists() {
     <Wrapper>
       <SearchBar />
       {isPathLists ? <CategoryIcons /> : null}
-      <ListsHeader/>
+      <ListsHeader />
       <Cards />
+      <ChatButton />
     </Wrapper>
   );
 }

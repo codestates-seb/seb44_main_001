@@ -17,7 +17,7 @@ import { setCategory } from '../../../common/store/CategoryStore';
 export default function Article({ data }: { data?: ArticleToGet }) {
   const queryClient = useQueryClient();
 
-  const userInfo = { memberId: 1 };
+  const userInfo = { memberId: 2 };
 
   const { id } = useParams();
 
@@ -181,6 +181,7 @@ const AuthorSection = styled.section`
 const ContentSection = styled.section`
   margin-bottom: 2rem;
   min-height: 20rem;
+  line-height: 1.5;
 `;
 
 const TagSection = styled.section`
