@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { UseInfiniteQueryResult, useInfiniteQuery } from 'react-query';
+import { useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { RootState } from '../../../common/store/RootStore';
 import { getData } from '../api/getData';
@@ -13,14 +14,16 @@ import Card from '../../../common/components/Card';
 import momofriends from '../../../common/assets/logo/momofriends.svg';
 
 export default function Cards() {
-  const keyword: string = useSelector((state: RootState) => state.keyword);
+  const { keyword } = useParams();
+  
   const dispatch = useDispatch();
-  const selectedLocation = useSelector(
-    (state: RootState) => state.selectedLocation,
+
+  const selectedLocationId = useSelector(
+    (state: RootState) => state.selectedLocation.locationId,
   );
 
-  const selectedCategory = useSelector(
-    (state: RootState) => state.selectedCategory,
+  const selectedCategoryId = useSelector(
+    (state: RootState) => state.selectedCategory.categoryId,
   );
 
   // 배포 전 지우기
@@ -30,7 +33,8 @@ export default function Cards() {
   //   selectedCategory,
   //   selectedLocation.locationId,
   // );
-
+  console.log("선택한 로케이션 아이디",selectedLocationId);
+  console.log("선택한 카테고리 아이디",selectedCategoryId);
   const {
     data,
     fetchNextPage,
@@ -38,13 +42,15 @@ export default function Cards() {
     isLoading,
     isError,
   }: UseInfiniteQueryResult<CardData[], unknown> = useInfiniteQuery(
-    ['filteredList', keyword, selectedCategory, selectedLocation],
+    ['filteredList', keyword, selectedCategoryId, selectedLocationId],
     ({ pageParam = 1 }) =>
       getData(
-        `${BASE_URL}/posts${`${keyword && '/search'}/category-location`}`,
+        `${BASE_URL}/posts${`${keyword && '/search'}/${
+          selectedCategoryId !== 1 ? 'category-' : ''
+        }location`}`,
         keyword && keyword,
-        selectedCategory.categoryId,
-        selectedLocation.locationId,
+        selectedCategoryId === 1 ? undefined : selectedCategoryId,
+        selectedLocationId,
         pageParam,
       ),
     {

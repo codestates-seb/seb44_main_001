@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { AiOutlineSearch } from 'react-icons/ai';
-import { setKeyword } from '../../../common/store/keywordStore';
 import { RootState } from '../../../common/store/RootStore';
 import { MdCancel } from 'react-icons/md';
 
@@ -33,7 +32,6 @@ export default function SearchBar() {
     if (inputValue === '') {
       return;
     }
-    dispatch(setKeyword(inputValue));
     navigate(`/search/${inputValue}`);
     setInputValue('');
   };
