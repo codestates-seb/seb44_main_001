@@ -3,8 +3,9 @@ import { styled } from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSelectedCategory } from '../store/SelectedCategory';
 import { RootState } from '../../../common/store/RootStore';
-import { Categories } from '../../../common/type';
+import { Categories, Category } from '../../../common/type';
 import useCategorySetter from '../../../common/util/customHook/useCategorySetter';
+
 import pet from '../../../common/assets/icons/pet.svg';
 import food from '../../../common/assets/icons/food.svg';
 import culture from '../../../common/assets/icons/culture.svg';
@@ -18,44 +19,41 @@ export default function CategoryIcons() {
   useCategorySetter();
 
   const dispatch = useDispatch();
-
-  const Icons = [all, pet, sports, study, game, food, culture, etc];
-
   const categories: Categories | null = JSON.parse(
     localStorage.getItem('categories') || 'null',
   );
-
   const selectedCategory = useSelector(
     (state: RootState) => state.selectedCategory,
   );
 
-  //언마운트 될 때 카테고리상태 초기화
   useEffect(() => {
-    return () => {
-      dispatch(setSelectedCategory({ categoryId: 1, name: '전체' }));
-    };
+    dispatch(setSelectedCategory({ categoryId: 1, name: '전체' }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const Icons = [all, pet, sports, study, game, food, culture, etc];
+
+  const handleIconClick = (category: Category) => {
+    dispatch(setSelectedCategory(category));
+  };
 
   return (
     <Wrapper>
       {categories && (
         <>
-          {Icons.map((icon, index) => (
+          {categories.map((category, index) => (
             <IconWrapper
-              onClick={() => {
-                dispatch(setSelectedCategory(categories[index]));
-              }}
+              onClick={() => handleIconClick(category)}
               key={`Icon ${index}`}
             >
               <Button
                 $isSelected={
-                  selectedCategory.categoryId === categories[index].categoryId
+                  selectedCategory.categoryId === category.categoryId
                 }
               >
-                <img src={icon} alt={`Icon ${index}`} />
+                <img src={Icons[index]} alt={`Icon ${index}`} />
               </Button>
-              <div className="categoryName">{categories[index].name}</div>
+              <div className="categoryName">{category.name}</div>
             </IconWrapper>
           ))}
         </>
