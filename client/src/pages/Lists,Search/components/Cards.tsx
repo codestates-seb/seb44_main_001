@@ -14,27 +14,18 @@ import Card from '../../../common/components/Card';
 import momofriends from '../../../common/assets/logo/momofriends.svg';
 
 export default function Cards() {
-  const { keyword } = useParams();
-  
   const dispatch = useDispatch();
-
-  const selectedLocationId = useSelector(
-    (state: RootState) => state.selectedLocation.locationId,
+  const { keyword } = useParams();
+  const { selectedLocationId, selectedCategoryId } = useSelector(
+    (state: RootState) => ({
+      selectedLocationId: state.selectedLocation.locationId,
+      selectedCategoryId: state.selectedCategory.categoryId,
+    }),
   );
 
-  const selectedCategoryId = useSelector(
-    (state: RootState) => state.selectedCategory.categoryId,
-  );
+  console.log('선택한 로케이션 아이디', selectedLocationId);
+  console.log('선택한 카테고리 아이디', selectedCategoryId);
 
-  // 배포 전 지우기
-  // console.log(
-  //   '이건 Cards컴포넌트:',
-  //   keyword,
-  //   selectedCategory,
-  //   selectedLocation.locationId,
-  // );
-  console.log("선택한 로케이션 아이디",selectedLocationId);
-  console.log("선택한 카테고리 아이디",selectedCategoryId);
   const {
     data,
     fetchNextPage,
@@ -102,23 +93,23 @@ export default function Cards() {
 
   if (isError) return <Error>서버와의 연결이 끊어졌어요😢</Error>;
 
+  const flattenedData = data?.pages.flatMap((page) => page);
+
   return (
     <Wrapper>
-      {data && data?.pages.flatMap((page) => page).length ? (
+      {flattenedData && flattenedData.length ? (
         <Lists>
-          {data?.pages
-            .flatMap((page) => page)
-            .map((post: CardData, index: number) => (
-              <Card
-                key={index}
-                title={post.title}
-                content={post.content.replace(/<[^>]*>/g, '')}
-                memberInfo={post.memberInfo}
-                locationInfo={post.locationInfo}
-                categoryInfo={post.categoryInfo}
-                postId={post.postId}
-              />
-            ))}
+          {flattenedData.map((post: CardData, index: number) => (
+            <Card
+              key={index}
+              title={post.title}
+              content={post.content.replace(/<[^>]*>/g, '')}
+              memberInfo={post.memberInfo}
+              locationInfo={post.locationInfo}
+              categoryInfo={post.categoryInfo}
+              postId={post.postId}
+            />
+          ))}
         </Lists>
       ) : (
         <Message>조건과 일치하는 모임이 없어요🥲</Message>
@@ -127,9 +118,11 @@ export default function Cards() {
     </Wrapper>
   );
 }
+
 const Wrapper = styled.div`
   margin-top: 3rem;
 `;
+
 const Lists = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -138,11 +131,9 @@ const Lists = styled.div`
   @media (max-width: 768px) {
     grid-template-columns: repeat(1, 1fr);
   }
-
   @media (min-width: 769px) and (max-width: 1264px) {
     grid-template-columns: repeat(2, 1fr);
   }
-
   @media (min-width: 1265px) {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -157,6 +148,7 @@ const Loading = styled.div`
   flex-direction: column;
   align-items: center;
   margin-top: 3rem;
+
   animation: bounce_frames 0.5s infinite;
   animation-direction: alternate;
   animation-timing-function: cubic-bezier(0.5, 0.05, 1, 0.5);
@@ -168,6 +160,7 @@ const Loading = styled.div`
       transform: translate3d(0, 50px, 0);
     }
   }
+
   .message {
     margin-top: 1rem;
     font-size: var(--font-size-l);
