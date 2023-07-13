@@ -7,12 +7,19 @@ import ChatMain from '../components/ChatMain';
 import ChatRoom from '../components/ChatRoom';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../store/RootStore';
-import StompJs from '@stomp/stompjs';
+import * as StompJs from '@stomp/stompjs';
+import { UseQueryResult, useQuery } from 'react-query';
+import { BASE_URL } from '../../../util/constantValue';
+import getRoomList from '../api/getRoomList';
 
 export default function ChatButton() {
   const [isOpen, setIsOpen] = useState(false);
 
   const chatPage = useSelector((state: RootState) => state.chatPage);
+
+  const { data: chatRoomList }: UseQueryResult<[]> = useQuery('roomList', () =>
+    getRoomList(`${BASE_URL}/chat/roomlist`),
+  );
 
   const client = new StompJs.Client({
     brokerURL: '',
@@ -61,7 +68,12 @@ export default function ChatButton() {
         onRequestClose={handleModalChange}
         ariaHideApp={false}
       >
-        {chatPage === 0 && <ChatMain handleModalChange={handleModalChange} />}
+        {chatPage === 0 && (
+          <ChatMain
+            handleModalChange={handleModalChange}
+            chatRoomList={chatRoomList}
+          />
+        )}
         <ChatRoom chatPage={chatPage} />
       </Modal>
     </Container>

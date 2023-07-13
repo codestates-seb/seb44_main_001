@@ -6,8 +6,10 @@ import { setChatPage } from '../../../store/ChatPageStore';
 
 export default function ChatMain({
   handleModalChange,
+  chatRoomList,
 }: {
   handleModalChange: () => void;
+  chatRoomList: [] | undefined;
 }) {
   const dispatch = useDispatch();
 
@@ -15,18 +17,6 @@ export default function ChatMain({
     dispatch(setChatPage(1));
   };
 
-  const room = (
-    <div onClick={handleChatRoomClick}>
-      <div>
-        <div>무갑</div>
-        <div>3분전</div>
-      </div>
-      <div>
-        <div>아 빨리 좀 나오시라고요!!!!</div>
-        <AiFillDelete size={14} />
-      </div>
-    </div>
-  );
   return (
     <Container>
       <ChatHeader>
@@ -34,7 +24,20 @@ export default function ChatMain({
         <MdOutlineClose size={16} onClick={handleModalChange} />
       </ChatHeader>
       <ChatList>
-        <Chat>{room}</Chat>
+        <Chat>
+          {chatRoomList?.map((room: any, index: number) => (
+            <div key={index} onClick={handleChatRoomClick}>
+              <div>
+                <div>{room.name}</div>
+                <div>{room.lastActive}</div>
+              </div>
+              <div>
+                <div>{room.message}</div>
+                <AiFillDelete size={14} />
+              </div>
+            </div>
+          ))}
+        </Chat>
       </ChatList>
     </Container>
   );
