@@ -21,7 +21,7 @@ export const setSignupSlice = createSlice({
         age: action.payload.age,
         isMale: action.payload.isMale,
         location: action.payload.location,
-        welcomeMsg: action.payload.welcome_msg,
+        welcomeMsg: action.payload.welcomeMsg,
       };
     },
   },

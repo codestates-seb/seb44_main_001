@@ -1,35 +1,20 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit';
+import { Member } from '../../../common/type';
+
+interface MemberState {
+  data?: Member;
+}
+
+const initialState: MemberState = {};
 
 export const memberSlice = createSlice({
   name: 'member',
-  initialState: {
-    age: 0,
-    comments: [],
-    createdAt: '',
-    email: '',
-    isMale: true,
-    location: 0,
-    memberId: 0,
-    nickname: '',
-    posts: [],
-    profileImage: '',
-    welcomeMsg: '',
-  },
+  initialState,
   reducers: {
     getMember: (_state, action) => {
       return {
-        age: action.payload.age,
-        comments: action.payload.comments,
-        createdAt: action.payload.createdAt,
-        email: action.payload.email,
-        isMale: action.payload.isMale,
-        location: action.payload.location,
-        memberId: action.payload.memberId,
-        nickname: action.payload.nickname,
-        posts: action.payload.posts,
-        profileImage: action.payload.profileImage,
-        welcomeMsg: action.payload.welcomeMsg,
-      }
+        data: action.payload,
+      };
     },
   },
 });
@@ -39,4 +24,4 @@ export const store = configureStore({
   reducer: memberSlice.reducer,
 });
 
-export const {getMember} = memberSlice.actions;
+export const { getMember } = memberSlice.actions;

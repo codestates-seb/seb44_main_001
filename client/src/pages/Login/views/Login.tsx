@@ -27,14 +27,7 @@ export default function Login() {
   const navigation = useNavigate();
 
   const data: LoginData = useSelector((state: RootState) => state.login);
-  const user: Member = useSelector((state: RootState) => state.member);
-
-  const fetchUser = useMutation<void, unknown, number>(
-    async (memberId: number) => {
-      const userData = await getMember(`${BASE_URL}/members/${memberId}`);
-      dispatch(getMember(userData)); // Redux에서 사용자 데이터를 설정
-    },
-  );
+  // const user: Member = useSelector((state: RootState) => state.member);
 
   const loginMutation = useMutation<void, unknown, LoginData>(
     async () => {
@@ -52,7 +45,7 @@ export default function Login() {
 
         if (!!storedToken && !!storedMemberId) {
           const memberId = parseInt(storedMemberId, 10);
-          fetchUser.mutate(memberId);
+          // fetchUser.mutate(memberId);
           dispatch(
             setTokenData({
               ...data,
@@ -60,8 +53,7 @@ export default function Login() {
               memberId: memberId,
             }),
           );
-          console.log(user);
-          navigation(`/`);
+          navigation(`/user`);
         } else {
           // 토큰과 memberId 가져오기 실패
           dispatch(setTokenData({ ...data, token: '', memberId: 0 }));
@@ -80,27 +72,21 @@ export default function Login() {
     dispatch(setLoginUser({ ...data, password: e.target.value }));
   };
 
+  const fetchUser = useMutation<void, unknown, number>(
+    async (memberId: number) => {
+      const userData = await getMember(`${BASE_URL}/members/${memberId}`);
+      dispatch(getMember(userData)); // Redux에서 사용자 데이터를 설정
+    },
+  );
+
   const handleLogin = async () => {
     await loginMutation.mutate(data);
-
-    // const storedToken = localStorage.getItem('Authorization');
-    // const storedMemberId = localStorage.getItem('MemberId');
-    // console.log('storedToken: ', storedToken);
-    // console.log('storedMemberId: ', storedMemberId);
-
-    // if (!!storedToken && !!storedMemberId) {
-    //   dispatch(
-    //     setTokenData({
-    //       ...data,
-    //       token: storedToken,
-    //       memberId: parseInt(storedMemberId, 10),
-    //     }),
-    //   );
-    // } else {
-    //   // 토큰과 memberId 가져오기 실패
-    //   dispatch(setTokenData({ ...data, token: '', memberId: 0 }));
-    // }
-    // navigation(`/members/${memberId}`);
+    const storedMemberId = localStorage.getItem('MemberId');
+    if (storedMemberId) {
+      const memberId = parseInt(storedMemberId, 10);
+      fetchUser.mutate(memberId);
+      // console.log(user);
+    }
   };
 
   return (

@@ -81,7 +81,7 @@ export type CardData = {
   postId: number;
   memberInfo: MemberInfo;
   locationInfo: LocationInfo;
-  categoryInfo : CategoryInfo;
+  categoryInfo: CategoryInfo;
 };
 
 export type MemberInfo = {
@@ -125,4 +125,8 @@ export type Member = {
   age: number;
   createdAt: string;
   posts: CardData[];
+};
+
+export type MemberState = {
+  data?: Member;
 };
