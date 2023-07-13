@@ -41,8 +41,10 @@ export default function LocationSelector({
     const locationId: number | null = JSON.parse(
       localStorage.getItem('locations') || 'null',
     )?.find(
-      (location: Location) => location.province === event.target.value,
+      (location: Location) =>
+        location.city === city && location.province === event.target.value,
     )?.locationId;
+
     dispatch(setLocation({ city, province: event.target.value, locationId }));
     if (onLocationChange) {
       onLocationChange(locationId);

@@ -2,15 +2,15 @@ import axios from 'axios';
 
 export const getData = async (
   url: string,
-  keyword: string,
-  selectedCategory: number,
+  keyword: string | undefined,
+  selectedCategory: number | undefined,
   selectedLocation: number,
   pageParam: number,
 ) => {
   const res = await axios(url, {
     params: {
       ...(keyword && { keyword }),
-      categoryId: selectedCategory,
+      ...(selectedCategory && { categoryId: selectedCategory }),
       locationId: selectedLocation,
       page: pageParam,
       pageSize: 12,

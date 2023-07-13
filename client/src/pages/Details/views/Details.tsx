@@ -5,11 +5,10 @@ import Article from '../components/Article';
 import CommentInput from '../components/CommentInput';
 import CommentList from '../components/CommentList';
 import { UseQueryResult, useQuery } from 'react-query';
-import { ArticleToGet } from '../../../common/type';
+import { ArticleToGet, Categories } from '../../../common/type';
 import getArticle from '../api/getArticle';
 import { BASE_URL } from '../../../common/util/constantValue';
 import { useParams } from 'react-router-dom';
-import { categoryData } from '../../../common/util/categoryData';
 import ChatButton from '../../../common/components/Chat/views/ChatModal';
 
 export default function Details() {
@@ -19,8 +18,15 @@ export default function Details() {
     ['getData', id],
     () => getArticle(`${BASE_URL}/posts/${id}`),
   );
+  
+  const categories: Categories | null = JSON.parse(
+    localStorage.getItem('categories') || 'null',
+  );
 
-  const category = data && categoryData[data.categoryInfo.categoryId];
+  const category =
+    data && categories
+      ? categories[data.categoryInfo.categoryId - 1].name
+      : null;
 
   return (
     <>
