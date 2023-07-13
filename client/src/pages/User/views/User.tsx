@@ -1,7 +1,7 @@
 import { styled } from 'styled-components';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { useMutation } from 'react-query';
+import { useDispatch, useSelector } from 'react-redux';
+import { useQuery } from 'react-query';
 
 import SemiHeader from '../../../common/components/SemiHeader';
 import Button from '../../../common/components/Button';
@@ -9,55 +9,69 @@ import { Layout } from '../../../common/style';
 import { Background } from '../../Signup/views/Signup';
 import profile from '../../../common/assets/profile.svg';
 import { RootState } from '../../../common/store/RootStore';
-import { Member } from '../../../common/type';
 import { BASE_URL } from '../../../common/util/constantValue';
 import { getMember } from '../store/MemberStore';
 import ChatButton from '../../../common/components/Chat/views/ChatModal';
 
-export default function User() {
+interface UserInfoProps {
+  memberId: string; // 컴포넌트 속성에 userId 추가
+}
+
+export default function User({ memberId }: UserInfoProps) {
   const [isMine, setIsMine] = useState(true);
-  const memberId = 5;
 
-  const data: Member = useSelector((state: RootState) => state.member);
+  const dispatch = useDispatch();
+  const storedMemberId = localStorage.getItem('MemberId');
+  const user = useSelector((state: RootState) => state.member.data);
 
-  const userMutation = useMutation<void, unknown, Member>(async () => {
-    // getMember(`${BASE_URL}/members/${data.memberId}`);
-    getMember(`${BASE_URL}/members/${memberId}`);
-  });
+  const { data, isLoading } = useQuery(['member', memberId], () =>
+    getMember(`${BASE_URL}/members/${memberId}`),
+  );
+
+  const displayedData = user || data;
 
   return (
     <div>
-      <SemiHeader title={`${data?.nickname} 의 프로필`} content="" />
-      <Layout>
-        <Background>
-          <ProfileBox>
-            <ProfileContentBox style={{ display: 'flex' }}>
-              <ProfileImg
-                src={data?.nickname ? `${data?.nickname}` : profile}
-              />
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  marginTop: '2rem',
-                }}
-              >
-                <div>{data?.nickname}</div>
-                <div>{data?.location}</div>
-                <div>
-                  <div>{data?.isMale ? `남자` : `여자`}</div>
-                  <div>{`${data?.age}년생`}</div>
-                </div>
-              </div>
-            </ProfileContentBox>
-            {isMine ? <Button children={'프로필 수정'} /> : <>&nbsp;</>}
-          </ProfileBox>
-          <MsgBox>
-            <div>{data?.welcomeMsg}</div>
-          </MsgBox>
-        </Background>
-        <ChatButton />
-      </Layout>
+      {!isLoading && displayedData ? (
+        <>
+          <SemiHeader
+            title={`${displayedData.nickname} 의 프로필`}
+            content=""
+          />
+          <Layout>
+            <Background>
+              <ProfileBox>
+                <ProfileContentBox style={{ display: 'flex' }}>
+                  <ProfileImg
+                    src={data?.nickname ? `${data?.nickname}` : profile}
+                  />
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      marginTop: '2rem',
+                    }}
+                  >
+                    <div>{data?.nickname}</div>
+                    <div>{data?.location}</div>
+                    <div>
+                      <div>{data?.isMale ? `남자` : `여자`}</div>
+                      <div>{`${data?.age}년생`}</div>
+                    </div>
+                  </div>
+                </ProfileContentBox>
+                {isMine ? <Button children={'프로필 수정'} /> : <>&nbsp;</>}
+              </ProfileBox>
+              <MsgBox>
+                <div>{data?.welcomeMsg}</div>
+              </MsgBox>
+            </Background>
+            <ChatButton />
+          </Layout>
+        </>
+      ) : (
+        <p>로드 중...</p>
+      )}
     </div>
   );
 }
