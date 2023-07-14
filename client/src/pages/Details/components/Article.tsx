@@ -18,9 +18,13 @@ import { useState } from 'react';
 import UserModal from './UserModal';
 import getLike from '../api/getLike';
 import postLike from '../api/postLike';
+import deleteLike from '../api/deleteLike';
+import { useEffect } from 'react';
 
 export default function Article({ data }: { data?: ArticleToGet }) {
   const [isLiked, setIsLiked] = useState(false);
+
+  const [totalLikes, setTotalLikes] = useState(data?.likeCount || 0)
 
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
 
@@ -40,10 +44,22 @@ export default function Article({ data }: { data?: ArticleToGet }) {
   const { data: likeData } = useQuery(['getLike'], () =>
     getLike(`${BASE_URL}/likes/${id}`, userInfo.memberId),
   );
+  //첫 랜더링시 유저의 좋아요 이력 여부에 따라 isLiked상태 변경
+  useEffect(() => {
+    if (likeData) {
+      setIsLiked(true);
+    } else {
+      setIsLiked(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  //postId와 memberId 요청에 보내서 있으면
   const postLikeMutaion = useMutation(() =>
     postLike(`${BASE_URL}/posts/${id}`, userInfo.memberId),
+  );
+
+  const deleteLikeMutation = useMutation(() =>
+    deleteLike(`${BASE_URL}/posts/${id}`, userInfo.memberId),
   );
 
   const deleteItemMutation = useMutation<void, unknown, void>(
@@ -90,11 +106,20 @@ export default function Article({ data }: { data?: ArticleToGet }) {
 
   const handleModalChange = () => {
     setIsUserModalOpen(!isUserModalOpen);
-  }
-  
+  };
+
   const handleClickLike = () => {
-    console.log('조아요눌러찌');
-    postLikeMutaion.mutate();
+    if (isLiked) {
+      console.log('시러요');
+      setIsLiked(false);
+      setTotalLikes((prevLikes)=>prevLikes-1)
+      deleteLikeMutation.mutate();
+    } else {
+      console.log('조아요');
+      setIsLiked(true);
+      setTotalLikes((prevLikes)=>prevLikes+1)
+      postLikeMutaion.mutate();
+    }
   };
 
   return (
@@ -143,21 +168,20 @@ export default function Article({ data }: { data?: ArticleToGet }) {
               {/* 클릭 시 삭제 확인 창 뜨게 수정해야함 */}
             </div>
             <div>
-              <div>         
+              <div>
                 <Button type="button" onClick={handleClickLike}>
                   <img
-                    src={likeData ? `${peach_on}` : `${peach_off}`}
-                    alt={likeData ? 'Liked' : 'Not liked'}
+                    src={isLiked ? `${peach_on}` : `${peach_off}`}
+                    alt={isLiked ? 'Liked' : 'Not liked'}
                   />
                 </Button>
-                <div>{data.likeCount}</div>
+                <div>{totalLikes}</div>
               </div>
               <div>
                 <img src={comment} alt="comment" />
                 <div>{totalComments}</div>
               </div>
             </div>
-            {/* 위 좋아요 수는 lv3 때 구현 */}
           </InfoSection>
         </>
       ) : (
