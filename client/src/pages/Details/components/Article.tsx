@@ -1,5 +1,5 @@
 import { AiFillDelete } from 'react-icons/ai';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
 import deleteArticle from '../api/deleteArticle';
@@ -16,6 +16,8 @@ import { setLocation } from '../../../common/store/LocationStore';
 import { setCategory } from '../../../common/store/CategoryStore';
 import { useState } from 'react';
 import UserModal from './UserModal';
+import getLike from '../api/getLike';
+import postLike from '../api/postLike';
 
 export default function Article({ data }: { data?: ArticleToGet }) {
   const [isLiked, setIsLiked] = useState(false);
@@ -33,6 +35,16 @@ export default function Article({ data }: { data?: ArticleToGet }) {
   const navigate = useNavigate();
 
   const totalComments = useSelector((state: RootState) => state.totalComments);
+
+  //해당 포스트의 좋아요 데이터중 나의 아이디와 일치하는 데이터 있는지 get요청
+  const { data: likeData } = useQuery(['getLike'], () =>
+    getLike(`${BASE_URL}/likes/${id}`, userInfo.memberId),
+  );
+
+  //postId와 memberId 요청에 보내서 있으면
+  const postLikeMutaion = useMutation(() =>
+    postLike(`${BASE_URL}/posts/${id}`, userInfo.memberId),
+  );
 
   const deleteItemMutation = useMutation<void, unknown, void>(
     () => deleteArticle(`${BASE_URL}/posts/${id}/${userInfo.memberId}`),
@@ -78,6 +90,11 @@ export default function Article({ data }: { data?: ArticleToGet }) {
 
   const handleModalChange = () => {
     setIsUserModalOpen(!isUserModalOpen);
+  }
+  
+  const handleClickLike = () => {
+    console.log('조아요눌러찌');
+    postLikeMutaion.mutate();
   };
 
   return (
@@ -126,19 +143,14 @@ export default function Article({ data }: { data?: ArticleToGet }) {
               {/* 클릭 시 삭제 확인 창 뜨게 수정해야함 */}
             </div>
             <div>
-              <div>
-                <Button
-                  type="button"
-                  onClick={() => {
-                    console.log('좋아요클릭!');
-                  }}
-                >
+              <div>         
+                <Button type="button" onClick={handleClickLike}>
                   <img
-                    src={isLiked ? `${peach_on}` : `${peach_off}`}
-                    alt="liked"
+                    src={likeData ? `${peach_on}` : `${peach_off}`}
+                    alt={likeData ? 'Liked' : 'Not liked'}
                   />
                 </Button>
-                <div>999</div>
+                <div>{data.likeCount}</div>
               </div>
               <div>
                 <img src={comment} alt="comment" />

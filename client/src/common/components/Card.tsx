@@ -1,6 +1,7 @@
 import { styled } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { CardData, MemberInfo } from '../type';
+import profile from '../assets/profile.svg';
 
 export default function Card({
   title,
@@ -10,15 +11,17 @@ export default function Card({
   locationInfo,
   categoryInfo,
 }: CardData) {
-
   const { profileImage, nickname }: MemberInfo = memberInfo;
   const { city, province } = locationInfo;
   const category = categoryInfo.name;
-  
+
   return (
     <Wrapper>
       <UserInfo>
-        <img className="profileImage" src={profileImage}></img>
+        <img
+          className="profileImage"
+          src={profileImage ? profileImage : profile}
+        />
         {/* profileImage 로 수정해야함 */}
         <span className="nickname">{nickname}</span>
         {/* nickname 로 수정해야함 */}
