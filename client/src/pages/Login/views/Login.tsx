@@ -7,9 +7,8 @@ import { Layout } from '../../../common/style';
 import SemiHeader from '../../../common/components/SemiHeader';
 import { Background, Text, TextInput } from '../../Signup/views/Signup';
 import { RootState } from '../../../common/store/RootStore';
-import { LoginData, Member } from '../../../common/type';
+import { LoginData } from '../../../common/type';
 import loginData from '../api/postLogin';
-import { getMember } from '../../User/store/MemberStore';
 
 import { setLoginUser } from '../store/LoginUser';
 import { setTokenData } from '../store/userTokenStore';
@@ -18,6 +17,8 @@ import kakao from '../../../common/assets/logo/kakao-logo.png';
 import Button from '../../../common/components/Button';
 
 import { BASE_URL } from '../../../common/util/constantValue';
+import MyData from '../api/getMydata';
+import { setMyData } from '../store/MyUserData';
 
 export default function Login() {
   const [username, setUsername] = useState('');
@@ -27,6 +28,7 @@ export default function Login() {
   const navigation = useNavigate();
 
   const data: LoginData = useSelector((state: RootState) => state.login);
+  const token: string = useSelector((state: RootState) => state.token.token);
   // const user: Member = useSelector((state: RootState) => state.member);
 
   const loginMutation = useMutation<void, unknown, LoginData>(
@@ -53,7 +55,6 @@ export default function Login() {
               memberId: memberId,
             }),
           );
-          navigation(`/user`);
         } else {
           // 토큰과 memberId 가져오기 실패
           dispatch(setTokenData({ ...data, token: '', memberId: 0 }));
@@ -74,8 +75,9 @@ export default function Login() {
 
   const fetchUser = useMutation<void, unknown, number>(
     async (memberId: number) => {
-      const userData = await getMember(`${BASE_URL}/members/${memberId}`);
-      dispatch(getMember(userData)); // Redux에서 사용자 데이터를 설정
+      const userData = await MyData(`${BASE_URL}/members/${memberId}`, token);
+      dispatch(setMyData(userData));
+      console.log(`fetch User!!! : `, userData);
     },
   );
 
@@ -84,8 +86,18 @@ export default function Login() {
     const storedMemberId = localStorage.getItem('MemberId');
     if (storedMemberId) {
       const memberId = parseInt(storedMemberId, 10);
-      fetchUser.mutate(memberId);
-      // console.log(user);
+      await fetchUser.mutate(memberId, {
+        onSuccess: () => {
+          console.log('UserData fetched successfully');
+        },
+        onError: () => {
+          console.log('An error occurred while fetching UserData');
+        },
+      });
+
+      navigation(`/user/${memberId}`, { state: memberId });
+    } else {
+      alert(`로그인에 실패하였습니다! 다시 시도해주세요.`);
     }
   };
 
