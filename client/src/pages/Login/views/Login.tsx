@@ -17,7 +17,7 @@ import kakao from '../../../common/assets/logo/kakao-logo.png';
 import Button from '../../../common/components/Button';
 
 import { BASE_URL } from '../../../common/util/constantValue';
-import MyData from '../api/getMydata';
+import MyData from '../api/getMyData';
 import { setMyData } from '../store/MyUserData';
 
 export default function Login() {
@@ -55,6 +55,18 @@ export default function Login() {
               memberId: memberId,
             }),
           );
+
+          await fetchUser.mutate(memberId, {
+            // 이 부분을 추가하세요.
+            onSuccess: () => {
+              console.log('UserData fetched successfully');
+            },
+            onError: () => {
+              console.log('An error occurred while fetching UserData');
+            },
+          });
+
+          navigation(`/user/${memberId}`, { state: memberId });
         } else {
           // 토큰과 memberId 가져오기 실패
           dispatch(setTokenData({ ...data, token: '', memberId: 0 }));
@@ -83,22 +95,6 @@ export default function Login() {
 
   const handleLogin = async () => {
     await loginMutation.mutate(data);
-    const storedMemberId = localStorage.getItem('MemberId');
-    if (storedMemberId) {
-      const memberId = parseInt(storedMemberId, 10);
-      await fetchUser.mutate(memberId, {
-        onSuccess: () => {
-          console.log('UserData fetched successfully');
-        },
-        onError: () => {
-          console.log('An error occurred while fetching UserData');
-        },
-      });
-
-      navigation(`/user/${memberId}`, { state: memberId });
-    } else {
-      alert(`로그인에 실패하였습니다! 다시 시도해주세요.`);
-    }
   };
 
   return (

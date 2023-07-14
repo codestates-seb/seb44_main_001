@@ -14,6 +14,6 @@ export default async function MyData(url: string, token: string) {
     return res.data;
   } catch (err) {
     console.log(err);
-    return { token: '', memberId: 0 };
+    return { err };
   }
 }

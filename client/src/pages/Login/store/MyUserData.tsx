@@ -1,19 +1,21 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit';
 
+const initialState = {
+  memberId: 0,
+  email: '',
+  location: 0,
+  welcomeMsg: '',
+  profileImage: '',
+  nickname: '',
+  isMale: true,
+  age: 0,
+  createdAt: '',
+  posts: [],
+};
+
 export const myDataSlice = createSlice({
   name: 'myData',
-  initialState: {
-    memberId: 0,
-    email: '',
-    location: 0,
-    welcomeMsg: '',
-    profileImage: '',
-    nickname: '',
-    isMale: true,
-    age: 0,
-    createdAt: '',
-    posts: [],
-  },
+  initialState,
   reducers: {
     setMyData: (_state, action) => {
       console.log(action.payload); //! 배포 시 삭제
@@ -30,6 +32,9 @@ export const myDataSlice = createSlice({
         posts: action.payload.posts,
       };
     },
+    resetStates: () => {
+      return initialState;
+    },
   },
 });
 
@@ -37,4 +42,4 @@ export const store = configureStore({
   reducer: myDataSlice.reducer,
 });
 
-export const { setMyData } = myDataSlice.actions;
+export const { setMyData, resetStates } = myDataSlice.actions;
