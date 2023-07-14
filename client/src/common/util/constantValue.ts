@@ -35,3 +35,5 @@ export const COMMENT = '댓글';
 export const NEXT = '다음';
 
 export const PREV = '이전';
+
+export const CHAT_NOTICE = 'New!';
