@@ -15,14 +15,10 @@ import momofriends from '../../../common/assets/logo/momofriends.svg';
 
 export default function Cards() {
   const dispatch = useDispatch();
-  const { keyword } = useParams();
-  const { selectedLocationId, selectedCategoryId } = useSelector(
-    (state: RootState) => ({
-      selectedLocationId: state.selectedLocation.locationId,
-      selectedCategoryId: state.selectedCategory.categoryId,
-    }),
-  );
-
+  const keyword = useParams().keyword || '';
+  const selectedLocationId = useSelector((state: RootState) => state.selectedLocation.locationId);
+  const selectedCategoryId = useSelector((state: RootState) => state.selectedCategory.categoryId);
+  
   console.log('선택한 로케이션 아이디', selectedLocationId);
   console.log('선택한 카테고리 아이디', selectedCategoryId);
 

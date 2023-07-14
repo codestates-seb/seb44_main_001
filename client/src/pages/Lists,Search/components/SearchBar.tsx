@@ -10,11 +10,12 @@ export default function SearchBar() {
   const navigate = useNavigate();
   const [inputValue, setInputValue] = useState('');
 
-  const { selectedLocation, selectedCategory } = useSelector(
-    (state: RootState) => ({
-      selectedLocation: state.selectedLocation,
-      selectedCategory: state.selectedCategory,
-    }),
+  const selectedLocation = useSelector(
+    (state: RootState) => state.selectedLocation,
+  );
+
+  const selectedCategory = useSelector(
+    (state: RootState) => state.selectedCategory,
   );
 
   const handleInputChange = (e: {
@@ -87,7 +88,7 @@ const DeleteButton = styled.button`
   top: 0.8rem;
   right: 4rem;
   font-size: var(--font-size-m);
-  
+
   &:hover {
     color: var(--color-gray);
   }
