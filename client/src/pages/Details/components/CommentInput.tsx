@@ -16,12 +16,10 @@ export default function CommentInput() {
 
   const { id } = useParams();
 
-  const userInfo = {
-    memberId: 2,
-  };
+  const memberId = Number(localStorage.getItem('MemberId'));
 
   const data = {
-    memberId: userInfo.memberId,
+    memberId: memberId,
     content: content,
   };
 

@@ -1,5 +1,5 @@
 import { styled } from 'styled-components';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMutation } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -20,7 +20,8 @@ export default function User() {
   const params = useParams<{ memberId: string }>();
   const { memberId } = params;
 
-  const token: string = useSelector((state: RootState) => state.token.token);
+  // const token: string = useSelector((state: RootState) => state.token.token); 이 부분을 아래처럼 수정
+  const token: string | null = localStorage.getItem('Authorization');
   const data = useSelector((state: RootState) => state.member);
 
   const dispatch = useDispatch();
@@ -40,7 +41,7 @@ export default function User() {
     async (memberId: number) => {
       const userData = await getMember(
         `${BASE_URL}/members/${memberId}`,
-        token,
+        token as string,
       );
       dispatch(setUserData(userData));
       console.log(`fetch User!!! : `, userData);
