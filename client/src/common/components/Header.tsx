@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { FaArrowRightFromBracket } from 'react-icons/fa6';
-import AlramModal from './Alram/components/views/AlramModal';
+import AlramModal from './Alram/views/AlramModal';
 import Button from './Button';
 
 import logo from '../assets/logo/MOMO.png';

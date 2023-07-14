@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Modal from 'react-modal';
 import { styled } from 'styled-components';
 import { BiBell } from 'react-icons/bi';
-import { AlramStyle } from '../../AlramStyle';
+import { AlramStyle } from '../AlramStyle';
 
 export default function AlramModal() {
   const [isOpen, setIsOpen] = useState(false);
