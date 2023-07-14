@@ -11,13 +11,14 @@ import Details from './pages/Details/views/Details';
 import NotFound from './pages/NotFound/views/NotFound';
 
 const Router = () => {
+  const memberId = 3;
   return (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/kakao-signup" element={<KakaoSignup />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/user" element={<User />} />
+      <Route path="/user/:id" element={<User memberId={memberId} />} />
       <Route path="/user/edit" element={<UserEdit />} />
       <Route path="/lists" element={<Lists />} />
       <Route path="/search/:keyword" element={<Lists />} />

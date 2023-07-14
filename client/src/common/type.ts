@@ -126,7 +126,3 @@ export type Member = {
   createdAt: string;
   posts: CardData[];
 };
-
-export type MemberState = {
-  data?: Member;
-};

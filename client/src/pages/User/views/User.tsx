@@ -14,7 +14,7 @@ import { getMember } from '../store/MemberStore';
 import ChatButton from '../../../common/components/Chat/views/ChatModal';
 
 interface UserInfoProps {
-  memberId: string; // 컴포넌트 속성에 userId 추가
+  memberId: number; // 컴포넌트 속성에 userId 추가
 }
 
 export default function User({ memberId }: UserInfoProps) {
@@ -23,6 +23,7 @@ export default function User({ memberId }: UserInfoProps) {
   const dispatch = useDispatch();
   const storedMemberId = localStorage.getItem('MemberId');
   const user = useSelector((state: RootState) => state.member.data);
+  const myData = useSelector((state: RootState) => state.myData);
 
   const { data, isLoading } = useQuery(['member', memberId], () =>
     getMember(`${BASE_URL}/members/${memberId}`),
@@ -32,18 +33,17 @@ export default function User({ memberId }: UserInfoProps) {
 
   return (
     <div>
-      {!isLoading && displayedData ? (
+      {!isLoading && myData ? (
         <>
-          <SemiHeader
-            title={`${displayedData.nickname} 의 프로필`}
-            content=""
-          />
+          <SemiHeader title={`${myData.nickname} 의 프로필`} content="" />
           <Layout>
             <Background>
               <ProfileBox>
                 <ProfileContentBox style={{ display: 'flex' }}>
                   <ProfileImg
-                    src={data?.nickname ? `${data?.nickname}` : profile}
+                    src={
+                      myData.profileImage ? `${myData.profileImage}` : profile
+                    }
                   />
                   <div
                     style={{
@@ -52,18 +52,18 @@ export default function User({ memberId }: UserInfoProps) {
                       marginTop: '2rem',
                     }}
                   >
-                    <div>{data?.nickname}</div>
-                    <div>{data?.location}</div>
+                    <div>{myData.nickname}</div>
+                    <div>{myData.location}</div>
                     <div>
-                      <div>{data?.isMale ? `남자` : `여자`}</div>
-                      <div>{`${data?.age}년생`}</div>
+                      <div>{myData.isMale ? `남자` : `여자`}</div>
+                      <div>{`${myData.age}년생`}</div>
                     </div>
                   </div>
                 </ProfileContentBox>
                 {isMine ? <Button children={'프로필 수정'} /> : <>&nbsp;</>}
               </ProfileBox>
               <MsgBox>
-                <div>{data?.welcomeMsg}</div>
+                <div>{myData.welcomeMsg}</div>
               </MsgBox>
             </Background>
             <ChatButton />
