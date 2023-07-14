@@ -43,6 +43,7 @@ export type ArticleToGet = {
     city: string;
     province: string;
   };
+  likeCount:number;
 };
 
 export type CommentToPost = {

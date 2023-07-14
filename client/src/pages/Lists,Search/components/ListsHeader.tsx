@@ -16,10 +16,11 @@ export default function ListsHeader() {
   //로그인 전역상태 구현시 삭제
   const [islogin, setIsLogin] = useState(true);
 
-  const { location, selectedLocation } = useSelector((state: RootState) => ({
-    location: state.location,
-    selectedLocation: state.selectedLocation,
-  }));
+  const location = useSelector((state: RootState) => state.location);
+
+  const selectedLocation = useSelector(
+    (state: RootState) => state.selectedLocation,
+  );
 
   const handleLocationSelection = () => {
     if (!location.province) {
@@ -111,7 +112,7 @@ const Wrapper = styled.div`
       margin-right: 0;
     }
   }
-  
+
   //카드3개
   @media (min-width: 1265px) {
     width: 1264px;
