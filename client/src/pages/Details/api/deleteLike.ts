@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export default async function getLike(url: string, memberId: number) {
+export default async function deleteLike(url: string, memberId: number) {
   try {
     const options = {
       headers: {
@@ -11,7 +11,7 @@ export default async function getLike(url: string, memberId: number) {
       },
     };
     
-    const res = await axios.get(url, options);
+    const res = await axios.delete(url, options);
     console.log(res);
     return res.data;
   } catch (err) {

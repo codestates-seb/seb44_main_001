@@ -104,6 +104,7 @@ export default function Cards() {
               locationInfo={post.locationInfo}
               categoryInfo={post.categoryInfo}
               postId={post.postId}
+              tags={post.tags}
             />
           ))}
         </Lists>
@@ -124,10 +125,10 @@ const Lists = styled.div`
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 2rem;
 
-  @media (max-width: 768px) {
+  @media (max-width: 832px) {
     grid-template-columns: repeat(1, 1fr);
   }
-  @media (min-width: 769px) and (max-width: 1264px) {
+  @media (min-width: 832px) and (max-width: 1264px) {
     grid-template-columns: repeat(2, 1fr);
   }
   @media (min-width: 1265px) {

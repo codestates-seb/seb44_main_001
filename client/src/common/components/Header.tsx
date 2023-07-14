@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/RootStore';
 
 import { FaArrowRightFromBracket } from 'react-icons/fa6';
-import AlramModal from './Alram/components/views/AlramModal';
+import AlramModal from './Alram/views/AlramModal';
 import Button from './Button';
 import { resetStates } from '../../pages/Login/store/MyUserData';
 
