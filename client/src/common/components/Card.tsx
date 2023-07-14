@@ -10,30 +10,32 @@ export default function Card({
   memberInfo,
   locationInfo,
   categoryInfo,
+  tags,
 }: CardData) {
   const { profileImage, nickname }: MemberInfo = memberInfo;
   const { city, province } = locationInfo;
   const category = categoryInfo.name;
 
   return (
-    <Wrapper>
+    <Wrapper to={`/details/${postId}`}>
       <UserInfo>
         <img
           className="profileImage"
           src={profileImage ? profileImage : profile}
         />
-        {/* profileImage 로 수정해야함 */}
         <span className="nickname">{nickname}</span>
-        {/* nickname 로 수정해야함 */}
       </UserInfo>
       <Content>
-        <Link to={`/details/${postId}`}>
           <div className="title">{title}</div>
           <div className="content">
             {content.length >= 90 ? `${content?.slice(0, 75)}...` : content}
           </div>
-        </Link>
       </Content>
+      <TagSection>
+        {tags.slice(0,4).map((tag:string) => (
+          <div key={tag}>{`#${tag}`}</div>
+        ))}
+      </TagSection>
       <SortArea>
         <div className="location">{`${city} ${province}`}</div>
         <div className="category">{category}</div>
@@ -42,7 +44,7 @@ export default function Card({
   );
 }
 
-const Wrapper = styled.div`
+const Wrapper = styled(Link)`
   display: flex;
   flex-direction: column;
   width: 25rem;
@@ -54,14 +56,17 @@ const Wrapper = styled.div`
   * {
     color: var(--color-black);
   }
+  &:hover {
+    border-color: var(--color-pink-1);
+  }
 `;
 
 const UserInfo = styled.div`
   display: flex;
   align-items: center;
   .profileImage {
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 2rem;
+    height: 2rem;
     margin-right: 0.5rem;
     border-radius: 50%;
   }
@@ -88,6 +93,19 @@ const SortArea = styled.div`
   * {
     padding: 0.5rem;
     background-color: var(--color-pink-1);
-    border-radius: 10px;
+    border-radius: 5px;
+  }
+`;
+
+const TagSection = styled.section`
+  display: flex;
+  margin-bottom: 1rem;
+
+  > div {
+    font-size: var(--font-size-xs);
+    margin-right: 1rem;
+    border-radius: 5px;
+    background: var(--color-gray);
+    padding: 0.3rem;
   }
 `;

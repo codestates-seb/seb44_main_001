@@ -1,15 +1,19 @@
 import axios from 'axios';
 
-export default async function getMember(url: string, memberId: number) {
+export default async function getMember(url: string, token: string) {
   try {
     const headers = {
       'ngrok-skip-browser-warning': '69420',
-      Authorization: `${localStorage.getItem('Authorization')}`,
+      Authorization: `${token}`,
     };
-    const res = await axios.get(`${url}/members/${memberId}`, { headers });
-    console.log(res.data);
-    return res;
+
+    const res = await axios.get(url, { headers });
+
+    console.log(res);
+
+    return res.data;
   } catch (err) {
     console.log(err);
+    return { err };
   }
 }
