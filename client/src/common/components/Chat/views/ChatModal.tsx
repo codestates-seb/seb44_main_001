@@ -1,25 +1,39 @@
 import { AiFillWechat } from 'react-icons/ai';
 import { keyframes, styled } from 'styled-components';
 import Modal from 'react-modal';
-import { useEffect, useState } from 'react';
-import { modalStyle } from '../ModalStyle';
+import { useEffect } from 'react';
+import { modalStyle } from '../modalStyle';
 import ChatMain from '../components/ChatMain';
 import ChatRoom from '../components/ChatRoom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store/RootStore';
 import * as StompJs from '@stomp/stompjs';
 import { UseQueryResult, useQuery } from 'react-query';
 import { BASE_URL } from '../../../util/constantValue';
 import getRoomList from '../api/getRoomList';
+import { setChatModal } from '../../../store/ChatModalStore';
 
 export default function ChatButton() {
-  const [isOpen, setIsOpen] = useState(false);
+  const dispatch = useDispatch();
+
+  const isOpen = useSelector((state: RootState) => state.chatModal);
 
   const chatPage = useSelector((state: RootState) => state.chatPage);
 
-  const { data: chatRoomList }: UseQueryResult<[]> = useQuery('roomList', () =>
-    getRoomList(`${BASE_URL}/chat/roomlist`),
+  const { data: chatRoomList }: UseQueryResult<[]> = useQuery(
+    'roomList',
+    () => {
+      if (isOpen) {
+        return getRoomList(`${BASE_URL}/chat/roomlist`);
+      }
+      return Promise.resolve([]);
+    },
   );
+  // 기존 채팅방 목록 가져오기
+
+  //TODO 모달 열리면 기존 채팅방들 구독하는 로직 추가해야함
+
+  //TODO 채팅방 삭제 버튼 클릭 시 구독 취소
 
   const client = new StompJs.Client({
     brokerURL: '',
@@ -44,7 +58,7 @@ export default function ChatButton() {
   };
 
   const handleModalChange = () => {
-    setIsOpen(!isOpen);
+    dispatch(setChatModal(!isOpen));
   };
 
   useEffect(() => {

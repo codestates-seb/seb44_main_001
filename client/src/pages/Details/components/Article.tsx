@@ -14,10 +14,16 @@ import { RootState } from '../../../common/store/RootStore';
 import { setCreatedPost } from '../../Write,Edit/store/CreatedPost';
 import { setLocation } from '../../../common/store/LocationStore';
 import { setCategory } from '../../../common/store/CategoryStore';
+import { useState } from 'react';
+import UserModal from './UserModal';
 import getLike from '../api/getLike';
 import postLike from '../api/postLike';
 
 export default function Article({ data }: { data?: ArticleToGet }) {
+  const [isLiked, setIsLiked] = useState(false);
+
+  const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+
   const queryClient = useQueryClient();
 
   const userInfo = { memberId: 2 };
@@ -82,6 +88,10 @@ export default function Article({ data }: { data?: ArticleToGet }) {
     }
   };
 
+  const handleModalChange = () => {
+    setIsUserModalOpen(!isUserModalOpen);
+  }
+  
   const handleClickLike = () => {
     console.log('조아요눌러찌');
     postLikeMutaion.mutate();
@@ -100,12 +110,17 @@ export default function Article({ data }: { data?: ArticleToGet }) {
             </div>
           </TitleSection>
           <AuthorSection>
-            <Link to={`/user/${data.memberInfo.memberId}`}>
-              {/* 미니 모달 뜨게끔 수정해야함 */}
-              <img src={data.memberInfo.profileImage} alt="user" />
-              <div>{data.memberInfo.nickname}</div>
-              {/* 위 유저 정보는 api 명세서 수정 후 수정 */}
-            </Link>
+            <img
+              src={data.memberInfo.profileImage}
+              alt="user"
+              onClick={handleModalChange}
+            />
+            <div onClick={handleModalChange}>{data.memberInfo.nickname}</div>
+            <UserModal
+              isUserModalOpen={isUserModalOpen}
+              handleModalChange={handleModalChange}
+              data={data}
+            />
           </AuthorSection>
           <ContentSection>
             <div dangerouslySetInnerHTML={{ __html: data.content }} />
@@ -128,7 +143,7 @@ export default function Article({ data }: { data?: ArticleToGet }) {
               {/* 클릭 시 삭제 확인 창 뜨게 수정해야함 */}
             </div>
             <div>
-              <div>
+              <div>         
                 <Button type="button" onClick={handleClickLike}>
                   <img
                     src={likeData ? `${peach_on}` : `${peach_off}`}
@@ -143,8 +158,6 @@ export default function Article({ data }: { data?: ArticleToGet }) {
               </div>
             </div>
             {/* 위 좋아요 수는 lv3 때 구현 */}
-            {/* <div>{commenteData.pageInfo.totalElements}</div> */}
-            {/* comment CRUD 구현 후 주석 해제 */}
           </InfoSection>
         </>
       ) : (
@@ -184,20 +197,17 @@ const TitleSection = styled.section`
 
 const AuthorSection = styled.section`
   display: flex;
+  align-items: center;
+  margin: 1rem 0 2rem 0;
+  text-decoration: none;
+  color: var(--color-black);
+  position: relative;
 
-  > a {
-    display: flex;
-    align-items: center;
-    margin: 1rem 0 2rem 0;
-    text-decoration: none;
-    color: var(--color-black);
-
-    & img {
-      border-radius: 50%;
-      height: 2rem;
-      width: 2rem;
-      margin-right: 1rem;
-    }
+  & img {
+    border-radius: 50%;
+    height: 2rem;
+    width: 2rem;
+    margin-right: 1rem;
   }
 `;
 

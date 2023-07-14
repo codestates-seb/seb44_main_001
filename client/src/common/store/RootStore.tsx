@@ -10,6 +10,7 @@ import { memberSlice } from '../../pages/User/store/MemberStore';
 import { totalCommentsSlice } from './CommentPageStore';
 import { tokenSlice } from '../../pages/Login/store/userTokenStore';
 import { chatPageSlice } from './ChatPageStore';
+import { chatModalSlice } from './ChatModalStore';
 
 const rootReducer = combineReducers({
   category: categorySlice.reducer,
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
   member: memberSlice.reducer,
   totalComments: totalCommentsSlice.reducer,
   chatPage: chatPageSlice.reducer,
+  chatModal: chatModalSlice.reducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
