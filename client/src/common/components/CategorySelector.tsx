@@ -18,6 +18,8 @@ export default function CategorySelector({
 
   const dispatch = useDispatch();
 
+  const pathName = window.location.pathname;
+
   const categories: Categories | null = JSON.parse(
     localStorage.getItem('categories') || 'null',
   );
@@ -42,11 +44,15 @@ export default function CategorySelector({
         <option disabled value="">
           {CATEGORY_MESSAGE}
         </option>
-        {categories?.map((category) => (
-          <option key={category.categoryId} value={category.name}>
-            {category.name}
-          </option>
-        ))}
+        {categories
+          ?.filter(
+            (category) => pathName !== '/write' || category.name !== 'All',
+          )
+          .map((category) => (
+            <option key={category.categoryId} value={category.name}>
+              {category.name}
+            </option>
+          ))}
       </select>
     </Container>
   );

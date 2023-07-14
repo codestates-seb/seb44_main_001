@@ -21,17 +21,18 @@ import postLike from '../api/postLike';
 import profile from '../../../common/assets/profile.svg';
 import deleteLike from '../api/deleteLike';
 import { useEffect } from 'react';
+import { calculateTimeDifference } from '../../../common/util/timeCalculator';
 
 export default function Article({ data }: { data?: ArticleToGet }) {
   const [isLiked, setIsLiked] = useState(false);
 
-  const [totalLikes, setTotalLikes] = useState(data?.likeCount || 0)
+  const [totalLikes, setTotalLikes] = useState(data?.likeCount || 0);
 
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
 
   const queryClient = useQueryClient();
 
-  const userInfo = { memberId: 2 };
+  const memberId = Number(localStorage.getItem('MemberId'));
 
   const { id } = useParams();
 
@@ -43,7 +44,7 @@ export default function Article({ data }: { data?: ArticleToGet }) {
 
   //해당 포스트의 좋아요 데이터중 나의 아이디와 일치하는 데이터 있는지 get요청
   const { data: likeData } = useQuery(['getLike'], () =>
-    getLike(`${BASE_URL}/likes/${id}`, userInfo.memberId),
+    getLike(`${BASE_URL}/likes/${id}`, memberId),
   );
   //첫 랜더링시 유저의 좋아요 이력 여부에 따라 isLiked상태 변경
   useEffect(() => {
@@ -56,15 +57,15 @@ export default function Article({ data }: { data?: ArticleToGet }) {
   }, []);
 
   const postLikeMutaion = useMutation(() =>
-    postLike(`${BASE_URL}/posts/${id}`, userInfo.memberId),
+    postLike(`${BASE_URL}/posts/${id}`, memberId),
   );
 
   const deleteLikeMutation = useMutation(() =>
-    deleteLike(`${BASE_URL}/posts/${id}`, userInfo.memberId),
+    deleteLike(`${BASE_URL}/posts/${id}`, memberId),
   );
 
   const deleteItemMutation = useMutation<void, unknown, void>(
-    () => deleteArticle(`${BASE_URL}/posts/${id}/${userInfo.memberId}`),
+    () => deleteArticle(`${BASE_URL}/posts/${id}/${memberId}`),
     {
       onSuccess: () => {
         queryClient.invalidateQueries('filteredLists');
@@ -105,7 +106,6 @@ export default function Article({ data }: { data?: ArticleToGet }) {
     }
   };
 
-
   const handleModalOpen = () => {
     setIsUserModalOpen(true);
   };
@@ -118,12 +118,12 @@ export default function Article({ data }: { data?: ArticleToGet }) {
     if (isLiked) {
       console.log('시러요');
       setIsLiked(false);
-      setTotalLikes((prevLikes)=>prevLikes-1)
+      setTotalLikes((prevLikes) => prevLikes - 1);
       deleteLikeMutation.mutate();
     } else {
       console.log('조아요');
       setIsLiked(true);
-      setTotalLikes((prevLikes)=>prevLikes+1)
+      setTotalLikes((prevLikes) => prevLikes + 1);
       postLikeMutaion.mutate();
     }
   };
@@ -136,8 +136,8 @@ export default function Article({ data }: { data?: ArticleToGet }) {
             <div>{data.title}</div>
             <div>
               {data.editedAt
-                ? `${data.editedAt.slice(0, 10)} (수정됨)`
-                : data.createdAt.slice(0, 10)}
+                ? `${calculateTimeDifference(data.editedAt)} (수정됨)`
+                : calculateTimeDifference(data.createdAt)}
             </div>
           </TitleSection>
           <AuthorSection
@@ -163,12 +163,12 @@ export default function Article({ data }: { data?: ArticleToGet }) {
           </TagSection>
           <InfoSection>
             <div>
-              {userInfo.memberId === data?.memberInfo.memberId && (
+              {memberId === data?.memberInfo.memberId && (
                 <Link to={`/write/${data?.postId}`} onClick={handleEditClick}>
                   <MdModeEditOutline size={24} />
                 </Link>
               )}
-              {userInfo.memberId === data?.memberInfo.memberId && (
+              {memberId === data?.memberInfo.memberId && (
                 <AiFillDelete size={24} onClick={handleDelete} />
               )}
               {/* 클릭 시 삭제 확인 창 뜨게 수정해야함 */}
@@ -255,9 +255,10 @@ const ContentSection = styled.section`
 const TagSection = styled.section`
   display: flex;
   margin-bottom: 1rem;
+  flex-wrap: wrap;
 
   > div {
-    margin-right: 1rem;
+    margin: 0 1rem 0.5rem 0;
     border-radius: 5px;
     background: var(--color-gray);
     padding: 0.5rem;

@@ -16,6 +16,8 @@ export default function Header() {
   const [isLogged, setIsLogged] = useState<boolean>(false);
   const myData = useSelector((state: RootState) => state.myData);
   const myId = useSelector((state: RootState) => state.token.memberId);
+  // 아래는 추가한 부분
+  const token = localStorage.getItem('Authorization');
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -34,6 +36,9 @@ export default function Header() {
     e.preventDefault();
     dispatch(resetStates());
     navigate('/login');
+    // 아래는 추가한 부분
+    localStorage.removeItem('Authorization');
+    localStorage.removeItem('MemberId');
   };
 
   const handleMyProfile = (e: React.MouseEvent) => {
@@ -48,7 +53,9 @@ export default function Header() {
           <img src={logo} alt="로고이미지" style={{ height: '39px' }} />
         </div>
       </Link>
-      {isLogged && myData ? (
+      {/* 아래는 수정한 부분 */}
+      {/* {isLogged && myData ? ( */}
+      {token ? (
         <MenuContainer>
           <Link to="/lists" className="margin-small text">
             모모리스트

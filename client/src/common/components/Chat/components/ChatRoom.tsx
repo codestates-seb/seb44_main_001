@@ -5,6 +5,7 @@ import { setChatPage } from '../../../store/ChatPageStore';
 
 export default function ChatRoom({ chatPage }: { chatPage: number }) {
   const dispatch = useDispatch();
+
   const roomId = 1;
 
   const interlocutor = '무갑';

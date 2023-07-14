@@ -26,6 +26,7 @@ import { MdModeEditOutline } from 'react-icons/md';
 import deleteComment from '../api/deleteComment';
 import Button from '../../../common/components/Button';
 import patchComment from '../api/patchComment';
+import { calculateTimeDifference } from '../../../common/util/timeCalculator';
 
 export default function CommentList() {
   const queryClient = useQueryClient();
@@ -34,10 +35,10 @@ export default function CommentList() {
 
   const [editingCommentId, setEditingCommentId] = useState(0);
 
-  const userInfo = { memberId: 2 };
+  const memberId = Number(localStorage.getItem('MemberId'));
 
   const [editedComment, setEditedComment] = useState({
-    memberId: userInfo.memberId,
+    memberId: memberId,
     content: '',
   });
 
@@ -73,8 +74,7 @@ export default function CommentList() {
   );
 
   const deleteItemMutation = useMutation<void, unknown, void>(
-    () =>
-      deleteComment(`${BASE_URL}/comments/${commentId}/${userInfo.memberId}`),
+    () => deleteComment(`${BASE_URL}/comments/${commentId}/${memberId}`),
     {
       onSuccess: () => {
         queryClient.invalidateQueries('comments');
@@ -105,7 +105,7 @@ export default function CommentList() {
   const handleEditButtonClick = (data: CommentToGet) => {
     setEditingCommentId(data.commentId);
     setEditedComment({
-      memberId: userInfo.memberId,
+      memberId: memberId,
       content: data.content,
     });
     setCommentId(data.commentId);
@@ -134,7 +134,7 @@ export default function CommentList() {
             const isEditing = editingCommentId === data.commentId;
             return (
               <ListSection key={data.commentId}>
-                {userInfo.memberId === data.memberInfo.memberId && isEditing ? (
+                {memberId === data.memberInfo.memberId && isEditing ? (
                   <CommentEdit>
                     <textarea
                       value={editedComment.content}
@@ -154,20 +154,22 @@ export default function CommentList() {
                           : data.memberInfo.nickname}
                       </div>
                       {data.editedAt === data.createdAt ? (
-                        <div>{data.createdAt.slice(0, 10)}</div>
+                        <div>{calculateTimeDifference(data.createdAt)}</div>
                       ) : (
-                        <div>{`${data.editedAt.slice(0, 10)} (수정됨)`}</div>
+                        <div>{`${calculateTimeDifference(
+                          data.editedAt,
+                        )} (수정됨)`}</div>
                       )}
                     </CommentInfo>
                     <CommentContent>
                       <div>{data.content}</div>
                       <CommentEditIcons>
-                        {userInfo.memberId === data.memberInfo.memberId && (
+                        {memberId === data.memberInfo.memberId && (
                           <MdModeEditOutline
                             onClick={() => handleEditButtonClick(data)}
                           />
                         )}
-                        {userInfo.memberId === data.memberInfo.memberId && (
+                        {memberId === data.memberInfo.memberId && (
                           <AiFillDelete
                             onMouseOver={() => handleMouseOver(data.commentId)}
                             onClick={handleDeleteComment}

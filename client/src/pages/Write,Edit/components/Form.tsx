@@ -33,6 +33,8 @@ export default function Form() {
 
   const { id } = useParams();
 
+  const memberId = Number(localStorage.getItem('MemberId'));
+
   const data: ArticleToPost = useSelector(
     (state: RootState) => state.createdPost,
   );
@@ -46,6 +48,7 @@ export default function Form() {
   );
 
   useEffect(() => {
+    dispatch(setCreatedPost({ ...data, memberId: memberId }));
     if (!id) {
       return () => {
         dispatch(resetCreatedPost());

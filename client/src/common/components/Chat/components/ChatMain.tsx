@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import { setChatPage } from '../../../store/ChatPageStore';
 import { ChatRoomData, Room } from '../../../type';
 import { CHAT_NOTICE } from '../../../util/constantValue';
+import { calculateTimeDifference } from '../../../util/timeCalculator';
 
 export default function ChatMain({
   handleModalChange,
@@ -50,7 +51,7 @@ export default function ChatMain({
     <Container>
       <ChatHeader>
         <h1>채팅방</h1>
-        <MdOutlineClose size={16} onClick={handleModalChange} />
+        <MdOutlineClose size={32} onClick={handleModalChange} />
       </ChatHeader>
       <ChatList>
         <Chat>
@@ -65,15 +66,15 @@ export default function ChatMain({
                       <div>{CHAT_NOTICE}</div>
                     )}
                   </div>
-                  <div>{room.lastSentTime.slice(0, 10)}</div>
+                  <div>{calculateTimeDifference(room.lastSentTime)}</div>
                 </div>
                 <div>
                   <div>
-                    {room.lastMessage.length > 15
-                      ? `${room.lastMessage.slice(0, 15)}...`
+                    {room.lastMessage.length > 20
+                      ? `${room.lastMessage.slice(0, 20)}...`
                       : room.lastMessage}
                   </div>
-                  <AiFillDelete size={14} />
+                  <AiFillDelete size={16} />
                 </div>
               </div>
             ))}
@@ -97,13 +98,13 @@ const ChatHeader = styled.section`
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding: 1rem 0.5rem 1rem 0.5rem;
+  padding: 1rem;
   z-index: 20;
   background: var(--color-pink-3);
-  height: 3rem;
+  height: 4rem;
 
   > h1 {
-    font-size: var(--font-size-s);
+    font-size: var(--font-size-m);
   }
 
   > :last-child {
@@ -114,7 +115,7 @@ const ChatHeader = styled.section`
 const ChatList = styled.section``;
 
 const Chat = styled.div`
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-s);
 
   > :nth-child(2n + 1) {
     background: var(--color-white);
@@ -125,18 +126,20 @@ const Chat = styled.div`
   }
 
   > div {
-    height: 4rem;
+    height: 5rem;
     width: 100%;
     padding: 0.5rem;
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: center;
     cursor: pointer;
 
     > :first-child {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       margin-bottom: 0.5rem;
+      height: 2rem;
 
       > :first-child {
         display: flex;
@@ -144,10 +147,25 @@ const Chat = styled.div`
         justify-content: start;
 
         > :nth-child(2) {
-          background: var(--color-pink-1);
+          background: #ff4848;
+          color: var(--color-white);
           margin-left: 0.5rem;
-          padding: 0.2rem;
-          border-radius: 10px;
+          padding: 0.3rem;
+          border-radius: 15px;
+          font-size: var(--font-size-xs);
+          animation: colorAnimation 2s linear infinite alternate;
+        }
+
+        @keyframes colorAnimation {
+          0% {
+            background: #ff4848;
+          }
+          50% {
+            background: var(--color-pink-1);
+          }
+          100% {
+            background: #ff4848;
+          }
         }
       }
     }
@@ -155,6 +173,7 @@ const Chat = styled.div`
     > :last-child {
       display: flex;
       justify-content: space-between;
+      height: 2rem;
 
       > :first-child {
         width: 90%;

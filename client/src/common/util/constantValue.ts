@@ -36,4 +36,4 @@ export const NEXT = '다음';
 
 export const PREV = '이전';
 
-export const CHAT_NOTICE = 'New!';
+export const CHAT_NOTICE = 'New';
