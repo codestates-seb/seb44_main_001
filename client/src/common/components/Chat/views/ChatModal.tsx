@@ -8,10 +8,11 @@ import ChatRoom from '../components/ChatRoom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store/RootStore';
 import * as StompJs from '@stomp/stompjs';
-import { UseQueryResult, useQuery } from 'react-query';
+import { useQuery } from 'react-query';
 import { BASE_URL } from '../../../util/constantValue';
 import getRoomList from '../api/getRoomList';
 import { setChatModal } from '../../../store/ChatModalStore';
+import { ChatRoomData } from '../../../type';
 
 export default function ChatButton() {
   const dispatch = useDispatch();
@@ -20,15 +21,15 @@ export default function ChatButton() {
 
   const chatPage = useSelector((state: RootState) => state.chatPage);
 
-  const { data: chatRoomList }: UseQueryResult<[]> = useQuery(
+  const { data } = useQuery<ChatRoomData, unknown>(
     'roomList',
-    () => {
-      if (isOpen) {
-        return getRoomList(`${BASE_URL}/chat/roomlist`);
-      }
-      return Promise.resolve([]);
+    () => getRoomList(`${BASE_URL}/chats`),
+    {
+      enabled: isOpen,
+      refetchInterval: 5000,
     },
   );
+
   // 기존 채팅방 목록 가져오기
 
   //TODO 모달 열리면 기존 채팅방들 구독하는 로직 추가해야함
@@ -36,7 +37,7 @@ export default function ChatButton() {
   //TODO 채팅방 삭제 버튼 클릭 시 구독 취소
 
   const client = new StompJs.Client({
-    brokerURL: '',
+    brokerURL: '//50d0-49-163-135-89.ngrok-free.app/stomp/chat',
     connectHeaders: {
       login: 'user',
       passcode: 'password',
@@ -44,7 +45,6 @@ export default function ChatButton() {
     debug: function (err) {
       console.log(err);
     },
-    reconnectDelay: 5000,
     heartbeatIncoming: 4000,
     heartbeatOutgoing: 4000,
   });
@@ -85,7 +85,7 @@ export default function ChatButton() {
         {chatPage === 0 && (
           <ChatMain
             handleModalChange={handleModalChange}
-            chatRoomList={chatRoomList}
+            data={data as ChatRoomData}
           />
         )}
         <ChatRoom chatPage={chatPage} />

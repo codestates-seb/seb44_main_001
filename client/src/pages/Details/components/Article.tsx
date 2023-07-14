@@ -18,6 +18,7 @@ import { useState } from 'react';
 import UserModal from './UserModal';
 import getLike from '../api/getLike';
 import postLike from '../api/postLike';
+import profile from '../../../common/assets/profile.svg';
 
 export default function Article({ data }: { data?: ArticleToGet }) {
   const [isLiked, setIsLiked] = useState(false);
@@ -88,10 +89,14 @@ export default function Article({ data }: { data?: ArticleToGet }) {
     }
   };
 
-  const handleModalChange = () => {
-    setIsUserModalOpen(!isUserModalOpen);
-  }
-  
+  const handleModalOpen = () => {
+    setIsUserModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsUserModalOpen(false);
+  };
+
   const handleClickLike = () => {
     console.log('조아요눌러찌');
     postLikeMutaion.mutate();
@@ -109,16 +114,16 @@ export default function Article({ data }: { data?: ArticleToGet }) {
                 : data.createdAt.slice(0, 10)}
             </div>
           </TitleSection>
-          <AuthorSection>
-            <img
-              src={data.memberInfo.profileImage}
-              alt="user"
-              onClick={handleModalChange}
-            />
-            <div onClick={handleModalChange}>{data.memberInfo.nickname}</div>
+          <AuthorSection
+            onMouseOver={handleModalOpen}
+            onMouseOut={handleModalClose}
+          >
+            <img src={data.memberInfo.profileImage || profile} alt="user" />
+            <div>{data.memberInfo.nickname}</div>
             <UserModal
               isUserModalOpen={isUserModalOpen}
-              handleModalChange={handleModalChange}
+              handleModalOpen={handleModalOpen}
+              handleModalClose={handleModalClose}
               data={data}
             />
           </AuthorSection>
@@ -143,7 +148,7 @@ export default function Article({ data }: { data?: ArticleToGet }) {
               {/* 클릭 시 삭제 확인 창 뜨게 수정해야함 */}
             </div>
             <div>
-              <div>         
+              <div>
                 <Button type="button" onClick={handleClickLike}>
                   <img
                     src={likeData ? `${peach_on}` : `${peach_off}`}
@@ -202,12 +207,17 @@ const AuthorSection = styled.section`
   text-decoration: none;
   color: var(--color-black);
   position: relative;
+  width: fit-content;
 
   & img {
     border-radius: 50%;
     height: 2rem;
     width: 2rem;
     margin-right: 1rem;
+  }
+
+  > * {
+    cursor: pointer;
   }
 `;
 

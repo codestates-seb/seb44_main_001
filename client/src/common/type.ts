@@ -43,7 +43,7 @@ export type ArticleToGet = {
     city: string;
     province: string;
   };
-  likeCount:number;
+  likeCount: number;
 };
 
 export type CommentToPost = {
@@ -126,4 +126,16 @@ export type Member = {
   age: number;
   createdAt: string;
   posts: CardData[];
+};
+
+export type Room = {
+  roomId: number;
+  roomName: string;
+  lastMessage: string;
+  lastSentTime: string;
+  lastCheckTime: string;
+};
+
+export type ChatRoomData = {
+  rooms: Room[];
 };
