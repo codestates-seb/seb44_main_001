@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { FaArrowRightFromBracket } from 'react-icons/fa6';
-import { BiBell } from 'react-icons/bi';
+import AlramModal from './Alram/components/views/AlramModal';
 import Button from './Button';
 
 import logo from '../assets/logo/MOMO.png';
@@ -32,7 +32,7 @@ export default function Header(){
                       </UserContainer>
                     </Link>
                     <div className="margin-left" style={{marginTop:"2px"}}>
-                      <BiBell size={25} />
+                      <AlramModal/>
                     </div>
                     <div className="margin-left">
                       <Link
