@@ -1,37 +1,83 @@
-import { useState } from "react";
-import { styled } from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { useMutation } from "react-query";
+import { useState } from 'react';
+import { styled } from 'styled-components';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { useMutation } from 'react-query';
 import { Layout } from '../../../common/style';
 import SemiHeader from '../../../common/components/SemiHeader';
 import { Background, Text, TextInput } from '../../Signup/views/Signup';
 import { RootState } from '../../../common/store/RootStore';
 import { LoginData } from '../../../common/type';
 import loginData from '../api/postLogin';
+
 import { setLoginUser } from '../store/LoginUser';
+import { setTokenData } from '../store/userTokenStore';
 
 import kakao from '../../../common/assets/logo/kakao-logo.png';
 import Button from '../../../common/components/Button';
 
 import { BASE_URL } from '../../../common/util/constantValue';
+import MyData from '../api/getMyData';
+import { setMyData } from '../store/MyUserData';
 
 export default function Login() {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const dispatch = useDispatch();
+  const navigation = useNavigate();
 
   const data: LoginData = useSelector((state: RootState) => state.login);
-  const member = useSelector((state: RootState) => state.member);
+  const token: string = useSelector((state: RootState) => state.token.token);
+  // const user: Member = useSelector((state: RootState) => state.member);
 
-  const loginMutation = useMutation<void, unknown, LoginData>(() =>
-    loginData(BASE_URL, data),
+  const loginMutation = useMutation<void, unknown, LoginData>(
+    async () => {
+      const result = await loginData(`${BASE_URL}/auth/login`, data);
+      console.log(result);
+      localStorage.setItem('Authorization', result.token);
+      localStorage.setItem('MemberId', result.memberId);
+    },
+    {
+      onSuccess: async () => {
+        const storedToken = localStorage.getItem('Authorization');
+        const storedMemberId = localStorage.getItem('MemberId');
+        console.log('storedToken: ', storedToken);
+        console.log('storedMemberId: ', storedMemberId);
+
+        if (!!storedToken && !!storedMemberId) {
+          const memberId = parseInt(storedMemberId, 10);
+          // fetchUser.mutate(memberId);
+          dispatch(
+            setTokenData({
+              ...data,
+              token: storedToken,
+              memberId: memberId,
+            }),
+          );
+
+          await fetchUser.mutate(memberId, {
+            // 이 부분을 추가하세요.
+            onSuccess: () => {
+              console.log('UserData fetched successfully');
+            },
+            onError: () => {
+              console.log('An error occurred while fetching UserData');
+            },
+          });
+
+          navigation(`/user/${memberId}`, { state: memberId });
+        } else {
+          // 토큰과 memberId 가져오기 실패
+          dispatch(setTokenData({ ...data, token: '', memberId: 0 }));
+        }
+      },
+    },
   );
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-    dispatch(setLoginUser({ ...data, email: e.target.value }));
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUsername(e.target.value);
+    dispatch(setLoginUser({ ...data, username: e.target.value }));
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,8 +85,16 @@ export default function Login() {
     dispatch(setLoginUser({ ...data, password: e.target.value }));
   };
 
-  const handleLogin = () => {
-    loginMutation.mutate(data);
+  const fetchUser = useMutation<void, unknown, number>(
+    async (memberId: number) => {
+      const userData = await MyData(`${BASE_URL}/members/${memberId}`, token);
+      dispatch(setMyData(userData));
+      console.log(`fetch User!!! : `, userData);
+    },
+  );
+
+  const handleLogin = async () => {
+    await loginMutation.mutate(data);
   };
 
   return (
@@ -57,9 +111,9 @@ export default function Login() {
               <InputBox>
                 <Text>이메일</Text>
                 <TextInput
-                  value={email}
+                  value={username}
                   style={{ width: '300px' }}
-                  onChange={handleEmailChange}
+                  onChange={handleUsernameChange}
                   isValidate={true}
                 />
               </InputBox>

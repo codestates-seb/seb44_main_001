@@ -27,11 +27,11 @@ public class MemberResponseDto {
     private LocalDateTime createdAt;
     private String profileImage;
 
-    @OneToMany(mappedBy = "member")
-    private List<Post> posts;
-
-    @OneToMany(mappedBy = "member")
-    private List<Comment> comments;
+//    @OneToMany(mappedBy = "member")
+//    private List<Post> posts;
+//
+//    @OneToMany(mappedBy = "member")
+//    private List<Comment> comments;
 
     @OneToMany(mappedBy = "sender")
     private List<Message> sentMessages;

@@ -3,15 +3,17 @@ import { configureStore, createSlice } from '@reduxjs/toolkit';
 export const locationSlice = createSlice({
   name: 'location',
   initialState: {
-    region: '',
-    district: '',
+    locationId: 0,
+    city: '',
+    province: '',
   },
   reducers: {
     setLocation: (_state, action) => {
       console.log(action.payload); //! 배포 시 삭제
       return {
-        region: action.payload.region,
-        district: action.payload.district,
+        locationId: action.payload.locationId,
+        city: action.payload.city,
+        province: action.payload.province,
       };
     },
   },

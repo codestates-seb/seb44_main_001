@@ -38,11 +38,11 @@ public class Member extends BaseEntity {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member")
-    private List<Post> posts = new ArrayList<>();
+//    @OneToMany(mappedBy = "member")
+//    private List<Post> posts = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member")
-    private List<Comment> comments = new ArrayList<>();
+//    @OneToMany(mappedBy = "member")
+//    private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "sender")
     private List<Message> sentMessages = new ArrayList<>();

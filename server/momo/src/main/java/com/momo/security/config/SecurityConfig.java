@@ -5,7 +5,7 @@ import com.momo.security.filter.JwtVerificationFilter;
 import com.momo.security.handler.MemberAccessDeniedHandler;
 import com.momo.security.handler.MemberAuthenticationEntryPoint;
 import com.momo.security.jwt.JwtTokenizer;
-import com.momo.security.service.TokenBlacklistService;
+
 import com.momo.security.utils.MomoAuthorityUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +21,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
 
 @Configuration
 @EnableWebSecurity
@@ -68,6 +67,7 @@ public class SecurityConfig {
                         .antMatchers(HttpMethod.GET, "/members/**").hasAnyRole("USER", "ADMIN")
                         .antMatchers(HttpMethod.DELETE, "/members/**").hasRole("USER")
                         .anyRequest().permitAll()
+
                 );
 
         return http.build();
@@ -81,6 +81,8 @@ public class SecurityConfig {
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);
+        configuration.addExposedHeader("Authorization");
+        configuration.addExposedHeader("memberId");
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
@@ -102,6 +104,7 @@ public class SecurityConfig {
                     .addFilter(jwtAuthenticationFilter)
                     .addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class);
         }
+        }
     }
 
-}
+
