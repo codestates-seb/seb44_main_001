@@ -19,6 +19,9 @@ spring:
           logging:
             level:
               root: DEBUG
+  redis:
+    host: your_host
+    port: 6379
 mail:
   address:
     admin: admin@gmail.com

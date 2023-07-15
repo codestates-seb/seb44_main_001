@@ -1,11 +1,11 @@
 package com.momo.security.config;
 
-
 import com.momo.security.filter.JwtAuthenticationFilter;
 import com.momo.security.filter.JwtVerificationFilter;
 import com.momo.security.handler.MemberAccessDeniedHandler;
 import com.momo.security.handler.MemberAuthenticationEntryPoint;
 import com.momo.security.jwt.JwtTokenizer;
+
 import com.momo.security.utils.MomoAuthorityUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,10 +28,12 @@ public class SecurityConfig {
 
     private final JwtTokenizer jwtTokenizer;
     private final MomoAuthorityUtils authorityUtils;
+    private final TokenBlacklistService tokenBlacklistService;
 
-    public SecurityConfig(JwtTokenizer jwtTokenizer, MomoAuthorityUtils authorityUtils) {
+    public SecurityConfig(JwtTokenizer jwtTokenizer, MomoAuthorityUtils authorityUtils, TokenBlacklistService tokenBlacklistService) {
         this.jwtTokenizer = jwtTokenizer;
         this.authorityUtils = authorityUtils;
+        this.tokenBlacklistService = tokenBlacklistService;
     }
 
     @Bean
@@ -71,16 +73,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-//    @Bean
-//    CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.setAllowedOrigins(Arrays.asList("*"));
-//        configuration.setAllowedMethods(Arrays.asList("GET","POST", "PATCH", "DELETE"));
-//
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", configuration);
-//        return source;
-//    }
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -106,7 +98,7 @@ public class SecurityConfig {
             JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtTokenizer);
             jwtAuthenticationFilter.setFilterProcessesUrl("/auth/login");
 
-            JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, authorityUtils);
+            JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, authorityUtils, tokenBlacklistService);
 
             builder
                     .addFilter(jwtAuthenticationFilter)
