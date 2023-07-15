@@ -33,11 +33,11 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "post_id")
     private Post post;
 
-//    @Builder
-//    public Comment(String content, Boolean isPostWriter) {
-//        this.content = content;
-//        this.isPostWriter = isPostWriter;
-//    }
+    @Builder
+    public Comment(String content, Boolean isPostWriter) {
+        this.content = content;
+        this.isPostWriter = isPostWriter;
+    }
 
     @Builder
     public Comment(String content, Boolean isPostWriter, Member member, Post post) {
@@ -47,10 +47,10 @@ public class Comment extends BaseEntity {
         this.post = post;
     }
 
-    public void addMember(Member member) {
-        this.member = member;
-        member.getComments().add(this);
-    }
+//    public void addMember(Member member) {
+//        this.member = member;
+//        member.getComments().add(this);
+//    }
 
     public void addPost(Post post) {
         this.post = post;
