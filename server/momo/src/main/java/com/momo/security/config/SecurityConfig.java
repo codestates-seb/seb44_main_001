@@ -6,6 +6,7 @@ import com.momo.security.handler.MemberAccessDeniedHandler;
 import com.momo.security.handler.MemberAuthenticationEntryPoint;
 import com.momo.security.jwt.JwtTokenizer;
 
+import com.momo.security.service.TokenBlacklistService;
 import com.momo.security.utils.MomoAuthorityUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

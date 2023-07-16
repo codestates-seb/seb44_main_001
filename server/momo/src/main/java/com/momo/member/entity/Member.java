@@ -3,7 +3,6 @@ package com.momo.member.entity;
 import com.momo.audit.BaseEntity;
 import com.momo.category.entity.Category;
 import com.momo.comment.entity.Comment;
-import com.momo.message.entity.Message;
 import com.momo.post.entity.Post;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,10 +41,6 @@ public class Member extends BaseEntity {
 //    @OneToMany(mappedBy = "member")
 //    private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "sender")
-    private List<Message> sentMessages = new ArrayList<>();
 
-    @OneToMany(mappedBy = "receiver")
-    private List<Message> receivedMessages = new ArrayList<>();
 
 }
