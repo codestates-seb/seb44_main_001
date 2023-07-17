@@ -35,6 +35,7 @@ const SemiContainer = styled.div`
 const Title = styled.h1`
   color: var(--color-black);
   white-space: nowrap;
+  padding-bottom: 20px;
   padding-left: calc((100vw - 50rem) / 2);
 `;
 
@@ -44,6 +45,7 @@ const Content = styled.span`
   white-space: nowrap;
   padding-left: 100px;
   padding-bottom: 40px;
+  padding-left: calc((100vw - 50rem) / 2);
 `;
 
 const Picture = styled.img`

@@ -16,9 +16,20 @@ public class PostResponseDto {
     private String content;
     private LocalDateTime createdAt;
     private LocalDateTime editedAt;
-//    private String imageUrl;
-    private Long memberId;
-    private Long categoryId;
-    private Long locationId;
+    private CategoryInfo categoryInfo;
+    private LocationInfo locationInfo;
+    private MemberInfo memberInfo;
     private List<String> tags;
+
+    public PostResponseDto(Long postId, String title, String content, LocalDateTime createdAt, LocalDateTime editedAt, CategoryInfo categoryInfo, LocationInfo locationInfo, MemberInfo memberInfo, List<String> tags) {
+        this.postId = postId;
+        this.title = title;
+        this.content = content;
+        this.createdAt = createdAt;
+        this.editedAt = editedAt;
+        this.categoryInfo = categoryInfo;
+        this.locationInfo = locationInfo;
+        this.memberInfo = memberInfo;
+        this.tags = tags;
+    }
 }

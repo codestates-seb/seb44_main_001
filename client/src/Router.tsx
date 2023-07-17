@@ -6,10 +6,9 @@ import KakaoSignup from './pages/Kakao-signup/views/KakaoSignup';
 import Login from './pages/Login/views/Login';
 import User from './pages/User/views/User';
 import UserEdit from './pages/UserEdit/views/UserEdit';
-import Lists from './pages/Lists/views/Lists';
+import Lists from './pages/Lists,Search/views/Lists';
 import Details from './pages/Details/views/Details';
 import NotFound from './pages/NotFound/views/NotFound';
-import Search from './pages/Search/views/Search';
 
 const Router = () => {
   return (
@@ -18,10 +17,10 @@ const Router = () => {
       <Route path="/signup" element={<Signup />} />
       <Route path="/kakao-signup" element={<KakaoSignup />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/user" element={<User />} />
+      <Route path="/user/:memberId" element={<User />} />
       <Route path="/user/edit" element={<UserEdit />} />
       <Route path="/lists" element={<Lists />} />
-      <Route path="/search/:keyword" element={<Search />} />
+      <Route path="/search/:keyword" element={<Lists />} />
       <Route path="/details/:id/" element={<Details />} />
       <Route path="/write" element={<Write />} />
       <Route path="/write/:id" element={<Write />} />

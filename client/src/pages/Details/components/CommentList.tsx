@@ -26,6 +26,7 @@ import { MdModeEditOutline } from 'react-icons/md';
 import deleteComment from '../api/deleteComment';
 import Button from '../../../common/components/Button';
 import patchComment from '../api/patchComment';
+import { calculateTimeDifference } from '../../../common/util/timeCalculator';
 
 export default function CommentList() {
   const queryClient = useQueryClient();
@@ -34,10 +35,10 @@ export default function CommentList() {
 
   const [editingCommentId, setEditingCommentId] = useState(0);
 
-  const userInfo = { memberId: 1 };
+  const memberId = Number(localStorage.getItem('MemberId'));
 
   const [editedComment, setEditedComment] = useState({
-    memberId: userInfo.memberId,
+    memberId: memberId,
     content: '',
   });
 
@@ -73,8 +74,7 @@ export default function CommentList() {
   );
 
   const deleteItemMutation = useMutation<void, unknown, void>(
-    () =>
-      deleteComment(`${BASE_URL}/comments/${commentId}/${userInfo.memberId}`),
+    () => deleteComment(`${BASE_URL}/comments/${commentId}/${memberId}`),
     {
       onSuccess: () => {
         queryClient.invalidateQueries('comments');
@@ -105,13 +105,13 @@ export default function CommentList() {
   const handleEditButtonClick = (data: CommentToGet) => {
     setEditingCommentId(data.commentId);
     setEditedComment({
-      memberId: userInfo.memberId,
+      memberId: memberId,
       content: data.content,
     });
     setCommentId(data.commentId);
   };
 
-  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setEditedComment({ ...editedComment, content: event.target.value });
   };
 
@@ -134,10 +134,9 @@ export default function CommentList() {
             const isEditing = editingCommentId === data.commentId;
             return (
               <ListSection key={data.commentId}>
-                {userInfo.memberId === data.memberInfo.memberId && isEditing ? (
-                  <>
-                    <input
-                      type="text"
+                {memberId === data.memberInfo.memberId && isEditing ? (
+                  <CommentEdit>
+                    <textarea
                       value={editedComment.content}
                       onChange={handleInputChange}
                     />
@@ -145,33 +144,39 @@ export default function CommentList() {
                       <Button onClick={handlePatchEdit}>저장</Button>
                       <Button onClick={handleCancelEdit}>취소</Button>
                     </div>
-                  </>
+                  </CommentEdit>
                 ) : (
                   <>
-                    <div>
+                    <CommentInfo>
                       <div>
                         {data.isPostWriter
                           ? `${data.memberInfo.nickname} (작성자)`
                           : data.memberInfo.nickname}
                       </div>
-                      <div>{data.createdAt.slice(0, 10)}</div>
-                    </div>
-                    <div>
+                      {data.editedAt === data.createdAt ? (
+                        <div>{calculateTimeDifference(data.createdAt)}</div>
+                      ) : (
+                        <div>{`${calculateTimeDifference(
+                          data.editedAt,
+                        )} (수정됨)`}</div>
+                      )}
+                    </CommentInfo>
+                    <CommentContent>
                       <div>{data.content}</div>
-                      <div>
-                        {userInfo.memberId === data.memberInfo.memberId && (
+                      <CommentEditIcons>
+                        {memberId === data.memberInfo.memberId && (
                           <MdModeEditOutline
                             onClick={() => handleEditButtonClick(data)}
                           />
                         )}
-                        {userInfo.memberId === data.memberInfo.memberId && (
+                        {memberId === data.memberInfo.memberId && (
                           <AiFillDelete
                             onMouseOver={() => handleMouseOver(data.commentId)}
                             onClick={handleDeleteComment}
                           />
                         )}
-                      </div>
-                    </div>
+                      </CommentEditIcons>
+                    </CommentContent>
                   </>
                 )}
               </ListSection>
@@ -230,9 +235,52 @@ const ListSection = styled.section`
   border-radius: 5px;
   padding: 0.5rem;
   background: var(--color-white);
+  line-height: 1.5;
+  width: 50rem;
+`;
 
-  > input {
+const CommentInfo = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+
+  > :nth-child(2) {
+    font-size: var(--font-size-xs);
+  }
+`;
+
+const CommentContent = styled.div`
+  display: flex;
+  justify-content: space-between;
+
+  > :first-child {
+    width: 90%;
+    display: flex;
+    justify-content: start;
+  }
+`;
+
+const CommentEditIcons = styled.div`
+  > * {
+    margin-left: 0.5rem;
+    cursor: pointer;
+  }
+`;
+
+const CommentEdit = styled.div`
+  > textarea {
+    margin-bottom: 1rem;
+    font-family: 'BR-regular';
+    font-size: var(--font-size-s);
     width: 100%;
+    border: 2px solid var(--color-black);
+    border-radius: 5px;
+    padding: 0.5rem;
+    min-height: 5rem;
+    resize: vertical;
+    outline: none;
+    line-height: 1.5;
+    color: var(--color-black);
   }
 
   > .editButton {
@@ -241,28 +289,6 @@ const ListSection = styled.section`
 
     > :last-child {
       margin-left: 0.5rem;
-    }
-  }
-
-  > :first-child {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-
-    > :nth-child(2) {
-      font-size: var(--font-size-xs);
-    }
-  }
-
-  > :nth-child(2) {
-    display: flex;
-    justify-content: space-between;
-
-    > :nth-child(2) {
-      > * {
-        margin-left: 0.5rem;
-        cursor: pointer;
-      }
     }
   }
 `;

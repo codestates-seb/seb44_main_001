@@ -14,4 +14,5 @@ public interface PostMapper {
     Post postPostDtoToPost(PostPostDto postPostDto);
     Post postPatchDtoToPost(PostPatchDto postPatchDto);
     void updatePostFromPostPatchDto(PostPatchDto postPatchDto, @MappingTarget Post post);
+
 }
