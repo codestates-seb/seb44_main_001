@@ -1,16 +1,20 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import { useMutation } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
-import SemiHeader from "../../../common/components/SemiHeader";
-import { Layout } from "../../../common/style";
-import Button from "../../../common/components/Button";
-import LocationSelector from "../../../common/components/LocationSelector";
+import { useNavigate } from 'react-router-dom';
+import SemiHeader from '../../../common/components/SemiHeader';
+import { Layout } from '../../../common/style';
+import Button from '../../../common/components/Button';
+import LocationSelector from '../../../common/components/LocationSelector';
 import signupData from '../api/postSignup';
 import { SignupData } from '../../../common/type';
-import { RootState } from "../../../common/store/RootStore";
-import { setSignupUser } from "../store/SignupUser";
+import { RootState } from '../../../common/store/RootStore';
+import { setSignupUser } from '../store/SignupUser';
 import { BASE_URL } from '../../../common/util/constantValue';
+import { setCategory } from '../../../common/store/CategoryStore';
+import { setLocation } from '../../../common/store/LocationStore';
+import { resetCreatedPost } from '../../Write,Edit/store/CreatedPost';
 
 interface TextInputProps {
   type?: string;
@@ -33,19 +37,28 @@ export default function Signup() {
   const [isValidEmail, setIsValidEmail] = useState(true);
   const [password, setPassword] = useState('');
   const [isValidPassword, setIsValidPassword] = useState(true);
-  const [nickName, setNickName] = useState('');
-  const [birthYear, setBirthYear] = useState<number | null>(null);
-  const [gender, setGender] = useState<boolean | null>(null);
-  const [myMsg, setMyMsg] = useState('');
+  const [nickname, setNickname] = useState('');
+  const [age, setAge] = useState<number | null>(null);
+  const [isMale, setIsMale] = useState<boolean | null>(null);
+  const [welcomeMsg, setWelcomeMsg] = useState('');
 
   const dispatch = useDispatch();
+  const navigation = useNavigate();
 
   const data: SignupData = useSelector((state: RootState) => state.signup);
-  const region = useSelector((state: RootState) => state.location.region);
 
   const signupMutation = useMutation<void, unknown, SignupData>(() =>
     signupData(`${BASE_URL}/members/register`, data),
   );
+
+  useEffect(() => {
+    return () => {
+      dispatch(setCategory({ categoryId: 0, name: '' }));
+      dispatch(setLocation({ locationId: 0, city: '', province: '' }));
+      dispatch(resetCreatedPost());
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -61,31 +74,28 @@ export default function Signup() {
     setIsValidPassword(e.target.value.length >= 8);
   };
 
-  const handleNickNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNickName(e.target.value);
-    dispatch(setSignupUser({ ...data, nickName: e.target.value }));
+  const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNickname(e.target.value);
+    dispatch(setSignupUser({ ...data, nickname: e.target.value }));
   };
 
   const handleBirthYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setBirthYear(parseInt(e.target.value));
-    dispatch(setSignupUser({ ...data, birthYear: e.target.value }));
+    setAge(parseInt(e.target.value));
+    dispatch(setSignupUser({ ...data, age: e.target.value }));
   };
 
-  const handleGenderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleIsMaleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const isMale = e.target.value === 'male';
-    setGender(isMale);
-    dispatch(setSignupUser({ ...data, gender: isMale }));
+    setIsMale(isMale);
+    dispatch(setSignupUser({ ...data, isMale: isMale }));
   };
 
-  const onLocationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    dispatch(
-      // setSignupUser({ ...data, location: `${region} ${e.target.value}` }),
-      setSignupUser({ ...data, location: 111111 }),
-    );
+  const onLocationChange = (locationId: number | null) => {
+    dispatch(setSignupUser({ ...data, location: locationId }));
   };
 
-  const handleMyMsgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMyMsg(e.target.value);
+  const handleWelcomeMsgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setWelcomeMsg(e.target.value);
     dispatch(setSignupUser({ ...data, welcomeMsg: e.target.value }));
   };
 
@@ -96,14 +106,16 @@ export default function Signup() {
     if (
       email === '' ||
       password === '' ||
-      nickName === '' ||
-      birthYear === null ||
-      gender === null
+      nickname === '' ||
+      age === null ||
+      isMale === null ||
+      welcomeMsg === ''
     ) {
       alert('빈칸을 모두 채워주세요.');
     }
 
     signupMutation.mutate(data);
+    navigation(`/login`);
   };
 
   return (
@@ -143,8 +155,8 @@ export default function Signup() {
             <InputBox>
               <Text>닉네임</Text>
               <TextInput
-                value={nickName}
-                onChange={handleNickNameChange}
+                value={nickname}
+                onChange={handleNicknameChange}
                 isValidate={true}
                 placeholder="닉네임을 입력하세요. (나중에 수정할 수 있어요!)"
               />
@@ -152,7 +164,7 @@ export default function Signup() {
             <InputBox>
               <Text>출생년도</Text>
               <DropdownInput
-                value={birthYear === null ? '' : birthYear}
+                value={age === null ? '' : age}
                 onChange={handleBirthYearChange}
               >
                 <option value="">출생년도를 선택하세요</option>
@@ -176,10 +188,10 @@ export default function Signup() {
                   &nbsp;
                   <input
                     type="radio"
-                    name="gender"
+                    name="isMale"
                     value="male"
-                    onChange={handleGenderChange}
-                    checked={gender === true}
+                    onChange={handleIsMaleChange}
+                    checked={isMale === true}
                   />
                 </div>
                 <div style={{ margin: '10px' }}>
@@ -189,23 +201,23 @@ export default function Signup() {
                   &nbsp;
                   <input
                     type="radio"
-                    name="gender"
+                    name="isMale"
                     value="female"
-                    onChange={handleGenderChange}
-                    checked={gender === false}
+                    onChange={handleIsMaleChange}
+                    checked={isMale === false}
                   />
                 </div>
               </div>
             </InputBox>
             <InputBox>
               <Text>지역</Text>
-              <LocationSelector onLocationChange={onLocationChange}/>
+              <LocationSelector onLocationChange={onLocationChange} />
             </InputBox>
             <InputBox>
               <Text>자기소개</Text>
               <TextAreaInput
-                value={myMsg}
-                onChange={handleMyMsgChange}
+                value={welcomeMsg}
+                onChange={handleWelcomeMsgChange}
                 placeholder="자유롭게 자기소개를 작성해보세요."
               />
             </InputBox>
@@ -218,20 +230,20 @@ export default function Signup() {
 }
 
 export const Background = styled.div`
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center;
-padding: 30px;
-border: solid 2px var(--color-black);
-border-radius: 10px;
-background-color: white;
-width: 40rem;
-margin: 100px;
-& select {
-  margin: 1rem 2rem 1rem 0;
-}
-`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  border: solid 2px var(--color-black);
+  border-radius: 10px;
+  background-color: white;
+  width: 40rem;
+  margin: 100px;
+  & select {
+    margin: 1rem 2rem 1rem 0;
+  }
+`;
 
 const ContentWrapper = styled.div`
   display: flex;
@@ -268,8 +280,10 @@ const DropdownInput = styled.select`
   width: 300px;
   margin-top: 10px;
   color: var(--color-black);
-  &:focus { outline:none; }
-`
+  &:focus {
+    outline: none;
+  }
+`;
 
 const TextAreaInput = styled.textarea<TextAreaProps>`
   width: 90%;

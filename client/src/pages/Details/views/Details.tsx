@@ -9,7 +9,7 @@ import { ArticleToGet } from '../../../common/type';
 import getArticle from '../api/getArticle';
 import { BASE_URL } from '../../../common/util/constantValue';
 import { useParams } from 'react-router-dom';
-import { categoryData } from '../../../common/util/categoryData';
+import ChatButton from '../../../common/components/Chat/views/ChatModal';
 
 export default function Details() {
   const { id } = useParams();
@@ -19,20 +19,19 @@ export default function Details() {
     () => getArticle(`${BASE_URL}/posts/${id}`),
   );
 
-  const category = data && categoryData[data.categoryId];
-
   return (
     <>
       <SemiHeader
-        title={`전체 게시판 > ${category} > ${data?.title}`}
+        title={`전체 게시판 > ${data?.categoryInfo.name} > ${data?.title}`}
         content=""
       />
       <Layout>
         <Container>
-          <Article />
+          <Article data={data && data} />
           <CommentInput />
           <CommentList />
         </Container>
+        <ChatButton />
       </Layout>
     </>
   );

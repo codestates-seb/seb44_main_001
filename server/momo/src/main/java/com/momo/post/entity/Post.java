@@ -1,5 +1,6 @@
 package com.momo.post.entity;
 
+import com.momo.audit.BaseEntity;
 import com.momo.category.entity.Category;
 import com.momo.comment.entity.Comment;
 import com.momo.location.entity.Location;
@@ -18,21 +19,18 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Post {
+public class Post extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postId;
-
     private String title;
     private String content;
-
     @ElementCollection
-    @Column(name = "tag")
     private List<String> tags;
+
 
     private LocalDateTime createdAt;
     private LocalDateTime editedAt;
-//    private String imageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -41,15 +39,16 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id")
     private Location location;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
+
     public void setMemberId(Long memberId) {
         this.member = new Member();
         this.member.setMemberId(memberId);
     }
 }
-
