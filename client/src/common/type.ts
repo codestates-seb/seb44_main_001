@@ -77,6 +77,7 @@ export type CommentListToGet = {
 };
 
 export type CardData = {
+  [x: string]: any;
   title: string;
   content: string;
   postId: number;
