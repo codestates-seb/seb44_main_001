@@ -28,7 +28,9 @@ export default function Login() {
   const navigation = useNavigate();
 
   const data: LoginData = useSelector((state: RootState) => state.login);
-  const token: string = useSelector((state: RootState) => state.token.token);
+  // const token: string = useSelector((state: RootState) => state.token.token);
+
+
   // const user: Member = useSelector((state: RootState) => state.member);
 
   const loginMutation = useMutation<void, unknown, LoginData>(
@@ -87,7 +89,8 @@ export default function Login() {
 
   const fetchUser = useMutation<void, unknown, number>(
     async (memberId: number) => {
-      const userData = await MyData(`${BASE_URL}/members/${memberId}`, token);
+      const token: string | null = localStorage.getItem('Authorization');
+      const userData = await MyData(`${BASE_URL}/members/${memberId}`, token as string);
       dispatch(setMyData(userData));
       console.log(`fetch User!!! : `, userData);
     },
