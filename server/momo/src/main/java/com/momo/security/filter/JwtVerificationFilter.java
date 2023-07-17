@@ -1,9 +1,11 @@
 package com.momo.security.filter;
 
 import com.momo.security.jwt.JwtTokenizer;
+import com.momo.security.service.TokenBlacklistService;
 import com.momo.security.utils.MomoAuthorityUtils;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,13 +23,13 @@ import java.util.Map;
 public class JwtVerificationFilter extends OncePerRequestFilter {
     private final JwtTokenizer jwtTokenizer;
     private final MomoAuthorityUtils authorityUtils;
+    private final TokenBlacklistService tokenBlacklistService;
 
-    public JwtVerificationFilter(JwtTokenizer jwtTokenizer, MomoAuthorityUtils authorityUtils) {
+    public JwtVerificationFilter(JwtTokenizer jwtTokenizer, MomoAuthorityUtils authorityUtils, TokenBlacklistService tokenBlacklistService) {
         this.jwtTokenizer = jwtTokenizer;
         this.authorityUtils = authorityUtils;
+        this.tokenBlacklistService = tokenBlacklistService;
     }
-
-
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
@@ -55,7 +57,13 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // System.out.println("# JwtVerificationFilter");
-
+        /* Redis를 통한 토큰 검증 */
+        String token = extractTokenFromRequest(request);
+        if (token != null && tokenBlacklistService.isTokenBlacklisted(token)) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Invalid token.");
+            return;
+        }
         try {
             Map<String, Object> claims = verifyJws(request);
             setAuthenticationToContext(claims);
@@ -68,5 +76,13 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private String extractTokenFromRequest(HttpServletRequest request) {
+        String authorizationHeader = request.getHeader("Authorization");
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            return authorizationHeader.substring(7);
+        }
+        return null;
     }
 }

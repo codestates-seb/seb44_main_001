@@ -7,7 +7,7 @@ import { Layout } from '../../../common/style';
 import SemiHeader from '../../../common/components/SemiHeader';
 import { Background, Text, TextInput } from '../../Signup/views/Signup';
 import { RootState } from '../../../common/store/RootStore';
-import { LoginData } from '../../../common/type';
+import { LoginData, Member } from '../../../common/type';
 import loginData from '../api/postLogin';
 
 import { setLoginUser } from '../store/LoginUser';
@@ -28,6 +28,7 @@ export default function Login() {
   const navigation = useNavigate();
 
   const data: LoginData = useSelector((state: RootState) => state.login);
+  
   // const token: string = useSelector((state: RootState) => state.token.token);
   // const user: Member = useSelector((state: RootState) => state.member);
 
@@ -50,7 +51,6 @@ export default function Login() {
           // fetchUser.mutate(memberId);
           dispatch(
             setTokenData({
-              ...data,
               token: storedToken,
               memberId: memberId,
             }),
@@ -69,7 +69,7 @@ export default function Login() {
           navigation(`/user/${memberId}`, { state: memberId });
         } else {
           // 토큰과 memberId 가져오기 실패
-          dispatch(setTokenData({ ...data, token: '', memberId: 0 }));
+          dispatch(setTokenData({ token: '', memberId: 0 }));
         }
       },
     },

@@ -1,5 +1,6 @@
 package com.momo.post.controller;
 
+import com.momo.exception.NotFoundException;
 import com.momo.post.dto.PostPatchDto;
 import com.momo.post.dto.PostPostDto;
 import com.momo.post.dto.PostResponseDto;
@@ -23,13 +24,14 @@ public class PostController {
 
     @GetMapping("/{postId}")
     public ResponseEntity<PostResponseDto> getPostById(
-            @PathVariable Long postId
+            @PathVariable Long postId,
+            @RequestParam(defaultValue = "1") int page
     ) {
-        PostResponseDto responseDto = postService.getPostById(postId);
-        if (responseDto == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
+        try {
+            PostResponseDto responseDto = postService.getPostById(postId, page);
             return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
     @GetMapping
@@ -110,15 +112,15 @@ public class PostController {
     }
 
     @GetMapping("/search/category-location")
-    public ResponseEntity<List<PostResponseDto>> searchPostsByLocationAndCategory(
+    public ResponseEntity<List<PostResponseDto>> searchPostsByCategoryAndLocation(
             @RequestParam String keyword,
-            @RequestParam(required = false) Long locationId,
             @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) Long locationId,
             @RequestParam(defaultValue = "1") int page
     ) {
         List<PostResponseDto> responseDtoList;
         if (locationId != null && categoryId != null) {
-            responseDtoList = postService.searchPostsByLocationAndCategory(keyword, locationId, categoryId, page);
+            responseDtoList = postService.searchPostsByCategoryAndLocation(categoryId, locationId, keyword, page);
         } else {
             responseDtoList = postService.searchPosts(keyword, page);
         }

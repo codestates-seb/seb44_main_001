@@ -253,7 +253,7 @@ const ContentWrapper = styled.div`
   margin-left: 50px;
 `;
 
-const InputBox = styled.div`
+export const InputBox = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: start;
@@ -285,7 +285,7 @@ const DropdownInput = styled.select`
   }
 `;
 
-const TextAreaInput = styled.textarea<TextAreaProps>`
+export const TextAreaInput = styled.textarea<TextAreaProps>`
   width: 90%;
   height: 200px;
   padding: 0.5rem;
