@@ -1,6 +1,17 @@
-export type RegionData = {
-  [key: string]: string[];
+export type Location = {
+  locationId: number;
+  city: string;
+  province: string;
 };
+
+export type Locations = Location[];
+
+export type Category = {
+  name: string;
+  categoryId: number;
+};
+
+export type Categories = Category[];
 
 export type ArticleToPost = {
   title: string;
@@ -17,10 +28,22 @@ export type ArticleToGet = {
   content: string;
   createdAt: string;
   editedAt: string;
-  memberId: number;
-  categoryId: number;
+  memberInfo: {
+    memberId: number;
+    nickname: string;
+    profileImage: string;
+  };
+  categoryInfo: {
+    categoryId: number;
+    name: string;
+  };
   tags: string[];
-  locationId: number;
+  locationInfo: {
+    locationId: number;
+    city: string;
+    province: string;
+  };
+  likeCount: number;
 };
 
 export type CommentToPost = {
@@ -56,39 +79,78 @@ export type CommentListToGet = {
 export type CardData = {
   title: string;
   content: string;
-  userImg: string;
-  userName: string;
-  postId:number;
+  postId: number;
+  memberInfo: MemberInfo;
+  locationInfo: LocationInfo;
+  categoryInfo: CategoryInfo;
+};
+
+export type MemberInfo = {
+  profileImage: string | null;
+  nickname: string | null;
+};
+
+export type LocationInfo = {
+  city: string;
+  province: string;
+};
+
+export type CategoryInfo = {
+  categoryId: number;
+  name: string;
 };
 
 export type SignupData = {
   email: string;
   password: string;
-  nickName: string;
-  birthYear: number | null;
-  gender: boolean | null;
+  nickname: string;
+  age: number | null;
+  isMale: boolean | null;
   location: number | null;
   welcomeMsg: string;
 };
 
 export type LoginData = {
-  email: string;
+  username: string;
   password: string;
 };
 
 export type Member = {
   memberId: number;
   email: string;
-  password: string;
-  location: string;
-  welcomeMsg: number;
+  location: number;
+  welcomeMsg: string;
   profileImage: string | null;
   nickname: string;
   isMale: boolean;
   age: number;
   createdAt: string;
   posts: CardData[];
-  comments: string[];
-  sentMessages: string[];
-  receivedMessages: string[];
+};
+
+export type Room = {
+  roomId: number;
+  roomName: string;
+  lastMessage: string;
+  lastSentTime: string;
+  lastCheckTime: string;
+};
+
+export type ChatRoomData = {
+  rooms: Room[];
+};
+
+export type PrevChat = {
+  memberId: number;
+  nickname: string;
+  content: string;
+  sentTime: string;
+};
+
+export type PrevChatData = {
+  chats: PrevChat[];
+};
+
+export type postChat = {
+  content: string;
 };

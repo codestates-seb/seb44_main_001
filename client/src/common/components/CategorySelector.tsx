@@ -2,26 +2,37 @@ import { useDispatch, useSelector } from 'react-redux';
 import { CATEGORY_MESSAGE } from '../util/constantValue';
 import { RootState } from '../store/RootStore';
 import { ChangeEvent } from 'react';
-import { categoryData } from '../util/categoryData';
 import { setCategory } from '../store/CategoryStore';
 import { styled } from 'styled-components';
+import useCategorySetter from '../util/customHook/useCategorySetter';
+import { Categories, Category } from '../type';
 
 interface CategorySelectorProps {
-  onCategoryChange?: (categoryId: number) => void;
+  onCategoryChange?: (categoryId: number | null) => void;
 }
 
 export default function CategorySelector({
   onCategoryChange,
 }: CategorySelectorProps) {
+  useCategorySetter();
+
   const dispatch = useDispatch();
 
-  const category = useSelector((state: RootState) => state.category);
+  const pathName = window.location.pathname;
+
+  const categories: Categories | null = JSON.parse(
+    localStorage.getItem('categories') || 'null',
+  );
+
+  const category = useSelector((state: RootState) => state.category.name);
 
   const handleCategoryChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    const categoryId = categoryData.findIndex(
-      (category) => category === event.target.value,
-    );
-    dispatch(setCategory(event.target.value));
+    const categoryId: number | null = JSON.parse(
+      localStorage.getItem('categories') || 'null',
+    )?.find(
+      (category: Category) => category.name === event.target.value,
+    )?.categoryId;
+    dispatch(setCategory({ name: event.target.value, categoryId: categoryId }));
     if (onCategoryChange) {
       onCategoryChange(categoryId);
     }
@@ -33,11 +44,15 @@ export default function CategorySelector({
         <option disabled value="">
           {CATEGORY_MESSAGE}
         </option>
-        {categoryData.map((category, idx) => (
-          <option key={idx} value={category}>
-            {category}
-          </option>
-        ))}
+        {categories
+          ?.filter(
+            (category) => pathName === '/lists' || category.name !== '전체',
+          )
+          .map((category) => (
+            <option key={category.categoryId} value={category.name}>
+              {category.name}
+            </option>
+          ))}
       </select>
     </Container>
   );

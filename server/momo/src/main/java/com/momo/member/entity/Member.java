@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.momo.audit.BaseEntity;
 import com.momo.category.entity.Category;
 import com.momo.comment.entity.Comment;
-import com.momo.message.entity.Message;
 import com.momo.post.entity.Post;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,6 +25,7 @@ public class Member extends BaseEntity {
     private Long memberId;
 
 //    private String name;
+    @Column(unique = true)
     private String email;
     @JsonIgnore
     private String password;
@@ -35,25 +35,11 @@ public class Member extends BaseEntity {
     private String nickname;
     private Boolean isMale;
     private Integer age;
-//    private LocalDateTime createdAt;
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "member")
-    private List<Post> posts = new ArrayList<>();
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "member")
-    private List<Comment> comments = new ArrayList<>();
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "sender")
-    private List<Message> sentMessages = new ArrayList<>();
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "receiver")
-    private List<Message> receivedMessages = new ArrayList<>();
 
 }

@@ -12,7 +12,9 @@ public enum ExceptionCode {
     QUESTION_USER_NOT_MATCH(403, "Question and user don't match"),
 
     COMMENT_NOT_FOUND(404, "Comment not found"),
-    COMMENT_MEMBER_NOT_MATCH(403, "Cannot change comment because memberId is different");
+    COMMENT_MEMBER_NOT_MATCH(403, "Cannot change comment because memberId is different"),
+
+    JWT_TOKEN_EXPIRED(401, "JWT Token expired");
 
     @Getter
     private int status;

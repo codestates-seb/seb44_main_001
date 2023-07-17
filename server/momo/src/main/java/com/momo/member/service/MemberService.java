@@ -31,6 +31,7 @@ public class MemberService {
     public Member saveMember(Member member) {
 //        member.setCreatedAt(LocalDateTime.now());
         verifiedEmailExists(member.getEmail());
+        verifiedNicknameExists(member.getNickname());
         String encodedPassword = passwordEncoder.encode(member.getPassword());
         member.setPassword(encodedPassword);
         List<String> roles = authorityUtils.createRoles(member.getEmail());
@@ -56,9 +57,14 @@ public class MemberService {
         Optional.ofNullable(member.getEmail())
                 .ifPresent(findMember::setEmail);
         Optional.ofNullable(member.getPassword())
-                .ifPresent(findMember::setPassword);
+                .ifPresent(newPass -> {
+                    String encodedPassword = passwordEncoder.encode(newPass);
+                    member.setPassword(encodedPassword);
+                });
         Optional.ofNullable(member.getWelcomeMsg())
                 .ifPresent(findMember::setWelcomeMsg);
+        Optional.ofNullable(member.getProfileImage())
+                .ifPresent(findMember::setProfileImage);
 //        Optional.ofNullable(member.getLocation())
 //                .ifPresent(findMember::setLocation);
         Optional.ofNullable(member.getNickname())
@@ -93,11 +99,19 @@ public class MemberService {
         return findMember;
     }
 
-    // 중복검사
+    /* 이메일 중복검사 */
     private void verifiedEmailExists(String email) {
         memberRepository.findByEmail(email)
                 .ifPresent(existingUser -> {
                     throw new RuntimeException("이미 존재하는 이메일입니다.");
+                });
+    }
+
+    /* 닉네임 중복검사 */
+    private void verifiedNicknameExists(String nickname) {
+        memberRepository.findByNickname(nickname)
+                .ifPresent(existingUser -> {
+                    throw new RuntimeException("이미 존재하는 닉네임입니다.");
                 });
     }
 }
