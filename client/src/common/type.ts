@@ -43,7 +43,8 @@ export type ArticleToGet = {
     city: string;
     province: string;
   };
-  likeCount: number;
+  postLikeCount:number;
+  liked:boolean;
 };
 
 export type CommentToPost = {
@@ -154,4 +155,10 @@ export type PrevChatData = {
 
 export type postChat = {
   content: string;
+};
+
+export type IsLikedType = {
+  isLiked: boolean;
+  memberId: number;
+  postId: string | undefined;
 };

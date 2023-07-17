@@ -16,7 +16,13 @@ export default function Details() {
 
   const { data }: UseQueryResult<ArticleToGet, unknown> = useQuery(
     ['getData', id],
-    () => getArticle(`${BASE_URL}/posts/${id}`),
+    () => {
+      const memberId = localStorage.getItem('MemberId');
+      const url = memberId
+        ? `${BASE_URL}/posts/${id}?memberId=${memberId}`
+        : `${BASE_URL}/posts/${id}`;
+      return getArticle(url);
+    },
   );
 
   return (
