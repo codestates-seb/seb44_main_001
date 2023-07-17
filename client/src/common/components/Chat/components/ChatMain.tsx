@@ -20,32 +20,32 @@ export default function ChatMain({
     dispatch(setChatPage(room.roomId));
   };
 
-  // const rooms = data?.rooms;
+  const rooms = data?.rooms;
 
-  const rooms = [
-    {
-      roomId: 7,
-      roomName: 'moosaeng',
-      lastMessage:
-        '아아아아아아아아아아아아아아아아아아아아아아아아아아아아아아아아',
-      lastSentTime: '2023-07-13T23:20:46.368312',
-      lastCheckTime: '2023-07-13T23:10:46.368312',
-    },
-    {
-      roomId: 4,
-      roomName: 'yoon',
-      lastMessage: 'hello',
-      lastSentTime: '2023-07-13T23:20:41.45445',
-      lastCheckTime: '2023-07-13T23:20:46.368312',
-    },
-    {
-      roomId: 5,
-      roomName: 'yoon',
-      lastMessage: 'hello',
-      lastSentTime: '2023-07-13T23:20:41.45445',
-      lastCheckTime: '2023-07-13T23:20:46.368312',
-    },
-  ];
+  // const rooms = [
+  //   {
+  //     roomId: 1,
+  //     roomName: 'moosaeng',
+  //     lastMessage:
+  //       '아아아아아아아아아아아아아아아아아아아아아아아아아아아아아아아아',
+  //     lastSentTime: '2023-07-13T23:20:46.368312',
+  //     lastCheckTime: '2023-07-13T23:10:46.368312',
+  //   },
+  //   {
+  //     roomId: 4,
+  //     roomName: 'yoon',
+  //     lastMessage: 'hello',
+  //     lastSentTime: '2023-07-13T23:20:41.45445',
+  //     lastCheckTime: '2023-07-13T23:20:46.368312',
+  //   },
+  //   {
+  //     roomId: 5,
+  //     roomName: 'yoon',
+  //     lastMessage: 'hello',
+  //     lastSentTime: '2023-07-13T23:20:41.45445',
+  //     lastCheckTime: '2023-07-13T23:20:46.368312',
+  //   },
+  // ];
 
   return (
     <Container>
@@ -102,6 +102,7 @@ const ChatHeader = styled.section`
   z-index: 20;
   background: var(--color-pink-3);
   height: 4rem;
+  border-bottom: 1px solid var(--color-gray);
 
   > h1 {
     font-size: var(--font-size-m);
@@ -122,7 +123,7 @@ const Chat = styled.div`
   }
 
   > :nth-child(2n) {
-    background: var(--color-pink-3);
+    background: var(--color-white);
   }
 
   > div {
@@ -133,6 +134,7 @@ const Chat = styled.div`
     flex-direction: column;
     justify-content: center;
     cursor: pointer;
+    border-bottom: 1px solid var(--color-gray);
 
     > :first-child {
       display: flex;
@@ -145,9 +147,10 @@ const Chat = styled.div`
         display: flex;
         align-items: center;
         justify-content: start;
+        font-family: 'BR-bold';
 
         > :nth-child(2) {
-          background: #ff4848;
+          background: #ff6c6c;
           color: var(--color-white);
           margin-left: 0.5rem;
           padding: 0.3rem;
@@ -158,13 +161,13 @@ const Chat = styled.div`
 
         @keyframes colorAnimation {
           0% {
-            background: #ff4848;
+            background: #ff6c6c;
           }
           50% {
             background: var(--color-pink-1);
           }
           100% {
-            background: #ff4848;
+            background: #ff6c6c;
           }
         }
       }

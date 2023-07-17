@@ -139,3 +139,18 @@ export type Room = {
 export type ChatRoomData = {
   rooms: Room[];
 };
+
+export type PrevChat = {
+  memberId: number;
+  nickname: string;
+  content: string;
+  sentTime: string;
+};
+
+export type PrevChatData = {
+  chats: PrevChat[];
+};
+
+export type postChat = {
+  content: string;
+};

@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://50d0-49-163-135-89.ngrok-free.app';
+export const BASE_URL = 'https://ba5b-106-252-38-27.ngrok-free.app';
 
 export const TITLE_INPUT_PLACEHOLDER = '내가 원하는 친구를 모집해봐요!';
 
