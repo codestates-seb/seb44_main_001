@@ -152,7 +152,7 @@ public class PostService {
         post.setCategory(category);
 
         Location location = locationRepository.findById(locationId)
-                .orElseThrow(() -> new NotFoundException("ID가 " + locationId + "인 멤버를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("ID가 " + locationId + "인 location을 찾을 수 없습니다."));
         post.setLocation(location);
 
 
