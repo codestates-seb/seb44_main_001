@@ -28,7 +28,7 @@ export default function Login() {
   const navigation = useNavigate();
 
   const data: LoginData = useSelector((state: RootState) => state.login);
-  
+
   // const token: string = useSelector((state: RootState) => state.token.token);
   // const user: Member = useSelector((state: RootState) => state.member);
 

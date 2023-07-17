@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/RootStore';
 
 import { FaArrowRightFromBracket } from 'react-icons/fa6';
-import AlramModal from './Alram/views/AlramModal';
+import NotificationModal from './Alram/views/NotificationModal';
 import Button from './Button';
 import { resetStates } from '../../pages/Login/store/MyUserData';
 
@@ -70,12 +70,7 @@ export default function Header() {
               {myData.nickname}
             </div>
           </UserContainer>
-          <div
-            className="margin-left user-content"
-            style={{ marginTop: '2px' }}
-          >
-            <AlramModal />
-          </div>
+          <NotificationModal />
           <div className="margin-left">
             <div onClick={handleLogout}>
               <LogOut size={20} />
@@ -100,7 +95,7 @@ const Head = styled.header`
   display: flex;
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: auto;
   align-items: center;
   justify-content: space-between;
   padding: 10px 20px;
