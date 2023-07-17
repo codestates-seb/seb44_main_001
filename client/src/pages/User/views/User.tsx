@@ -24,7 +24,6 @@ export default function User() {
   const data = useSelector((state: RootState) => state.member);
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const storedMemberId = localStorage.getItem('MemberId');
 
@@ -64,11 +63,6 @@ export default function User() {
     }
   }, [memberId]);
 
-  const handelTest = () => {
-    console.log('테스트버튼 클릭!');
-    navigate(`/user/${1}`, { state: 1 });
-  };
-
   return (
     <div>
       {data ? (
@@ -101,12 +95,6 @@ export default function User() {
               </MsgBox>
             </Background>
             <ChatButton />
-            <div>
-              <Button
-                children={'다른사람페이지로 이동~'}
-                onClick={handelTest}
-              />
-            </div>
           </Layout>
         </>
       ) : (
@@ -116,7 +104,7 @@ export default function User() {
   );
 }
 
-const ProfileContainer = styled.div`
+export const ProfileContainer = styled.div`
   display: flex;
   align-items: start;
   justify-content: space-between;
