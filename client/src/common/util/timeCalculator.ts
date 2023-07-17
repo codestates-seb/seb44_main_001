@@ -9,19 +9,19 @@ export const calculateTimeDifference = (time: string) => {
   const dayDiff: number = Math.floor(difference / (1000 * 60 * 60 * 24));
 
   if (secondDiff < 60) {
-    return `${secondDiff}초 전`;
+    return `${secondDiff + 1}초 전`;
   }
 
   if (minuteDiff < 60) {
-    return `${minuteDiff}분 전`;
+    return `${minuteDiff + 1}분 전`;
   }
 
   if (hourDiff < 24) {
-    return `${hourDiff}시간 전`;
+    return `${hourDiff + 1}시간 전`;
   }
 
   if (dayDiff < 7) {
-    return `${dayDiff}일 전`;
+    return `${dayDiff + 1}일 전`;
   }
 
   return `${sentTime.getFullYear()}-${

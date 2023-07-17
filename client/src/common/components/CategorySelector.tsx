@@ -46,7 +46,7 @@ export default function CategorySelector({
         </option>
         {categories
           ?.filter(
-            (category) => pathName !== '/write' || category.name !== 'All',
+            (category) => pathName === '/lists' || category.name !== '전체',
           )
           .map((category) => (
             <option key={category.categoryId} value={category.name}>
