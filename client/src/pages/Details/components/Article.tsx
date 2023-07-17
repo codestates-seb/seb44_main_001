@@ -131,8 +131,10 @@ export default function Article({ data }: { data?: ArticleToGet }) {
   };
 
   const handleClickLike = () => {
-    console.log(isLiked);
-    if (isLiked) {
+    if(!memberId){
+      alert("로그인이 필요한 서비스입니다!")
+      return;
+    }else if (isLiked) {
       deleteLikeMutation.mutate();
     } else {
       postLikeMutaion.mutate();
