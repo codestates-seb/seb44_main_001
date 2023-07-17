@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export default async function getRoomList(url: string, token: string) {
+export default async function getPrevChat(url: string, token: string) {
   try {
     const headers = {
       Authorization: token,

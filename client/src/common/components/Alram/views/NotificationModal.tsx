@@ -3,8 +3,9 @@ import Modal from 'react-modal';
 import { styled } from 'styled-components';
 import { BiBell } from 'react-icons/bi';
 import { AlramStyle } from '../AlramStyle';
+import NotificationMain from '../components/NotificationMain';
 
-export default function AlramModal() {
+export default function NotificationModal() {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleModalChange = () => {
@@ -12,7 +13,7 @@ export default function AlramModal() {
   };
 
   return (
-    <>
+    <Wrapper>
       <Button onClick={handleModalChange}>
         <BiBell size={25} />
       </Button>
@@ -20,10 +21,17 @@ export default function AlramModal() {
         isOpen={isOpen}
         style={AlramStyle}
         onRequestClose={handleModalChange}
-      ></Modal>
-    </>
+      >
+        <NotificationMain />
+      </Modal>
+    </Wrapper>
   );
 }
+
+const Wrapper = styled.div`
+  margin-left: 10px;
+  margin-top: 2px;
+`;
 
 const Button = styled.button`
   background-color: transparent;

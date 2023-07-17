@@ -7,6 +7,7 @@ import { RootState } from '../../../common/store/RootStore';
 import { setSelectedLocation } from '../store/SelectedLocation';
 import LocationSelector from '../../../common/components/LocationSelector';
 import Button from '../../../common/components/Button';
+import { Locations } from '../../../common/type';
 
 export default function ListsHeader() {
   const navigate = useNavigate();
@@ -21,7 +22,8 @@ export default function ListsHeader() {
   const selectedLocation = useSelector(
     (state: RootState) => state.selectedLocation,
   );
-
+  const userInfo = useSelector((state: RootState) => state.member);
+  console.log(userInfo);
   const handleLocationSelection = () => {
     if (!location.province) {
       return;
@@ -38,14 +40,23 @@ export default function ListsHeader() {
     }
   };
 
+  // const locations: Locations | null = JSON.parse(
+  //   localStorage.getItem('locations') || 'null',
+  // );
+
+  // // 유저의 등록된 지역으로 수정하기
+  // useEffect(() => {
+  //   const userLocation:Location = {
+  //     locationId:userInfo.location,
+  //     city:locations?[userInfo.location-1].city,
+  //     province:locations?[userInfo.location-1].province
+  //   }
+  //   dispatch(setSelectedLocation(userLocation));
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
+
   const listName =
     params.keyword || `${selectedLocation.city} ${selectedLocation.province}`;
-
-  // 유저의 등록된 지역으로 수정하기
-
-  // useEffect(() => {
-  //   dispatch(setSelectedLocation("유저의 지역"));
-  // }, []);
 
   return (
     <Wrapper>
