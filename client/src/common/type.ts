@@ -43,7 +43,8 @@ export type ArticleToGet = {
     city: string;
     province: string;
   };
-  likeCount: number;
+  postLikeCount:number;
+  liked:boolean;
 };
 
 export type CommentToPost = {
@@ -77,6 +78,7 @@ export type CommentListToGet = {
 };
 
 export type CardData = {
+  [x: string]: any;
   title: string;
   content: string;
   postId: number;
@@ -148,7 +150,7 @@ export type ChatRoomData = {
   rooms: Room[];
 };
 
-export type PrevChat = {
+export type ChatData = {
   memberId: number;
   nickname: string;
   content: string;
@@ -156,9 +158,19 @@ export type PrevChat = {
 };
 
 export type PrevChatData = {
-  chats: PrevChat[];
+  chats: ChatData[];
 };
 
-export type postChat = {
+export type PostChat = {
   content: string;
+};
+
+export type ChatMembers = {
+  memberId: number;
+};
+
+export type IsLikedType = {
+  isLiked: boolean;
+  memberId: number;
+  postId: string | undefined;
 };

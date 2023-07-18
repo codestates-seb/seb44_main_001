@@ -14,18 +14,21 @@ import { BASE_URL } from '../../common/util/constantValue';
 
 import logo from '../assets/logo/MOMO.png';
 import profile from '../assets/profile.svg';
+
 import kakao from '../../common/assets/logo/kakao-logo.png';
 import google from '../../common/assets/logo/google-logo.png';
 
+import { setChatModal } from '../store/ChatModalStore';
 Modal.setAppElement('#root');
 
 export default function Header() {
   const [isLogged, setIsLogged] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const myData = useSelector((state: RootState) => state.myData);
-  const myId = useSelector((state: RootState) => state.token.memberId);
+  // const myId = useSelector((state: RootState) => state.token.memberId);
   // 아래는 추가한 부분
   const token = localStorage.getItem('Authorization');
+  const myId = localStorage.getItem('MemberId');
 
   const kakaoLink = `${BASE_URL}/oauth2/authorization/kakao`;
   const googleLink = `${BASE_URL}/oauth2/authorization/google`;
@@ -50,6 +53,7 @@ export default function Header() {
     // 아래는 추가한 부분
     localStorage.removeItem('Authorization');
     localStorage.removeItem('MemberId');
+    dispatch(setChatModal(false));
   };
 
   const handleMyProfile = (e: React.MouseEvent) => {
@@ -153,7 +157,7 @@ const Head = styled.header`
   display: flex;
   position: sticky;
   top: 0;
-  z-index: auto;
+  z-index: 1;
   align-items: center;
   justify-content: space-between;
   padding: 10px 20px;

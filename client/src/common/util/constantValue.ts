@@ -38,3 +38,7 @@ export const NEXT = '다음';
 export const PREV = '이전';
 
 export const CHAT_NOTICE = 'New';
+
+export const SEND_CHAT = '채팅 보내기';
+
+export const VIEW_PROFILE = '프로필 보기';

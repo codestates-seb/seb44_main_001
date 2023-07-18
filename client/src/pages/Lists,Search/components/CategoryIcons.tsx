@@ -68,6 +68,9 @@ const Wrapper = styled.div`
   grid-gap: 1rem;
   width: 37.5rem;
   margin-top: 3rem;
+  @media (max-width: 832px) {
+    width:100%;
+  }
 `;
 const IconWrapper = styled.div`
   display: flex;

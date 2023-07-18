@@ -9,10 +9,12 @@ import { setLoginSlice } from '../../pages/Login/store/LoginUser';
 import { memberSlice } from '../../pages/User/store/MemberStore';
 import { totalCommentsSlice } from './CommentPageStore';
 import { tokenSlice } from '../../pages/Login/store/userTokenStore';
-import { chatPageSlice } from './ChatPageStore';
+
 import { myDataSlice } from '../../pages/Login/store/MyUserData';
 import { chatModalSlice } from './ChatModalStore';
 import { updatedUserSlice } from '../../pages/Kakao-signup/store/UpdatedUserData';
+import { chatRoomInfoSlice } from './ChatRoomInfoStore';
+
 
 const rootReducer = combineReducers({
   category: categorySlice.reducer,
@@ -27,7 +29,7 @@ const rootReducer = combineReducers({
   member: memberSlice.reducer,
   authSignup: updatedUserSlice.reducer,
   totalComments: totalCommentsSlice.reducer,
-  chatPage: chatPageSlice.reducer,
+  chatRoomInfo: chatRoomInfoSlice.reducer,
   chatModal: chatModalSlice.reducer,
 });
 

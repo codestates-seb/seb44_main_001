@@ -8,6 +8,7 @@ import { setSelectedLocation } from '../store/SelectedLocation';
 import LocationSelector from '../../../common/components/LocationSelector';
 import Button from '../../../common/components/Button';
 import { Locations } from '../../../common/type';
+import { setLocation } from '../../../common/store/LocationStore';
 
 export default function ListsHeader() {
   const navigate = useNavigate();
@@ -22,8 +23,11 @@ export default function ListsHeader() {
   const selectedLocation = useSelector(
     (state: RootState) => state.selectedLocation,
   );
-  const userInfo = useSelector((state: RootState) => state.member);
-  console.log(userInfo);
+
+  const myInfo = useSelector((state: RootState) => state.myData);
+
+  console.log(myInfo);
+
   const handleLocationSelection = () => {
     if (!location.province) {
       return;
@@ -44,16 +48,24 @@ export default function ListsHeader() {
   //   localStorage.getItem('locations') || 'null',
   // );
 
-  // // 유저의 등록된 지역으로 수정하기
-  // useEffect(() => {
-  //   const userLocation:Location = {
-  //     locationId:userInfo.location,
-  //     city:locations?[userInfo.location-1].city,
-  //     province:locations?[userInfo.location-1].province
-  //   }
-  //   dispatch(setSelectedLocation(userLocation));
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
+  //로그인 안했을때의 기본값. 하드코딩이 들어가야할까?
+  const defaultLocation = {
+    locationId: 1,
+    city: "서울특별시",
+    province: "전체",
+  }
+
+  // 유저의 등록된 지역으로 수정하기
+  useEffect(() => {
+    // const userLocation:Location = {
+    //   locationId:userInfo.location,
+    //   city:locations?[userInfo.location-1].city,
+    //   province:locations?[userInfo.location-1].province
+    // }
+    // dispatch(setSelectedLocation(userLocation));
+    dispatch(setLocation(defaultLocation));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const listName =
     params.keyword || `${selectedLocation.city} ${selectedLocation.province}`;
