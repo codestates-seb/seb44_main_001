@@ -2,56 +2,31 @@ import { styled } from 'styled-components';
 import { MdOutlineClose } from 'react-icons/md';
 import { AiFillDelete } from 'react-icons/ai';
 import { useDispatch } from 'react-redux';
-import { setChatPage } from '../../../store/ChatPageStore';
+import { setChatRoomInfo } from '../../../store/ChatRoomInfoStore';
 import { ChatRoomData, Room } from '../../../type';
 import { CHAT_NOTICE } from '../../../util/constantValue';
-import { calculateTimeDifference } from '../../../util/timeCalculator';
+import { calculateTimeDifference } from '../../../util/timeDifferenceCalculator';
 
 export default function ChatMain({
-  handleModalChange,
+  handleModalClose,
   data,
 }: {
-  handleModalChange: () => void;
+  handleModalClose: () => void;
   data: ChatRoomData;
 }) {
   const dispatch = useDispatch();
 
-  const handleChatRoomClick = (room: Room) => {
-    dispatch(setChatPage(room.roomId));
-  };
-
   const rooms = data?.rooms;
 
-  // const rooms = [
-  //   {
-  //     roomId: 1,
-  //     roomName: 'moosaeng',
-  //     lastMessage:
-  //       '아아아아아아아아아아아아아아아아아아아아아아아아아아아아아아아아',
-  //     lastSentTime: '2023-07-13T23:20:46.368312',
-  //     lastCheckTime: '2023-07-13T23:10:46.368312',
-  //   },
-  //   {
-  //     roomId: 4,
-  //     roomName: 'yoon',
-  //     lastMessage: 'hello',
-  //     lastSentTime: '2023-07-13T23:20:41.45445',
-  //     lastCheckTime: '2023-07-13T23:20:46.368312',
-  //   },
-  //   {
-  //     roomId: 5,
-  //     roomName: 'yoon',
-  //     lastMessage: 'hello',
-  //     lastSentTime: '2023-07-13T23:20:41.45445',
-  //     lastCheckTime: '2023-07-13T23:20:46.368312',
-  //   },
-  // ];
+  const handleChatRoomClick = (room: Room) => {
+    dispatch(setChatRoomInfo({ roomName: room.roomName, roomId: room.roomId }));
+  };
 
   return (
     <Container>
       <ChatHeader>
         <h1>채팅방</h1>
-        <MdOutlineClose size={32} onClick={handleModalChange} />
+        <MdOutlineClose size={32} onClick={handleModalClose} />
       </ChatHeader>
       <ChatList>
         <Chat>

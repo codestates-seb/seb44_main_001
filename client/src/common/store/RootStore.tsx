@@ -9,9 +9,10 @@ import { setLoginSlice } from '../../pages/Login/store/LoginUser';
 import { memberSlice } from '../../pages/User/store/MemberStore';
 import { totalCommentsSlice } from './CommentPageStore';
 import { tokenSlice } from '../../pages/Login/store/userTokenStore';
-import { chatPageSlice } from './ChatPageStore';
+
 import { myDataSlice } from '../../pages/Login/store/MyUserData';
 import { chatModalSlice } from './ChatModalStore';
+import { chatRoomInfoSlice } from './ChatRoomInfoStore';
 
 const rootReducer = combineReducers({
   category: categorySlice.reducer,
@@ -25,7 +26,7 @@ const rootReducer = combineReducers({
   myData: myDataSlice.reducer,
   member: memberSlice.reducer,
   totalComments: totalCommentsSlice.reducer,
-  chatPage: chatPageSlice.reducer,
+  chatRoomInfo: chatRoomInfoSlice.reducer,
   chatModal: chatModalSlice.reducer,
 });
 

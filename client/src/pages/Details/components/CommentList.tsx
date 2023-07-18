@@ -14,7 +14,7 @@ import {
 } from 'react-query';
 import { ChangeEvent, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getComment } from '../api/getComment';
+import getComment from '../api/getComment';
 import {
   CommentListToGet,
   CommentToGet,
@@ -26,7 +26,7 @@ import { MdModeEditOutline } from 'react-icons/md';
 import deleteComment from '../api/deleteComment';
 import Button from '../../../common/components/Button';
 import patchComment from '../api/patchComment';
-import { calculateTimeDifference } from '../../../common/util/timeCalculator';
+import { calculateTimeDifference } from '../../../common/util/timeDifferenceCalculator';
 
 export default function CommentList() {
   const queryClient = useQueryClient();

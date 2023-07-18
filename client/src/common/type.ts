@@ -140,7 +140,7 @@ export type ChatRoomData = {
   rooms: Room[];
 };
 
-export type PrevChat = {
+export type ChatData = {
   memberId: number;
   nickname: string;
   content: string;
@@ -148,9 +148,13 @@ export type PrevChat = {
 };
 
 export type PrevChatData = {
-  chats: PrevChat[];
+  chats: ChatData[];
 };
 
-export type postChat = {
+export type PostChat = {
   content: string;
+};
+
+export type ChatMembers = {
+  memberId: number;
 };

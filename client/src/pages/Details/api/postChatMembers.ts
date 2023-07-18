@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { ChatMembers } from '../../../common/type';
 
-export default async function deleteArticle(url: string) {
+export default async function postChatMembers(url: string, data: ChatMembers) {
   try {
     const token = localStorage.getItem('Authorization');
 
@@ -9,7 +10,7 @@ export default async function deleteArticle(url: string) {
       'ngrok-skip-browser-warning': '69420',
     };
 
-    const res = await axios.delete(url, { headers });
+    const res = await axios.post(url, data, { headers });
     console.log(res);
   } catch (err) {
     console.log(err);

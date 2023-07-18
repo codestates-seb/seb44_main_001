@@ -1,73 +1,51 @@
 import { BiArrowBack } from 'react-icons/bi';
 import { useDispatch, useSelector } from 'react-redux';
 import { styled } from 'styled-components';
-import { setChatPage } from '../../../store/ChatPageStore';
+import { setChatRoomInfo } from '../../../store/ChatRoomInfoStore';
 import { RootState } from '../../../store/RootStore';
 import { ChangeEvent, useState } from 'react';
 import { FiSend } from 'react-icons/fi';
 import { BASE_URL } from '../../../util/constantValue';
-import { PrevChatData } from '../../../type';
-import { useQuery } from 'react-query';
+import { PrevChatData, PostChat, ChatData } from '../../../type';
+import { useMutation, useQuery } from 'react-query';
 import getPrevChat from '../api/getPrevChat';
+import postChat from '../api/postChat';
 
-export default function ChatRoom() {
-  const [myChat, setMyChat] = useState('');
+export default function ChatRoom({ messages }: { messages: ChatData[] }) {
+  const [myChat, setMyChat] = useState({ content: '' });
 
   const dispatch = useDispatch();
 
-  const roomId = useSelector((state: RootState) => state.chatPage);
+  const roomId = useSelector((state: RootState) => state.chatRoomInfo.roomId);
 
-  const token = localStorage.getItem('Authorization');
-
-  const { data } = useQuery<PrevChatData, unknown>('prevChats', () =>
-    getPrevChat(`${BASE_URL}/chats/1`, token as string),
+  const roomName = useSelector(
+    (state: RootState) => state.chatRoomInfo.roomName,
   );
 
-  console.log(data);
-  // 이전 채팅 기록 가져오는 로직
+  const userName = useSelector((state: RootState) => state.myData.nickname);
 
-  //TODO roomId에 맞는 방 데이터를 받아오는 로직 작성해야함
+  const { data } = useQuery<PrevChatData, unknown>('prevChats', async () => {
+    if (roomId) {
+      const prevChatData = await getPrevChat(`${BASE_URL}/chats/${roomId}`);
+      return prevChatData;
+    }
+    return null;
+  });
 
-  const chatPartner = 'moosaeng';
-  //TODO 방 데이터에서 상대 유저이름 받아와야함
-  const userInfo = {
-    name: 'moomoo',
-  };
-  //TODO 내 유저정보 받아와야함
-
-  // const data = {
-  //   chats: [
-  //     {
-  //       memberId: 7,
-  //       nickName: 'myoungin',
-  //       content: 'moosaeng',
-  //       sentTime: '2023-07-13T23:20:46.368312',
-  //     },
-  //     {
-  //       memberId: 7,
-  //       nickName: 'myoungin',
-  //       content: 'moosaeng',
-  //       sentTime: '2023-07-14T23:20:46.368312',
-  //     },
-  //     {
-  //       memberId: 5,
-  //       nickName: 'moosaeng',
-  //       content: '왜 불러',
-  //       sentTime: '2023-07-15T23:20:46.368312',
-  //     },
-  //   ],
-  // };
+  const postMutation = useMutation<void, unknown, PostChat>(() =>
+    postChat(`${BASE_URL}/chats/${roomId}`, myChat),
+  );
 
   const handleChatPage = () => {
-    dispatch(setChatPage(0));
+    dispatch(setChatRoomInfo({ roomId: 0, roomName: '' }));
   };
 
   const handleChatInput = (event: ChangeEvent<HTMLInputElement>) => {
-    setMyChat(event.target.value);
+    setMyChat({ content: event.target.value });
   };
 
   const handleSend = () => {
-    console.log(123);
+    postMutation.mutate(myChat);
   };
 
   return (
@@ -75,22 +53,41 @@ export default function ChatRoom() {
       <Container>
         <ChatHeader>
           <BiArrowBack size={24} onClick={handleChatPage} />
-          <h1>{`${chatPartner} 님과의 채팅방`}</h1>
+          <h1>{`${roomName} 님과의 채팅방`}</h1>
         </ChatHeader>
         <Chat>
           {data &&
             data.chats.map((chat) => {
-              if (chat.nickname !== userInfo.name) {
+              if (chat.nickname !== userName) {
                 return (
-                  <OthersChat>
+                  <OthersChat key={chat.sentTime}>
                     <div>{chat.nickname}</div>
                     <div>{chat.content}</div>
                   </OthersChat>
                 );
               } else {
                 return (
-                  <MyChat>
+                  <MyChat key={chat.sentTime}>
                     <div>{chat.content}</div>
+                  </MyChat>
+                );
+              }
+            })}
+        </Chat>
+        <Chat>
+          {messages[0].memberId &&
+            messages.map((message) => {
+              if (message.nickname !== userName) {
+                return (
+                  <OthersChat key={message.sentTime}>
+                    <div>{message.nickname}</div>
+                    <div>{message.content}</div>
+                  </OthersChat>
+                );
+              } else {
+                return (
+                  <MyChat key={message.sentTime}>
+                    <div>{message.content}</div>
                   </MyChat>
                 );
               }
@@ -193,11 +190,13 @@ const ChatInputSection = styled.section`
     padding: 0.5rem;
     font-size: var(--font-size-s);
     color: var(--color-black);
+    margin-bottom: 0.5rem;
   }
 
   > svg {
     position: fixed;
     bottom: 10.1rem;
     right: 4rem;
+    cursor: pointer;
   }
 `;

@@ -1,7 +1,7 @@
 import { AiFillWechat } from 'react-icons/ai';
 import { keyframes, styled } from 'styled-components';
 import Modal from 'react-modal';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { modalStyle } from '../modalStyle';
 import ChatMain from '../components/ChatMain';
 import ChatRoom from '../components/ChatRoom';
@@ -11,46 +11,41 @@ import { useQuery } from 'react-query';
 import { BASE_URL } from '../../../util/constantValue';
 import getRoomList from '../api/getRoomList';
 import { setChatModal } from '../../../store/ChatModalStore';
-import { ChatRoomData } from '../../../type';
+import { ChatData, ChatRoomData } from '../../../type';
 import * as StompJs from '@stomp/stompjs';
-import * as SockJS from 'sockjs-client';
+import SockJS from 'sockjs-client';
 
 export default function ChatButton() {
-  const dispatch = useDispatch();
+  const [messages, setMessages] = useState([{}]);
+  const token = localStorage.getItem('Authrization');
 
-  const token = localStorage.getItem('Authorization');
+  const dispatch = useDispatch();
 
   const isOpen = useSelector((state: RootState) => state.chatModal);
 
-  const chatPage = useSelector((state: RootState) => state.chatPage);
+  const chatRoom = useSelector((state: RootState) => state.chatRoomInfo.roomId);
 
   const client = new StompJs.Client({
-    brokerURL: 'ws://ba5b-106-252-38-27.ngrok-free.app/stomp/chat',
-    debug: function (err) {
-      console.log(err);
+    brokerURL:
+      'ws://ec2-3-34-45-1.ap-northeast-2.compute.amazonaws.com:8080/stomp/chat',
+    connectHeaders: {
+      Authorization: token as string,
     },
   });
 
-  // if (typeof WebSocket !== 'function') {
-  //   client.webSocketFactory = function () {
-  //     return new SockJS('/stomp/chat');
-  //   };
-  // }
-
-  client.onConnect = function (frame) {
-    console.log(frame);
-  };
-
-  client.onStompError = function (frame) {
-    console.log(frame.headers);
-    console.log(frame.body);
-  };
+  if (typeof WebSocket !== 'function') {
+    client.webSocketFactory = function () {
+      return new SockJS(
+        'http://ec2-3-34-45-1.ap-northeast-2.compute.amazonaws.com:8080/stomp/chat',
+      ) as StompJs.IStompSocket;
+    };
+  }
 
   const { data } = useQuery<ChatRoomData, unknown>(
     'roomList',
-    () => getRoomList(`${BASE_URL}/chats`, token as string),
+    () => getRoomList(`${BASE_URL}/chats`),
     {
-      enabled: isOpen,
+      enabled: isOpen && !chatRoom,
       refetchInterval: 5000,
     },
   );
@@ -60,38 +55,50 @@ export default function ChatButton() {
 
   //TODO 채팅방 삭제 버튼 클릭 시 구독 취소
 
-  const handleModalChange = () => {
-    dispatch(setChatModal(!isOpen));
-  };
-
   useEffect(() => {
-    if (isOpen === true) {
+    if (chatRoom !== 0) {
       client.activate();
-    }
-    if (isOpen === false) {
-      client.deactivate();
+
+      client.onConnect = function () {
+        client.subscribe(`/sub/chat/room/${data}`, (message) => {
+          const receivedMessage = JSON.parse(message.body);
+          setMessages((prevMessages) => [...prevMessages, receivedMessage]);
+        });
+      };
+
+      client.onStompError = function (frame) {
+        console.log('STOMP error: ', frame.headers, frame.body);
+      };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen]);
+  }, [chatRoom]);
+
+  const handleModalOpen = () => {
+    dispatch(setChatModal(true));
+  };
+
+  const handleModalClose = () => {
+    dispatch(setChatModal(false));
+  };
 
   return (
     <Container>
-      <button onClick={handleModalChange}>
+      <button onClick={isOpen ? handleModalClose : handleModalOpen}>
         <AiFillWechat size={48} color={'var(--color-white)'} />
       </button>
       <Modal
         isOpen={isOpen}
         style={modalStyle}
-        onRequestClose={handleModalChange}
+        onRequestClose={handleModalClose}
         ariaHideApp={false}
       >
-        {chatPage === 0 && (
+        {chatRoom === 0 && (
           <ChatMain
-            handleModalChange={handleModalChange}
+            handleModalClose={handleModalClose}
             data={data as ChatRoomData}
           />
         )}
-        <ChatRoom />
+        <ChatRoom messages={messages as ChatData[]} />
       </Modal>
     </Container>
   );
