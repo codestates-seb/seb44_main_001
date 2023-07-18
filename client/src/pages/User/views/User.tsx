@@ -17,6 +17,7 @@ import { PiMapPinBold } from 'react-icons/pi';
 import { setUserData } from '../store/MemberStore';
 
 export default function User() {
+  const navigate = useNavigate();
   const params = useParams<{ memberId: string }>();
   const { memberId } = params;
 
@@ -25,7 +26,6 @@ export default function User() {
   const data = useSelector((state: RootState) => state.member);
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const storedMemberId = localStorage.getItem('MemberId');
 
@@ -65,11 +65,6 @@ export default function User() {
     }
   }, [memberId]);
 
-  const handelTest = () => {
-    console.log('테스트버튼 클릭!');
-    navigate(`/user/${1}`, { state: 1 });
-  };
-
   return (
     <div>
       {data ? (
@@ -95,19 +90,13 @@ export default function User() {
                     <ProfileItem>{`${data.age}년생`}</ProfileItem>
                   </ProfileBox>
                 </ProfileContentBox>
-                {isMine ? <Button children={'프로필 수정'} /> : <>&nbsp;</>}
+                {isMine ? <Button onClick={()=>navigate('/user/edit')} children={'프로필 수정'} /> : <>&nbsp;</>}
               </ProfileContainer>
               <MsgBox>
                 <div>{data.welcomeMsg}</div>
               </MsgBox>
             </Background>
             <ChatButton />
-            <div>
-              <Button
-                children={'다른사람페이지로 이동~'}
-                onClick={handelTest}
-              />
-            </div>
           </Layout>
         </>
       ) : (
@@ -117,7 +106,7 @@ export default function User() {
   );
 }
 
-const ProfileContainer = styled.div`
+export const ProfileContainer = styled.div`
   display: flex;
   align-items: start;
   justify-content: space-between;

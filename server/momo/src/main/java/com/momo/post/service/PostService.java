@@ -152,14 +152,14 @@ public class PostService {
         post.setCategory(category);
 
         Location location = locationRepository.findById(locationId)
-                .orElseThrow(() -> new NotFoundException("ID가 " + locationId + "인 멤버를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("ID가 " + locationId + "인 location을 찾을 수 없습니다."));
         post.setLocation(location);
 
 
         Post savedPost = postRepository.save(post);
         PostResponseDto responseDto = postMapper.postToPostResponseDto(savedPost);
         responseDto.setMemberInfo(MemberInfo.builder()
-                .memberId(memberId)
+                .memberId(post.getMember().getMemberId())
                 .nickname(post.getMember().getNickname())
                 .profileImage(post.getMember().getProfileImage())
                 .build());
@@ -228,6 +228,11 @@ public class PostService {
         responseDto.setCategoryInfo(CategoryInfo.builder()
                 .categoryId(post.getCategory().getCategoryId())
                 .name(post.getCategory().getName())
+                .build());
+        responseDto.setLocationInfo(LocationInfo.builder()
+                .locationId(post.getLocation().getLocationId())
+                .city(post.getLocation().getCity())
+                .province(post.getLocation().getProvince())
                 .build());
         return responseDto;
     }
@@ -475,14 +480,14 @@ public class PostService {
                             .nickname(post.getMember().getNickname())
                             .profileImage(post.getMember().getProfileImage())
                             .build());
+                    responseDto.setCategoryInfo(CategoryInfo.builder()
+                            .categoryId(post.getCategory().getCategoryId())
+                            .name(post.getCategory().getName())
+                            .build());
                     responseDto.setLocationInfo(LocationInfo.builder()
                             .locationId(post.getLocation().getLocationId())
                             .city(post.getLocation().getCity())
                             .province(post.getLocation().getProvince())
-                            .build());
-                    responseDto.setCategoryInfo(CategoryInfo.builder()
-                            .categoryId(post.getCategory().getCategoryId())
-                            .name(post.getCategory().getName())
                             .build());
                     return responseDto;
                 })

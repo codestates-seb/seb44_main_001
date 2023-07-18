@@ -245,7 +245,7 @@ export const Background = styled.div`
   }
 `;
 
-const ContentWrapper = styled.div`
+export const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: start;
@@ -253,7 +253,7 @@ const ContentWrapper = styled.div`
   margin-left: 50px;
 `;
 
-const InputBox = styled.div`
+export const InputBox = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: start;
@@ -276,7 +276,7 @@ const ErrorMessage = styled.div`
   margin-top: 5px;
 `;
 
-const DropdownInput = styled.select`
+export const DropdownInput = styled.select`
   width: 300px;
   margin-top: 10px;
   color: var(--color-black);
@@ -285,7 +285,7 @@ const DropdownInput = styled.select`
   }
 `;
 
-const TextAreaInput = styled.textarea<TextAreaProps>`
+export const TextAreaInput = styled.textarea<TextAreaProps>`
   width: 90%;
   height: 200px;
   padding: 0.5rem;

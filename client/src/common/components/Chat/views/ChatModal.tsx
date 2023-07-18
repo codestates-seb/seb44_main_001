@@ -1,94 +1,104 @@
 import { AiFillWechat } from 'react-icons/ai';
 import { keyframes, styled } from 'styled-components';
 import Modal from 'react-modal';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { modalStyle } from '../modalStyle';
 import ChatMain from '../components/ChatMain';
 import ChatRoom from '../components/ChatRoom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store/RootStore';
-import * as StompJs from '@stomp/stompjs';
 import { useQuery } from 'react-query';
 import { BASE_URL } from '../../../util/constantValue';
 import getRoomList from '../api/getRoomList';
 import { setChatModal } from '../../../store/ChatModalStore';
-import { ChatRoomData } from '../../../type';
+import { ChatData, ChatRoomData } from '../../../type';
+import * as StompJs from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
 
 export default function ChatButton() {
+  const [messages, setMessages] = useState([{}]);
+  const token = localStorage.getItem('Authrization');
+
   const dispatch = useDispatch();
 
   const isOpen = useSelector((state: RootState) => state.chatModal);
 
-  const chatPage = useSelector((state: RootState) => state.chatPage);
+  const chatRoom = useSelector((state: RootState) => state.chatRoomInfo.roomId);
+
+  const client = new StompJs.Client({
+    brokerURL:
+      'ws://ec2-3-34-45-1.ap-northeast-2.compute.amazonaws.com:8080/stomp/chat',
+    connectHeaders: {
+      Authorization: token as string,
+    },
+  });
+
+  if (typeof WebSocket !== 'function') {
+    client.webSocketFactory = function () {
+      return new SockJS(
+        'http://ec2-3-34-45-1.ap-northeast-2.compute.amazonaws.com:8080/stomp/chat',
+      ) as StompJs.IStompSocket;
+    };
+  }
 
   const { data } = useQuery<ChatRoomData, unknown>(
     'roomList',
     () => getRoomList(`${BASE_URL}/chats`),
     {
-      enabled: isOpen,
+      enabled: isOpen && !chatRoom,
       refetchInterval: 5000,
     },
   );
-
   // 기존 채팅방 목록 가져오기
 
   //TODO 모달 열리면 기존 채팅방들 구독하는 로직 추가해야함
 
   //TODO 채팅방 삭제 버튼 클릭 시 구독 취소
 
-  const client = new StompJs.Client({
-    brokerURL: '//50d0-49-163-135-89.ngrok-free.app/stomp/chat',
-    connectHeaders: {
-      login: 'user',
-      passcode: 'password',
-    },
-    debug: function (err) {
-      console.log(err);
-    },
-    heartbeatIncoming: 4000,
-    heartbeatOutgoing: 4000,
-  });
-
-  client.onConnect = function (frame) {
-    console.log(frame);
-  };
-
-  client.onStompError = function (frame) {
-    console.log(frame);
-  };
-
-  const handleModalChange = () => {
-    dispatch(setChatModal(!isOpen));
-  };
-
   useEffect(() => {
-    if (isOpen === true) {
+    if (chatRoom !== 0) {
       client.activate();
-    }
-    if (isOpen === false) {
-      client.deactivate();
+
+      client.onConnect = function () {
+        client.subscribe(`/sub/chat/room/${data}`, (message) => {
+          const receivedMessage = JSON.parse(message.body);
+          setMessages((prevMessages) => [...prevMessages, receivedMessage]);
+        });
+      };
+
+      client.onStompError = function (frame) {
+        console.log('STOMP error: ', frame.headers, frame.body);
+      };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen]);
+  }, [chatRoom]);
+
+  const handleModalOpen = () => {
+    dispatch(setChatModal(true));
+  };
+
+  const handleModalClose = () => {
+    dispatch(setChatModal(false));
+  };
 
   return (
     <Container>
-      <button onClick={handleModalChange}>
+      <button onClick={isOpen ? handleModalClose : handleModalOpen}>
         <AiFillWechat size={48} color={'var(--color-white)'} />
       </button>
       <Modal
         isOpen={isOpen}
         style={modalStyle}
-        onRequestClose={handleModalChange}
+        onRequestClose={handleModalClose}
         ariaHideApp={false}
       >
-        {chatPage === 0 && (
+        {chatRoom === 0 && (
           <ChatMain
-            handleModalChange={handleModalChange}
+            handleModalClose={handleModalClose}
             data={data as ChatRoomData}
           />
         )}
-        <ChatRoom chatPage={chatPage} />
+        <ChatRoom messages={messages as ChatData[]} />
       </Modal>
     </Container>
   );

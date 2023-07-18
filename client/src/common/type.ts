@@ -43,7 +43,8 @@ export type ArticleToGet = {
     city: string;
     province: string;
   };
-  likeCount: number;
+  postLikeCount:number;
+  liked:boolean;
 };
 
 export type CommentToPost = {
@@ -77,6 +78,7 @@ export type CommentListToGet = {
 };
 
 export type CardData = {
+  [x: string]: any;
   title: string;
   content: string;
   postId: number;
@@ -128,6 +130,14 @@ export type Member = {
   posts: CardData[];
 };
 
+export type SignupPatchData = {
+  location: number;
+  welcomeMsg: string;
+  nickname: string;
+  isMale: boolean;
+  age: number;
+};
+
 export type Room = {
   roomId: number;
   roomName: string;
@@ -138,4 +148,29 @@ export type Room = {
 
 export type ChatRoomData = {
   rooms: Room[];
+};
+
+export type ChatData = {
+  memberId: number;
+  nickname: string;
+  content: string;
+  sentTime: string;
+};
+
+export type PrevChatData = {
+  chats: ChatData[];
+};
+
+export type PostChat = {
+  content: string;
+};
+
+export type ChatMembers = {
+  memberId: number;
+};
+
+export type IsLikedType = {
+  isLiked: boolean;
+  memberId: number;
+  postId: string | undefined;
 };

@@ -42,8 +42,8 @@ public class MemberController {
     @GetMapping("/{member-id}")
     public ResponseEntity getMember(@PathVariable("member-id") Long memberId){
         Member findMember = memberService.findMember(memberId);
-
-        return new ResponseEntity(mapper.memberToMemberResponseDto(findMember), HttpStatus.OK);
+//        return new ResponseEntity(mapper.memberToMemberResponseDto(findMember), HttpStatus.OK);
+        return new ResponseEntity(findMember, HttpStatus.OK);
     }
 
     /* 모든 회원 조회 */

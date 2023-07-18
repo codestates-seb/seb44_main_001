@@ -1,4 +1,5 @@
-export const BASE_URL = 'https://50d0-49-163-135-89.ngrok-free.app';
+export const BASE_URL =
+  'http://ec2-3-34-45-1.ap-northeast-2.compute.amazonaws.com:8080';
 
 export const TITLE_INPUT_PLACEHOLDER = '내가 원하는 친구를 모집해봐요!';
 
@@ -37,3 +38,7 @@ export const NEXT = '다음';
 export const PREV = '이전';
 
 export const CHAT_NOTICE = 'New';
+
+export const SEND_CHAT = '채팅 보내기';
+
+export const VIEW_PROFILE = '프로필 보기';

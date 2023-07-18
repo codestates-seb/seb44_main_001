@@ -20,8 +20,10 @@ public class PostResponseDto {
     private LocationInfo locationInfo;
     private MemberInfo memberInfo;
     private List<String> tags;
+    private boolean isLiked;
+    private Long postLikeCount;
 
-    public PostResponseDto(Long postId, String title, String content, LocalDateTime createdAt, LocalDateTime editedAt, CategoryInfo categoryInfo, LocationInfo locationInfo, MemberInfo memberInfo, List<String> tags) {
+    public PostResponseDto(Long postId, String title, String content, LocalDateTime createdAt, LocalDateTime editedAt, CategoryInfo categoryInfo, LocationInfo locationInfo, MemberInfo memberInfo, List<String> tags, boolean isLiked, Long postLikeCount) {
         this.postId = postId;
         this.title = title;
         this.content = content;
@@ -31,5 +33,13 @@ public class PostResponseDto {
         this.locationInfo = locationInfo;
         this.memberInfo = memberInfo;
         this.tags = tags;
+        this.isLiked = isLiked;
+        this.postLikeCount = postLikeCount;
+    }
+
+    public PostResponseDto(Long postLikeCount,Boolean isLiked) {
+        this.postLikeCount = postLikeCount;
+        this.isLiked = isLiked;
     }
 }
+
