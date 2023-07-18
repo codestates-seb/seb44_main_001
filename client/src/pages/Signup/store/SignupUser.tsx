@@ -8,7 +8,7 @@ export const setSignupSlice = createSlice({
     nickname: '',
     age: 0,
     isMale: true,
-    location: null,
+    locationId: null,
     welcomeMsg: '',
   },
   reducers: {
@@ -20,7 +20,7 @@ export const setSignupSlice = createSlice({
         nickname: action.payload.nickname,
         age: action.payload.age,
         isMale: action.payload.isMale,
-        location: action.payload.location,
+        locationId: action.payload.locationId,
         welcomeMsg: action.payload.welcomeMsg,
       };
     },

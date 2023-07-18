@@ -12,6 +12,7 @@ import { setLocation } from '../../../common/store/LocationStore';
 import { resetCreatedPost } from '../../Write,Edit/store/CreatedPost';
 import Card from '../../../common/components/Card';
 import momofriends from '../../../common/assets/logo/momofriends.svg';
+import roundingPeach from '../../../common/assets/images/roundingPeach.gif';
 
 export default function Cards() {
   const dispatch = useDispatch();
@@ -86,7 +87,7 @@ export default function Cards() {
   if (isLoading)
     return (
       <Loading>
-        <img src={momofriends} alt="loading" />
+        <img src={roundingPeach} alt="loading" />
         <div className="message">로딩중...</div>
       </Loading>
     );
@@ -150,7 +151,7 @@ const Loading = styled.div`
   align-items: center;
   margin-top: 3rem;
 
-  animation: bounce_frames 0.5s infinite;
+  /* animation: bounce_frames 0.5s infinite;
   animation-direction: alternate;
   animation-timing-function: cubic-bezier(0.5, 0.05, 1, 0.5);
   @keyframes bounce_frames {
@@ -160,11 +161,15 @@ const Loading = styled.div`
     to {
       transform: translate3d(0, 50px, 0);
     }
-  }
+  } */
 
   .message {
     margin-top: 1rem;
     font-size: var(--font-size-l);
+  }
+  img {
+    width: 10rem;
+    height: 10rem;
   }
 `;
 
