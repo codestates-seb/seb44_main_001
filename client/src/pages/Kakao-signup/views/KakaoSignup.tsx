@@ -15,8 +15,14 @@ import Button from '../../../common/components/Button';
 import { useDispatch, useSelector } from 'react-redux';
 import patchMyData from '../api/patchMyData';
 import { setUpdatedUser } from '../store/UpdatedUserData';
-import { SignupPatchData } from '../../../common/type';
+import { Member, SignupPatchData } from '../../../common/type';
 import { RootState } from '../../../common/store/RootStore';
+import { useMutation } from 'react-query';
+import { BASE_URL } from '../../../common/util/constantValue';
+
+interface KakaoData {
+  email: string;
+}
 
 export default function KakaoSignup() {
   const [nickname, setNickname] = useState('');
@@ -26,36 +32,53 @@ export default function KakaoSignup() {
 
   const dispatch = useDispatch();
 
-  const data: SignupPatchData = useSelector(
+  const patchData: SignupPatchData = useSelector(
     (state: RootState) => state.authSignup,
   );
 
-  const storedToken = localStorage.getItem('Authorization');
-  const storedMemberId = localStorage.getItem('MemberId');
+  const memberId = 1;
+
+  const kakaoMutation = useMutation<void, unknown, SignupPatchData>(
+    async () => {
+      const storedToken = localStorage.getItem('Authorization');
+      if (storedToken) {
+        const result = await patchMyData(
+          `${BASE_URL}/members/${memberId}`,
+          storedToken,
+          patchData,
+        );
+        console.log(result);
+      }
+    },
+  );
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(e.target.value);
-    dispatch(setUpdatedUser({ ...data, nickname: e.target.value }));
+    dispatch(setUpdatedUser({ ...patchData, nickname: e.target.value }));
   };
 
   const handleBirthYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setAge(parseInt(e.target.value));
-    dispatch(setUpdatedUser({ ...data, age: e.target.value }));
+    dispatch(setUpdatedUser({ ...patchData, age: e.target.value }));
   };
 
   const handleIsMaleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const isMale = e.target.value === 'male';
     setIsMale(isMale);
-    dispatch(setUpdatedUser({ ...data, isMale: isMale }));
+    dispatch(setUpdatedUser({ ...patchData, isMale: isMale }));
   };
 
   const onLocationChange = (locationId: number | null) => {
-    dispatch(setUpdatedUser({ ...data, location: locationId }));
+    dispatch(setUpdatedUser({ ...patchData, location: locationId }));
   };
 
   const handleWelcomeMsgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setWelcomeMsg(e.target.value);
-    dispatch(setUpdatedUser({ ...data, welcomeMsg: e.target.value }));
+    dispatch(setUpdatedUser({ ...patchData, welcomeMsg: e.target.value }));
+  };
+
+  const handleSignup = async () => {
+    await kakaoMutation.mutate(patchData);
   };
 
   return (
@@ -139,7 +162,7 @@ export default function KakaoSignup() {
               />
             </InputBox>
           </ContentWrapper>
-          <Button children={'가입 완료하기'} />
+          <Button children={'가입 완료하기'} onClick={handleSignup} />
         </Background>
       </Layout>
     </div>
