@@ -14,6 +14,7 @@ import { setChatModal } from '../../../store/ChatModalStore';
 import { ChatData, ChatRoomData, Room } from '../../../type';
 import * as StompJs from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
+import isEqual from 'lodash/isEqual';
 
 export default function ChatButton() {
   const [messages, setMessages] = useState([{}]);
@@ -27,6 +28,8 @@ export default function ChatButton() {
       lastCheckTime: '',
     },
   ]);
+
+  const [isDataDifferent, setIsDataDifferent] = useState(false);
 
   const token = localStorage.getItem('Authrization');
 
@@ -47,10 +50,18 @@ export default function ChatButton() {
   if (typeof WebSocket !== 'function') {
     client.webSocketFactory = function () {
       return new SockJS(
-        'http://ec2-3-34-45-1.ap-northeast-2.compute.amazonaws.com:8080/stomp/chat',
+        'https://e9e5-49-163-135-89.ngrok-free.app/stomp/chat',
       ) as StompJs.IStompSocket;
     };
   }
+
+  const updateMessages = (prevMessages: ChatData[], newMessage: ChatData) => {
+    return [...prevMessages, newMessage];
+  };
+
+  const updatePrevRoom = (_prevRoom: Room[], newRoom: Room[]) => {
+    return [...newRoom];
+  };
 
   useQuery<ChatRoomData, unknown>(
     'roomList',
@@ -59,7 +70,8 @@ export default function ChatButton() {
       enabled: isOpen && !chatRoom,
       refetchInterval: 5000,
       onSuccess: (data) => {
-        setPrevRoom(data.rooms);
+        setIsDataDifferent(!isEqual(prevRoom, data.rooms));
+        setPrevRoom((prevRoom) => updatePrevRoom(prevRoom, data.rooms));
       },
     },
   );
@@ -73,14 +85,15 @@ export default function ChatButton() {
 
       client.onConnect = function () {
         console.log('websocket is connected');
-        console.log(chatRoom);
+
         client.subscribe(`/sub/chat/room/${chatRoom}`, (message) => {
           console.log(chatRoom + '번방에 입장하였습니다.');
+
           const receivedMessage = JSON.parse(message.body);
-          console.log('이건 응답' + message.body);
-          console.log('이건 파싱한 응답' + receivedMessage);
-          setMessages((prevMessages) => [...prevMessages, receivedMessage]);
-          console.log('이건 저장된 갯수' + messages.length);
+
+          setMessages((prevMessages) =>
+            updateMessages(prevMessages as ChatData[], receivedMessage),
+          );
         });
       };
 
@@ -101,7 +114,10 @@ export default function ChatButton() {
 
   return (
     <Container>
-      <button onClick={isOpen ? handleModalClose : handleModalOpen}>
+      <button
+        onClick={isOpen ? handleModalClose : handleModalOpen}
+        className={isDataDifferent ? 'on' : ''}
+      >
         <AiFillWechat size={48} color={'var(--color-white)'} />
       </button>
       <Modal
@@ -116,7 +132,7 @@ export default function ChatButton() {
             prevRoom={prevRoom as Room[]}
           />
         )}
-        <ChatRoom messages={messages as ChatData[]} />
+        <ChatRoom messages={messages as ChatData[]} setMessages={setMessages} />
       </Modal>
     </Container>
   );
@@ -145,14 +161,37 @@ const Container = styled.section`
     width: 5rem;
     border-radius: 50%;
     cursor: pointer;
-    background: var(--color-pink-1);
+    background: linear-gradient(
+      90deg,
+      var(--color-pink-1),
+      var(--color-pink-2)
+    );
 
     > svg {
       animation: ${pulseAnimation} 1s ease-in-out infinite;
       border-radius: 50%;
     }
   }
-  :active {
-    background: var(--color-pink-2);
+
+  @keyframes shake {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateY(-10px);
+    }
+  }
+
+  @keyframes colorChange {
+    from {
+      background: linear-gradient(90deg, var(--color-pink-1), red);
+    }
+    to {
+      background: linear-gradient(90deg, red, var(--color-pink-1));
+    }
+  }
+
+  .on {
+    animation: shake 0.5s infinite, clolrChange 2s infinite;
   }
 `;

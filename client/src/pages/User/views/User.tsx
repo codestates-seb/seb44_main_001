@@ -84,13 +84,20 @@ export default function User() {
                     <ProfileItem style={{ display: 'flex' }}>
                       <LocationIcon />
                       &nbsp;
-                      <div>{data.location}</div>
+                      <div>{`${data.location.city} ${data.location.province}`}</div>
                     </ProfileItem>
                     <ProfileItem>{data.isMale ? `남자` : `여자`}</ProfileItem>
                     <ProfileItem>{`${data.age}년생`}</ProfileItem>
                   </ProfileBox>
                 </ProfileContentBox>
-                {isMine ? <Button onClick={()=>navigate('/user/edit')} children={'프로필 수정'} /> : <>&nbsp;</>}
+                {isMine ? (
+                  <Button
+                    onClick={() => navigate('/user/edit')}
+                    children={'프로필 수정'}
+                  />
+                ) : (
+                  <>&nbsp;</>
+                )}
               </ProfileContainer>
               <MsgBox>
                 <div>{data.welcomeMsg}</div>

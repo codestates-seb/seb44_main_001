@@ -12,7 +12,7 @@ import { setLocation } from '../../../common/store/LocationStore';
 import { resetCreatedPost } from '../../Write,Edit/store/CreatedPost';
 import Card from '../../../common/components/Card';
 import momofriends from '../../../common/assets/logo/momofriends.svg';
-import roundingPeach from '../../../common/assets/images/roundingPeach.gif';
+import roundingPeach from '../../../common/assets/images/roundingPeach.svg';
 
 export default function Cards() {
   const dispatch = useDispatch();
@@ -150,6 +150,19 @@ const Loading = styled.div`
   flex-direction: column;
   align-items: center;
   margin-top: 3rem;
+
+  @keyframes rotateAnimation {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  > img {
+    animation: rotateAnimation 2s linear infinite;
+  }
 
   /* animation: bounce_frames 0.5s infinite;
   animation-direction: alternate;

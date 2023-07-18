@@ -29,7 +29,7 @@ export default function App() {
       <GlobalStyle />
       <Header />
       <Router />
-      <Footer/>
+      <Footer />
     </>
   );
 }
