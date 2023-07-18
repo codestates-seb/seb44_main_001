@@ -21,16 +21,26 @@ import LocationSelector from '../../../common/components/LocationSelector';
 import { setCategory } from '../../../common/store/CategoryStore';
 import { setLocation } from '../../../common/store/LocationStore';
 import { resetCreatedPost } from '../../Write,Edit/store/CreatedPost';
+import { patchMyData } from '../api/patchMyData';
 import { setSignupUser } from '../../Signup/store/SignupUser';
 import Button from '../../../common/components/Button';
 import ChatButton from '../../../common/components/Chat/views/ChatModal';
+import { useMutation } from 'react-query';
+import { BASE_URL } from '../../../common/util/constantValue';
+
 export default function UserEdit() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const user: Member = useSelector((state: RootState) => state.member);
-  const myData = useSelector((state: RootState) => state.myData)
-  
+  // const user: Member = useSelector((state: RootState) => state.member);
+  const myData: Member = useSelector((state: RootState) => state.myData);
+  console.log('!!!!', myData);
+  const [nickname, setNickname] = useState(myData.nickname);
+  const [welcomeMsg, setWelcomeMsg] = useState(myData.welcomeMsg);
+
+  const [isSelected, setIsSelected] = useState(false);
+
+  // 전역 설정을 안한다면? 이거 지워도 되나??
   useEffect(() => {
     return () => {
       dispatch(setCategory({ categoryId: 0, name: '' }));
@@ -40,44 +50,49 @@ export default function UserEdit() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const [nickname, setNickname] = useState(`${user.nickname}`);
-  const [welcomeMsg, setWelcomeMsg] = useState('');
-
-  const [isSelected, setIsSelected] = useState(false);
-
-  const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNickname(e.target.value);
-  };
-
-  const onLocationChange = (locationId: number | null) => {
-    dispatch(setMyData({ ...user, location: locationId }));
-  };
-
-  const handleWelcomeMsgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setWelcomeMsg(e.target.value);
-  };
-
-  const handleEdit = () => {
-    console.log('수정~');
-    // dispatch(setMyData({ ...user, nickname: e.target.value }));
-    // dispatch(setMyData({ ...user, location: locationId }));
-    // dispatch(setMyData({ ...user, welcomeMsg: e.target.value }));
-  };
-
-  const [selectedImage, setSelectedImage] = useState('');
-
-  const handleEditImg = (event:React.ChangeEvent<HTMLInputElement>) => {
+  const handleImgChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const input = event.target;
     if (input.files && input.files[0]) {
       const reader = new FileReader();
 
       reader.onload = function (e) {
         const imageDataURL = e.target?.result as string;
-        setSelectedImage(imageDataURL);
+        return imageDataURL;
       };
-
       reader.readAsDataURL(input.files[0]);
     }
+  };
+
+  const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNickname(e.target.value);
+  };
+
+  // const handleLocationChange = (locationId: number | null) => {
+  //   dispatch(setMyData({ ...myData, locationId: locationId }));
+  // };
+
+  const handleWelcomeMsgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setWelcomeMsg(e.target.value);
+  };
+
+  const patchMutation = useMutation<void, unknown, Member>(
+    (myData) => patchMyData(`${BASE_URL}/members/${myData.memberId}`, myData),
+    {
+      onError: (error) => {
+        console.error(error);
+      },
+    },
+  );
+
+  const handleEdit = () => {
+    console.log('수정~');
+    dispatch(
+      setMyData({
+        ...myData,
+        nickname: nickname,
+        welcomeMsg: welcomeMsg,
+      }),
+    );
   };
 
   return (
@@ -92,7 +107,7 @@ export default function UserEdit() {
         <Layout>
           <Background>
             <ImageContainer>
-              <ProfileImage src={selectedImage || profile} />
+              <ProfileImage src={myData.profileImage || profile} />
               <ImgEditButton>
                 <label className="editLabel" htmlFor="file-input">
                   <img src={imgEdit} alt="img-edit-button" />
@@ -100,7 +115,7 @@ export default function UserEdit() {
                 <ImgEditInput
                   id="file-input"
                   type="file"
-                  onChange={handleEditImg}
+                  onChange={handleImgChange}
                 />
               </ImgEditButton>
             </ImageContainer>
@@ -115,7 +130,9 @@ export default function UserEdit() {
               </InputBox>
               <InputBox>
                 <Text>지역</Text>
-                <LocationSelector onLocationChange={onLocationChange} />
+                <LocationSelector
+                //  onLocationChange={handleLocationChange}
+                />
               </InputBox>
               <InputBox>
                 <Text>자기소개</Text>

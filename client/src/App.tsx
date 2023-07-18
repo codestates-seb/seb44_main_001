@@ -6,6 +6,7 @@ import MyData from './pages/Login/api/getMyData';
 import { BASE_URL } from './common/util/constantValue';
 import { useDispatch } from 'react-redux';
 import { setMyData } from './pages/Login/store/MyUserData';
+import Footer from './common/components/Footer';
 
 export default function App() {
   const dispatch = useDispatch();
@@ -28,6 +29,7 @@ export default function App() {
       <GlobalStyle />
       <Header />
       <Router />
+      <Footer/>
     </>
   );
 }

@@ -78,7 +78,6 @@ export type CommentListToGet = {
 };
 
 export type CardData = {
-  [x: string]: any;
   title: string;
   content: string;
   postId: number;
@@ -108,7 +107,7 @@ export type SignupData = {
   nickname: string;
   age: number | null;
   isMale: boolean | null;
-  location: number | null;
+  locationId: number | null;
   welcomeMsg: string;
 };
 
@@ -120,7 +119,7 @@ export type LoginData = {
 export type Member = {
   memberId: number;
   email: string;
-  location: number;
+  locationId: number;
   welcomeMsg: string;
   profileImage: string | null;
   nickname: string;

@@ -91,7 +91,7 @@ export default function Signup() {
   };
 
   const onLocationChange = (locationId: number | null) => {
-    dispatch(setSignupUser({ ...data, location: locationId }));
+    dispatch(setSignupUser({ ...data, locationId: locationId }));
   };
 
   const handleWelcomeMsgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
