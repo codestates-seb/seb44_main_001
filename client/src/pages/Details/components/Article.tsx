@@ -19,12 +19,13 @@ import UserModal from './UserModal';
 import profile from '../../../common/assets/profile.svg';
 import { useEffect } from 'react';
 import { calculateTimeDifference } from '../../../common/util/timeCalculator';
-import postLike from '../api/postLike';
+import { postLike } from '../api/postLike';
+import { deleteLike } from '../api/deleteLike';
 
 export default function Article({ data }: { data?: ArticleToGet }) {
   const [isLiked, setIsLiked] = useState(false);
 
-  const [totalLikes, setTotalLikes] = useState(data?.likeCount || 0);
+  const [totalLikes, setTotalLikes] = useState<number>(0);
 
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
 
@@ -40,35 +41,41 @@ export default function Article({ data }: { data?: ArticleToGet }) {
 
   const totalComments = useSelector((state: RootState) => state.totalComments);
 
-  //첫 랜더링시 유저의 좋아요 이력 여부에 따라 isLiked상태 변경 => 게시물 데이터에 포함되어있다.
   useEffect(() => {
-    // if (data.isLiked) {
-    //   setIsLiked(true);
-    // } else {
-    //   setIsLiked(false);
-    // }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const likeData = {
-    isLiked: isLiked,
-    memberId: memberId,
-    postId: id,
-  };
+    if (data) {
+      setTotalLikes(data.postLikeCount ?? 0);
+      setIsLiked(data.liked ?? false);
+    }
+  }, [data]);
 
   const postLikeMutaion = useMutation(
-    () => postLike(`${BASE_URL}/posts/${id}/update`, likeData),
+    () => {
+      return postLike(`${BASE_URL}/likes/${id}/${memberId}`, {
+        isLiked: !isLiked,
+      });
+    },
     {
-      onSuccess: () => {
-        if (isLiked) {
-          console.log('시러요');
-          setIsLiked(false);
-          setTotalLikes((prevLikes) => prevLikes - 1);
-        } else {
-          console.log('조아요');
-          setIsLiked(true);
-          setTotalLikes((prevLikes) => prevLikes + 1);
-        }
+      onSuccess: (responseData) => {
+        console.log('조아요');
+        setIsLiked(true);
+        setTotalLikes(responseData.likeCount);
+      },
+      onError: (error) => {
+        console.error('요청 실패:', error);
+      },
+    },
+  );
+
+  const deleteLikeMutation = useMutation(
+    () => deleteLike(`${BASE_URL}/likes/${id}/${memberId}`),
+    {
+      onSuccess: (responseData) => {
+        console.log('시러요');
+        setIsLiked(false);
+        setTotalLikes(responseData.likeCount);
+      },
+      onError: (error) => {
+        console.error('요청 실패:', error);
       },
     },
   );
@@ -124,7 +131,14 @@ export default function Article({ data }: { data?: ArticleToGet }) {
   };
 
   const handleClickLike = () => {
-    postLikeMutaion.mutate();
+    if(!memberId){
+      alert("로그인이 필요한 서비스입니다!")
+      return;
+    }else if (isLiked) {
+      deleteLikeMutation.mutate();
+    } else {
+      postLikeMutaion.mutate();
+    }
   };
 
   return (

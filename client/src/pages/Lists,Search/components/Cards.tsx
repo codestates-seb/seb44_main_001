@@ -16,9 +16,13 @@ import momofriends from '../../../common/assets/logo/momofriends.svg';
 export default function Cards() {
   const dispatch = useDispatch();
   const keyword = useParams().keyword || '';
-  const selectedLocationId = useSelector((state: RootState) => state.selectedLocation.locationId);
-  const selectedCategoryId = useSelector((state: RootState) => state.selectedCategory.categoryId);
-  
+  const selectedLocationId = useSelector(
+    (state: RootState) => state.selectedLocation.locationId,
+  );
+  const selectedCategoryId = useSelector(
+    (state: RootState) => state.selectedCategory.categoryId,
+  );
+
   console.log('선택한 로케이션 아이디', selectedLocationId);
   console.log('선택한 카테고리 아이디', selectedCategoryId);
 
@@ -30,16 +34,16 @@ export default function Cards() {
     isError,
   }: UseInfiniteQueryResult<CardData[], unknown> = useInfiniteQuery(
     ['filteredList', keyword, selectedCategoryId, selectedLocationId],
-    ({ pageParam = 1 }) =>
-      getData(
-        `${BASE_URL}/posts${`${keyword && '/search'}/${
-          selectedCategoryId !== 1 ? 'category-' : ''
-        }location`}`,
-        keyword && keyword,
-        selectedCategoryId === 1 ? undefined : selectedCategoryId,
-        selectedLocationId,
-        pageParam,
-      ),
+    ({ pageParam = 1 }) => {
+      const urlPath = `${BASE_URL}/posts${`${keyword && '/search'}/${
+        selectedCategoryId !== 1 ? 'category-' : ''
+      }location`}`;
+      const searchData = keyword && keyword;
+      const categoryId =
+        selectedCategoryId === 1 ? undefined : selectedCategoryId;
+      const locationId = selectedLocationId;
+      return getData(urlPath, searchData, categoryId, locationId, pageParam);
+    },
     {
       getNextPageParam: (lastPage, allPages) => {
         const nextPage = allPages.length + 1;

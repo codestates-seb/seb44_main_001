@@ -24,13 +24,13 @@ import { resetCreatedPost } from '../../Write,Edit/store/CreatedPost';
 import { setSignupUser } from '../../Signup/store/SignupUser';
 import Button from '../../../common/components/Button';
 import ChatButton from '../../../common/components/Chat/views/ChatModal';
-
 export default function UserEdit() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const user: Member = useSelector((state: RootState) => state.member);
-
+  const myData = useSelector((state: RootState) => state.myData)
+  
   useEffect(() => {
     return () => {
       dispatch(setCategory({ categoryId: 0, name: '' }));
@@ -64,6 +64,22 @@ export default function UserEdit() {
     // dispatch(setMyData({ ...user, welcomeMsg: e.target.value }));
   };
 
+  const [selectedImage, setSelectedImage] = useState('');
+
+  const handleEditImg = (event:React.ChangeEvent<HTMLInputElement>) => {
+    const input = event.target;
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        const imageDataURL = e.target?.result as string;
+        setSelectedImage(imageDataURL);
+      };
+
+      reader.readAsDataURL(input.files[0]);
+    }
+  };
+
   return (
     <>
       <SemiHeader title={`프로필 편집`} content="" />
@@ -76,10 +92,18 @@ export default function UserEdit() {
         <Layout>
           <Background>
             <ImageContainer>
-              <ProfileImage src={profile} />
-              <ImgEditIcon src={imgEdit} />
+              <ProfileImage src={selectedImage || profile} />
+              <ImgEditButton>
+                <label className="editLabel" htmlFor="file-input">
+                  <img src={imgEdit} alt="img-edit-button" />
+                </label>
+                <ImgEditInput
+                  id="file-input"
+                  type="file"
+                  onChange={handleEditImg}
+                />
+              </ImgEditButton>
             </ImageContainer>
-            <ProfileImage />
             <InputContainer>
               <InputBox>
                 <Text>닉네임</Text>
@@ -132,10 +156,24 @@ const ImageContainer = styled.div`
 `;
 const ProfileImage = styled.img`
   width: 11.1rem;
+  height: 11.1rem;
+  border-radius: 50%;
 `;
 
-const ImgEditIcon = styled.img`
+const ImgEditButton = styled.button`
   position: absolute;
+  border: none;
+  background: none;
+  padding: 0;
+  top: 9rem;
+  right: 0.5rem;
+  .editLabel {
+    cursor: pointer;
+  }
+`;
+
+const ImgEditInput = styled.input`
+  display: none;
 `;
 
 const InputContainer = styled.div`
