@@ -12,6 +12,7 @@ import { tokenSlice } from '../../pages/Login/store/userTokenStore';
 import { chatPageSlice } from './ChatPageStore';
 import { myDataSlice } from '../../pages/Login/store/MyUserData';
 import { chatModalSlice } from './ChatModalStore';
+import { updatedUserSlice } from '../../pages/Kakao-signup/store/UpdatedUserData';
 
 const rootReducer = combineReducers({
   category: categorySlice.reducer,
@@ -24,6 +25,7 @@ const rootReducer = combineReducers({
   token: tokenSlice.reducer,
   myData: myDataSlice.reducer,
   member: memberSlice.reducer,
+  authSignup: updatedUserSlice.reducer,
   totalComments: totalCommentsSlice.reducer,
   chatPage: chatPageSlice.reducer,
   chatModal: chatModalSlice.reducer,

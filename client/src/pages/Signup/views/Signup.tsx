@@ -245,7 +245,7 @@ export const Background = styled.div`
   }
 `;
 
-const ContentWrapper = styled.div`
+export const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: start;
@@ -276,7 +276,7 @@ const ErrorMessage = styled.div`
   margin-top: 5px;
 `;
 
-const DropdownInput = styled.select`
+export const DropdownInput = styled.select`
   width: 300px;
   margin-top: 10px;
   color: var(--color-black);

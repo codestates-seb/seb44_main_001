@@ -8,6 +8,7 @@ import User from './pages/User/views/User';
 import UserEdit from './pages/UserEdit/views/UserEdit';
 import Lists from './pages/Lists,Search/views/Lists';
 import Details from './pages/Details/views/Details';
+import KakaoCallback from './pages/Kakao-signup/views/KakaoCallback';
 import NotFound from './pages/NotFound/views/NotFound';
 
 const Router = () => {
@@ -16,6 +17,7 @@ const Router = () => {
       <Route path="/" element={<Home />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/kakao-signup" element={<KakaoSignup />} />
+      <Route path="/kakao-callback" element={<KakaoCallback />} />
       <Route path="/login" element={<Login />} />
       <Route path="/user/:memberId" element={<User />} />
       <Route path="/user/edit" element={<UserEdit />} />
