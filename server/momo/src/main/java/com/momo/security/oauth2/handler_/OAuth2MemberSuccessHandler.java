@@ -137,7 +137,7 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
         URI uri = UriComponentsBuilder
                 .newInstance()
                 .scheme("http")
-                .host("ec2-3-34-45-1.ap-northeast-2.compute.amazonaws.com:8080")
+                .host("[ec2-3-34-45-1.ap-northeast-2.compute.amazonaws.com:8080]")
                 .path("/kakao-callback") // 여기에 추가 정보 입력 사이트로
                 .queryParams(queryParams)
                 .build()
