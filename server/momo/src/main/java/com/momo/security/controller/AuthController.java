@@ -2,7 +2,9 @@ package com.momo.security.controller;
 
 import com.momo.member.entity.Member;
 import com.momo.member.repository.MemberRepository;
+import com.momo.security.entity.RefreshToken;
 import com.momo.security.jwt.JwtTokenizer;
+import com.momo.security.repository.RefreshTokenRepository;
 import com.momo.security.service.TokenBlacklistService;
 import com.momo.security.service.TokenService;
 import io.jsonwebtoken.Claims;
@@ -10,9 +12,7 @@ import io.jsonwebtoken.Jws;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
@@ -25,12 +25,14 @@ public class AuthController {
     private final TokenBlacklistService tokenBlacklistService;
     private final TokenService tokenService;
     private final MemberRepository memberRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
-    public AuthController(JwtTokenizer jwtTokenizer, TokenBlacklistService tokenBlacklistService, TokenService tokenService, MemberRepository memberRepository) {
+    public AuthController(JwtTokenizer jwtTokenizer, TokenBlacklistService tokenBlacklistService, TokenService tokenService, MemberRepository memberRepository, RefreshTokenRepository refreshTokenRepository) {
         this.jwtTokenizer = jwtTokenizer;
         this.tokenBlacklistService = tokenBlacklistService;
         this.tokenService = tokenService;
         this.memberRepository = memberRepository;
+        this.refreshTokenRepository = refreshTokenRepository;
     }
 
     @GetMapping("/login-form")
@@ -61,11 +63,11 @@ public class AuthController {
     }
 
     /* AccessToken 재발급 */
-    @PostMapping("/refresh")
-    public ResponseEntity<String> refreshAccessToken(HttpServletRequest request) {
-        String refreshHeader = request.getHeader("Refresh");
+    @PostMapping("/refresh/{member-id}")
+    public ResponseEntity<String> refreshAccessToken(@PathVariable("member-id") Long memberId) {
+        RefreshToken refreshToken = refreshTokenRepository.findByMemberId(memberId);
 
-        Jws<Claims> claims = tokenService.checkRefreshToken(refreshHeader);
+        Jws<Claims> claims = tokenService.checkRefreshToken(refreshToken.getRefreshToken());
         String email = claims.getBody().getSubject();
         Optional<Member> optionalMember = memberRepository.findByEmail(email);
 

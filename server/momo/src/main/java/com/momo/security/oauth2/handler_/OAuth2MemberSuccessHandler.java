@@ -6,6 +6,7 @@ import com.momo.exception.ExceptionCode;
 import com.momo.member.entity.Member;
 import com.momo.member.repository.MemberRepository;
 import com.momo.security.jwt.JwtTokenizer;
+import com.momo.security.repository.RefreshTokenRepository;
 import com.momo.security.utils.MomoAuthorityUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -29,12 +30,13 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
     private final JwtTokenizer jwtTokenizer;
     private final MomoAuthorityUtils authorityUtils;
     private final MemberRepository memberRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
-
-    public OAuth2MemberSuccessHandler(JwtTokenizer jwtTokenizer, MomoAuthorityUtils authorityUtils, MemberRepository memberRepository) {
+    public OAuth2MemberSuccessHandler(JwtTokenizer jwtTokenizer, MomoAuthorityUtils authorityUtils, MemberRepository memberRepository, RefreshTokenRepository refreshTokenRepository) {
         this.jwtTokenizer = jwtTokenizer;
         this.authorityUtils = authorityUtils;
         this.memberRepository = memberRepository;
+        this.refreshTokenRepository = refreshTokenRepository;
     }
 
     @Override
@@ -105,6 +107,19 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
         String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
 
         String refreshToken = jwtTokenizer.generateRefreshToken(subject, expiration, base64EncodedSecretKey);
+
+        Member member = memberRepository.findByEmail(username).
+                orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+        RefreshToken token;
+        if (refreshTokenRepository.findByMemberId(member.getMemberId()) != null) {
+            token = refreshTokenRepository.findByMemberId(member.getMemberId());
+            token.setRefreshToken(refreshToken);
+        } else {
+            token = new RefreshToken();
+            token.setRefreshToken(refreshToken);
+            token.setMemberId(member.getMemberId());
+        }
+        refreshTokenRepository.save(token);
 
         return refreshToken;
     }

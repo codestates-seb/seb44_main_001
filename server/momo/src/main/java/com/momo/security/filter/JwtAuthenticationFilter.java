@@ -3,7 +3,9 @@ package com.momo.security.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.momo.member.entity.Member;
 import com.momo.security.dto.LoginDto;
+import com.momo.security.entity.RefreshToken;
 import com.momo.security.jwt.JwtTokenizer;
+import com.momo.security.repository.RefreshTokenRepository;
 import lombok.SneakyThrows;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,10 +22,12 @@ import java.util.Map;
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenizer jwtTokenizer;
+    private final RefreshTokenRepository refreshTokenRepository;
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtTokenizer jwtTokenizer) {
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtTokenizer jwtTokenizer, RefreshTokenRepository refreshTokenRepository) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenizer = jwtTokenizer;
+        this.refreshTokenRepository = refreshTokenRepository;
     }
 
     @SneakyThrows
@@ -76,7 +80,17 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
 
         String refreshToken = jwtTokenizer.generateRefreshToken(subject, expiration, base64EncodedSecretKey);
-
+        Long memberId = member.getMemberId();
+        RefreshToken token;
+        if (refreshTokenRepository.findByMemberId(memberId) != null) {
+            token = refreshTokenRepository.findByMemberId(memberId);
+            token.setRefreshToken(refreshToken);
+        } else {
+            token = new RefreshToken();
+            token.setRefreshToken(refreshToken);
+            token.setMemberId(memberId);
+        }
+        refreshTokenRepository.save(token);
         return refreshToken;
     }
 }
