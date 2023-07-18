@@ -11,13 +11,15 @@ import { resetStates } from '../../pages/Login/store/MyUserData';
 
 import logo from '../assets/logo/MOMO.png';
 import profile from '../assets/profile.svg';
+import { setChatModal } from '../store/ChatModalStore';
 
 export default function Header() {
   const [isLogged, setIsLogged] = useState<boolean>(false);
   const myData = useSelector((state: RootState) => state.myData);
-  const myId = useSelector((state: RootState) => state.token.memberId);
+  // const myId = useSelector((state: RootState) => state.token.memberId);
   // 아래는 추가한 부분
   const token = localStorage.getItem('Authorization');
+  const myId = localStorage.getItem('MemberId');
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -39,6 +41,7 @@ export default function Header() {
     // 아래는 추가한 부분
     localStorage.removeItem('Authorization');
     localStorage.removeItem('MemberId');
+    dispatch(setChatModal(false));
   };
 
   const handleMyProfile = (e: React.MouseEvent) => {

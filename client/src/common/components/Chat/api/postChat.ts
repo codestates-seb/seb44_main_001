@@ -1,9 +1,14 @@
 import axios from 'axios';
-import { postChat } from '../../../type';
+import { PostChat } from '../../../type';
 
-export default async function postData(url: string, data: postChat) {
+export default async function postChat(url: string, data: PostChat) {
   try {
-    const headers = { 'ngrok-skip-browser-warning': '69420' };
+    const token = localStorage.getItem('Authorization');
+
+    const headers = {
+      Authorization: token,
+      'ngrok-skip-browser-warning': '69420',
+    };
 
     const res = await axios.post(url, data, { headers });
     console.log(res);

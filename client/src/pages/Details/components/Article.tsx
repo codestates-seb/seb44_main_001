@@ -18,9 +18,10 @@ import { useState } from 'react';
 import UserModal from './UserModal';
 import profile from '../../../common/assets/profile.svg';
 import { useEffect } from 'react';
-import { calculateTimeDifference } from '../../../common/util/timeCalculator';
+import { calculateTimeDifference } from '../../../common/util/timeDifferenceCalculator';
 import { postLike } from '../api/postLike';
 import { deleteLike } from '../api/deleteLike';
+
 
 export default function Article({ data }: { data?: ArticleToGet }) {
   const [isLiked, setIsLiked] = useState(false);

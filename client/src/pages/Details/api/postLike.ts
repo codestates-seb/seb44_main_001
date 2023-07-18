@@ -5,7 +5,12 @@ type likeType = {
 };
 
 export const postLike = async (url: string, data: likeType) => {
-  const headers = { 'ngrok-skip-browser-warning': '69420' };
+    const token = localStorage.getItem('Authorization');
+    const headers = {
+      Authorization: token,
+      'ngrok-skip-browser-warning': '69420',
+    };
   const res = await axios.post(url, data, { headers });
   return res.data;
 };
+
