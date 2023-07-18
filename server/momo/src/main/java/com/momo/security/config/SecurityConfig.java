@@ -7,8 +7,9 @@ import com.momo.security.filter.JwtVerificationFilter;
 import com.momo.security.handler.MemberAccessDeniedHandler;
 import com.momo.security.handler.MemberAuthenticationEntryPoint;
 import com.momo.security.jwt.JwtTokenizer;
+
 import com.momo.security.oauth2.handler_.OAuth2MemberSuccessHandler;
-import com.momo.security.repository.RefreshTokenRepository;
+
 import com.momo.security.service.TokenBlacklistService;
 import com.momo.security.utils.MomoAuthorityUtils;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +46,7 @@ public class SecurityConfig {
     private final MomoAuthorityUtils authorityUtils;
     private final TokenBlacklistService tokenBlacklistService;
     private final MemberRepository memberRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

@@ -1,5 +1,6 @@
 package com.momo.security.oauth2.handler_;
 
+
 import com.momo.exception.BusinessLogicException;
 import com.momo.exception.ExceptionCode;
 import com.momo.member.entity.Member;
@@ -43,6 +44,7 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
 
         String email = String.valueOf(oAuth2User.getAttributes().get("email"));
         if (email.equals("null")) {
+
             Map<String, Object> kakaoAccount = oAuth2User.getAttribute("kakao_account");
             email = String.valueOf(kakaoAccount.get("email"));
         }
@@ -64,14 +66,17 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
     private void redirect(HttpServletRequest request, HttpServletResponse response, String username, List<String> authorities) throws IOException {
         String accessToken = delegateAccessToken(username, authorities);
         String refreshToken = delegateRefreshToken(username);
+
         Member member = memberRepository.findByEmail(username)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+
 
 
         response.setHeader("Authorization", "Bearer " + accessToken);
         response.setHeader("Refresh", refreshToken);
 
         String uri = createURI(accessToken, refreshToken, member.getMemberId().toString()).toString();
+
 
         getRedirectStrategy().sendRedirect(request, response, uri);
     }
@@ -105,7 +110,9 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
         return refreshToken;
     }
 
+
     private URI createURI(String accessToken, String refreshToken, String memberId) {
+
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
 
         queryParams.add("access_token", accessToken);
@@ -120,6 +127,7 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
                 .queryParams(queryParams)
                 .build()
                 .toUri();
+
         return uri;
     }
 

@@ -1,16 +1,16 @@
 import axios from 'axios';
 
-export default async function getLikes(url: string, memberId: number) {
-  try {
-    const headers = {
-      'ngrok-skip-browser-warning': '69420',
-      memberId: memberId,
-    };
+type likeType = {
+  isLiked: boolean;
+};
 
-    const res = await axios.delete(url, { headers });
-    console.log(res);
-    return res.data;
-  } catch (err) {
-    console.log(err);
-  }
-}
+export const postLike = async (url: string, data: likeType) => {
+    const token = localStorage.getItem('Authorization');
+    const headers = {
+      Authorization: token,
+      'ngrok-skip-browser-warning': '69420',
+    };
+  const res = await axios.post(url, data, { headers });
+  return res.data;
+};
+

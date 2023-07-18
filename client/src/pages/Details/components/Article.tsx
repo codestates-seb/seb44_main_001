@@ -1,5 +1,5 @@
 import { AiFillDelete } from 'react-icons/ai';
-import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
 import deleteArticle from '../api/deleteArticle';
@@ -16,17 +16,17 @@ import { setLocation } from '../../../common/store/LocationStore';
 import { setCategory } from '../../../common/store/CategoryStore';
 import { useState } from 'react';
 import UserModal from './UserModal';
-import getLike from '../api/getLike';
-import postLike from '../api/postLike';
 import profile from '../../../common/assets/profile.svg';
-import deleteLike from '../api/deleteLike';
 import { useEffect } from 'react';
-import { calculateTimeDifference } from '../../../common/util/timeCalculator';
+import { calculateTimeDifference } from '../../../common/util/timeDifferenceCalculator';
+import { postLike } from '../api/postLike';
+import { deleteLike } from '../api/deleteLike';
+
 
 export default function Article({ data }: { data?: ArticleToGet }) {
   const [isLiked, setIsLiked] = useState(false);
 
-  const [totalLikes, setTotalLikes] = useState(data?.likeCount || 0);
+  const [totalLikes, setTotalLikes] = useState<number>(0);
 
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
 
@@ -42,26 +42,43 @@ export default function Article({ data }: { data?: ArticleToGet }) {
 
   const totalComments = useSelector((state: RootState) => state.totalComments);
 
-  //해당 포스트의 좋아요 데이터중 나의 아이디와 일치하는 데이터 있는지 get요청
-  const { data: likeData } = useQuery(['getLike'], () =>
-    getLike(`${BASE_URL}/likes/${id}`, memberId),
-  );
-  //첫 랜더링시 유저의 좋아요 이력 여부에 따라 isLiked상태 변경
   useEffect(() => {
-    if (likeData) {
-      setIsLiked(true);
-    } else {
-      setIsLiked(false);
+    if (data) {
+      setTotalLikes(data.postLikeCount ?? 0);
+      setIsLiked(data.liked ?? false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [data]);
 
-  const postLikeMutaion = useMutation(() =>
-    postLike(`${BASE_URL}/posts/${id}`, memberId),
+  const postLikeMutaion = useMutation(
+    () => {
+      return postLike(`${BASE_URL}/likes/${id}/${memberId}`, {
+        isLiked: !isLiked,
+      });
+    },
+    {
+      onSuccess: (responseData) => {
+        console.log('조아요');
+        setIsLiked(true);
+        setTotalLikes(responseData.likeCount);
+      },
+      onError: (error) => {
+        console.error('요청 실패:', error);
+      },
+    },
   );
 
-  const deleteLikeMutation = useMutation(() =>
-    deleteLike(`${BASE_URL}/posts/${id}`, memberId),
+  const deleteLikeMutation = useMutation(
+    () => deleteLike(`${BASE_URL}/likes/${id}/${memberId}`),
+    {
+      onSuccess: (responseData) => {
+        console.log('시러요');
+        setIsLiked(false);
+        setTotalLikes(responseData.likeCount);
+      },
+      onError: (error) => {
+        console.error('요청 실패:', error);
+      },
+    },
   );
 
   const deleteItemMutation = useMutation<void, unknown, void>(
@@ -115,15 +132,12 @@ export default function Article({ data }: { data?: ArticleToGet }) {
   };
 
   const handleClickLike = () => {
-    if (isLiked) {
-      console.log('시러요');
-      setIsLiked(false);
-      setTotalLikes((prevLikes) => prevLikes - 1);
+    if(!memberId){
+      alert("로그인이 필요한 서비스입니다!")
+      return;
+    }else if (isLiked) {
       deleteLikeMutation.mutate();
     } else {
-      console.log('조아요');
-      setIsLiked(true);
-      setTotalLikes((prevLikes) => prevLikes + 1);
       postLikeMutaion.mutate();
     }
   };

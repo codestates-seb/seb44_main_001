@@ -9,13 +9,13 @@ import ChatButton from '../../../common/components/Chat/views/ChatModal';
 export default function Lists() {
   const location = useLocation();
 
-  const isPathLists = location.pathname  === '/lists';
+  const isPathLists = location.pathname === '/lists';
 
   return (
     <Wrapper>
-      <SearchBar />
-      {isPathLists ? <CategoryIcons /> : null}
       <ListsHeader />
+      {isPathLists ? <CategoryIcons /> : null}
+      <SearchBar />
       <Cards />
       <ChatButton />
     </Wrapper>

@@ -2,56 +2,31 @@ import { styled } from 'styled-components';
 import { MdOutlineClose } from 'react-icons/md';
 import { AiFillDelete } from 'react-icons/ai';
 import { useDispatch } from 'react-redux';
-import { setChatPage } from '../../../store/ChatPageStore';
+import { setChatRoomInfo } from '../../../store/ChatRoomInfoStore';
 import { ChatRoomData, Room } from '../../../type';
 import { CHAT_NOTICE } from '../../../util/constantValue';
-import { calculateTimeDifference } from '../../../util/timeCalculator';
+import { calculateTimeDifference } from '../../../util/timeDifferenceCalculator';
 
 export default function ChatMain({
-  handleModalChange,
+  handleModalClose,
   data,
 }: {
-  handleModalChange: () => void;
+  handleModalClose: () => void;
   data: ChatRoomData;
 }) {
   const dispatch = useDispatch();
 
+  const rooms = data?.rooms;
+
   const handleChatRoomClick = (room: Room) => {
-    dispatch(setChatPage(room.roomId));
+    dispatch(setChatRoomInfo({ roomName: room.roomName, roomId: room.roomId }));
   };
-
-  // const rooms = data?.rooms;
-
-  const rooms = [
-    {
-      roomId: 7,
-      roomName: 'moosaeng',
-      lastMessage:
-        '아아아아아아아아아아아아아아아아아아아아아아아아아아아아아아아아',
-      lastSentTime: '2023-07-13T23:20:46.368312',
-      lastCheckTime: '2023-07-13T23:10:46.368312',
-    },
-    {
-      roomId: 4,
-      roomName: 'yoon',
-      lastMessage: 'hello',
-      lastSentTime: '2023-07-13T23:20:41.45445',
-      lastCheckTime: '2023-07-13T23:20:46.368312',
-    },
-    {
-      roomId: 5,
-      roomName: 'yoon',
-      lastMessage: 'hello',
-      lastSentTime: '2023-07-13T23:20:41.45445',
-      lastCheckTime: '2023-07-13T23:20:46.368312',
-    },
-  ];
 
   return (
     <Container>
       <ChatHeader>
         <h1>채팅방</h1>
-        <MdOutlineClose size={32} onClick={handleModalChange} />
+        <MdOutlineClose size={32} onClick={handleModalClose} />
       </ChatHeader>
       <ChatList>
         <Chat>
@@ -102,6 +77,7 @@ const ChatHeader = styled.section`
   z-index: 20;
   background: var(--color-pink-3);
   height: 4rem;
+  border-bottom: 1px solid var(--color-gray);
 
   > h1 {
     font-size: var(--font-size-m);
@@ -122,7 +98,7 @@ const Chat = styled.div`
   }
 
   > :nth-child(2n) {
-    background: var(--color-pink-3);
+    background: var(--color-white);
   }
 
   > div {
@@ -133,6 +109,7 @@ const Chat = styled.div`
     flex-direction: column;
     justify-content: center;
     cursor: pointer;
+    border-bottom: 1px solid var(--color-gray);
 
     > :first-child {
       display: flex;
@@ -145,9 +122,10 @@ const Chat = styled.div`
         display: flex;
         align-items: center;
         justify-content: start;
+        font-family: 'BR-bold';
 
         > :nth-child(2) {
-          background: #ff4848;
+          background: #ff6c6c;
           color: var(--color-white);
           margin-left: 0.5rem;
           padding: 0.3rem;
@@ -158,13 +136,13 @@ const Chat = styled.div`
 
         @keyframes colorAnimation {
           0% {
-            background: #ff4848;
+            background: #ff6c6c;
           }
           50% {
             background: var(--color-pink-1);
           }
           100% {
-            background: #ff4848;
+            background: #ff6c6c;
           }
         }
       }
