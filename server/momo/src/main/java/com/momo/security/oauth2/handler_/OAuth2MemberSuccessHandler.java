@@ -5,7 +5,6 @@ import com.momo.exception.BusinessLogicException;
 import com.momo.exception.ExceptionCode;
 import com.momo.member.entity.Member;
 import com.momo.member.repository.MemberRepository;
-import com.momo.security.entity.RefreshToken;
 import com.momo.security.jwt.JwtTokenizer;
 import com.momo.security.utils.MomoAuthorityUtils;
 import org.springframework.security.core.Authentication;
