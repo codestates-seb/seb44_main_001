@@ -23,7 +23,6 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/members")
-@RequiredArgsConstructor
 public class MemberController {
     @Value("${cloud.aws.s3}")
     private String S3Bucket;
@@ -32,11 +31,12 @@ public class MemberController {
     private final MemberMapper mapper;
     private final AmazonS3Client amazonS3Client;
 
-//    @Autowired
-//    public MemberController(MemberService memberService, MemberMapper mapper) {
-//        this.memberService = memberService;
-//        this.mapper = mapper;
-//    }
+    @Autowired
+    public MemberController(MemberService memberService, MemberMapper mapper, AmazonS3Client amazonS3Client) {
+        this.memberService = memberService;
+        this.mapper = mapper;
+        this.amazonS3Client = amazonS3Client;
+    }
 
     /* 특정 회원 찾기 */
     @GetMapping("/{member-id}")
@@ -61,6 +61,7 @@ public class MemberController {
 
         return new ResponseEntity(mapper.memberToMemberResponseDto(savedMember), HttpStatus.CREATED);
     }
+
     @PostMapping("/register/image")
     public ResponseEntity putProfileImage(@RequestPart(value = "memberDto") MemberPostDto memberPostDto,
                                           @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
