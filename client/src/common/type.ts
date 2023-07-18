@@ -130,6 +130,14 @@ export type Member = {
   posts: CardData[];
 };
 
+export type SignupPatchData = {
+  location: number;
+  welcomeMsg: string;
+  nickname: string;
+  isMale: boolean;
+  age: number;
+};
+
 export type Room = {
   roomId: number;
   roomName: string;
