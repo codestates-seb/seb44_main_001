@@ -8,6 +8,7 @@ import com.momo.security.handler.MemberAccessDeniedHandler;
 import com.momo.security.handler.MemberAuthenticationEntryPoint;
 import com.momo.security.jwt.JwtTokenizer;
 import com.momo.security.oauth2.handler_.OAuth2MemberSuccessHandler;
+import com.momo.security.repository.RefreshTokenRepository;
 import com.momo.security.service.TokenBlacklistService;
 import com.momo.security.utils.MomoAuthorityUtils;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -43,6 +45,7 @@ public class SecurityConfig {
     private final MomoAuthorityUtils authorityUtils;
     private final TokenBlacklistService tokenBlacklistService;
     private final MemberRepository memberRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -104,7 +107,7 @@ public class SecurityConfig {
         public void configure(HttpSecurity builder) throws Exception {
             AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
 
-            JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtTokenizer);
+            JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtTokenizer, refreshTokenRepository);
             jwtAuthenticationFilter.setFilterProcessesUrl("/auth/login");
 
             JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, authorityUtils, tokenBlacklistService);

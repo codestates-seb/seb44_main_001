@@ -6,13 +6,9 @@ import com.momo.member.entity.Member;
 import com.momo.member.repository.MemberRepository;
 import com.momo.security.entity.RefreshToken;
 import com.momo.security.jwt.JwtTokenizer;
-import com.momo.security.repository.RefreshTokenRepository;
 import com.momo.security.utils.MomoAuthorityUtils;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -33,13 +29,12 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
     private final JwtTokenizer jwtTokenizer;
     private final MomoAuthorityUtils authorityUtils;
     private final MemberRepository memberRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
 
-    public OAuth2MemberSuccessHandler(JwtTokenizer jwtTokenizer, MomoAuthorityUtils authorityUtils, MemberRepository memberRepository, RefreshTokenRepository refreshTokenRepository) {
+
+    public OAuth2MemberSuccessHandler(JwtTokenizer jwtTokenizer, MomoAuthorityUtils authorityUtils, MemberRepository memberRepository) {
         this.jwtTokenizer = jwtTokenizer;
         this.authorityUtils = authorityUtils;
         this.memberRepository = memberRepository;
-        this.refreshTokenRepository = refreshTokenRepository;
     }
 
     @Override
