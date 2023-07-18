@@ -1,14 +1,15 @@
 package com.momo.security.oauth2.handler_;
 
+
+import com.momo.exception.BusinessLogicException;
+import com.momo.exception.ExceptionCode;
 import com.momo.member.entity.Member;
 import com.momo.member.repository.MemberRepository;
+import com.momo.security.entity.RefreshToken;
 import com.momo.security.jwt.JwtTokenizer;
 import com.momo.security.utils.MomoAuthorityUtils;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -30,6 +31,7 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
     private final MomoAuthorityUtils authorityUtils;
     private final MemberRepository memberRepository;
 
+
     public OAuth2MemberSuccessHandler(JwtTokenizer jwtTokenizer, MomoAuthorityUtils authorityUtils, MemberRepository memberRepository) {
         this.jwtTokenizer = jwtTokenizer;
         this.authorityUtils = authorityUtils;
@@ -41,7 +43,8 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
         var oAuth2User = (OAuth2User) authentication.getPrincipal();
 
         String email = String.valueOf(oAuth2User.getAttributes().get("email"));
-        if (email.equals("null")) { //google oauth가 아니라 email을 못받아오면 kakao
+        if (email.equals("null")) {
+
             Map<String, Object> kakaoAccount = oAuth2User.getAttribute("kakao_account");
             email = String.valueOf(kakaoAccount.get("email"));
         }
@@ -64,10 +67,16 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
         String accessToken = delegateAccessToken(username, authorities);
         String refreshToken = delegateRefreshToken(username);
 
+        Member member = memberRepository.findByEmail(username)
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+
+
+
         response.setHeader("Authorization", "Bearer " + accessToken);
         response.setHeader("Refresh", refreshToken);
 
-        String uri = createURI(accessToken, refreshToken).toString();
+        String uri = createURI(accessToken, refreshToken, member.getMemberId().toString()).toString();
+
 
         getRedirectStrategy().sendRedirect(request, response, uri);
     }
@@ -101,20 +110,24 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
         return refreshToken;
     }
 
-    private URI createURI(String accessToken, String refreshToken) {
+
+    private URI createURI(String accessToken, String refreshToken, String memberId) {
+
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
 
         queryParams.add("access_token", accessToken);
         queryParams.add("refresh_token", refreshToken);
+        queryParams.add("member_id", memberId);
+
         URI uri = UriComponentsBuilder
                 .newInstance()
                 .scheme("http")
-                .host("localhost")
-                .path("/my-page.html") // 여기에 추가 정보 입력 사이트로
+                .host("ec2-3-34-45-1.ap-northeast-2.compute.amazonaws.com:8080")
+                .path("/kakao-callback") // 여기에 추가 정보 입력 사이트로
                 .queryParams(queryParams)
                 .build()
                 .toUri();
-        System.out.println(uri);
+
         return uri;
     }
 

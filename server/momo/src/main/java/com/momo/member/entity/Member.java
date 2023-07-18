@@ -35,10 +35,10 @@ public class Member extends BaseEntity {
     private String nickname;
     private Boolean isMale;
     private Integer age;
+//    private LocalDateTime createdAt;
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();
-
 
 
 
