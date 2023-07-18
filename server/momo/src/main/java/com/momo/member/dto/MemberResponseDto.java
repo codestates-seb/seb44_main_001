@@ -2,6 +2,7 @@ package com.momo.member.dto;
 
 import com.momo.comment.entity.Comment;
 
+import com.momo.location.entity.Location;
 import com.momo.post.entity.Post;
 import lombok.Getter;
 import lombok.Setter;

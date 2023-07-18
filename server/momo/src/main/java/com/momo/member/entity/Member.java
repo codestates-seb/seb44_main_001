@@ -6,7 +6,6 @@ import com.momo.category.entity.Category;
 import com.momo.comment.entity.Comment;
 
 import com.momo.location.entity.Location;
-import com.momo.message.entity.Message;
 
 import com.momo.post.entity.Post;
 import lombok.Getter;
