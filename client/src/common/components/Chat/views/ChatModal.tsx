@@ -11,12 +11,23 @@ import { useQuery } from 'react-query';
 import { BASE_URL } from '../../../util/constantValue';
 import getRoomList from '../api/getRoomList';
 import { setChatModal } from '../../../store/ChatModalStore';
-import { ChatData, ChatRoomData } from '../../../type';
+import { ChatData, ChatRoomData, Room } from '../../../type';
 import * as StompJs from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 
 export default function ChatButton() {
   const [messages, setMessages] = useState([{}]);
+
+  const [prevRoom, setPrevRoom] = useState<Room[]>([
+    {
+      roomId: 0,
+      roomName: '',
+      lastMessage: '',
+      lastSentTime: '',
+      lastCheckTime: '',
+    },
+  ]);
+
   const token = localStorage.getItem('Authrization');
 
   const dispatch = useDispatch();
@@ -41,17 +52,18 @@ export default function ChatButton() {
     };
   }
 
-  const { data } = useQuery<ChatRoomData, unknown>(
+  useQuery<ChatRoomData, unknown>(
     'roomList',
     () => getRoomList(`${BASE_URL}/chats`),
     {
       enabled: isOpen && !chatRoom,
       refetchInterval: 5000,
+      onSuccess: (data) => {
+        setPrevRoom(data.rooms);
+      },
     },
   );
   // 기존 채팅방 목록 가져오기
-
-  //TODO 모달 열리면 기존 채팅방들 구독하는 로직 추가해야함
 
   //TODO 채팅방 삭제 버튼 클릭 시 구독 취소
 
@@ -60,9 +72,15 @@ export default function ChatButton() {
       client.activate();
 
       client.onConnect = function () {
-        client.subscribe(`/sub/chat/room/${data}`, (message) => {
+        console.log('websocket is connected');
+        console.log(chatRoom);
+        client.subscribe(`/sub/chat/room/${chatRoom}`, (message) => {
+          console.log(chatRoom + '번방에 입장하였습니다.');
           const receivedMessage = JSON.parse(message.body);
+          console.log('이건 응답' + message.body);
+          console.log('이건 파싱한 응답' + receivedMessage);
           setMessages((prevMessages) => [...prevMessages, receivedMessage]);
+          console.log('이건 저장된 갯수' + messages.length);
         });
       };
 
@@ -95,7 +113,7 @@ export default function ChatButton() {
         {chatRoom === 0 && (
           <ChatMain
             handleModalClose={handleModalClose}
-            data={data as ChatRoomData}
+            prevRoom={prevRoom as Room[]}
           />
         )}
         <ChatRoom messages={messages as ChatData[]} />

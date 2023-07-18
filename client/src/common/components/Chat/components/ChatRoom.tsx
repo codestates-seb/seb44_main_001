@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { styled } from 'styled-components';
 import { setChatRoomInfo } from '../../../store/ChatRoomInfoStore';
 import { RootState } from '../../../store/RootStore';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, KeyboardEvent, useState } from 'react';
 import { FiSend } from 'react-icons/fi';
 import { BASE_URL } from '../../../util/constantValue';
 import { PrevChatData, PostChat, ChatData } from '../../../type';
@@ -12,7 +12,16 @@ import getPrevChat from '../api/getPrevChat';
 import postChat from '../api/postChat';
 
 export default function ChatRoom({ messages }: { messages: ChatData[] }) {
-  const [myChat, setMyChat] = useState({ content: '' });
+  const [myChat, setMyChat] = useState({ roomId: 0, content: '' });
+
+  const [prevChat, setPrevChat] = useState<ChatData[]>([
+    {
+      memberId: 0,
+      nickname: '',
+      content: '',
+      sentTime: '',
+    },
+  ]);
 
   const dispatch = useDispatch();
 
@@ -24,16 +33,24 @@ export default function ChatRoom({ messages }: { messages: ChatData[] }) {
 
   const userName = useSelector((state: RootState) => state.myData.nickname);
 
-  const { data } = useQuery<PrevChatData, unknown>('prevChats', async () => {
-    if (roomId) {
-      const prevChatData = await getPrevChat(`${BASE_URL}/chats/${roomId}`);
-      return prevChatData;
-    }
-    return null;
-  });
+  useQuery<PrevChatData, unknown>(
+    'prevChats',
+    () => getPrevChat(`${BASE_URL}/chats/${roomId}`),
+    {
+      enabled: roomId !== 0,
+      onSuccess: (data) => {
+        setPrevChat(data.chats);
+      },
+    },
+  );
 
-  const postMutation = useMutation<void, unknown, PostChat>(() =>
-    postChat(`${BASE_URL}/chats/${roomId}`, myChat),
+  const postMutation = useMutation<void, unknown, PostChat>(
+    () => postChat(`${BASE_URL}/chats`, myChat),
+    {
+      onSuccess: () => {
+        setMyChat({ roomId: roomId, content: '' });
+      },
+    },
   );
 
   const handleChatPage = () => {
@@ -41,11 +58,17 @@ export default function ChatRoom({ messages }: { messages: ChatData[] }) {
   };
 
   const handleChatInput = (event: ChangeEvent<HTMLInputElement>) => {
-    setMyChat({ content: event.target.value });
+    setMyChat({ roomId: roomId, content: event.target.value });
   };
 
   const handleSend = () => {
     postMutation.mutate(myChat);
+  };
+
+  const handleKeyUp = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleSend();
+    }
   };
 
   return (
@@ -56,23 +79,22 @@ export default function ChatRoom({ messages }: { messages: ChatData[] }) {
           <h1>{`${roomName} 님과의 채팅방`}</h1>
         </ChatHeader>
         <Chat>
-          {data &&
-            data.chats.map((chat) => {
-              if (chat.nickname !== userName) {
-                return (
-                  <OthersChat key={chat.sentTime}>
-                    <div>{chat.nickname}</div>
-                    <div>{chat.content}</div>
-                  </OthersChat>
-                );
-              } else {
-                return (
-                  <MyChat key={chat.sentTime}>
-                    <div>{chat.content}</div>
-                  </MyChat>
-                );
-              }
-            })}
+          {prevChat?.map((chat) => {
+            if (chat.nickname !== userName) {
+              return (
+                <OthersChat key={chat.sentTime}>
+                  <div>{chat.nickname}</div>
+                  <div>{chat.content}</div>
+                </OthersChat>
+              );
+            } else {
+              return (
+                <MyChat key={chat.sentTime}>
+                  <div>{chat.content}</div>
+                </MyChat>
+              );
+            }
+          })}
         </Chat>
         <Chat>
           {messages[0].memberId &&
@@ -94,7 +116,12 @@ export default function ChatRoom({ messages }: { messages: ChatData[] }) {
             })}
         </Chat>
         <ChatInputSection>
-          <input type="text" onChange={handleChatInput} />
+          <input
+            type="text"
+            onChange={handleChatInput}
+            onKeyUp={handleKeyUp}
+            value={myChat.content}
+          />
           <FiSend onClick={handleSend} size={20} />
         </ChatInputSection>
       </Container>
@@ -138,7 +165,8 @@ const Chat = styled.section`
   flex-direction: column;
   justify-content: start;
   align-items: center;
-  height: 25rem;
+  height: fit-content;
+  overflow: auto;
 `;
 
 const OthersChat = styled.div`
@@ -182,7 +210,7 @@ const MyChat = styled.div`
 `;
 
 const ChatInputSection = styled.section`
-  margin: 0 0.5rem;
+  margin: 0.5rem;
   position: relative;
 
   > input {
@@ -190,7 +218,6 @@ const ChatInputSection = styled.section`
     padding: 0.5rem;
     font-size: var(--font-size-s);
     color: var(--color-black);
-    margin-bottom: 0.5rem;
   }
 
   > svg {

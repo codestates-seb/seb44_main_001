@@ -3,23 +3,25 @@ import { MdOutlineClose } from 'react-icons/md';
 import { AiFillDelete } from 'react-icons/ai';
 import { useDispatch } from 'react-redux';
 import { setChatRoomInfo } from '../../../store/ChatRoomInfoStore';
-import { ChatRoomData, Room } from '../../../type';
+import { Room } from '../../../type';
 import { CHAT_NOTICE } from '../../../util/constantValue';
 import { calculateTimeDifference } from '../../../util/timeDifferenceCalculator';
 
 export default function ChatMain({
   handleModalClose,
-  data,
+  prevRoom,
 }: {
   handleModalClose: () => void;
-  data: ChatRoomData;
+  prevRoom: Room[];
 }) {
   const dispatch = useDispatch();
 
-  const rooms = data?.rooms;
-
   const handleChatRoomClick = (room: Room) => {
     dispatch(setChatRoomInfo({ roomName: room.roomName, roomId: room.roomId }));
+  };
+
+  const handleDelete = () => {
+    console.log(123);
   };
 
   return (
@@ -30,7 +32,7 @@ export default function ChatMain({
       </ChatHeader>
       <ChatList>
         <Chat>
-          {rooms
+          {prevRoom
             ?.sort((a, b) => +b.lastSentTime - +a.lastSentTime)
             .map((room) => (
               <div key={room.roomId} onClick={() => handleChatRoomClick(room)}>
@@ -45,11 +47,11 @@ export default function ChatMain({
                 </div>
                 <div>
                   <div>
-                    {room.lastMessage.length > 20
+                    {prevRoom && room?.lastMessage.length > 20
                       ? `${room.lastMessage.slice(0, 20)}...`
                       : room.lastMessage}
                   </div>
-                  <AiFillDelete size={16} />
+                  <AiFillDelete size={16} onClick={handleDelete} />
                 </div>
               </div>
             ))}
