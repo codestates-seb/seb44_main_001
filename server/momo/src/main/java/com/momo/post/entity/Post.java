@@ -5,6 +5,7 @@ import com.momo.category.entity.Category;
 import com.momo.comment.entity.Comment;
 import com.momo.location.entity.Location;
 import com.momo.member.entity.Member;
+import com.momo.postlike.entity.PostLike;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,6 +28,8 @@ public class Post extends BaseEntity {
     private String content;
     @ElementCollection
     private List<String> tags;
+    private boolean isLiked;
+    private Long postLikeCount;
 
 
     private LocalDateTime createdAt;
@@ -46,6 +49,9 @@ public class Post extends BaseEntity {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<PostLike> postLikes = new ArrayList<>();
 
     public void setMemberId(Long memberId) {
         this.member = new Member();
