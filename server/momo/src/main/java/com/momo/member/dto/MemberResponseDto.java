@@ -1,7 +1,6 @@
 package com.momo.member.dto;
 
 import com.momo.comment.entity.Comment;
-import com.momo.message.entity.Message;
 import com.momo.post.entity.Post;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,9 +32,9 @@ public class MemberResponseDto {
 //    @OneToMany(mappedBy = "member")
 //    private List<Comment> comments;
 
-    @OneToMany(mappedBy = "sender")
-    private List<Message> sentMessages;
-
-    @OneToMany(mappedBy = "receiver")
-    private List<Message> receivedMessages;
+//    @OneToMany(mappedBy = "sender")
+//    private List<Message> sentMessages;
+//
+//    @OneToMany(mappedBy = "receiver")
+//    private List<Message> receivedMessages;
 }

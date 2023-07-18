@@ -98,7 +98,7 @@ const Head = styled.header`
   display: flex;
   position: sticky;
   top: 0;
-  z-index: auto;
+  z-index: 1;
   align-items: center;
   justify-content: space-between;
   padding: 10px 20px;

@@ -43,7 +43,8 @@ export type ArticleToGet = {
     city: string;
     province: string;
   };
-  likeCount: number;
+  postLikeCount:number;
+  liked:boolean;
 };
 
 export type CommentToPost = {
@@ -77,6 +78,7 @@ export type CommentListToGet = {
 };
 
 export type CardData = {
+  [x: string]: any;
   title: string;
   content: string;
   postId: number;
@@ -157,4 +159,10 @@ export type PostChat = {
 
 export type ChatMembers = {
   memberId: number;
+};
+
+export type IsLikedType = {
+  isLiked: boolean;
+  memberId: number;
+  postId: string | undefined;
 };

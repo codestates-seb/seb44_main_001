@@ -17,6 +17,7 @@ import { PiMapPinBold } from 'react-icons/pi';
 import { setUserData } from '../store/MemberStore';
 
 export default function User() {
+  const navigate = useNavigate();
   const params = useParams<{ memberId: string }>();
   const { memberId } = params;
 
@@ -89,7 +90,7 @@ export default function User() {
                     <ProfileItem>{`${data.age}년생`}</ProfileItem>
                   </ProfileBox>
                 </ProfileContentBox>
-                {isMine ? <Button children={'프로필 수정'} /> : <>&nbsp;</>}
+                {isMine ? <Button onClick={()=>navigate('/user/edit')} children={'프로필 수정'} /> : <>&nbsp;</>}
               </ProfileContainer>
               <MsgBox>
                 <div>{data.welcomeMsg}</div>
