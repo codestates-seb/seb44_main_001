@@ -15,7 +15,7 @@ import {
 import profile from '../../../common/assets/profile.svg';
 import imgEdit from '../../../common/assets/icons/imgEdit.svg';
 import { setMyData } from '../../Login/store/MyUserData';
-import { Member } from '../../../common/type';
+import { Locations, Member } from '../../../common/type';
 import { RootState } from '../../../common/store/RootStore';
 import LocationSelector from '../../../common/components/LocationSelector';
 import { setCategory } from '../../../common/store/CategoryStore';
@@ -27,6 +27,9 @@ import Button from '../../../common/components/Button';
 import ChatButton from '../../../common/components/Chat/views/ChatModal';
 import { useMutation } from 'react-query';
 import { BASE_URL } from '../../../common/util/constantValue';
+import Modal from 'react-modal';
+import { ConfirmStyle } from '../confirmStyle';
+import ModalMain from '../components/ModalMain';
 
 export default function UserEdit() {
   const dispatch = useDispatch();
@@ -34,14 +37,24 @@ export default function UserEdit() {
 
   // const user: Member = useSelector((state: RootState) => state.member);
   const myData: Member = useSelector((state: RootState) => state.myData);
-  console.log('!!!!', myData);
+  // console.log('!!!!', myData);
+  const location = useSelector((state: RootState) => state.location);
+
+  const [isOpen, setIsOpen] = useState(false);
   const [nickname, setNickname] = useState(myData.nickname);
   const [welcomeMsg, setWelcomeMsg] = useState(myData.welcomeMsg);
+  const [uploadedImage, setUploadedImage] = useState(null);
+  const [uploadedFile, setUploadedFile] = useState(null); // 파일 상태 변수 추가
 
-  const [isSelected, setIsSelected] = useState(false);
-
+  // const [editLocation,setEditLocation]= useSelector(myData.location);
+  // const [isSelected, setIsSelected] = useState(false);
   // 전역 설정을 안한다면? 이거 지워도 되나??
+  // 왜 지역만 전역상태로 저장한걸 바꿔야하는가? 왜냐면 저 컴포넌트자체가 전역 상태로 관리되고 있기 때문에
+  const handleModalChange = () => {
+    setIsOpen(!isOpen);
+  };
   useEffect(() => {
+    dispatch(setLocation(myData.location));
     return () => {
       dispatch(setCategory({ categoryId: 0, name: '' }));
       dispatch(setLocation({ locationId: 0, city: '', province: '' }));
@@ -50,16 +63,19 @@ export default function UserEdit() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleImgChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImgChange = (event) => {
     const input = event.target;
     if (input.files && input.files[0]) {
-      const reader = new FileReader();
+      const file = input.files[0]; // 파일 추출
 
+      const reader = new FileReader();
       reader.onload = function (e) {
-        const imageDataURL = e.target?.result as string;
-        return imageDataURL;
+        const imageDataURL = e.target?.result;
+        setUploadedImage(imageDataURL);
       };
-      reader.readAsDataURL(input.files[0]);
+      reader.readAsDataURL(file); // 추출한 파일을 읽어 데이터 URL로 변환
+
+      setUploadedFile(file); // 파일 상태 변수에 저장
     }
   };
 
@@ -67,17 +83,21 @@ export default function UserEdit() {
     setNickname(e.target.value);
   };
 
-  // const handleLocationChange = (locationId: number | null) => {
-  //   dispatch(setMyData({ ...myData, locationId: locationId }));
-  // };
-
   const handleWelcomeMsgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setWelcomeMsg(e.target.value);
   };
-
+  console.log(myData.memberId);
   const patchMutation = useMutation<void, unknown, Member>(
-    (myData) => patchMyData(`${BASE_URL}/members/${myData.memberId}`, myData),
+    (editedInfo) => {
+      const url = uploadedFile
+        ? `${BASE_URL}/members/${myData.memberId}/image`
+        : `${BASE_URL}/members/${myData.memberId}`;
+      return patchMyData(url, editedInfo);
+    },
     {
+      onSuccess: () => {
+        navigate(`/user/${myData.memberId}`);
+      },
       onError: (error) => {
         console.error(error);
       },
@@ -86,13 +106,16 @@ export default function UserEdit() {
 
   const handleEdit = () => {
     console.log('수정~');
-    dispatch(
-      setMyData({
-        ...myData,
-        nickname: nickname,
+    const editedInfo = {
+      memberPatchDto: {
         welcomeMsg: welcomeMsg,
-      }),
-    );
+        nickname: nickname,
+        locationId: location.locationId,
+      },
+      file: uploadedFile,
+    };
+    console.log(editedInfo);
+    patchMutation.mutate(editedInfo);
   };
 
   return (
@@ -102,18 +125,30 @@ export default function UserEdit() {
         <NevContainer>
           <NevItem>프로필 수정</NevItem>
           <NevItem>내 글 보기</NevItem>
-          <NevItem>회원 탈퇴</NevItem>
+          <button onClick={handleModalChange}>회원 탈퇴</button>
         </NevContainer>
+        <Modal
+          isOpen={isOpen}
+          style={ConfirmStyle}
+          onRequestClose={handleModalChange}
+        >
+          <ModalMain handleModalChange={handleModalChange}/>
+        </Modal>
         <Layout>
           <Background>
             <ImageContainer>
-              <ProfileImage src={myData.profileImage || profile} />
+              {uploadedImage ? (
+                <ProfileImage src={uploadedImage} />
+              ) : (
+                <ProfileImage src={myData.profileImage || profile} />
+              )}
               <ImgEditButton>
                 <label className="editLabel" htmlFor="file-input">
                   <img src={imgEdit} alt="img-edit-button" />
                 </label>
                 <ImgEditInput
                   id="file-input"
+                  accept="image/png, image/gif, image/jpeg"
                   type="file"
                   onChange={handleImgChange}
                 />
@@ -130,9 +165,7 @@ export default function UserEdit() {
               </InputBox>
               <InputBox>
                 <Text>지역</Text>
-                <LocationSelector
-                //  onLocationChange={handleLocationChange}
-                />
+                <LocationSelector />
               </InputBox>
               <InputBox>
                 <Text>자기소개</Text>
