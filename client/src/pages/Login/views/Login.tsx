@@ -66,7 +66,8 @@ export default function Login() {
             },
           });
 
-          navigation(`/user/${memberId}`, { state: memberId });
+          // navigation(`/user/${memberId}`, { state: memberId });
+          navigation('/lists');
         } else {
           // 토큰과 memberId 가져오기 실패
           dispatch(setTokenData({ token: '', memberId: 0 }));

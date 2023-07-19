@@ -84,6 +84,7 @@ export type CardData = {
   memberInfo: MemberInfo;
   locationInfo: LocationInfo;
   categoryInfo: CategoryInfo;
+  tags: string[];
 };
 
 export type MemberInfo = {
@@ -119,15 +120,16 @@ export type LoginData = {
 export type Member = {
   memberId: number;
   email: string;
-  locationId: number;
+  location: Location[];
   welcomeMsg: string;
   profileImage: string | null;
   nickname: string;
   isMale: boolean;
   age: number;
   createdAt: string;
-  posts: CardData[];
 };
+
+
 
 export type SignupPatchData = {
   location: number;
