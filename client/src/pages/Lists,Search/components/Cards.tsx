@@ -9,14 +9,16 @@ import { CardData } from '../../../common/type';
 import { BASE_URL } from '../../../common/util/constantValue';
 import { setCategory } from '../../../common/store/CategoryStore';
 import { setLocation } from '../../../common/store/LocationStore';
+import { setSelectedLocation } from '../store/SelectedLocation';
 import { resetCreatedPost } from '../../Write,Edit/store/CreatedPost';
 import Card from '../../../common/components/Card';
-import momofriends from '../../../common/assets/logo/momofriends.svg';
 import roundingPeach from '../../../common/assets/images/roundingPeach.gif';
 
 export default function Cards() {
   const dispatch = useDispatch();
+
   const keyword = useParams().keyword || '';
+
   const selectedLocationId = useSelector(
     (state: RootState) => state.selectedLocation.locationId,
   );
@@ -24,8 +26,8 @@ export default function Cards() {
     (state: RootState) => state.selectedCategory.categoryId,
   );
 
-  console.log('선택한 로케이션 아이디', selectedLocationId);
-  console.log('선택한 카테고리 아이디', selectedCategoryId);
+  // console.log('선택한 로케이션 아이디', selectedLocationId);
+  // console.log('선택한 카테고리 아이디', selectedCategoryId);
 
   const {
     data,

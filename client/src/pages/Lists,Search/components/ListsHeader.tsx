@@ -15,18 +15,17 @@ export default function ListsHeader() {
   const dispatch = useDispatch();
   const params = useParams();
 
-  //로그인 전역상태 구현시 삭제
-  const [islogin, setIsLogin] = useState(true);
+  const isLogin = localStorage.getItem('Authorization') || null;
+
+  const myData =
+    useSelector((state: RootState) => state.myData.location) || null;
 
   const location = useSelector((state: RootState) => state.location);
 
+  //셀렉터 지역 상태
   const selectedLocation = useSelector(
     (state: RootState) => state.selectedLocation,
   );
-
-  const myInfo = useSelector((state: RootState) => state.myData);
-
-  console.log(myInfo);
 
   const handleLocationSelection = () => {
     if (!location.province) {
@@ -36,7 +35,7 @@ export default function ListsHeader() {
   };
 
   const handleWriteButtonClick = () => {
-    if (!islogin) {
+    if (!isLogin) {
       alert('로그인이 필요한 서비스 입니다.');
       navigate('/login');
     } else {
@@ -44,26 +43,37 @@ export default function ListsHeader() {
     }
   };
 
-  // const locations: Locations | null = JSON.parse(
-  //   localStorage.getItem('locations') || 'null',
-  // );
-
-  //로그인 안했을때의 기본값. 하드코딩이 들어가야할까?
-  const defaultLocation = {
-    locationId: 1,
-    city: "서울특별시",
-    province: "전체",
-  }
+  useEffect(() => {
+    localStorage.setItem('selectedLocation', JSON.stringify(selectedLocation));
+  }, [selectedLocation]);
 
   // 유저의 등록된 지역으로 수정하기
   useEffect(() => {
-    // const userLocation:Location = {
-    //   locationId:userInfo.location,
-    //   city:locations?[userInfo.location-1].city,
-    //   province:locations?[userInfo.location-1].province
-    // }
-    // dispatch(setSelectedLocation(userLocation));
-    dispatch(setLocation(defaultLocation));
+    const LocalStorageLocaion = localStorage.getItem("selectedLocation");
+    if(LocalStorageLocaion){
+      dispatch(setSelectedLocation(JSON.parse(LocalStorageLocaion)));
+    } else if (isLogin) {
+      const userLoctoin = {
+        locationId: myData.locationId,
+        city: myData.city,
+        province: myData.province,
+      };
+      dispatch(
+        setSelectedLocation({
+          locationId: myData.locationId,
+          city: myData.city,
+          province: myData.province,
+        }),
+      );
+      dispatch(setLocation(userLoctoin));
+    } else {
+      const defaultLocation = {
+        locationId: 1,
+        city: '서울특별시',
+        province: '전체',
+      };
+      dispatch(setLocation(defaultLocation));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
