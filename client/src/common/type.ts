@@ -120,7 +120,7 @@ export type LoginData = {
 export type Member = {
   memberId: number;
   email: string;
-  location: Location[];
+  location: Locations;
   welcomeMsg: string;
   profileImage: string | null;
   nickname: string;

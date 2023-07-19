@@ -63,6 +63,7 @@ export default function User() {
     if (!memberId) {
       console.log('memberId is not found!!');
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [memberId]);
 
   return (
