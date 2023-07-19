@@ -5,7 +5,7 @@ import {
   REGISTER_COMMENT,
 } from '../../../common/util/constantValue';
 import Button from '../../../common/components/Button';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, KeyboardEvent, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { CommentToPost } from '../../../common/type';
 import postComment from '../api/postComment';
@@ -43,11 +43,24 @@ export default function CommentInput() {
     postMutation.mutate(data);
   };
 
+  const handleKeyUp = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Enter' && event.shiftKey) {
+      event.preventDefault();
+    } else if (event.key === 'Enter') {
+      event.preventDefault();
+      handleSubmit();
+    }
+  };
+
   return (
     <Container>
       <TitleSection>{REGISTER_COMMENT}</TitleSection>
       <InputSection>
-        <textarea value={content} onChange={handleCommentChange} />
+        <textarea
+          value={content}
+          onChange={handleCommentChange}
+          onKeyUp={handleKeyUp}
+        />
       </InputSection>
       <ButtonSection>
         <Button children={REGISTER} onClick={handleSubmit} />

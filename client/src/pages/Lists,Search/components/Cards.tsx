@@ -12,7 +12,7 @@ import { setLocation } from '../../../common/store/LocationStore';
 import { setSelectedLocation } from '../store/SelectedLocation';
 import { resetCreatedPost } from '../../Write,Edit/store/CreatedPost';
 import Card from '../../../common/components/Card';
-import roundingPeach from '../../../common/assets/images/roundingPeach.gif';
+import roundingPeach from '../../../common/assets/images/roundingPeach.svg';
 
 export default function Cards() {
   const dispatch = useDispatch();
