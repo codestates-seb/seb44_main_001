@@ -153,6 +153,19 @@ const Loading = styled.div`
   align-items: center;
   margin-top: 3rem;
 
+  @keyframes rotateAnimation {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  > img {
+    animation: rotateAnimation 2s linear infinite;
+  }
+
   /* animation: bounce_frames 0.5s infinite;
   animation-direction: alternate;
   animation-timing-function: cubic-bezier(0.5, 0.05, 1, 0.5);

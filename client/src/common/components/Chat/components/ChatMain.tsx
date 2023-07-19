@@ -4,8 +4,11 @@ import { AiFillDelete } from 'react-icons/ai';
 import { useDispatch } from 'react-redux';
 import { setChatRoomInfo } from '../../../store/ChatRoomInfoStore';
 import { Room } from '../../../type';
-import { CHAT_NOTICE } from '../../../util/constantValue';
+import { BASE_URL, CHAT_NOTICE } from '../../../util/constantValue';
 import { calculateTimeDifference } from '../../../util/timeDifferenceCalculator';
+import { useMutation } from 'react-query';
+import deleteRoom from '../api/deleteRoom';
+import { useState } from 'react';
 
 export default function ChatMain({
   handleModalClose,
@@ -16,12 +19,22 @@ export default function ChatMain({
 }) {
   const dispatch = useDispatch();
 
+  const [roomToDelete, setRoomToDelete] = useState(0);
+
+  const deleteMutation = useMutation('deleteRoom', () =>
+    deleteRoom(`${BASE_URL}/chats/delete/${roomToDelete}`),
+  );
+
   const handleChatRoomClick = (room: Room) => {
     dispatch(setChatRoomInfo({ roomName: room.roomName, roomId: room.roomId }));
   };
 
+  const handleMouseOver = (roomId: number) => {
+    setRoomToDelete(roomId);
+  };
+
   const handleDelete = () => {
-    console.log(123);
+    deleteMutation.mutate();
   };
 
   return (
@@ -34,8 +47,8 @@ export default function ChatMain({
         <Chat>
           {prevRoom
             ?.sort((a, b) => +b.lastSentTime - +a.lastSentTime)
-            .map((room) => (
-              <div key={room.roomId} onClick={() => handleChatRoomClick(room)}>
+            .map((room, idx) => (
+              <div key={idx} onClick={() => handleChatRoomClick(room)}>
                 <div>
                   <div>
                     <div>{room.roomName}</div>
@@ -51,7 +64,11 @@ export default function ChatMain({
                       ? `${room.lastMessage.slice(0, 20)}...`
                       : room.lastMessage}
                   </div>
-                  <AiFillDelete size={16} onClick={handleDelete} />
+                  <AiFillDelete
+                    size={16}
+                    onClick={handleDelete}
+                    onMouseOver={() => handleMouseOver(room.roomId)}
+                  />
                 </div>
               </div>
             ))}

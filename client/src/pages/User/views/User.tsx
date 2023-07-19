@@ -83,6 +83,7 @@ export default function User() {
                     </ProfileItem>
                     <ProfileItem style={{ display: 'flex' }}>
                       <LocationIcon />
+                      &nbsp;
                       <div>{`${data.location.city} ${data.location.province}`}</div>
                     </ProfileItem>
                     <ProfileItem>{data.isMale ? `남자` : `여자`}</ProfileItem>
