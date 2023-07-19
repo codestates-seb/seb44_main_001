@@ -53,6 +53,7 @@ export default function Header() {
     // 아래는 추가한 부분
     localStorage.removeItem('Authorization');
     localStorage.removeItem('MemberId');
+    localStorage.removeItem('selectedLocation');
     dispatch(setChatModal(false));
   };
 
@@ -85,7 +86,7 @@ export default function Header() {
           </Link>
           <UserContainer onClick={handleMyProfile}>
             <img
-              src={profile}
+              src={myData.profileImage ? `${myData.profileImage}` : profile}
               alt="프로필사진"
               className="margin-left icon user-content"
             />
@@ -196,6 +197,9 @@ const UserContainer = styled.div`
   display: flex;
   align-items: center;
   cursor: pointer;
+  img {
+    border-radius: 50%;
+  }
 `;
 
 const LogOut = styled(FaArrowRightFromBracket)`
