@@ -84,7 +84,7 @@ export default function User() {
                     <ProfileItem style={{ display: 'flex' }}>
                       <LocationIcon />
                       &nbsp;
-                      <div>{data.location}</div>
+                      <div>{`${data.location.city} ${data.location.province}`}</div>
                     </ProfileItem>
                     <ProfileItem>{data.isMale ? `남자` : `여자`}</ProfileItem>
                     <ProfileItem>{`${data.age}년생`}</ProfileItem>
@@ -123,6 +123,8 @@ export const ProfileContainer = styled.div`
 
 const ProfileImg = styled.img`
   width: 10rem;
+  height: 10rem;
+  border-radius: 50%;
   margin-right: 2rem;
 `;
 const ProfileBox = styled.div`

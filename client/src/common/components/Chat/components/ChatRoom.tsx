@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { styled } from 'styled-components';
 import { setChatRoomInfo } from '../../../store/ChatRoomInfoStore';
 import { RootState } from '../../../store/RootStore';
-import { ChangeEvent, KeyboardEvent, useState } from 'react';
+import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { FiSend } from 'react-icons/fi';
 import { BASE_URL } from '../../../util/constantValue';
 import { PrevChatData, PostChat, ChatData } from '../../../type';
@@ -11,7 +11,13 @@ import { useMutation, useQuery } from 'react-query';
 import getPrevChat from '../api/getPrevChat';
 import postChat from '../api/postChat';
 
-export default function ChatRoom({ messages }: { messages: ChatData[] }) {
+export default function ChatRoom({
+  messages,
+  setMessages,
+}: {
+  messages: ChatData[];
+  setMessages: React.Dispatch<React.SetStateAction<object[]>>;
+}) {
   const [myChat, setMyChat] = useState({ roomId: 0, content: '' });
 
   const [prevChat, setPrevChat] = useState<ChatData[]>([
@@ -31,6 +37,8 @@ export default function ChatRoom({ messages }: { messages: ChatData[] }) {
     (state: RootState) => state.chatRoomInfo.roomName,
   );
 
+  const newMessages = messages.slice(1);
+
   const userName = useSelector((state: RootState) => state.myData.nickname);
 
   useQuery<PrevChatData, unknown>(
@@ -40,17 +48,13 @@ export default function ChatRoom({ messages }: { messages: ChatData[] }) {
       enabled: roomId !== 0,
       onSuccess: (data) => {
         setPrevChat(data.chats);
+        setMessages([{}]);
       },
     },
   );
 
-  const postMutation = useMutation<void, unknown, PostChat>(
-    () => postChat(`${BASE_URL}/chats`, myChat),
-    {
-      onSuccess: () => {
-        setMyChat({ roomId: roomId, content: '' });
-      },
-    },
+  const postMutation = useMutation<void, unknown, PostChat>('postChat', () =>
+    postChat(`${BASE_URL}/chats`, myChat),
   );
 
   const handleChatPage = () => {
@@ -62,7 +66,10 @@ export default function ChatRoom({ messages }: { messages: ChatData[] }) {
   };
 
   const handleSend = () => {
-    postMutation.mutate(myChat);
+    if (myChat.content !== '') {
+      postMutation.mutate(myChat);
+      setMyChat({ roomId: roomId, content: '' });
+    }
   };
 
   const handleKeyUp = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -71,6 +78,21 @@ export default function ChatRoom({ messages }: { messages: ChatData[] }) {
     }
   };
 
+  useEffect(() => {
+    return () => {
+      setMessages([{}]);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const chatWrapperRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (chatWrapperRef.current && newMessages.length > 0) {
+      chatWrapperRef.current.scrollTop = chatWrapperRef.current.scrollHeight;
+    }
+  }, [newMessages]);
+
   return (
     roomId !== 0 && (
       <Container>
@@ -78,30 +100,30 @@ export default function ChatRoom({ messages }: { messages: ChatData[] }) {
           <BiArrowBack size={24} onClick={handleChatPage} />
           <h1>{`${roomName} 님과의 채팅방`}</h1>
         </ChatHeader>
-        <Chat>
-          {prevChat?.map((chat) => {
-            if (chat.nickname !== userName) {
-              return (
-                <OthersChat key={chat.sentTime}>
-                  <div>{chat.nickname}</div>
-                  <div>{chat.content}</div>
-                </OthersChat>
-              );
-            } else {
-              return (
-                <MyChat key={chat.sentTime}>
-                  <div>{chat.content}</div>
-                </MyChat>
-              );
-            }
-          })}
-        </Chat>
-        <Chat>
-          {messages[0].memberId &&
-            messages.map((message) => {
+        <ChatWrapper ref={chatWrapperRef}>
+          <Chat>
+            {prevChat?.map((chat, idx) => {
+              if (chat.nickname !== userName) {
+                return (
+                  <OthersChat key={idx}>
+                    <div>{chat.nickname}</div>
+                    <div>{chat.content}</div>
+                  </OthersChat>
+                );
+              } else {
+                return (
+                  <MyChat key={chat.sentTime}>
+                    <div>{chat.content}</div>
+                  </MyChat>
+                );
+              }
+            })}
+          </Chat>
+          <Chat>
+            {newMessages.map((message, idx) => {
               if (message.nickname !== userName) {
                 return (
-                  <OthersChat key={message.sentTime}>
+                  <OthersChat key={idx}>
                     <div>{message.nickname}</div>
                     <div>{message.content}</div>
                   </OthersChat>
@@ -114,7 +136,8 @@ export default function ChatRoom({ messages }: { messages: ChatData[] }) {
                 );
               }
             })}
-        </Chat>
+          </Chat>
+        </ChatWrapper>
         <ChatInputSection>
           <input
             type="text"
@@ -131,6 +154,7 @@ export default function ChatRoom({ messages }: { messages: ChatData[] }) {
 
 const Container = styled.main`
   width: 100%;
+  min-height: 100%;
   background: var(--color-white);
   overflow: auto;
   color: var(--color-black);
@@ -160,13 +184,17 @@ const ChatHeader = styled.section`
   }
 `;
 
+const ChatWrapper = styled.div`
+  height: calc(100% - 6.125rem);
+  overflow: auto;
+`;
+
 const Chat = styled.section`
   display: flex;
   flex-direction: column;
   justify-content: start;
   align-items: center;
   height: fit-content;
-  overflow: auto;
 `;
 
 const OthersChat = styled.div`
@@ -175,6 +203,7 @@ const OthersChat = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: start;
+  height: fit-content;
 
   > :first-child {
     color: #ff6c6c;
@@ -211,8 +240,10 @@ const MyChat = styled.div`
 
 const ChatInputSection = styled.section`
   margin: 0.5rem;
-  position: relative;
-
+  bottom: 0;
+  height: 2rem;
+  display: flex;
+  align-items: center;
   > input {
     width: 100%;
     padding: 0.5rem;
