@@ -5,8 +5,10 @@ export default function KakaoCallback() {
   const navigation = useNavigate();
 
   useEffect(() => {
-    const params = new URL(document.location.toString()).searchParams;
+    const params = new URL(window.location.href).searchParams;
+    // const params = new URL(document.location.toString()).searchParams;
     const token = params.get('access_token');
+    const refreshToken = params.get('refreshToken');
     const memberId = params.get('member_id');
 
     if (token && memberId) {
