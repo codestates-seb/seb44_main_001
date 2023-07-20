@@ -117,14 +117,14 @@ export default function ChatButton() {
         );
 
         setSubscription(subscription);
-      };
 
-      client.onStompError = function (frame) {
-        console.log('STOMP error: ', frame.headers, frame.body);
+        postOnlineMutation.mutate(chatRoom);
       };
-
-      postOnlineMutation.mutate(chatRoom);
     }
+
+    client.onStompError = function (frame) {
+      console.log('STOMP error: ', frame.headers, frame.body);
+    };
 
     if (chatRoom === 0) {
       if (subscription) {
