@@ -1,4 +1,5 @@
-export const BASE_URL = 'https://e9e5-49-163-135-89.ngrok-free.app';
+export const BASE_URL =
+  'http://ec2-3-34-45-1.ap-northeast-2.compute.amazonaws.com:8080';
 
 export const TITLE_INPUT_PLACEHOLDER = '내가 원하는 친구를 모집해봐요!';
 
