@@ -77,7 +77,10 @@ public class MemberService {
                     findMember.setLocation(location);
                 });
         Optional.ofNullable(member.getNickname())
-                .ifPresent(findMember::setNickname);
+                .ifPresent(nickname -> {
+                    verifiedNicknameExists(nickname);
+                    findMember.setNickname(nickname);
+                });
         Optional.ofNullable(member.getIsMale())
                 .ifPresent(findMember::setIsMale);
         Optional.ofNullable(member.getAge())
