@@ -4,7 +4,7 @@ import { AiFillDelete } from 'react-icons/ai';
 import { useDispatch } from 'react-redux';
 import { setChatRoomInfo } from '../../../store/ChatRoomInfoStore';
 import { Room } from '../../../type';
-import { BASE_URL, CHAT_NOTICE } from '../../../util/constantValue';
+import { BASE_URL } from '../../../util/constantValue';
 import { calculateTimeDifference } from '../../../util/timeDifferenceCalculator';
 import { useMutation } from 'react-query';
 import deleteRoom from '../api/deleteRoom';

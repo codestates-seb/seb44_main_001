@@ -8,7 +8,7 @@ export default function KakaoCallback() {
     const params = new URL(window.location.href).searchParams;
     // const params = new URL(document.location.toString()).searchParams;
     const token = params.get('access_token');
-    const refreshToken = params.get('refreshToken');
+    // const refreshToken = params.get('refreshToken');
     const memberId = params.get('member_id');
 
     if (token && memberId) {
@@ -20,6 +20,7 @@ export default function KakaoCallback() {
       console.log('오예스 실패! err!');
       navigation('/err');
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return <></>;
