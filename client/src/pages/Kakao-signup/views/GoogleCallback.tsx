@@ -14,7 +14,7 @@ export default function GoogleCallback() {
     } else {
       navigation('/err');
     }
-  }, []);
+  }, [navigation]);
 
   return <></>;
 }
