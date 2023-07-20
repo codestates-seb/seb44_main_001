@@ -29,7 +29,9 @@ export default function UserModal({
 }) {
   const dispatch = useDispatch();
 
-  const chatPartner = data?.memberInfo.memberId;
+  const memberId = data?.memberInfo.memberId;
+
+  const nickname = data?.memberInfo.nickname;
 
   const client = new StompJs.Client({
     brokerURL:
@@ -47,23 +49,22 @@ export default function UserModal({
   const postMutation = useMutation(
     'ChatMembers',
     () =>
-      postChatMembers(`${BASE_URL}/chats/register`, {
-        memberId: chatPartner as number,
+      postChatMembers(`${BASE_URL}/rooms/register`, {
+        memberId: memberId as number,
+        roomType: 'PERSONAL',
+        //! 그룹채팅 만들게 되면 PERSONAL & GROUP 으로 분기해야함
       }),
     {
       onSuccess: (data) => {
-        dispatch(setChatModal(true));
+        console.log(data);
+        dispatch(setChatRoomInfo({ roomId: data, roomName: nickname }));
 
-        dispatch(setChatRoomInfo({ roomId: data }));
+        dispatch(setChatModal(true));
       },
     },
   );
-  // 내 id와 상대방 id를 서버에 post
-  // 응답으로 roomId 받음
-  // 받은 roomId에 내 id를 구독
 
   const handleOpenChat = () => {
-    dispatch(setChatModal(true));
     postMutation.mutate();
   };
 

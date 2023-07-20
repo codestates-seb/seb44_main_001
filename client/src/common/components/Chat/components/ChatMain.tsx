@@ -22,7 +22,7 @@ export default function ChatMain({
   const [roomToDelete, setRoomToDelete] = useState(0);
 
   const deleteMutation = useMutation('deleteRoom', () =>
-    deleteRoom(`${BASE_URL}/chats/delete/${roomToDelete}`),
+    deleteRoom(`${BASE_URL}/rooms/${roomToDelete}`),
   );
 
   const handleChatRoomClick = (room: Room) => {
@@ -45,33 +45,31 @@ export default function ChatMain({
       </ChatHeader>
       <ChatList>
         <Chat>
-          {prevRoom
-            ?.sort((a, b) => +b.lastSentTime - +a.lastSentTime)
-            .map((room, idx) => (
-              <div key={idx} onClick={() => handleChatRoomClick(room)}>
+          {prevRoom.map((room, idx) => (
+            <div key={idx} onClick={() => handleChatRoomClick(room)}>
+              <div>
                 <div>
-                  <div>
-                    <div>{room.roomName}</div>
-                    {room.lastCheckTime < room.lastSentTime && (
-                      <div>{CHAT_NOTICE}</div>
-                    )}
-                  </div>
-                  <div>{calculateTimeDifference(room.lastSentTime)}</div>
+                  <div>{room.roomName}</div>
+                  {/* {room.lastCheckTime < room.lastSentTime && (
+                    <div>{CHAT_NOTICE}</div>
+                  )} */}
                 </div>
-                <div>
-                  <div>
-                    {prevRoom && room?.lastMessage.length > 20
-                      ? `${room.lastMessage.slice(0, 20)}...`
-                      : room.lastMessage}
-                  </div>
-                  <AiFillDelete
-                    size={16}
-                    onClick={handleDelete}
-                    onMouseOver={() => handleMouseOver(room.roomId)}
-                  />
-                </div>
+                <div>{calculateTimeDifference(room.lastSentTime)}</div>
               </div>
-            ))}
+              <div>
+                <div>
+                  {prevRoom && room?.lastMessage.length > 20
+                    ? `${room.lastMessage.slice(0, 20)}...`
+                    : room.lastMessage}
+                </div>
+                <AiFillDelete
+                  size={16}
+                  onClick={handleDelete}
+                  onMouseOver={() => handleMouseOver(room.roomId)}
+                />
+              </div>
+            </div>
+          ))}
         </Chat>
       </ChatList>
     </Container>

@@ -18,6 +18,7 @@ export default function App() {
     'userInfo',
     () => MyData(`${BASE_URL}/members/${memberId}`, token as string),
     {
+      enabled: memberId !== null,
       onSuccess: (data) => {
         dispatch(setMyData(data));
       },

@@ -12,6 +12,7 @@ export default async function postData(url: string, data: ArticleToPost) {
 
     const res = await axios.post(url, data, { headers });
     console.log(res);
+    return res.data;
   } catch (err) {
     console.log(err);
   }

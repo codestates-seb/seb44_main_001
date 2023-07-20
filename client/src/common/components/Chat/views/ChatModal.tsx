@@ -7,7 +7,7 @@ import ChatMain from '../components/ChatMain';
 import ChatRoom from '../components/ChatRoom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store/RootStore';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { BASE_URL } from '../../../util/constantValue';
 import getRoomList from '../api/getRoomList';
 import { setChatModal } from '../../../store/ChatModalStore';
@@ -15,6 +15,7 @@ import { ChatData, ChatRoomData, Room } from '../../../type';
 import * as StompJs from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import isEqual from 'lodash/isEqual';
+import postOnline from '../api/postOnline';
 
 export default function ChatButton() {
   const [messages, setMessages] = useState([{}]);
@@ -23,13 +24,16 @@ export default function ChatButton() {
     {
       roomId: 0,
       roomName: '',
+      unreadCount: 0,
       lastMessage: '',
       lastSentTime: '',
-      lastCheckTime: '',
     },
   ]);
 
   const [isDataDifferent, setIsDataDifferent] = useState(false);
+
+  const [subscription, setSubscription] =
+    useState<StompJs.StompSubscription | null>(null);
 
   const token = localStorage.getItem('Authrization');
 
@@ -65,7 +69,7 @@ export default function ChatButton() {
 
   useQuery<ChatRoomData, unknown>(
     'roomList',
-    () => getRoomList(`${BASE_URL}/chats`),
+    () => getRoomList(`${BASE_URL}/rooms/list`),
     {
       enabled: isOpen && !chatRoom,
       refetchInterval: 5000,
@@ -77,6 +81,19 @@ export default function ChatButton() {
   );
   // 기존 채팅방 목록 가져오기
 
+  const postOnlineMutation = useMutation<void, unknown, number>(
+    'postOnline',
+    (roomId) => postOnline(`${BASE_URL}/rooms/${roomId}/online`),
+  );
+
+  const handleModalOpen = () => {
+    dispatch(setChatModal(true));
+  };
+
+  const handleModalClose = () => {
+    dispatch(setChatModal(false));
+  };
+
   //TODO 채팅방 삭제 버튼 클릭 시 구독 취소
 
   useEffect(() => {
@@ -86,31 +103,37 @@ export default function ChatButton() {
       client.onConnect = function () {
         console.log('websocket is connected');
 
-        client.subscribe(`/sub/chat/room/${chatRoom}`, (message) => {
-          console.log(chatRoom + '번방에 입장하였습니다.');
+        const subscription = client.subscribe(
+          `/sub/chat/room/${chatRoom}`,
+          (message) => {
+            console.log(chatRoom + '번방에 입장하였습니다.');
 
-          const receivedMessage = JSON.parse(message.body);
+            const receivedMessage = JSON.parse(message.body);
 
-          setMessages((prevMessages) =>
-            updateMessages(prevMessages as ChatData[], receivedMessage),
-          );
-        });
+            setMessages((prevMessages) =>
+              updateMessages(prevMessages as ChatData[], receivedMessage),
+            );
+          },
+        );
+
+        setSubscription(subscription);
+
+        postOnlineMutation.mutate(chatRoom);
       };
+    }
 
-      client.onStompError = function (frame) {
-        console.log('STOMP error: ', frame.headers, frame.body);
-      };
+    client.onStompError = function (frame) {
+      console.log('STOMP error: ', frame.headers, frame.body);
+    };
+
+    if (chatRoom === 0) {
+      if (subscription) {
+        subscription.unsubscribe();
+        setSubscription(null);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatRoom]);
-
-  const handleModalOpen = () => {
-    dispatch(setChatModal(true));
-  };
-
-  const handleModalClose = () => {
-    dispatch(setChatModal(false));
-  };
 
   return (
     <Container>

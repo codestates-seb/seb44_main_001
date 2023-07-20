@@ -43,8 +43,8 @@ export type ArticleToGet = {
     city: string;
     province: string;
   };
-  postLikeCount:number;
-  liked:boolean;
+  postLikeCount: number;
+  liked: boolean;
 };
 
 export type CommentToPost = {
@@ -129,8 +129,6 @@ export type Member = {
   createdAt: string;
 };
 
-
-
 export type SignupPatchData = {
   location: number;
   welcomeMsg: string;
@@ -142,9 +140,9 @@ export type SignupPatchData = {
 export type Room = {
   roomId: number;
   roomName: string;
+  unreadCount: number;
   lastMessage: string;
   lastSentTime: string;
-  lastCheckTime: string;
 };
 
 export type ChatRoomData = {
@@ -152,9 +150,11 @@ export type ChatRoomData = {
 };
 
 export type ChatData = {
+  roomId: number;
   memberId: number;
   nickname: string;
   content: string;
+  participantType: string;
   sentTime: string;
 };
 
@@ -168,6 +168,7 @@ export type PostChat = {
 
 export type ChatMembers = {
   memberId: number;
+  roomType: string;
 };
 
 export type IsLikedType = {
