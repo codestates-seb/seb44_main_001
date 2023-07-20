@@ -20,8 +20,7 @@ export default function KakaoCallback() {
       console.log('오예스 실패! err!');
       navigation('/err');
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [navigation]);
 
   return <></>;
 }
