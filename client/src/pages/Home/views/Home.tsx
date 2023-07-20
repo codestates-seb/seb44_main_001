@@ -1,13 +1,14 @@
 import { Link } from 'react-router-dom';
 import { keyframes, styled } from 'styled-components';
 
-import logo from '../../../common/assets/logo/bigMOMO.png';
+import logo from '../../../common/assets/logo/grayLogo.png';
 import couple from '../../../common/assets/logo/coupleMomo.svg';
 import recruit from '../../../common/assets/logo/recruitMomo.svg';
 import sing from '../../../common/assets/logo/singMomo.svg';
 import bingle from '../../../common/assets/logo/bingleMomo.svg';
 import pinkWave from '../../../common/assets/images/pinkWave.svg';
 import pinkWave2 from '../../../common/assets/images/pinkWave2.svg';
+import category from '../../../common/assets/images/categoryImg.png';
 export default function Home() {
   return (
     <Wrapper>
@@ -49,23 +50,28 @@ export default function Home() {
       </Page1>
       <img src={pinkWave} style={{ width: '100%' }} />
       <Page2>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'start',
-            justifyContent: 'center',
-          }}
-        >
+        <Page2TextBox>
           <h1 style={{ margin: '10px' }}>당신이 원하는 모든 활동,</h1>
           <h1>모모에서 만나 함께해봐요!</h1>
           <h3 style={{ marginBottom: '20px', marginTop: '10px' }}>
             다양한 카테고리를 통해 내가 원하는 사람들을 모집할 수 있어요.
           </h3>
-        </div>
-        <div></div>
+        </Page2TextBox>
+        <img src={category} style={{ width: '600px', borderRadius: '30px' }} />
       </Page2>
       <img src={pinkWave2} style={{ width: '100%' }} />
+      <Page3>
+        <img
+          src={category}
+          style={{ width: '600px', borderRadius: '30px', marginRight: '30px' }}
+        />
+        <Page2TextBox>
+          <h1 style={{ margin: '10px' }}>함께할 사람을 찾아 친분을 다져요.</h1>
+          <h3 style={{ marginBottom: '20px', marginTop: '10px' }}>
+            1:1 채팅 기능을 통해 원하는 사람에게 쉽게 연락할 수 있어요.
+          </h3>
+        </Page2TextBox>
+      </Page3>
     </Wrapper>
   );
 }
@@ -93,12 +99,12 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  color: var(--color-black);
 `;
 
 const Page1 = styled(Wrapper)`
   margin-top: 50px;
   flex-direction: row;
-  background-color: var(--color-yellow);
   padding: 50px;
 `;
 
@@ -106,7 +112,12 @@ const Page2 = styled(Wrapper)`
   flex-direction: row;
   background-color: #ffdce1;
   width: 100%;
-  color: var(--color-black);
+`;
+
+const Page3 = styled(Wrapper)`
+  width: 100%;
+  margin-bottom: 200px;
+  flex-direction: row;
 `;
 
 const TextContainer = styled.div`
@@ -206,4 +217,12 @@ const Bingle = styled(Momo)`
   top: -90px;
   left: 0px;
   animation: ${floatAnimation1} 1s ease-in-out infinite alternate;
+`;
+
+const Page2TextBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+  margin-right: 50px;
 `;

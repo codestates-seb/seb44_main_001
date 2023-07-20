@@ -15,14 +15,14 @@ import Button from '../../../common/components/Button';
 import { useDispatch, useSelector } from 'react-redux';
 import patchMyData from '../api/patchMyData';
 import { setUpdatedUser } from '../store/UpdatedUserData';
-import { Member, SignupPatchData } from '../../../common/type';
+import { SignupPatchData } from '../../../common/type';
 import { RootState } from '../../../common/store/RootStore';
 import { useMutation } from 'react-query';
 import { BASE_URL } from '../../../common/util/constantValue';
 
-interface KakaoData {
-  email: string;
-}
+// interface KakaoData {
+//   email: string;
+// }
 
 export default function KakaoSignup() {
   const [nickname, setNickname] = useState('');
