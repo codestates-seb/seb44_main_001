@@ -1,7 +1,7 @@
 import { styled } from 'styled-components';
 import Logo from '../../../common/assets/logo/MOMO.png';
 import NotFound404 from '../../../common/assets/images/NotFound404.png';
-export default function NotFound() {
+export default function NotFound(): JSX.Element {
   return (
     <Wrapper>
       <img src={Logo} alt="logo" />

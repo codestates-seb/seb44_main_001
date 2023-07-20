@@ -2,7 +2,7 @@ import { AiFillWechat } from 'react-icons/ai';
 import { keyframes, styled } from 'styled-components';
 import Modal from 'react-modal';
 import { useEffect, useState } from 'react';
-import { modalStyle } from '../modalStyle';
+import { modalStyle } from '../ModalStyle';
 import ChatMain from '../components/ChatMain';
 import ChatRoom from '../components/ChatRoom';
 import { useDispatch, useSelector } from 'react-redux';
