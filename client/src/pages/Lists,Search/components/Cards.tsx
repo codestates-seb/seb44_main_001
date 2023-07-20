@@ -9,7 +9,6 @@ import { CardData } from '../../../common/type';
 import { BASE_URL } from '../../../common/util/constantValue';
 import { setCategory } from '../../../common/store/CategoryStore';
 import { setLocation } from '../../../common/store/LocationStore';
-import { setSelectedLocation } from '../store/SelectedLocation';
 import { resetCreatedPost } from '../../Write,Edit/store/CreatedPost';
 import Card from '../../../common/components/Card';
 import roundingPeach from '../../../common/assets/images/roundingPeach.svg';

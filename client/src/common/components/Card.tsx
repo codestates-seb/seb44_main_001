@@ -63,13 +63,15 @@ const Wrapper = styled(Link)`
   border: 2px solid var(--color-black);
   border-radius: 10px;
   padding: 1.5rem;
-
-  animation: ${slideDownAnimation} 1.2s ease-in-out;
+  transition: transform 0.3s ease-out;
+  animation: ${slideDownAnimation} 0.5s ease-in-out;
   * {
     color: var(--color-black);
   }
   &:hover {
     border-color: var(--color-pink-1);
+    transform: translate(-5px, -5px);
+    box-shadow: 3px 3px 5px var(--color-pink-2);
   }
 `;
 

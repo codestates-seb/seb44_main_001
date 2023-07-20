@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
@@ -7,7 +7,6 @@ import { RootState } from '../../../common/store/RootStore';
 import { setSelectedLocation } from '../store/SelectedLocation';
 import LocationSelector from '../../../common/components/LocationSelector';
 import Button from '../../../common/components/Button';
-import { Locations } from '../../../common/type';
 import { setLocation } from '../../../common/store/LocationStore';
 
 export default function ListsHeader() {
@@ -20,18 +19,21 @@ export default function ListsHeader() {
   const myData =
     useSelector((state: RootState) => state.myData.location) || null;
 
+  //셀렉터 지역 상태
   const location = useSelector((state: RootState) => state.location);
 
-  //셀렉터 지역 상태
+  //사용자가 셀렉터에서 선택한 지역상태
   const selectedLocation = useSelector(
     (state: RootState) => state.selectedLocation,
   );
 
+  //소분류까지 선택 안하면 동작 안됨
   const handleLocationSelection = () => {
     if (!location.province) {
       return;
     }
     dispatch(setSelectedLocation(location));
+    localStorage.setItem('selectedLocation',JSON.stringify(location));
   };
 
   const handleWriteButtonClick = () => {
@@ -43,21 +45,13 @@ export default function ListsHeader() {
     }
   };
 
-  useEffect(() => {
-    localStorage.setItem('selectedLocation', JSON.stringify(selectedLocation));
-  }, [selectedLocation]);
-
-  // 유저의 등록된 지역으로 수정하기
+  //로그인 했으면 유저의 지역으로 아니면 기본값인 서울로 랜더링
   useEffect(() => {
     const LocalStorageLocaion = localStorage.getItem("selectedLocation");
     if(LocalStorageLocaion){
       dispatch(setSelectedLocation(JSON.parse(LocalStorageLocaion)));
-    } else if (isLogin) {
-      const userLoctoin = {
-        locationId: myData.locationId,
-        city: myData.city,
-        province: myData.province,
-      };
+    } else if (isLogin && myData) {
+      console.log('이거실행?', myData);
       dispatch(
         setSelectedLocation({
           locationId: myData.locationId,
@@ -65,17 +59,11 @@ export default function ListsHeader() {
           province: myData.province,
         }),
       );
-      dispatch(setLocation(userLoctoin));
     } else {
-      const defaultLocation = {
-        locationId: 1,
-        city: '서울특별시',
-        province: '전체',
-      };
-      dispatch(setLocation(defaultLocation));
+      dispatch(setLocation(selectedLocation));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [myData]);
 
   const listName =
     params.keyword || `${selectedLocation.city} ${selectedLocation.province}`;

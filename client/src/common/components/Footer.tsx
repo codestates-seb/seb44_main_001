@@ -6,12 +6,12 @@ export default function Footer() {
   return (
     <Wapper>
       <Content>
-        Copyright 2023. [ FE <Link to={`${githubUrl}jinsoul75`}>김진솔</Link>{' '}
-        <Link to={`${githubUrl}Mooobi`}>박무생</Link>{' '}
-        <Link to={`${githubUrl}shyesoo`}>송혜수</Link> / BE{' '}
-        <Link to={`${githubUrl}Yooney1`}>김윤</Link>{' '}
-        <Link to={`${githubUrl}rktdngud`}>최우형</Link>{' '}
-        <Link to={`${githubUrl}myoungincho729`}>조명인</Link> ]. All rights reserved.
+        Copyright 2023. [ FE <Link to={`${githubUrl}jinsoul75`} target="_blank">김진솔</Link>{' '}
+        <Link to={`${githubUrl}Mooobi`} target="_blank">박무생</Link>{' '}
+        <Link to={`${githubUrl}shyesoo`} target="_blank">송혜수</Link> / BE{' '}
+        <Link to={`${githubUrl}Yooney1`} target="_blank">김윤</Link>{' '}
+        <Link to={`${githubUrl}rktdngud`} target="_blank">최우형</Link>{' '}
+        <Link to={`${githubUrl}myoungincho729`} target="_blank">조명인</Link> ]. All rights reserved.
       </Content>
     </Wapper>
   );
@@ -24,6 +24,7 @@ const Wapper = styled.footer`
   left: 0;
   bottom: 0;
   width: 100%;
+  position:absolute;
 `;
 
 const Content = styled.div`

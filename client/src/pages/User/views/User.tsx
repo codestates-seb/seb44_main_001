@@ -1,7 +1,11 @@
 import { styled } from 'styled-components';
 import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useMutation } from 'react-query';
+import {
+  useMutation,
+  useInfiniteQuery,
+  UseInfiniteQueryResult,
+} from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import SemiHeader from '../../../common/components/SemiHeader';
@@ -15,11 +19,12 @@ import getMember from '../api/getMember';
 import ChatButton from '../../../common/components/Chat/views/ChatModal';
 import { PiMapPinBold } from 'react-icons/pi';
 import { setUserData } from '../store/MemberStore';
+import { getUserPosts } from '../api/getUserPosts';
+import { CardData } from '../../../common/type';
 
 export default function User() {
   const navigate = useNavigate();
-  const params = useParams<{ memberId: string }>();
-  const { memberId } = params;
+  const memberId = useParams().memberId || '';
 
   // const token: string = useSelector((state: RootState) => state.token.token); 이 부분을 아래처럼 수정
   const token: string | null = localStorage.getItem('Authorization');
@@ -48,6 +53,26 @@ export default function User() {
     },
   );
 
+  const {
+    data: userPosts,
+    // fetchNextPage,
+    // hasNextPage,
+    // isLoading,
+    // isError,
+  }: UseInfiniteQueryResult<CardData[], unknown> = useInfiniteQuery(
+    ['userPosts'],
+    ({ pageParam = 1 }) => {
+      return getUserPosts(`${BASE_URL}/posts/member`, memberId, pageParam);
+    },
+    {
+      getNextPageParam: (lastPage, allPages) => {
+        const nextPage = allPages.length + 1;
+        return lastPage.length === 0 ? undefined : nextPage;
+      },
+    },
+  );
+  console.log(userPosts?.pages[0]);
+
   useEffect(() => {
     if (memberId) {
       const numberId = parseInt(memberId, 10);
@@ -63,6 +88,7 @@ export default function User() {
     if (!memberId) {
       console.log('memberId is not found!!');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [memberId]);
 
   return (

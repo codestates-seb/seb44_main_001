@@ -20,6 +20,9 @@ export const GlobalStyle = createGlobalStyle`
     background-color: var(--color-light-yellow);
     font-family: BR-Regular;
   }
+  #root{
+    position: relative;
+  }
   :root {
   /* Color */
   --color-light-yellow:#FFF8D0;
