@@ -1,5 +1,3 @@
-// export const BASE_URL = 'https://a2b2-59-24-10-214.ngrok-free.app';
-
 export const BASE_URL =
   'http://ec2-3-34-45-1.ap-northeast-2.compute.amazonaws.com:8080';
 
