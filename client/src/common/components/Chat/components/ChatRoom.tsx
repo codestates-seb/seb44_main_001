@@ -10,6 +10,7 @@ import { PrevChatData, PostChat, ChatData } from '../../../type';
 import { useMutation, useQuery } from 'react-query';
 import getPrevChat from '../api/getPrevChat';
 import postChat from '../api/postChat';
+import postOffline from '../api/postOffline';
 
 export default function ChatRoom({
   messages,
@@ -22,9 +23,11 @@ export default function ChatRoom({
 
   const [prevChat, setPrevChat] = useState<ChatData[]>([
     {
+      roomId: 0,
       memberId: 0,
       nickname: '',
       content: '',
+      participantType: '',
       sentTime: '',
     },
   ]);
@@ -43,9 +46,9 @@ export default function ChatRoom({
 
   useQuery<PrevChatData, unknown>(
     'prevChats',
-    () => getPrevChat(`${BASE_URL}/chats/${roomId}`),
+    () => getPrevChat(`${BASE_URL}/rooms/${roomId}`),
     {
-      enabled: roomId !== 0,
+      enabled: roomId !== 0 && roomId !== undefined,
       onSuccess: (data) => {
         setPrevChat(data.chats);
         setMessages([{}]);
@@ -57,8 +60,14 @@ export default function ChatRoom({
     postChat(`${BASE_URL}/chats`, myChat),
   );
 
+  const postOfflineMutation = useMutation<void, unknown, number>(
+    'postOffline',
+    (roomId) => postOffline(`${BASE_URL}/rooms/${roomId}/offline`),
+  );
+
   const handleChatPage = () => {
     dispatch(setChatRoomInfo({ roomId: 0, roomName: '' }));
+    postOfflineMutation.mutate(roomId);
   };
 
   const handleChatInput = (event: ChangeEvent<HTMLInputElement>) => {
@@ -81,6 +90,7 @@ export default function ChatRoom({
   useEffect(() => {
     return () => {
       setMessages([{}]);
+      postOfflineMutation.mutate(roomId);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -91,7 +101,7 @@ export default function ChatRoom({
     if (chatWrapperRef.current && newMessages.length > 0) {
       chatWrapperRef.current.scrollTop = chatWrapperRef.current.scrollHeight;
     }
-  }, [newMessages]);
+  }, [roomId, newMessages]);
 
   return (
     roomId !== 0 && (

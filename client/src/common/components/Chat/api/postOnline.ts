@@ -1,7 +1,6 @@
 import axios from 'axios';
-import { ChatMembers } from '../../../common/type';
 
-export default async function postChatMembers(url: string, data: ChatMembers) {
+export default async function postOnline(url: string) {
   try {
     const token = localStorage.getItem('Authorization');
 
@@ -10,9 +9,8 @@ export default async function postChatMembers(url: string, data: ChatMembers) {
       'ngrok-skip-browser-warning': '69420',
     };
 
-    const res = await axios.post(url, data, { headers });
+    const res = await axios.post(url, { headers });
     console.log(res);
-    return res.data;
   } catch (err) {
     console.log(err);
   }

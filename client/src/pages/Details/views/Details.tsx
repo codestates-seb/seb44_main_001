@@ -28,7 +28,7 @@ export default function Details() {
   return (
     <>
       <SemiHeader
-        title={`전체 게시판 > ${data?.categoryInfo.name} > ${data?.title}`}
+        title={`${data?.locationInfo.city} ${data?.locationInfo.province} > ${data?.categoryInfo.name} > ${data?.title}`}
         content=""
       />
       <Layout>

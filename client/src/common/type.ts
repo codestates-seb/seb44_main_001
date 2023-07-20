@@ -155,9 +155,9 @@ export type SignupPatchData = {
 export type Room = {
   roomId: number;
   roomName: string;
+  unreadCount: number;
   lastMessage: string;
   lastSentTime: string;
-  lastCheckTime: string;
 };
 
 export type ChatRoomData = {
@@ -165,9 +165,11 @@ export type ChatRoomData = {
 };
 
 export type ChatData = {
+  roomId: number;
   memberId: number;
   nickname: string;
   content: string;
+  participantType: string;
   sentTime: string;
 };
 
@@ -181,6 +183,7 @@ export type PostChat = {
 
 export type ChatMembers = {
   memberId: number;
+  roomType: string;
 };
 
 export type IsLikedType = {
