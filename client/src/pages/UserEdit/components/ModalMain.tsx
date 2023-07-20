@@ -5,7 +5,9 @@ import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import { BASE_URL } from '../../../common/util/constantValue';
 
-export default function ModalMain({handleModalChange}) {
+type HandleModalChangeFunction = () => void;
+
+export default function ModalMain({handleModalChange}: { handleModalChange: HandleModalChangeFunction }) {
   const navigate = useNavigate();
 
   const memberId = localStorage.getItem('MemberId');

@@ -43,8 +43,8 @@ export type ArticleToGet = {
     city: string;
     province: string;
   };
-  postLikeCount:number;
-  liked:boolean;
+  postLikeCount: number;
+  liked: boolean;
 };
 
 export type CommentToPost = {
@@ -129,7 +129,20 @@ export type Member = {
   createdAt: string;
 };
 
+export type EditMember = {
+  memberPatchDto: {
+    welcomeMsg: string;
+    nickname: string;
+    locationId: number;
+  };
+  file: string | Blob | null;
+};
 
+export type MemberPatchDto = {
+  welcomeMsg: string;
+  nickname: string;
+  locationId: number;
+};
 
 export type SignupPatchData = {
   location: number;

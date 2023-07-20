@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,7 +7,6 @@ import Modal from 'react-modal';
 import { RootState } from '../store/RootStore';
 import { FaArrowRightFromBracket } from 'react-icons/fa6';
 import { HiMiniXMark } from 'react-icons/hi2';
-import NotificationModal from './Alram/views/NotificationModal';
 import Button from './Button';
 import { resetStates } from '../../pages/Login/store/MyUserData';
 import { BASE_URL } from '../../common/util/constantValue';
@@ -18,11 +17,13 @@ import profile from '../assets/profile.svg';
 import kakao from '../../common/assets/logo/kakao-logo.png';
 import google from '../../common/assets/logo/google-logo.png';
 
+import { postLogout } from '../util/customHook/api/postLogout';
 import { setChatModal } from '../store/ChatModalStore';
+import { useMutation } from 'react-query';
 Modal.setAppElement('#root');
 
 export default function Header() {
-  const [isLogged, setIsLogged] = useState<boolean>(false);
+  // const [isLogged, setIsLogged] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const myData = useSelector((state: RootState) => state.myData);
   // const myId = useSelector((state: RootState) => state.token.memberId);
@@ -36,25 +37,34 @@ export default function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (myData && myData.nickname) {
-      setIsLogged(true);
-      console.log('setIsLogged true로 변경');
-    } else {
-      setIsLogged(false);
-      console.log('setIsLogged false로 변경');
-    }
-  }, [myData]);
+  // useEffect(() => {
+  //   if (myData && myData.nickname) {
+  //     setIsLogged(true);
+  //     console.log('setIsLogged true로 변경');
+  //   } else {
+  //     setIsLogged(false);
+  //     console.log('setIsLogged false로 변경');
+  //   }
+  // }, [myData]);
 
-  const handleLogout = (e: React.MouseEvent) => {
-    e.preventDefault();
-    dispatch(resetStates());
-    navigate('/login');
-    // 아래는 추가한 부분
-    localStorage.removeItem('Authorization');
-    localStorage.removeItem('MemberId');
-    localStorage.removeItem('selectedLocation');
-    dispatch(setChatModal(false));
+  const logoutPostMutaion = useMutation(
+    () => {
+      return postLogout(`${BASE_URL}/auth/logout`);
+    },
+    {
+      onSuccess: () => {
+        dispatch(resetStates());
+        navigate('/login');
+        localStorage.removeItem('Authorization');
+        localStorage.removeItem('MemberId');
+        localStorage.removeItem('selectedLocation');
+        dispatch(setChatModal(false));
+      },
+    },
+  );
+
+  const handleLogout = () => {
+    logoutPostMutaion.mutate();
   };
 
   const handleMyProfile = (e: React.MouseEvent) => {
@@ -94,7 +104,6 @@ export default function Header() {
               {myData.nickname}
             </div>
           </UserContainer>
-          <NotificationModal />
           <div className="margin-left">
             <div onClick={handleLogout}>
               <LogOut size={20} />

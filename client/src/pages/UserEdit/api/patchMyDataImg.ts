@@ -1,7 +1,8 @@
 import axios from 'axios';
-import { Member } from '../../../common/type';
 
-export const patchMyData = async (url: string, data: Member) => {
+import { EditMember } from '../../../common/type';
+
+export const patchMyDataImg = async (url: string, data: EditMember) => {
   const token = localStorage.getItem('Authorization');
 
   const formData = new FormData();

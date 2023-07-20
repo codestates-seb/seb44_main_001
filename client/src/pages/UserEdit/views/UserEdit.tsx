@@ -14,37 +14,36 @@ import {
 } from '../../Signup/views/Signup';
 import profile from '../../../common/assets/profile.svg';
 import imgEdit from '../../../common/assets/icons/imgEdit.svg';
-import { setMyData } from '../../Login/store/MyUserData';
-import { Locations, Member } from '../../../common/type';
+import { MemberPatchDto, EditMember } from '../../../common/type';
 import { RootState } from '../../../common/store/RootStore';
 import LocationSelector from '../../../common/components/LocationSelector';
 import { setCategory } from '../../../common/store/CategoryStore';
 import { setLocation } from '../../../common/store/LocationStore';
 import { resetCreatedPost } from '../../Write,Edit/store/CreatedPost';
-import { patchMyData } from '../api/patchMyData';
-import { setSignupUser } from '../../Signup/store/SignupUser';
+import { patchMyDataImg } from '../api/patchMyDataImg';
 import Button from '../../../common/components/Button';
 import ChatButton from '../../../common/components/Chat/views/ChatModal';
-import { useMutation } from 'react-query';
+import { UseMutationResult, useMutation, useQueryClient } from 'react-query';
 import { BASE_URL } from '../../../common/util/constantValue';
 import Modal from 'react-modal';
 import { ConfirmStyle } from '../confirmStyle';
 import ModalMain from '../components/ModalMain';
+import { patchMyDataInfo } from '../api/patchMyDataInfo';
 
 export default function UserEdit() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   // const user: Member = useSelector((state: RootState) => state.member);
-  const myData: Member = useSelector((state: RootState) => state.myData);
+  const myData = useSelector((state: RootState) => state.myData);
   // console.log('!!!!', myData);
   const location = useSelector((state: RootState) => state.location);
-
+  const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
   const [nickname, setNickname] = useState(myData.nickname);
   const [welcomeMsg, setWelcomeMsg] = useState(myData.welcomeMsg);
-  const [uploadedImage, setUploadedImage] = useState(null);
-  const [uploadedFile, setUploadedFile] = useState(null); // 파일 상태 변수 추가
+  const [uploadedImage, setUploadedImage] = useState<string>('');
+  const [uploadedFile, setUploadedFile] = useState<File | null | string>(null); // 파일 상태 변수 추가
 
   // const [editLocation,setEditLocation]= useSelector(myData.location);
   // const [isSelected, setIsSelected] = useState(false);
@@ -63,14 +62,14 @@ export default function UserEdit() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleImgChange = (event) => {
+  const handleImgChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const input = event.target;
     if (input.files && input.files[0]) {
       const file = input.files[0]; // 파일 추출
 
       const reader = new FileReader();
       reader.onload = function (e) {
-        const imageDataURL = e.target?.result;
+        const imageDataURL = e.target?.result as string;
         setUploadedImage(imageDataURL);
       };
       reader.readAsDataURL(file); // 추출한 파일을 읽어 데이터 URL로 변환
@@ -86,27 +85,44 @@ export default function UserEdit() {
   const handleWelcomeMsgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setWelcomeMsg(e.target.value);
   };
-  console.log(myData.memberId);
-  const patchMutation = useMutation<void, unknown, Member>(
-    (editedInfo) => {
-      const url = uploadedFile
-        ? `${BASE_URL}/members/${myData.memberId}/image`
-        : `${BASE_URL}/members/${myData.memberId}`;
-      return patchMyData(url, editedInfo);
-    },
-    {
-      onSuccess: () => {
-        navigate(`/user/${myData.memberId}`);
+
+  const patchImgMutation: UseMutationResult<void, unknown, EditMember> =
+    useMutation(
+      (editedInfo) => {
+        const url = `${BASE_URL}/members/${myData.memberId}/image`;
+        return patchMyDataImg(url, editedInfo);
       },
-      onError: (error) => {
-        console.error(error);
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries('userInfo');
+          navigate(`/user/${myData.memberId}`);
+        },
+        onError: (error) => {
+          console.error(error);
+        },
       },
-    },
-  );
+    );
+
+  const patchInfoMutation: UseMutationResult<void, unknown, MemberPatchDto> =
+    useMutation(
+      (memberPatchDto) => {
+        const url = `${BASE_URL}/members/${myData.memberId}`;
+        return patchMyDataInfo(url, memberPatchDto);
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries('userInfo');
+          navigate(`/user/${myData.memberId}`);
+        },
+        onError: (error) => {
+          console.error(error);
+        },
+      },
+    );
 
   const handleEdit = () => {
     console.log('수정~');
-    const editedInfo = {
+    const editedInfo: EditMember = {
       memberPatchDto: {
         welcomeMsg: welcomeMsg,
         nickname: nickname,
@@ -114,8 +130,11 @@ export default function UserEdit() {
       },
       file: uploadedFile,
     };
-    console.log(editedInfo);
-    patchMutation.mutate(editedInfo);
+    if (uploadedFile) {
+      patchImgMutation.mutate(editedInfo);
+    } else {
+      patchInfoMutation.mutate(editedInfo.memberPatchDto);
+    }
   };
 
   return (
@@ -132,7 +151,7 @@ export default function UserEdit() {
           style={ConfirmStyle}
           onRequestClose={handleModalChange}
         >
-          <ModalMain handleModalChange={handleModalChange}/>
+          <ModalMain handleModalChange={handleModalChange} />
         </Modal>
         <Layout>
           <Background>
