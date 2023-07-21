@@ -5,8 +5,10 @@ import lombok.Getter;
 public enum ExceptionCode {
     MEMBER_NOT_FOUND(404, "Member not found"),
     MEMBER_EXISTS(409, "Member exists"),
+
     NICKNAME_EXISTS(409, "Nickname Exist"),
 
+    MEMBER_DUPLICATED(404, "MEMBER_DUPLICATED"),
     POST_NOT_FOUND(404, "Post not found"),
     CANNOT_CHANGE_QUESTION(403, "Question can not change"),
     CANNOT_READ_QUESTION(403, "Question can not read"),

@@ -24,4 +24,6 @@ public interface MemberChatroomRepository extends JpaRepository<MemberChatroom, 
             "where mc.chatroom = :chatroom")
     List<MemberChatroom> getMemberChatrooms(Chatroom chatroom);
     MemberChatroom findByChatroomAndMember(Chatroom chatroom, Member member);
+
+    List<MemberChatroom> findAllByMember_MemberId(Long memberId);
 }

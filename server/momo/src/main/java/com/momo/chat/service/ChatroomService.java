@@ -7,6 +7,8 @@ import com.momo.chat.entity.Message;
 import com.momo.chat.repository.ChatroomRepository;
 import com.momo.chat.repository.MemberChatroomRepository;
 import com.momo.chat.repository.MessageRepository;
+import com.momo.exception.BusinessLogicException;
+import com.momo.exception.ExceptionCode;
 import com.momo.member.entity.Member;
 import com.momo.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -32,6 +35,8 @@ public class ChatroomService {
     public Chatroom createChatroom(Long memberId, Long otherMemberId, String roomType) {
         LocalDateTime now = LocalDateTime.now();
         String newMessage = "새 채팅방이 생성되었습니다.";
+
+        verifyDuplicateRoom(memberId, otherMemberId);
 
         Member member = memberRepository.findById(memberId).get();
         Member otherMember = memberRepository.findById(otherMemberId).get();
@@ -49,6 +54,25 @@ public class ChatroomService {
         memberChatroomRepository.save(memberChatRoom2);
 
         return savedChatroom;
+    }
+
+    private void verifyDuplicateRoom(Long memberId, Long otherMemberId) {
+        if (memberId.equals(otherMemberId)) {
+            throw new BusinessLogicException(ExceptionCode.MEMBER_DUPLICATED);
+        }
+        List<MemberChatroom> chatrooms = memberChatroomRepository.findAllByMember_MemberId(memberId);
+        List<MemberChatroom> chatrooms2 = memberChatroomRepository.findAllByMember_MemberId(otherMemberId);
+        Optional<MemberChatroom> first = chatrooms.stream()
+                .filter(cr -> {
+                    long count = chatrooms2.stream()
+                            .filter(cr2 -> cr.getChatroom().equals(cr2.getChatroom()))
+                            .count();
+                    return count > 0;
+                })
+                .findFirst();
+        if (first.isPresent()) {
+            throw new BusinessLogicException(ExceptionCode.MEMBER_DUPLICATED);
+        }
     }
 
     public List<MemberChatroom> getRooms(Long memberId) {

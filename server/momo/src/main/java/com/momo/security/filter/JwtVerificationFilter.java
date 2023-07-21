@@ -71,6 +71,7 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     /* EXCEPTION 관련 */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
         /* Redis를 통한 토큰 검증과 만료된 토큰에 대한 로직 */
         String token = extractTokenFromRequest(request);
         if (token != null && tokenBlacklistService.isTokenBlacklisted(token) || !jwtTokenizer.validateToken(token) ) {
