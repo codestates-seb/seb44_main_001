@@ -58,12 +58,12 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // System.out.println("# JwtVerificationFilter");
         /* Redis를 통한 토큰 검증 */
-        String token = extractTokenFromRequest(request);
-        if (token != null && tokenBlacklistService.isTokenBlacklisted(token)) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Invalid token.");
-            return;
-        }
+//        String token = extractTokenFromRequest(request);
+//        if (token != null && tokenBlacklistService.isTokenBlacklisted(token)) {
+//            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//            response.getWriter().write("Invalid token.");
+//            return;
+//        }
         try {
             Map<String, Object> claims = verifyJws(request);
             setAuthenticationToContext(claims);

@@ -12,7 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class MemberChatroom {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
