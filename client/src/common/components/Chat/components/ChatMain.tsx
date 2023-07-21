@@ -2,82 +2,84 @@ import { styled } from 'styled-components';
 import { MdOutlineClose } from 'react-icons/md';
 import { AiFillDelete } from 'react-icons/ai';
 import { useDispatch } from 'react-redux';
-import { setChatPage } from '../../../store/ChatPageStore';
+import { setChatRoomInfo } from '../../../store/ChatRoomInfoStore';
 import { ChatRoomData, Room } from '../../../type';
-import { CHAT_NOTICE } from '../../../util/constantValue';
-import { calculateTimeDifference } from '../../../util/timeCalculator';
+import { BASE_URL } from '../../../util/constantValue';
+import { calculateTimeDifference } from '../../../util/timeDifferenceCalculator';
+import { UseQueryResult, useMutation } from 'react-query';
+import deleteRoom from '../api/deleteRoom';
+import { useState } from 'react';
 
 export default function ChatMain({
-  handleModalChange,
-  data,
+  handleModalClose,
+  prevRoom,
+  getRoomQuery,
+  setIsDataDifferent,
 }: {
-  handleModalChange: () => void;
-  data: ChatRoomData;
+  handleModalClose: () => void;
+  prevRoom: Room[];
+  getRoomQuery: UseQueryResult<ChatRoomData, unknown>;
+  setIsDataDifferent: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const dispatch = useDispatch();
 
+  const [roomToDelete, setRoomToDelete] = useState(0);
+
+  const deleteMutation = useMutation(
+    'deleteRoom',
+    () => deleteRoom(`${BASE_URL}/rooms/${roomToDelete}`),
+    {
+      onSuccess: () => {
+        getRoomQuery.refetch();
+      },
+    },
+  );
+
   const handleChatRoomClick = (room: Room) => {
-    dispatch(setChatPage(room.roomId));
+    dispatch(setChatRoomInfo({ roomName: room.roomName, roomId: room.roomId }));
   };
 
-  const rooms = data?.rooms;
+  const handleMouseOver = (roomId: number) => {
+    setRoomToDelete(roomId);
+  };
 
-  // const rooms = [
-  //   {
-  //     roomId: 1,
-  //     roomName: 'moosaeng',
-  //     lastMessage:
-  //       '아아아아아아아아아아아아아아아아아아아아아아아아아아아아아아아아',
-  //     lastSentTime: '2023-07-13T23:20:46.368312',
-  //     lastCheckTime: '2023-07-13T23:10:46.368312',
-  //   },
-  //   {
-  //     roomId: 4,
-  //     roomName: 'yoon',
-  //     lastMessage: 'hello',
-  //     lastSentTime: '2023-07-13T23:20:41.45445',
-  //     lastCheckTime: '2023-07-13T23:20:46.368312',
-  //   },
-  //   {
-  //     roomId: 5,
-  //     roomName: 'yoon',
-  //     lastMessage: 'hello',
-  //     lastSentTime: '2023-07-13T23:20:41.45445',
-  //     lastCheckTime: '2023-07-13T23:20:46.368312',
-  //   },
-  // ];
+  const handleDelete = (event: MouseEvent) => {
+    event.stopPropagation();
+    deleteMutation.mutate();
+    setIsDataDifferent(false);
+  };
 
   return (
     <Container>
       <ChatHeader>
         <h1>채팅방</h1>
-        <MdOutlineClose size={32} onClick={handleModalChange} />
+        <MdOutlineClose size={32} onClick={handleModalClose} />
       </ChatHeader>
       <ChatList>
         <Chat>
-          {rooms
-            ?.sort((a, b) => +b.lastSentTime - +a.lastSentTime)
-            .map((room) => (
-              <div key={room.roomId} onClick={() => handleChatRoomClick(room)}>
+          {prevRoom.map((room, idx) => (
+            <div key={idx} onClick={() => handleChatRoomClick(room)}>
+              <div>
                 <div>
-                  <div>
-                    <div>{room.roomName}</div>
-                    {room.lastCheckTime < room.lastSentTime && (
-                      <div>{CHAT_NOTICE}</div>
-                    )}
-                  </div>
-                  <div>{calculateTimeDifference(room.lastSentTime)}</div>
+                  <div>{room.roomName}</div>
+                  {room.unreadCount !== 0 && <div>{room.unreadCount}</div>}
                 </div>
-                <div>
-                  <div>
-                    {room.lastMessage.length > 20
-                      ? `${room.lastMessage.slice(0, 20)}...`
-                      : room.lastMessage}
-                  </div>
-                  <AiFillDelete size={16} />
-                </div>
+                <div>{calculateTimeDifference(room.lastSentTime)}</div>
               </div>
-            ))}
+              <div>
+                <div>
+                  {prevRoom && room?.lastMessage.length > 20
+                    ? `${room.lastMessage.slice(0, 20)}...`
+                    : room.lastMessage}
+                </div>
+                <AiFillDelete
+                  size={16}
+                  onClick={handleDelete}
+                  onMouseOver={() => handleMouseOver(room.roomId)}
+                />
+              </div>
+            </div>
+          ))}
         </Chat>
       </ChatList>
     </Container>

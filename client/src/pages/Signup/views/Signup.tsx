@@ -47,8 +47,15 @@ export default function Signup() {
 
   const data: SignupData = useSelector((state: RootState) => state.signup);
 
-  const signupMutation = useMutation<void, unknown, SignupData>(() =>
-    signupData(`${BASE_URL}/members/register`, data),
+  const signupMutation = useMutation<void, unknown, SignupData>(
+    (data) => signupData(`${BASE_URL}/members/register`, data),
+    // {
+    //   onError: (error: AxiosError) => {
+    //     if (error.response?.status === 500) {
+    //       alert('이메일 또는 닉네임이 이미 존재합니다.');
+    //     }
+    //   },
+    // },
   );
 
   useEffect(() => {
@@ -91,7 +98,7 @@ export default function Signup() {
   };
 
   const onLocationChange = (locationId: number | null) => {
-    dispatch(setSignupUser({ ...data, location: locationId }));
+    dispatch(setSignupUser({ ...data, locationId: locationId }));
   };
 
   const handleWelcomeMsgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -245,7 +252,7 @@ export const Background = styled.div`
   }
 `;
 
-const ContentWrapper = styled.div`
+export const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: start;
@@ -276,7 +283,7 @@ const ErrorMessage = styled.div`
   margin-top: 5px;
 `;
 
-const DropdownInput = styled.select`
+export const DropdownInput = styled.select`
   width: 300px;
   margin-top: 10px;
   color: var(--color-black);

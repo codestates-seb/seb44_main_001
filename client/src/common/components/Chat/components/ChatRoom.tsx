@@ -1,73 +1,115 @@
 import { BiArrowBack } from 'react-icons/bi';
 import { useDispatch, useSelector } from 'react-redux';
 import { styled } from 'styled-components';
-import { setChatPage } from '../../../store/ChatPageStore';
+import { setChatRoomInfo } from '../../../store/ChatRoomInfoStore';
 import { RootState } from '../../../store/RootStore';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { FiSend } from 'react-icons/fi';
 import { BASE_URL } from '../../../util/constantValue';
-import { PrevChatData } from '../../../type';
-import { useQuery } from 'react-query';
+import { PrevChatData, PostChat, ChatData } from '../../../type';
+import { useMutation, useQuery } from 'react-query';
 import getPrevChat from '../api/getPrevChat';
+import postChat from '../api/postChat';
+import postOffline from '../api/postOffline';
+import { calculateTimeDifference } from '../../../util/timeDifferenceCalculator';
+import { BsPersonPlusFill } from 'react-icons/bs';
+import ChatInvitationModal from './ChatInvitationModal';
+import { setChatInvitationModal } from '../store/ChatInvitationModal';
 
-export default function ChatRoom() {
-  const [myChat, setMyChat] = useState('');
+export default function ChatRoom({
+  messages,
+  setMessages,
+}: {
+  messages: ChatData[];
+  setMessages: React.Dispatch<React.SetStateAction<object[]>>;
+}) {
+  const [myChat, setMyChat] = useState({ roomId: 0, content: '' });
+
+  const [prevChat, setPrevChat] = useState<ChatData[]>([
+    {
+      roomId: 0,
+      memberId: 0,
+      nickname: '',
+      content: '',
+      participantType: '',
+      sentTime: '',
+    },
+  ]);
 
   const dispatch = useDispatch();
 
-  const roomId = useSelector((state: RootState) => state.chatPage);
+  const roomId = useSelector((state: RootState) => state.chatRoomInfo.roomId);
 
-  const token = localStorage.getItem('Authorization');
-
-  const { data } = useQuery<PrevChatData, unknown>('prevChats', () =>
-    getPrevChat(`${BASE_URL}/chats/1`, token as string),
+  const roomName = useSelector(
+    (state: RootState) => state.chatRoomInfo.roomName,
   );
 
-  console.log(data);
-  // 이전 채팅 기록 가져오는 로직
+  const newMessages = messages.slice(1);
 
-  //TODO roomId에 맞는 방 데이터를 받아오는 로직 작성해야함
+  const userName = useSelector((state: RootState) => state.myData.nickname);
 
-  const chatPartner = 'moosaeng';
-  //TODO 방 데이터에서 상대 유저이름 받아와야함
-  const userInfo = {
-    name: 'moomoo',
-  };
-  //TODO 내 유저정보 받아와야함
+  const chatWrapperRef = useRef<HTMLDivElement>(null);
 
-  // const data = {
-  //   chats: [
-  //     {
-  //       memberId: 7,
-  //       nickName: 'myoungin',
-  //       content: 'moosaeng',
-  //       sentTime: '2023-07-13T23:20:46.368312',
-  //     },
-  //     {
-  //       memberId: 7,
-  //       nickName: 'myoungin',
-  //       content: 'moosaeng',
-  //       sentTime: '2023-07-14T23:20:46.368312',
-  //     },
-  //     {
-  //       memberId: 5,
-  //       nickName: 'moosaeng',
-  //       content: '왜 불러',
-  //       sentTime: '2023-07-15T23:20:46.368312',
-  //     },
-  //   ],
-  // };
+  useQuery<PrevChatData, unknown>(
+    'prevChats',
+    () => getPrevChat(`${BASE_URL}/rooms/${roomId}`),
+    {
+      enabled: roomId !== 0 && roomId !== undefined,
+      onSuccess: (data) => {
+        setPrevChat(data.chats);
+        setMessages([{}]);
+      },
+    },
+  );
+
+  const postMutation = useMutation<void, unknown, PostChat>('postChat', () =>
+    postChat(`${BASE_URL}/chats`, myChat),
+  );
+
+  const postOfflineMutation = useMutation<void, unknown, number>(
+    'postOffline',
+    (roomId) => postOffline(`${BASE_URL}/rooms/${roomId}/offline`),
+  );
+
+  useEffect(() => {
+    return () => {
+      setMessages([{}]);
+      if (roomId) {
+        postOfflineMutation.mutate(roomId);
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (chatWrapperRef.current) {
+      chatWrapperRef.current.scrollTop = chatWrapperRef.current.scrollHeight;
+    }
+  }, [roomId, newMessages]);
 
   const handleChatPage = () => {
-    dispatch(setChatPage(0));
+    dispatch(setChatRoomInfo({ roomId: 0, roomName: '' }));
   };
 
   const handleChatInput = (event: ChangeEvent<HTMLInputElement>) => {
-    setMyChat(event.target.value);
+    setMyChat({ roomId: roomId, content: event.target.value });
   };
 
   const handleSend = () => {
-    console.log(123);
+    if (myChat.content !== '') {
+      postMutation.mutate(myChat);
+      setMyChat({ roomId: roomId, content: '' });
+    }
+  };
+
+  const handleKeyUp = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleSend();
+    }
+  };
+
+  const handleInvitation = () => {
+    dispatch(setChatInvitationModal(true));
   };
 
   return (
@@ -75,31 +117,91 @@ export default function ChatRoom() {
       <Container>
         <ChatHeader>
           <BiArrowBack size={24} onClick={handleChatPage} />
-          <h1>{`${chatPartner} 님과의 채팅방`}</h1>
+          <h1>
+            {`${roomName} 님과의 채팅방`.length > 20
+              ? `${roomName} 님과의 채팅방`.slice(0, 20)
+              : `${roomName} 님과의 채팅방`}
+          </h1>
+          <BsPersonPlusFill size={24} onClick={handleInvitation} />
         </ChatHeader>
-        <Chat>
-          {data &&
-            data.chats.map((chat) => {
-              if (chat.nickname !== userInfo.name) {
+        <ChatWrapper ref={chatWrapperRef}>
+          <Chat>
+            {prevChat?.map((chat, idx) => {
+              if (chat.participantType === 'NOTIFICATION') {
                 return (
-                  <OthersChat>
-                    <div>{chat.nickname}</div>
-                    <div>{chat.content}</div>
-                  </OthersChat>
+                  <Notification key={chat.sentTime}>
+                    <div>
+                      <p>{chat.content}</p>
+                    </div>
+                  </Notification>
+                );
+              }
+              if (chat.nickname === userName) {
+                return (
+                  <MyChat key={chat.sentTime}>
+                    <div>
+                      <p>{calculateTimeDifference(chat.sentTime)}</p>
+                      <p>{chat.content}</p>
+                    </div>
+                  </MyChat>
                 );
               } else {
                 return (
-                  <MyChat>
-                    <div>{chat.content}</div>
-                  </MyChat>
+                  <OthersChat key={idx}>
+                    <div>{chat.nickname}</div>
+                    <div>
+                      <p>{chat.content}</p>
+                      <p>{calculateTimeDifference(chat.sentTime)}</p>
+                    </div>
+                  </OthersChat>
                 );
               }
             })}
-        </Chat>
+          </Chat>
+          <Chat>
+            {newMessages.map((message, idx) => {
+              if (message.participantType === 'NOTIFICATION') {
+                return (
+                  <Notification key={message.sentTime}>
+                    <div>
+                      <p>{message.content}</p>
+                    </div>
+                  </Notification>
+                );
+              }
+              if (message.nickname === userName) {
+                return (
+                  <MyChat key={message.sentTime}>
+                    <div>
+                      <p>{calculateTimeDifference(message.sentTime)}</p>
+                      <p>{message.content}</p>
+                    </div>
+                  </MyChat>
+                );
+              } else {
+                return (
+                  <OthersChat key={idx}>
+                    <div>{message.nickname}</div>
+                    <div>
+                      <p>{message.content}</p>
+                      <p>{calculateTimeDifference(message.sentTime)}</p>
+                    </div>
+                  </OthersChat>
+                );
+              }
+            })}
+          </Chat>
+        </ChatWrapper>
         <ChatInputSection>
-          <input type="text" onChange={handleChatInput} />
+          <input
+            type="text"
+            onChange={handleChatInput}
+            onKeyUp={handleKeyUp}
+            value={myChat.content}
+          />
           <FiSend onClick={handleSend} size={20} />
         </ChatInputSection>
+        <ChatInvitationModal />
       </Container>
     )
   );
@@ -107,6 +209,7 @@ export default function ChatRoom() {
 
 const Container = styled.main`
   width: 100%;
+  min-height: 100%;
   background: var(--color-white);
   overflow: auto;
   color: var(--color-black);
@@ -134,6 +237,15 @@ const ChatHeader = styled.section`
     margin-left: 1rem;
     font-size: var(--font-size-s);
   }
+
+  > svg {
+    cursor: pointer;
+  }
+`;
+
+const ChatWrapper = styled.div`
+  height: calc(100% - 6.125rem);
+  overflow: auto;
 `;
 
 const Chat = styled.section`
@@ -141,7 +253,7 @@ const Chat = styled.section`
   flex-direction: column;
   justify-content: start;
   align-items: center;
-  height: 25rem;
+  height: fit-content;
 `;
 
 const OthersChat = styled.div`
@@ -150,21 +262,37 @@ const OthersChat = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: start;
+  margin-top: 1rem;
 
   > :first-child {
     color: #ff6c6c;
     padding: 0.3rem 0.5rem 0.3rem 0.5rem;
     background: var(--color-pink-3);
     border-radius: 20px;
-    margin: 0.5rem 0 0 0.5rem;
+    margin: 0.5rem 0 0.2rem 0.5rem;
   }
 
   > :last-child {
-    padding: 0.3rem 0.5rem 0.3rem 0.5rem;
-    background: var(--color-white);
-    border-radius: 20px;
-    border: 2px solid var(--color-black);
-    margin: 0.2rem 0 0 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    flex-wrap: wrap;
+    max-width: calc(100% - 5rem);
+
+    > :first-child {
+      padding: 0.3rem 0.5rem 0.3rem 0.5rem;
+      background: var(--color-white);
+      border-radius: 20px;
+      border: 2px solid var(--color-black);
+      margin: 0.2rem 0 0 0.5rem;
+      max-width: 100%;
+      overflow-wrap: break-word;
+    }
+
+    > :last-child {
+      font-size: var(--font-size-xs);
+      margin: 0.5rem;
+    }
   }
 `;
 
@@ -176,8 +304,40 @@ const MyChat = styled.div`
   align-items: end;
 
   > div {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    flex-wrap: wrap-reverse;
+    max-width: calc(100% - 5rem);
+    margin-top: 1rem;
+
+    > :first-child {
+      font-size: var(--font-size-xs);
+      margin: 0.5rem;
+    }
+
+    > :last-child {
+      padding: 0.3rem 0.5rem 0.3rem 0.5rem;
+      background: var(--color-pink-2);
+      border-radius: 20px;
+      border: 2px solid var(--color-black);
+      margin: 0 0.5rem 0 0;
+      max-width: calc(100% - 0.5rem);
+      overflow-wrap: break-word;
+    }
+  }
+`;
+
+const Notification = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  > div {
     padding: 0.3rem 0.5rem 0.3rem 0.5rem;
-    background: var(--color-pink-2);
+    background: var(--color-gray);
     border-radius: 20px;
     border: 2px solid var(--color-black);
     margin: 0.5rem 0.5rem 0 0;
@@ -185,8 +345,11 @@ const MyChat = styled.div`
 `;
 
 const ChatInputSection = styled.section`
-  margin: 0 0.5rem;
-  position: relative;
+  margin: 0.5rem;
+  bottom: 0;
+  height: 2rem;
+  display: flex;
+  align-items: center;
 
   > input {
     width: 100%;
@@ -199,5 +362,6 @@ const ChatInputSection = styled.section`
     position: fixed;
     bottom: 10.1rem;
     right: 4rem;
+    cursor: pointer;
   }
 `;

@@ -9,7 +9,7 @@ public class MemberPatchDto {
     private String email;
     private String password;
     private String welcomeMsg;
-    private Integer location;
+    private Long locationId;
     private String nickname;
     private Boolean isMale;
     private Integer age;

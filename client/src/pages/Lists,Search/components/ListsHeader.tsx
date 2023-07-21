@@ -1,66 +1,66 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
 
 import { RootState } from '../../../common/store/RootStore';
 import { setSelectedLocation } from '../store/SelectedLocation';
+import { setLocation } from '../../../common/store/LocationStore';
+
 import LocationSelector from '../../../common/components/LocationSelector';
 import Button from '../../../common/components/Button';
-import { Locations } from '../../../common/type';
 
 export default function ListsHeader() {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const params = useParams();
 
-  //로그인 전역상태 구현시 삭제
-  const [islogin, setIsLogin] = useState(true);
+  const isLogin = localStorage.getItem('Authorization') || null;
 
+  const myData =
+    useSelector((state: RootState) => state.myData.location) || null;
+
+  //셀렉터 지역 상태
   const location = useSelector((state: RootState) => state.location);
 
+  //사용자가 셀렉터에서 선택한 지역상태
   const selectedLocation = useSelector(
     (state: RootState) => state.selectedLocation,
   );
-  const userInfo = useSelector((state: RootState) => state.member);
-  console.log(userInfo);
+
+  //소분류까지 선택 안하면 동작 안됨
   const handleLocationSelection = () => {
     if (!location.province) {
       return;
     }
     dispatch(setSelectedLocation(location));
+    localStorage.setItem('selectedLocation', JSON.stringify(location));
   };
 
-  const handleWriteButtonClick = () => {
-    if (!islogin) {
-      alert('로그인이 필요한 서비스 입니다.');
-      navigate('/login');
+  //로그인 했으면 유저의 지역으로 아니면 기본값인 서울로 랜더링
+  useEffect(() => {
+    const LocalStorageLocaion = localStorage.getItem('selectedLocation');
+    if (LocalStorageLocaion) {
+      dispatch(setSelectedLocation(JSON.parse(LocalStorageLocaion)));
+    } else if (isLogin && myData) {
+      dispatch(
+        setSelectedLocation({
+          locationId: myData.locationId,
+          city: myData.city,
+          province: myData.province,
+        }),
+      );
     } else {
-      navigate('/write');
+      dispatch(setLocation(selectedLocation));
     }
-  };
-
-  // const locations: Locations | null = JSON.parse(
-  //   localStorage.getItem('locations') || 'null',
-  // );
-
-  // // 유저의 등록된 지역으로 수정하기
-  // useEffect(() => {
-  //   const userLocation:Location = {
-  //     locationId:userInfo.location,
-  //     city:locations?[userInfo.location-1].city,
-  //     province:locations?[userInfo.location-1].province
-  //   }
-  //   dispatch(setSelectedLocation(userLocation));
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [myData]);
 
   const listName =
     params.keyword || `${selectedLocation.city} ${selectedLocation.province}`;
 
   return (
     <Wrapper>
-      <LocationInfo>
         <div className="listName">
           <span className="location">{listName}</span>
           <span>{params.keyword ? '검색결과' : '모모리스트'}</span>
@@ -71,10 +71,6 @@ export default function ListsHeader() {
             <Button children={'지역 선택'} onClick={handleLocationSelection} />
           </SelectorWrapper>
         )}
-      </LocationInfo>
-      <ButtonWarpper>
-        <Button onClick={handleWriteButtonClick} children={'모집 글 작성'} />
-      </ButtonWarpper>
     </Wrapper>
   );
 }
@@ -82,7 +78,7 @@ export default function ListsHeader() {
 const Wrapper = styled.div`
   width: 1264px;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: center;
   font-size: 1.5rem;
   margin-top: 3rem;
@@ -130,26 +126,10 @@ const Wrapper = styled.div`
   }
 `;
 
-const LocationInfo = styled.div`
-  display: flex;
-  align-items: center;
-  @media (max-width: 1264px) {
-    flex-direction: column;
-  }
-`;
-
 const SelectorWrapper = styled.div`
   display: flex;
   align-items: center;
   @media (max-width: 1264px) {
     margin-top: 1rem;
-  }
-`;
-
-const ButtonWarpper = styled.div`
-  button {
-    @media (max-width: 832px) {
-      margin-top: 1rem;
-    }
   }
 `;

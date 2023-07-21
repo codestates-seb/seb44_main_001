@@ -3,14 +3,17 @@ import { configureStore, createSlice } from '@reduxjs/toolkit';
 const initialState = {
   memberId: 0,
   email: '',
-  location: 0,
+  location: {
+    city: '',
+    province: '',
+    locationId: 0,
+  },
   welcomeMsg: '',
   profileImage: '',
   nickname: '',
   isMale: true,
   age: 0,
   createdAt: '',
-  posts: [],
 };
 
 export const memberSlice = createSlice({
@@ -29,7 +32,6 @@ export const memberSlice = createSlice({
         isMale: action.payload.isMale,
         age: action.payload.age,
         createdAt: action.payload.createdAt,
-        posts: action.payload.posts,
       };
     },
     resetViewProfile: () => {

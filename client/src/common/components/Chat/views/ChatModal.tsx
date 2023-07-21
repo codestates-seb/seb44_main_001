@@ -1,97 +1,166 @@
 import { AiFillWechat } from 'react-icons/ai';
 import { keyframes, styled } from 'styled-components';
 import Modal from 'react-modal';
-import { useEffect } from 'react';
-import { modalStyle } from '../modalStyle';
+import { useEffect, useState } from 'react';
+import { modalStyle } from '../ModalStyle';
 import ChatMain from '../components/ChatMain';
 import ChatRoom from '../components/ChatRoom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store/RootStore';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { BASE_URL } from '../../../util/constantValue';
 import getRoomList from '../api/getRoomList';
 import { setChatModal } from '../../../store/ChatModalStore';
-import { ChatRoomData } from '../../../type';
+import { ChatData, ChatRoomData, Room } from '../../../type';
 import * as StompJs from '@stomp/stompjs';
-import * as SockJS from 'sockjs-client';
+import SockJS from 'sockjs-client';
+import postOnline from '../api/postOnline';
 
 export default function ChatButton() {
-  const dispatch = useDispatch();
+  const [messages, setMessages] = useState([{}]);
 
-  const token = localStorage.getItem('Authorization');
+  const [prevRoom, setPrevRoom] = useState<Room[]>([
+    {
+      roomId: 0,
+      roomName: '',
+      unreadCount: 0,
+      lastMessage: '',
+      lastSentTime: '',
+    },
+  ]);
+
+  const [isDataDifferent, setIsDataDifferent] = useState(false);
+
+  const [subscription, setSubscription] =
+    useState<StompJs.StompSubscription | null>(null);
+
+  const token = localStorage.getItem('Authrization');
+
+  const dispatch = useDispatch();
 
   const isOpen = useSelector((state: RootState) => state.chatModal);
 
-  const chatPage = useSelector((state: RootState) => state.chatPage);
+  const chatRoom = useSelector((state: RootState) => state.chatRoomInfo.roomId);
 
   const client = new StompJs.Client({
-    brokerURL: 'ws://ba5b-106-252-38-27.ngrok-free.app/stomp/chat',
-    debug: function (err) {
-      console.log(err);
+    brokerURL:
+      'ws://ec2-3-34-45-1.ap-northeast-2.compute.amazonaws.com:8080/stomp/chat',
+    connectHeaders: {
+      Authorization: token as string,
     },
   });
 
-  // if (typeof WebSocket !== 'function') {
-  //   client.webSocketFactory = function () {
-  //     return new SockJS('/stomp/chat');
-  //   };
-  // }
+  if (typeof WebSocket !== 'function') {
+    client.webSocketFactory = function () {
+      return new SockJS(
+        'https://e9e5-49-163-135-89.ngrok-free.app/stomp/chat',
+      ) as StompJs.IStompSocket;
+    };
+  }
 
-  client.onConnect = function (frame) {
-    console.log(frame);
+  const updateMessages = (prevMessages: ChatData[], newMessage: ChatData) => {
+    return [...prevMessages, newMessage];
   };
 
-  client.onStompError = function (frame) {
-    console.log(frame.headers);
-    console.log(frame.body);
+  const updatePrevRoom = (_prevRoom: Room[], newRoom: Room[]) => {
+    return [...newRoom];
   };
 
-  const { data } = useQuery<ChatRoomData, unknown>(
+  const getRoomQuery = useQuery<ChatRoomData, unknown>(
     'roomList',
-    () => getRoomList(`${BASE_URL}/chats`, token as string),
+    () => getRoomList(`${BASE_URL}/rooms/list`),
     {
-      enabled: isOpen,
       refetchInterval: 5000,
+      onSuccess: (data) => {
+        setIsDataDifferent(
+          data.rooms.filter((rooom) => rooom.unreadCount !== 0).length !== 0,
+        );
+        setPrevRoom((prevRoom) => updatePrevRoom(prevRoom, data.rooms));
+      },
     },
   );
   // 기존 채팅방 목록 가져오기
 
-  //TODO 모달 열리면 기존 채팅방들 구독하는 로직 추가해야함
+  const postOnlineMutation = useMutation<void, unknown, number>(
+    'postOnline',
+    (roomId) => postOnline(`${BASE_URL}/rooms/${roomId}/online`),
+  );
 
-  //TODO 채팅방 삭제 버튼 클릭 시 구독 취소
+  const handleModalOpen = () => {
+    dispatch(setChatModal(true));
+    getRoomQuery.refetch();
+  };
 
-  const handleModalChange = () => {
-    dispatch(setChatModal(!isOpen));
+  const handleModalClose = () => {
+    dispatch(setChatModal(false));
   };
 
   useEffect(() => {
-    if (isOpen === true) {
+    if (chatRoom !== 0) {
       client.activate();
+
+      client.onConnect = function () {
+        console.log('websocket is connected');
+
+        const subscription = client.subscribe(
+          `/sub/chat/room/${chatRoom}`,
+          (message) => {
+            console.log(chatRoom + '번방에 입장하였습니다.');
+
+            const receivedMessage = JSON.parse(message.body);
+
+            setMessages((prevMessages) =>
+              updateMessages(prevMessages as ChatData[], receivedMessage),
+            );
+          },
+        );
+
+        setSubscription(subscription);
+
+        postOnlineMutation.mutate(chatRoom);
+      };
     }
-    if (isOpen === false) {
-      client.deactivate();
+
+    client.onStompError = function (frame) {
+      console.log('STOMP error: ', frame.headers, frame.body);
+    };
+
+    if (chatRoom === 0) {
+      if (subscription) {
+        subscription.unsubscribe();
+        setSubscription(null);
+        setIsDataDifferent(false);
+        getRoomQuery.refetch();
+      }
+      setIsDataDifferent(false);
+      getRoomQuery.refetch();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen]);
+  }, [chatRoom]);
 
   return (
     <Container>
-      <button onClick={handleModalChange}>
+      <button
+        onClick={isOpen ? handleModalClose : handleModalOpen}
+        className={!isDataDifferent ? 'on' : ''}
+      >
         <AiFillWechat size={48} color={'var(--color-white)'} />
       </button>
       <Modal
         isOpen={isOpen}
         style={modalStyle}
-        onRequestClose={handleModalChange}
+        onRequestClose={handleModalClose}
         ariaHideApp={false}
       >
-        {chatPage === 0 && (
+        {chatRoom === 0 && (
           <ChatMain
-            handleModalChange={handleModalChange}
-            data={data as ChatRoomData}
+            handleModalClose={handleModalClose}
+            prevRoom={prevRoom as Room[]}
+            getRoomQuery={getRoomQuery}
+            setIsDataDifferent={setIsDataDifferent}
           />
         )}
-        <ChatRoom />
+        <ChatRoom messages={messages as ChatData[]} setMessages={setMessages} />
       </Modal>
     </Container>
   );
@@ -120,14 +189,33 @@ const Container = styled.section`
     width: 5rem;
     border-radius: 50%;
     cursor: pointer;
-    background: var(--color-pink-1);
+    background: linear-gradient(
+      90deg,
+      var(--color-pink-1),
+      var(--color-pink-2)
+    );
 
     > svg {
       animation: ${pulseAnimation} 1s ease-in-out infinite;
       border-radius: 50%;
     }
   }
-  :active {
-    background: var(--color-pink-2);
+
+  @keyframes colorChange {
+    0% {
+      color: white;
+    }
+    75% {
+      color: #ff8181;
+    }
+    100% {
+      color: white;
+    }
+  }
+
+  .on {
+    > svg {
+      /* animation: colorChange 1s infinite; */
+    }
   }
 `;

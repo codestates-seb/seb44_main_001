@@ -12,15 +12,12 @@ import com.momo.post.entity.Post;
 import com.momo.post.mapper.PostMapper;
 import com.momo.post.repository.PostRepository;
 import org.springframework.data.domain.*;
-
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
 import javax.persistence.criteria.*;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-
 import static com.momo.post.service.RangeDtoHelper.getCategoryRangeDto;
 import static com.momo.post.service.RangeDtoHelper.getLocationRangeDto;
 
@@ -40,71 +37,7 @@ public class PostService {
         this.categoryRepository = categoryRepository;
         this.locationRepository = locationRepository;
     }
-
-    public List<PostResponseDto> getPostsByMember(Long memberId, int page) {
-        // 특정 멤버에 해당하는 글 목록을 가져오는 로직 구현
-        int pageSize = 12;
-        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("postId").descending());
-
-        Page<Post> postPage = postRepository.findByMember_MemberId(memberId, pageable);
-
-        List<PostResponseDto> responseDtoList = postPage.getContent().stream()
-                .map(post -> {
-                    PostResponseDto responseDto = postMapper.postToPostResponseDto(post);
-                    responseDto.setMemberInfo(MemberInfo.builder()
-                            .memberId(post.getMember().getMemberId())
-                            .nickname(post.getMember().getNickname())
-                            .profileImage(post.getMember().getProfileImage())
-                            .build());
-                    responseDto.setCategoryInfo(CategoryInfo.builder()
-                            .categoryId(post.getCategory().getCategoryId())
-                            .name(post.getCategory().getName())
-                            .build());
-                    responseDto.setLocationInfo(LocationInfo.builder()
-                            .locationId(post.getLocation().getLocationId())
-                            .city(post.getLocation().getCity())
-                            .province(post.getLocation().getProvince())
-                            .build());
-                    return responseDto;
-                })
-                .collect(Collectors.toList());
-
-        return responseDtoList;
-    }
-
-    public List<PostResponseDto> getAllPosts(int page) {
-        int pageSize = 12;
-        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("postId").descending());
-        Page<Post> postPage = postRepository.findAll(pageable);
-
-        return postPage.getContent().stream()
-                .map(post -> {
-                    PostResponseDto responseDto = postMapper.postToPostResponseDto(post);
-                    responseDto.setMemberInfo(MemberInfo.builder()
-                            .memberId(post.getMember().getMemberId())
-                            .nickname(post.getMember().getNickname())
-                            .profileImage(post.getMember().getProfileImage())
-                            .build());
-                    responseDto.setCategoryInfo(CategoryInfo.builder()
-                            .categoryId(post.getCategory().getCategoryId())
-                            .name(post.getCategory().getName())
-                            .build());
-                    responseDto.setLocationInfo(LocationInfo.builder()
-                            .locationId(post.getLocation().getLocationId())
-                            .city(post.getLocation().getCity())
-                            .province(post.getLocation().getProvince())
-                            .build());
-                    return responseDto;
-                })
-                .collect(Collectors.toList());
-    }
-
-    public PostResponseDto getPostById(Long postId, int page) {
-        Post post = postRepository.findById(postId).orElse(null);
-        if (post == null) {
-            throw new NotFoundException("Post not found");
-        }
-
+    private PostResponseDto createPostResponseDto(Post post) {
         PostResponseDto responseDto = postMapper.postToPostResponseDto(post);
         responseDto.setMemberInfo(MemberInfo.builder()
                 .memberId(post.getMember().getMemberId())
@@ -120,59 +53,47 @@ public class PostService {
                 .city(post.getLocation().getCity())
                 .province(post.getLocation().getProvince())
                 .build());
-
         return responseDto;
     }
 
+    public List<PostResponseDto> getAllPosts(int page) {
+        int pageSize = 9;
+        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("postId").descending());
+        Page<Post> postPage = postRepository.findAll(pageable);
+
+        return postPage.getContent().stream()
+                .map(this::createPostResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    public PostResponseDto getPostById(Long postId, int page) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new NotFoundException("Post not found"));
+
+        return createPostResponseDto(post);
+    }
 
     public PostResponseDto createPost(PostPostDto postDto) {
-        String title = postDto.getTitle();
-        String content = postDto.getContent();
-        Long memberId = postDto.getMemberId();
-        Long categoryId = postDto.getCategoryId();
-        Long locationId = postDto.getLocationId();
-        List<String> tags = postDto.getTags(); // 새로운 태그 추가
-
-        LocalDateTime createdAt = LocalDateTime.now();
-        String processedContent = processContent(content);
-        List<String> processedTags = processTags(tags); // 태그 처리 추가
-
         Post post = new Post();
-        post.setTitle(title);
-        post.setContent(processedContent);
-        post.setTags(processedTags); // 태그 설정
-        post.setCreatedAt(createdAt);
+        post.setTitle(postDto.getTitle());
+        post.setContent(processContent(postDto.getContent()));
+        post.setTags(processTags(postDto.getTags()));
+        post.setCreatedAt(LocalDateTime.now());
 
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NotFoundException("ID가 " + memberId + "인 멤버를 찾을 수 없습니다."));
+        Member member = memberRepository.findById(postDto.getMemberId())
+                .orElseThrow(() -> new NotFoundException("ID가 " + postDto.getMemberId() + "인 멤버를 찾을 수 없습니다."));
         post.setMember(member);
 
-        Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new NotFoundException("ID가 " + categoryId + "인 카테고리를 찾을 수 없습니다."));
+        Category category = categoryRepository.findById(postDto.getCategoryId())
+                .orElseThrow(() -> new NotFoundException("ID가 " + postDto.getCategoryId() + "인 카테고리를 찾을 수 없습니다."));
         post.setCategory(category);
 
-        Location location = locationRepository.findById(locationId)
-                .orElseThrow(() -> new NotFoundException("ID가 " + locationId + "인 location을 찾을 수 없습니다."));
+        Location location = locationRepository.findById(postDto.getLocationId())
+                .orElseThrow(() -> new NotFoundException("ID가 " + postDto.getLocationId() + "인 location을 찾을 수 없습니다."));
         post.setLocation(location);
 
-
         Post savedPost = postRepository.save(post);
-        PostResponseDto responseDto = postMapper.postToPostResponseDto(savedPost);
-        responseDto.setMemberInfo(MemberInfo.builder()
-                .memberId(memberId)
-                .nickname(post.getMember().getNickname())
-                .profileImage(post.getMember().getProfileImage())
-                .build());
-        responseDto.setCategoryInfo(CategoryInfo.builder()
-                .categoryId(post.getCategory().getCategoryId())
-                .name(post.getCategory().getName())
-                .build());
-        responseDto.setLocationInfo(LocationInfo.builder()
-                .locationId(post.getLocation().getLocationId())
-                .city(post.getLocation().getCity())
-                .province(post.getLocation().getProvince())
-                .build());
-        return responseDto;
+
+        return createPostResponseDto(savedPost);
     }
 
     private String processContent(String content) {
@@ -217,19 +138,7 @@ public class PostService {
         post.setEditedAt(LocalDateTime.now());
 
         Post updatedPost = postRepository.save(post);
-        PostResponseDto responseDto = postMapper.postToPostResponseDto(updatedPost);
-
-        // 업데이트된 값들을 응답 객체에 설정
-        responseDto.setMemberInfo(MemberInfo.builder()
-                .memberId(post.getMember().getMemberId())
-                .nickname(post.getMember().getNickname())
-                .profileImage(post.getMember().getProfileImage())
-                .build());
-        responseDto.setCategoryInfo(CategoryInfo.builder()
-                .categoryId(post.getCategory().getCategoryId())
-                .name(post.getCategory().getName())
-                .build());
-        return responseDto;
+        return createPostResponseDto(updatedPost);
     }
 
     public void deletePost(Long postId, Long memberId) {
@@ -243,13 +152,123 @@ public class PostService {
         }
         postRepository.delete(post);
     }
+    public List<PostResponseDto> getPostsByMember(Long memberId, int page) {
+        int pageSize = 9;
+        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("postId").descending());
 
+        Page<Post> postPage = postRepository.findByMember_MemberId(memberId, pageable);
 
+        return postPage.getContent().stream()
+                .map(this::createPostResponseDto)
+                .collect(Collectors.toList());
+    }
+    public List<PostResponseDto> getPostsByLocation(Long locationId, int page) {
+        int pageSize = 9;
+        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("postId").descending());
+
+        Page<Post> postPage;
+        if (locationId >= 1 && locationId <= 17) {
+            LocationRangeDto locationRangeDto = getLocationRangeDto(locationId);
+            if (locationRangeDto != null) {
+                postPage = postRepository.findByLocation_LocationIdBetween(
+                        locationRangeDto.getStartLocationId(),
+                        locationRangeDto.getEndLocationId(),
+                        pageable
+                );
+            } else {
+                return new ArrayList<>();
+            }
+        } else {
+            postPage = postRepository.findByLocation_LocationId(locationId, pageable);
+        }
+
+        return postPage.getContent().stream()
+                .map(this::createPostResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<PostResponseDto> getPostsByCategory(Long categoryId, int page) {
+        int pageSize = 9;
+        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("postId").descending());
+
+        Page<Post> postPage;
+        if (categoryId == 1) {
+            CategoryRangeDto categoryRangeDto = getCategoryRangeDto(categoryId);
+            if (categoryRangeDto != null) {
+                postPage = postRepository.findByCategory_CategoryIdBetween(
+                        categoryRangeDto.getStartCategoryId(),
+                        categoryRangeDto.getEndCategoryId(),
+                        pageable
+                );
+            } else {
+                return new ArrayList<>();
+            }
+        } else {
+            postPage = postRepository.findByCategory_CategoryId(categoryId, pageable);
+        }
+
+        return postPage.getContent().stream()
+                .map(this::createPostResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<PostResponseDto> getPostsByCategoryAndLocation(Long categoryId, Long locationId, int page) {
+        int pageSize = 9;
+        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("postId").descending());
+
+        Page<Post> postPage;
+
+        if (categoryId.equals(1L) && locationId <= 17) {
+            LocationRangeDto locationRangeDto = RangeDtoHelper.getLocationRangeDto(locationId);
+            CategoryRangeDto categoryRangeDto = RangeDtoHelper.getCategoryRangeDto(categoryId);
+            if (locationRangeDto != null && categoryRangeDto != null) {
+                postPage = postRepository.findByCategory_CategoryIdBetweenAndLocation_LocationIdBetween(
+                        categoryRangeDto.getStartCategoryId(),
+                        categoryRangeDto.getEndCategoryId(),
+                        locationRangeDto.getStartLocationId(),
+                        locationRangeDto.getEndLocationId(),
+                        pageable
+                );
+            } else {
+                return new ArrayList<>();
+            }
+        } else if (categoryId.equals(1L) && locationId > 17) {
+            CategoryRangeDto categoryRangeDto = RangeDtoHelper.getCategoryRangeDto(categoryId);
+            if (categoryRangeDto != null) {
+                postPage = postRepository.findByCategory_CategoryIdBetweenAndLocation_LocationId(
+                        categoryRangeDto.getStartCategoryId(),
+                        categoryRangeDto.getEndCategoryId(),
+                        locationId,
+                        pageable
+                );
+            }else {
+                return new ArrayList<>();
+            }
+        } else if (!categoryId.equals(1L) && locationId >= 1 && locationId <= 17) {
+            LocationRangeDto locationRangeDto = RangeDtoHelper.getLocationRangeDto(locationId);
+            if (locationRangeDto != null) {
+                postPage = postRepository.findByCategory_CategoryIdAndLocation_LocationIdBetween(
+                        categoryId,
+                        locationRangeDto.getStartLocationId(),
+                        locationRangeDto.getEndLocationId(),
+                        pageable
+                );
+            } else {
+                return new ArrayList<>();
+            }
+        } else {
+            postPage = postRepository.findByCategory_CategoryIdAndLocation_LocationId(categoryId, locationId, pageable);
+        }
+
+        return postPage.getContent().stream()
+                .map(this::createPostResponseDto)
+                .collect(Collectors.toList());
+    }
     public List<PostResponseDto> searchPosts(String keyword, int page) {
         if (keyword == null || keyword.isEmpty()) {
             return Collections.emptyList();
         }
-        int pageSize = 12;
+        int pageSize = 9;
         Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("postId").descending());
 
         Specification<Post> specification = (root, query, criteriaBuilder) -> {
@@ -269,31 +288,12 @@ public class PostService {
 
         Page<Post> postPage = postRepository.findAll(specification, pageable);
 
-        List<PostResponseDto> responseDtoList = postPage.getContent().stream()
-                .map(post -> {
-                    PostResponseDto responseDto = postMapper.postToPostResponseDto(post);
-                    responseDto.setMemberInfo(MemberInfo.builder()
-                            .memberId(post.getMember().getMemberId())
-                            .nickname(post.getMember().getNickname())
-                            .profileImage(post.getMember().getProfileImage())
-                            .build());
-                    responseDto.setCategoryInfo(CategoryInfo.builder()
-                            .categoryId(post.getCategory().getCategoryId())
-                            .name(post.getCategory().getName())
-                            .build());
-                    responseDto.setLocationInfo(LocationInfo.builder()
-                            .locationId(post.getLocation().getLocationId())
-                            .city(post.getLocation().getCity())
-                            .province(post.getLocation().getProvince())
-                            .build());
-                    return responseDto;
-                })
+        return postPage.getContent().stream()
+                .map(this::createPostResponseDto)
                 .collect(Collectors.toList());
-
-        return responseDtoList;
     }
     public List<PostResponseDto> searchPostsByLocation(String keyword, Long locationId, int page) {
-        int pageSize = 12;
+        int pageSize = 9;
         Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("postId").descending());
 
         Specification<Post> searchSpecification = (root, query, criteriaBuilder) -> {
@@ -329,31 +329,12 @@ public class PostService {
 
         Page<Post> postPage = postRepository.findAll(finalSpecification, pageable);
 
-        List<PostResponseDto> responseDtoList = postPage.getContent().stream()
-                .map(post -> {
-                    PostResponseDto responseDto = postMapper.postToPostResponseDto(post);
-                    responseDto.setMemberInfo(MemberInfo.builder()
-                            .memberId(post.getMember().getMemberId())
-                            .nickname(post.getMember().getNickname())
-                            .profileImage(post.getMember().getProfileImage())
-                            .build());
-                    responseDto.setLocationInfo(LocationInfo.builder()
-                            .locationId(post.getLocation().getLocationId())
-                            .city(post.getLocation().getCity())
-                            .province(post.getLocation().getProvince())
-                            .build());
-                    responseDto.setCategoryInfo(CategoryInfo.builder()
-                            .categoryId(post.getCategory().getCategoryId())
-                            .name(post.getCategory().getName())
-                            .build());
-                    return responseDto;
-                })
+        return postPage.getContent().stream()
+                .map(this::createPostResponseDto)
                 .collect(Collectors.toList());
-
-        return responseDtoList;
     }
     public List<PostResponseDto> searchPostsByCategory(String keyword, Long categoryId, int page) {
-        int pageSize = 12;
+        int pageSize = 9;
         Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("postId").descending());
 
         Specification<Post> searchSpecification = (root, query, criteriaBuilder) -> {
@@ -389,31 +370,12 @@ public class PostService {
 
         Page<Post> postPage = postRepository.findAll(finalSpecification, pageable);
 
-        List<PostResponseDto> responseDtoList = postPage.getContent().stream()
-                .map(post -> {
-                    PostResponseDto responseDto = postMapper.postToPostResponseDto(post);
-                    responseDto.setMemberInfo(MemberInfo.builder()
-                            .memberId(post.getMember().getMemberId())
-                            .nickname(post.getMember().getNickname())
-                            .profileImage(post.getMember().getProfileImage())
-                            .build());
-                    responseDto.setLocationInfo(LocationInfo.builder()
-                            .locationId(post.getLocation().getLocationId())
-                            .city(post.getLocation().getCity())
-                            .province(post.getLocation().getProvince())
-                            .build());
-                    responseDto.setCategoryInfo(CategoryInfo.builder()
-                            .categoryId(post.getCategory().getCategoryId())
-                            .name(post.getCategory().getName())
-                            .build());
-                    return responseDto;
-                })
+        return postPage.getContent().stream()
+                .map(this::createPostResponseDto)
                 .collect(Collectors.toList());
-
-        return responseDtoList;
     }
     public List<PostResponseDto> searchPostsByCategoryAndLocation(Long categoryId, Long locationId, String keyword, int page) {
-        int pageSize = 12;
+        int pageSize = 9;
         Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("postId").descending());
 
         Specification<Post> searchSpecification = (root, query, criteriaBuilder) -> {
@@ -467,344 +429,8 @@ public class PostService {
 
         Page<Post> postPage = postRepository.findAll(finalSpecification, pageable);
 
-        List<PostResponseDto> responseDtoList = postPage.getContent().stream()
-                .map(post -> {
-                    PostResponseDto responseDto = postMapper.postToPostResponseDto(post);
-                    responseDto.setMemberInfo(MemberInfo.builder()
-                            .memberId(post.getMember().getMemberId())
-                            .nickname(post.getMember().getNickname())
-                            .profileImage(post.getMember().getProfileImage())
-                            .build());
-                    responseDto.setLocationInfo(LocationInfo.builder()
-                            .locationId(post.getLocation().getLocationId())
-                            .city(post.getLocation().getCity())
-                            .province(post.getLocation().getProvince())
-                            .build());
-                    responseDto.setCategoryInfo(CategoryInfo.builder()
-                            .categoryId(post.getCategory().getCategoryId())
-                            .name(post.getCategory().getName())
-                            .build());
-                    return responseDto;
-                })
+        return postPage.getContent().stream()
+                .map(this::createPostResponseDto)
                 .collect(Collectors.toList());
-
-        return responseDtoList;
     }
-
-
-
-
-
-
-//    public List<PostResponseDto> searchPostsByLocation(String keyword, Long locationId, int page) {
-//        int pageSize = 12;
-//        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("postId").descending());
-//
-//        Specification<Post> searchSpecification = (root, query, criteriaBuilder) -> {
-//            Predicate keywordPredicate = criteriaBuilder.or(
-//                    criteriaBuilder.like(root.get("title"), "%" + keyword + "%"),
-//                    criteriaBuilder.like(root.get("content"), "%" + keyword + "%")
-//            );
-//
-//            return keywordPredicate;
-//        };
-//
-//        Specification<Post> locationFilterSpecification = (root, query, criteriaBuilder) -> {
-//            Predicate locationPredicate = criteriaBuilder.equal(root.get("location").get("locationId"), locationId);
-//            return locationPredicate;
-//        };
-//
-//        Specification<Post> finalSpecification = Specification.where(locationFilterSpecification)
-//                .and(searchSpecification);
-//
-//        Page<Post> postPage = postRepository.findAll(finalSpecification, pageable);
-//
-//        List<PostResponseDto> responseDtoList = postPage.getContent().stream()
-//                .map(post -> {
-//                    PostResponseDto responseDto = postMapper.postToPostResponseDto(post);
-//                    responseDto.setMemberInfo(MemberInfo.builder()
-//                            .memberId(post.getMember().getMemberId())
-//                            .nickname(post.getMember().getNickname())
-//                            .profileImage(post.getMember().getProfileImage())
-//                            .build());
-//                    responseDto.setLocationInfo(LocationInfo.builder()
-//                            .locationId(post.getLocation().getLocationId())
-//                            .city(post.getLocation().getCity())
-//                            .province(post.getLocation().getProvince())
-//                            .build());
-//                    responseDto.setCategoryInfo(CategoryInfo.builder()
-//                            .categoryId(post.getCategory().getCategoryId())
-//                            .name(post.getCategory().getName())
-//                            .build());
-//                    return responseDto;
-//                })
-//                .collect(Collectors.toList());
-//
-//        return responseDtoList;
-//    }
-//    public List<PostResponseDto> searchPostsByCategory(String keyword, Long categoryId, int page) {
-//        int pageSize = 12;
-//        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("postId").descending());
-//
-//        Specification<Post> searchSpecification = (root, query, criteriaBuilder) -> {
-//            Predicate keywordPredicate = criteriaBuilder.or(
-//                    criteriaBuilder.like(root.get("title"), "%" + keyword + "%"),
-//                    criteriaBuilder.like(root.get("content"), "%" + keyword + "%")
-//            );
-//
-//            return keywordPredicate;
-//        };
-//
-//        Specification<Post> categoryFilterSpecification = (root, query, criteriaBuilder) -> {
-//            Predicate categoryPredicate = criteriaBuilder.equal(root.get("category").get("categoryId"), categoryId);
-//            return categoryPredicate;
-//        };
-//
-//        Specification<Post> finalSpecification = Specification.where(categoryFilterSpecification)
-//                .and(searchSpecification);
-//
-//        Page<Post> postPage = postRepository.findAll(finalSpecification, pageable);
-//
-//        List<PostResponseDto> responseDtoList = postPage.getContent().stream()
-//                .map(post -> {
-//                    PostResponseDto responseDto = postMapper.postToPostResponseDto(post);
-//                    responseDto.setMemberInfo(MemberInfo.builder()
-//                            .memberId(post.getMember().getMemberId())
-//                            .nickname(post.getMember().getNickname())
-//                            .profileImage(post.getMember().getProfileImage())
-//                            .build());
-//                    responseDto.setLocationInfo(LocationInfo.builder()
-//                            .locationId(post.getLocation().getLocationId())
-//                            .city(post.getLocation().getCity())
-//                            .province(post.getLocation().getProvince())
-//                            .build());
-//                    responseDto.setCategoryInfo(CategoryInfo.builder()
-//                            .categoryId(post.getCategory().getCategoryId())
-//                            .name(post.getCategory().getName())
-//                            .build());
-//                    return responseDto;
-//                })
-//                .collect(Collectors.toList());
-//
-//        return responseDtoList;
-//    }
-
-//    public List<PostResponseDto> searchPostsByCategoryAndLocation(String keyword, Long categoryId, Long locationId, int page) {
-//        int pageSize = 12;
-//        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("postId").descending());
-//
-//        Specification<Post> categoryFilterSpecification = (root, query, criteriaBuilder) -> {
-//            Predicate categoryPredicate = criteriaBuilder.equal(root.get("category").get("categoryId"), categoryId);
-//            return categoryPredicate;
-//        };
-//
-//        Specification<Post> locationFilterSpecification = (root, query, criteriaBuilder) -> {
-//            Predicate locationPredicate = criteriaBuilder.equal(root.get("location").get("locationId"), locationId);
-//            return locationPredicate;
-//        };
-//
-//        Specification<Post> finalSpecification = Specification.where(categoryFilterSpecification)
-//                .and(locationFilterSpecification);
-//
-//        Page<Post> postPage = postRepository.findAll(finalSpecification, pageable);
-//
-//        List<PostResponseDto> responseDtoList = postPage.getContent().stream()
-//                .filter(post -> post.getTitle().contains(keyword) || post.getContent().contains(keyword))
-//                .map(post -> {
-//                    PostResponseDto responseDto = postMapper.postToPostResponseDto(post);
-//                    responseDto.setMemberInfo(MemberInfo.builder()
-//                            .memberId(post.getMember().getMemberId())
-//                            .nickname(post.getMember().getNickname())
-//                            .profileImage(post.getMember().getProfileImage())
-//                            .build());
-//                    responseDto.setLocationInfo(LocationInfo.builder()
-//                            .locationId(post.getLocation().getLocationId())
-//                            .city(post.getLocation().getCity())
-//                            .province(post.getLocation().getProvince())
-//                            .build());
-//                    responseDto.setCategoryInfo(CategoryInfo.builder()
-//                            .categoryId(post.getCategory().getCategoryId())
-//                            .name(post.getCategory().getName())
-//                            .build());
-//                    return responseDto;
-//                })
-//                .collect(Collectors.toList());
-//
-//        return responseDtoList;
-//    }
-
-    public List<PostResponseDto> getPostsByLocation(Long locationId, int page) {
-        int pageSize = 12;
-        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("postId").descending());
-
-        Page<Post> postPage;
-        if (locationId >= 1 && locationId <= 17) {
-            LocationRangeDto locationRangeDto = getLocationRangeDto(locationId);
-            if (locationRangeDto != null) {
-                postPage = postRepository.findByLocation_LocationIdBetween(
-                        locationRangeDto.getStartLocationId(),
-                        locationRangeDto.getEndLocationId(),
-                        pageable
-                );
-            } else {
-                return new ArrayList<>();
-            }
-        } else {
-            postPage = postRepository.findByLocation_LocationId(locationId, pageable);
-        }
-
-        List<PostResponseDto> responseDtoList = postPage.getContent().stream()
-                .map(post -> {
-                    PostResponseDto responseDto = postMapper.postToPostResponseDto(post);
-                    responseDto.setMemberInfo(
-                            MemberInfo.builder()
-                                    .memberId(post.getMember().getMemberId())
-                                    .nickname(post.getMember().getNickname())
-                                    .profileImage(post.getMember().getProfileImage())
-                                    .build()
-                    );
-                    responseDto.setMemberInfo(MemberInfo.builder()
-                            .memberId(post.getMember().getMemberId())
-                            .nickname(post.getMember().getNickname())
-                            .profileImage(post.getMember().getProfileImage())
-                            .build());
-                    responseDto.setCategoryInfo(CategoryInfo.builder()
-                            .categoryId(post.getCategory().getCategoryId())
-                            .name(post.getCategory().getName())
-                            .build());
-                    responseDto.setLocationInfo(LocationInfo.builder()
-                            .locationId(post.getLocation().getLocationId())
-                            .city(post.getLocation().getCity())
-                            .province(post.getLocation().getProvince())
-                            .build());
-                    return responseDto;
-                })
-                .collect(Collectors.toList());
-
-        return responseDtoList;
-    }
-
-    public List<PostResponseDto> getPostsByCategory(Long categoryId, int page) {
-        int pageSize = 12;
-        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("postId").descending());
-
-        Page<Post> postPage;
-        if (categoryId == 1) {
-            CategoryRangeDto categoryRangeDto = getCategoryRangeDto(categoryId);
-            if (categoryRangeDto != null) {
-                postPage = postRepository.findByCategory_CategoryIdBetween(
-                        categoryRangeDto.getStartCategoryId(),
-                        categoryRangeDto.getEndCategoryId(),
-                        pageable
-                );
-            } else {
-                return new ArrayList<>();
-            }
-        } else {
-            postPage = postRepository.findByCategory_CategoryId(categoryId, pageable);
-        }
-
-        List<PostResponseDto> responseDtoList = postPage.getContent().stream()
-                .map(post -> {
-                    PostResponseDto responseDto = postMapper.postToPostResponseDto(post);
-                    responseDto.setMemberInfo(
-                            MemberInfo.builder()
-                                    .memberId(post.getMember().getMemberId())
-                                    .nickname(post.getMember().getNickname())
-                                    .profileImage(post.getMember().getProfileImage())
-                                    .build()
-                    );
-                    responseDto.setMemberInfo(MemberInfo.builder()
-                            .memberId(post.getMember().getMemberId())
-                            .nickname(post.getMember().getNickname())
-                            .profileImage(post.getMember().getProfileImage())
-                            .build());
-                    responseDto.setCategoryInfo(CategoryInfo.builder()
-                            .categoryId(post.getCategory().getCategoryId())
-                            .name(post.getCategory().getName())
-                            .build());
-                    responseDto.setLocationInfo(LocationInfo.builder()
-                            .locationId(post.getLocation().getLocationId())
-                            .city(post.getLocation().getCity())
-                            .province(post.getLocation().getProvince())
-                            .build());
-
-                    return responseDto;
-                })
-                .collect(Collectors.toList());
-
-        return responseDtoList;
-    }
-
-    public List<PostResponseDto> getPostsByCategoryAndLocation(Long categoryId, Long locationId, int page) {
-        int pageSize = 12;
-        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("postId").descending());
-
-        Page<Post> postPage;
-
-        if (categoryId.equals(1L) && locationId <= 17) {
-            LocationRangeDto locationRangeDto = RangeDtoHelper.getLocationRangeDto(locationId);
-            CategoryRangeDto categoryRangeDto = RangeDtoHelper.getCategoryRangeDto(categoryId);
-            if (locationRangeDto != null && categoryRangeDto != null) {
-                postPage = postRepository.findByCategory_CategoryIdBetweenAndLocation_LocationIdBetween(
-                        categoryRangeDto.getStartCategoryId(),
-                        categoryRangeDto.getEndCategoryId(),
-                        locationRangeDto.getStartLocationId(),
-                        locationRangeDto.getEndLocationId(),
-                        pageable
-                );
-            } else {
-                return new ArrayList<>();
-            }
-        } else if (categoryId.equals(1L) && locationId > 17) {
-            CategoryRangeDto categoryRangeDto = RangeDtoHelper.getCategoryRangeDto(categoryId);
-            if (categoryRangeDto != null) {
-                postPage = postRepository.findByCategory_CategoryIdBetweenAndLocation_LocationId(
-                        categoryRangeDto.getStartCategoryId(),
-                        categoryRangeDto.getEndCategoryId(),
-                        locationId,
-                        pageable
-                );
-            }else {
-                return new ArrayList<>();
-            }
-            } else if (!categoryId.equals(1L) && locationId >= 1 && locationId <= 17) {
-                LocationRangeDto locationRangeDto = RangeDtoHelper.getLocationRangeDto(locationId);
-                if (locationRangeDto != null) {
-                    postPage = postRepository.findByCategory_CategoryIdAndLocation_LocationIdBetween(
-                            categoryId,
-                            locationRangeDto.getStartLocationId(),
-                            locationRangeDto.getEndLocationId(),
-                            pageable
-                    );
-                } else {
-                    return new ArrayList<>();
-                }
-            } else {
-            postPage = postRepository.findByCategory_CategoryIdAndLocation_LocationId(categoryId, locationId, pageable);
-            }
-
-            List<PostResponseDto> responseDtoList = postPage.getContent().stream()
-                    .map(post -> {
-                        PostResponseDto responseDto = postMapper.postToPostResponseDto(post);
-                        responseDto.setMemberInfo(MemberInfo.builder()
-                                .memberId(post.getMember().getMemberId())
-                                .nickname(post.getMember().getNickname())
-                                .profileImage(post.getMember().getProfileImage())
-                                .build());
-                        responseDto.setCategoryInfo(CategoryInfo.builder()
-                                .categoryId(post.getCategory().getCategoryId())
-                                .name(post.getCategory().getName())
-                                .build());
-                        responseDto.setLocationInfo(LocationInfo.builder()
-                                .locationId(post.getLocation().getLocationId())
-                                .city(post.getLocation().getCity())
-                                .province(post.getLocation().getProvince())
-                                .build());
-                        return responseDto;
-                    })
-                    .collect(Collectors.toList());
-
-            return responseDtoList;
-        }
-    }
+}

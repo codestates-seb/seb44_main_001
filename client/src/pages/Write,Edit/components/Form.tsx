@@ -21,7 +21,7 @@ import TagsInput from './TagsInput';
 import Editor from './Editor';
 import Button from '../../../common/components/Button';
 import { RootState } from '../../../common/store/RootStore';
-import { ArticleToPost } from '../../../common/type';
+import { ArticleToGet, ArticleToPost } from '../../../common/type';
 import { resetCreatedPost, setCreatedPost } from '../store/CreatedPost';
 import { setCategory } from '../../../common/store/CategoryStore';
 import { setLocation } from '../../../common/store/LocationStore';
@@ -39,7 +39,7 @@ export default function Form() {
     (state: RootState) => state.createdPost,
   );
 
-  const postMutation = useMutation<void, unknown, ArticleToPost>(() =>
+  const postMutation = useMutation<ArticleToGet, unknown, ArticleToPost>(() =>
     postData(`${BASE_URL}/posts`, data),
   );
 
@@ -80,14 +80,15 @@ export default function Form() {
     if (id) {
       patchMutation.mutate(data, {
         onSuccess: () => {
-          navigate(-1);
+          navigate(`/details/${id}`);
         },
       });
       dispatch(resetCreatedPost());
     } else {
       postMutation.mutate(data, {
-        onSuccess: () => {
-          navigate(-1);
+        onSuccess: (res: ArticleToGet) => {
+          const id = res.postId;
+          navigate(`/details/${id}`);
         },
       });
       dispatch(resetCreatedPost());

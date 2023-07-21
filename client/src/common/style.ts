@@ -8,6 +8,7 @@ export const GlobalStyle = createGlobalStyle`
     padding: 0;
     box-sizing: border-box;
     text-decoration: none;
+    font-family: BR-Regular;
   }
 
   ::-webkit-scrollbar {
@@ -18,9 +19,17 @@ export const GlobalStyle = createGlobalStyle`
     width: 100%;
     min-height: 100%;
     background-color: var(--color-light-yellow);
-    font-family: BR-Regular;
   }
-  :root {
+  #root{
+    position: relative;
+  }
+  main {
+    padding-bottom: 6rem;
+  }
+  button{
+    cursor: pointer;
+  }
+  :root { 
   /* Color */
   --color-light-yellow:#FFF8D0;
   --color-pink-1: #FFA5AF;

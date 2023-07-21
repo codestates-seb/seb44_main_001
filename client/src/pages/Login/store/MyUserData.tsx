@@ -3,7 +3,11 @@ import { configureStore, createSlice } from '@reduxjs/toolkit';
 const initialState = {
   memberId: 0,
   email: '',
-  location: 0,
+  location: {
+    city:'',
+    province:'',
+    locationId:0,
+  },
   welcomeMsg: '',
   profileImage: '',
   nickname: '',

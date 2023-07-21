@@ -43,7 +43,8 @@ export type ArticleToGet = {
     city: string;
     province: string;
   };
-  likeCount: number;
+  postLikeCount: number;
+  liked: boolean;
 };
 
 export type CommentToPost = {
@@ -83,6 +84,7 @@ export type CardData = {
   memberInfo: MemberInfo;
   locationInfo: LocationInfo;
   categoryInfo: CategoryInfo;
+  tags: string[];
 };
 
 export type MemberInfo = {
@@ -106,7 +108,7 @@ export type SignupData = {
   nickname: string;
   age: number | null;
   isMale: boolean | null;
-  location: number | null;
+  locationId: number | null;
   welcomeMsg: string;
 };
 
@@ -118,39 +120,74 @@ export type LoginData = {
 export type Member = {
   memberId: number;
   email: string;
-  location: number;
+  location: Locations;
   welcomeMsg: string;
   profileImage: string | null;
   nickname: string;
   isMale: boolean;
   age: number;
   createdAt: string;
-  posts: CardData[];
+};
+
+export type EditMember = {
+  memberPatchDto: {
+    welcomeMsg: string;
+    nickname: string;
+    locationId: number;
+  };
+  file: string | Blob | null;
+};
+
+export type MemberPatchDto = {
+  welcomeMsg: string;
+  nickname: string;
+  locationId: number;
+};
+
+export type SignupPatchData = {
+  location: number;
+  welcomeMsg: string;
+  nickname: string;
+  isMale: boolean;
+  age: number;
 };
 
 export type Room = {
   roomId: number;
   roomName: string;
+  unreadCount: number;
   lastMessage: string;
   lastSentTime: string;
-  lastCheckTime: string;
 };
 
 export type ChatRoomData = {
   rooms: Room[];
 };
 
-export type PrevChat = {
+export type ChatData = {
+  roomId: number;
   memberId: number;
   nickname: string;
   content: string;
+  participantType: string;
   sentTime: string;
 };
 
 export type PrevChatData = {
-  chats: PrevChat[];
+  chats: ChatData[];
 };
 
-export type postChat = {
+export type PostChat = {
   content: string;
+};
+
+export type ChatMembers = {
+  memberId: number;
+  roomType: string;
+};
+
+export type IsLikedType = {
+  isLiked: boolean;
+  memberId: number;
+  postId: string | undefined;
 };

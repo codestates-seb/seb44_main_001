@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { styled } from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
+
 import { setSelectedCategory } from '../store/SelectedCategory';
 import { RootState } from '../../../common/store/RootStore';
 import { Categories, Category } from '../../../common/type';
@@ -68,6 +69,9 @@ const Wrapper = styled.div`
   grid-gap: 1rem;
   width: 37.5rem;
   margin-top: 3rem;
+  @media (max-width: 832px) {
+    width:100%;
+  }
 `;
 const IconWrapper = styled.div`
   display: flex;

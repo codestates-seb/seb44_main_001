@@ -1,15 +1,8 @@
 import ReactModal from 'react-modal';
 
-export const AlramStyle: ReactModal.Styles = {
-  overlay: {
+export const ModalStyle: ReactModal.Styles = {
+  overlay:{
     position: 'fixed',
-    top: 'calc(100vh - 34rem)',
-    left: 'calc(100vw - 20rem)',
-    right: '3rem',
-    bottom: '9rem',
-    backgroundColor: 'transparent',
-    // zIndex: 11,
-    borderRadius: '10px',
   },
   content: {
     position: 'fixed',
@@ -18,14 +11,14 @@ export const AlramStyle: ReactModal.Styles = {
     justifyContent: 'center',
     background: 'var(--color-pink-3)',
     overflow: 'scroll',
-    top: 'calc(100vh - 56rem)',
-    left: 'calc(100vw - 25rem)',
-    right: '3rem',
-    bottom: '15rem',
+    transform: 'translate(-50%, -50%)',
+    width: '30rem',
+    height: '30rem',
+    top: '50%',
+    left: '50%',
     WebkitOverflowScrolling: 'touch',
     borderRadius: '10px',
     outline: 'none',
-    // zIndex: 11,
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
     padding: 0,
   },

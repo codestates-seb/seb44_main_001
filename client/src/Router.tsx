@@ -8,7 +8,8 @@ import User from './pages/User/views/User';
 import UserEdit from './pages/UserEdit/views/UserEdit';
 import Lists from './pages/Lists,Search/views/Lists';
 import Details from './pages/Details/views/Details';
-import NotFound from './pages/NotFound/views/NotFound';
+import KakaoCallback from './pages/Kakao-signup/views/KakaoCallback';
+import NotFound404 from './pages/NotFound/views/NotFound404';
 
 const Router = () => {
   return (
@@ -16,6 +17,7 @@ const Router = () => {
       <Route path="/" element={<Home />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/kakao-signup" element={<KakaoSignup />} />
+      <Route path="/kakao-callback" element={<KakaoCallback />} />
       <Route path="/login" element={<Login />} />
       <Route path="/user/:memberId" element={<User />} />
       <Route path="/user/edit" element={<UserEdit />} />
@@ -24,7 +26,7 @@ const Router = () => {
       <Route path="/details/:id/" element={<Details />} />
       <Route path="/write" element={<Write />} />
       <Route path="/write/:id" element={<Write />} />
-      <Route path="*" element={<NotFound />} />
+      <Route path="*" element={<NotFound404 />} />
     </Routes>
   );
 };

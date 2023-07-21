@@ -2,6 +2,8 @@ package com.momo.member.service;
 
 import com.momo.exception.BusinessLogicException;
 import com.momo.exception.ExceptionCode;
+import com.momo.location.entity.Location;
+import com.momo.location.repository.LocationRepository;
 import com.momo.member.entity.Member;
 import com.momo.member.repository.MemberRepository;
 import com.momo.security.utils.MomoAuthorityUtils;
@@ -20,11 +22,13 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final MomoAuthorityUtils authorityUtils;
+    private final LocationRepository locationRepository;
 
-    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, MomoAuthorityUtils authorityUtils) {
+    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, MomoAuthorityUtils authorityUtils, LocationRepository locationRepository) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityUtils = authorityUtils;
+        this.locationRepository = locationRepository;
     }
 
     /* 회원가입 */
@@ -33,6 +37,8 @@ public class MemberService {
         verifiedEmailExists(member.getEmail());
         verifiedNicknameExists(member.getNickname());
         String encodedPassword = passwordEncoder.encode(member.getPassword());
+        Location location = locationRepository.findById(member.getLocationId()).orElse(null);
+        member.setLocation(location);
         member.setPassword(encodedPassword);
         List<String> roles = authorityUtils.createRoles(member.getEmail());
         member.setRoles(roles);
@@ -65,10 +71,16 @@ public class MemberService {
                 .ifPresent(findMember::setWelcomeMsg);
         Optional.ofNullable(member.getProfileImage())
                 .ifPresent(findMember::setProfileImage);
-//        Optional.ofNullable(member.getLocation())
-//                .ifPresent(findMember::setLocation);
+        Optional.ofNullable(member.getLocationId())
+                .ifPresent(locationId -> {
+                    Location location = locationRepository.findById(locationId).orElse(null);
+                    findMember.setLocation(location);
+                });
         Optional.ofNullable(member.getNickname())
-                .ifPresent(findMember::setNickname);
+                .ifPresent(nickname -> {
+                    verifiedNicknameExists(nickname);
+                    findMember.setNickname(nickname);
+                });
         Optional.ofNullable(member.getIsMale())
                 .ifPresent(findMember::setIsMale);
         Optional.ofNullable(member.getAge())
