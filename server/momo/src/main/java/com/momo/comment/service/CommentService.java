@@ -46,7 +46,7 @@ public class CommentService {
                 .isPostWriter(checkSameWriter(post, member))
                 .build();
 
-//        comment.addMember(member);
+        comment.addMember(member);
         comment.addPost(post);
 
         return commentRepository.save(comment);

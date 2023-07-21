@@ -9,10 +9,10 @@ import java.util.List;
 @Getter
 @Setter
 public class ChatMessagesDto {
-    List<MessageSendDto> chats;
+    List<MessageResponseDto> chats;
 
     @Builder
-    public ChatMessagesDto(List<MessageSendDto> chats) {
+    public ChatMessagesDto(List<MessageResponseDto> chats) {
         this.chats = chats;
     }
 }
