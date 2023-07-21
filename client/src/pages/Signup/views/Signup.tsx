@@ -15,6 +15,7 @@ import { BASE_URL } from '../../../common/util/constantValue';
 import { setCategory } from '../../../common/store/CategoryStore';
 import { setLocation } from '../../../common/store/LocationStore';
 import { resetCreatedPost } from '../../Write,Edit/store/CreatedPost';
+import { AxiosError } from 'axios';
 
 interface TextInputProps {
   type?: string;
@@ -23,6 +24,8 @@ interface TextInputProps {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   style?: React.CSSProperties;
+  isDuplicateEmail?:boolean;
+  isDuplicateNickname? : boolean;
 }
 
 interface TextAreaProps {
@@ -32,12 +35,18 @@ interface TextAreaProps {
   style?: React.CSSProperties;
 }
 
+interface ErrorResponse {
+  message: string;
+}
+
 export default function Signup() {
   const [email, setEmail] = useState('');
   const [isValidEmail, setIsValidEmail] = useState(true);
+  const [isDuplicateEmail, setIsDuplicateEmail] = useState(false);
   const [password, setPassword] = useState('');
   const [isValidPassword, setIsValidPassword] = useState(true);
   const [nickname, setNickname] = useState('');
+  const [isDuplicateNickname, setIsDuplicateNickname] = useState(false);
   const [age, setAge] = useState<number | null>(null);
   const [isMale, setIsMale] = useState<boolean | null>(null);
   const [welcomeMsg, setWelcomeMsg] = useState('');
@@ -47,15 +56,32 @@ export default function Signup() {
 
   const data: SignupData = useSelector((state: RootState) => state.signup);
 
-  const signupMutation = useMutation<void, unknown, SignupData>(
+  const signupMutation = useMutation<void, AxiosError<ErrorResponse>, SignupData>(
     (data) => signupData(`${BASE_URL}/members/register`, data),
-    // {
-    //   onError: (error: AxiosError) => {
-    //     if (error.response?.status === 500) {
-    //       alert('이메일 또는 닉네임이 이미 존재합니다.');
-    //     }
-    //   },
-    // },
+    {
+      onSuccess: () => {
+        navigation('/login');
+      },
+      onError: (error) => {
+        if (
+          error.response?.status === 409 &&
+          error.response?.data?.message === 'Member exists'
+        ) {
+          alert('이메일이 이미 존재합니다.');
+          setIsDuplicateEmail(true);
+        } else if (
+          error.response?.status === 409 &&
+          error.response?.data?.message === 'Nickname Exist'
+        ) {
+          alert('닉네임이 이미 존재합니다.');
+          setIsDuplicateNickname(true);
+        }
+        window.scrollTo({
+          top: 300,
+          behavior: 'smooth',
+        });
+      },
+    },
   );
 
   useEffect(() => {
@@ -68,6 +94,7 @@ export default function Signup() {
   }, []);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsDuplicateEmail(false);
     setEmail(e.target.value);
     dispatch(setSignupUser({ ...data, email: e.target.value }));
     setIsValidEmail(
@@ -82,6 +109,7 @@ export default function Signup() {
   };
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsDuplicateNickname(false);
     setNickname(e.target.value);
     dispatch(setSignupUser({ ...data, nickname: e.target.value }));
   };
@@ -119,10 +147,13 @@ export default function Signup() {
       welcomeMsg === ''
     ) {
       alert('빈칸을 모두 채워주세요.');
+      window.scrollTo({
+        top: 300,
+        behavior: 'smooth',
+      });
+    } else {
+      signupMutation.mutate(data);
     }
-
-    signupMutation.mutate(data);
-    navigation(`/login`);
   };
 
   return (
@@ -139,7 +170,7 @@ export default function Signup() {
                 value={email}
                 style={{ width: '400px' }}
                 onChange={handleEmailChange}
-                isValidate={isValidEmail}
+                isValidate={isValidEmail && !isDuplicateEmail}
                 placeholder="이메일을 입력하세요. (ex. momo@gmail.com)"
               />
               {!isValidEmail && (
@@ -164,7 +195,7 @@ export default function Signup() {
               <TextInput
                 value={nickname}
                 onChange={handleNicknameChange}
-                isValidate={true}
+                isValidate={!isDuplicateNickname}
                 placeholder="닉네임을 입력하세요. (나중에 수정할 수 있어요!)"
               />
             </InputBox>

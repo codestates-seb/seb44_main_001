@@ -29,13 +29,41 @@ public class Message {
 
     private LocalDateTime sentTime;
 
+    @Enumerated(EnumType.STRING)
+    private ParticipantType participantType;
+
+    public enum ParticipantType {
+        MEMBER, NOTIFICATION
+    }
+
     @Builder
-    public Message(String message, Member member, Chatroom chatroom, LocalDateTime sentTime) {
+    public Message(String message, Member member, Chatroom chatroom, LocalDateTime sentTime, ParticipantType participantType) {
         this.message = message;
         this.member = member;
         this.chatroom = chatroom;
         this.sentTime = sentTime;
+        this.participantType = participantType;
     }
 
+    public static Message from(String message, Member member, Chatroom chatroom, LocalDateTime sentTime, String participantType) {
+        if (participantType.equals(ParticipantType.MEMBER.toString())) {
+            return Message.builder()
+                    .message(message)
+                    .member(member)
+                    .chatroom(chatroom)
+                    .sentTime(sentTime)
+                    .participantType(ParticipantType.MEMBER)
+                    .build();
+        }
+        else {
+            return Message.builder()
+                    .message(message)
+                    .member(member)
+                    .chatroom(chatroom)
+                    .sentTime(sentTime)
+                    .participantType(ParticipantType.NOTIFICATION)
+                    .build();
+        }
+    }
 }
 

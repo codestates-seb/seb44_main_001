@@ -9,7 +9,7 @@ import { Background, Text, TextInput } from '../../Signup/views/Signup';
 import { RootState } from '../../../common/store/RootStore';
 import { LoginData } from '../../../common/type';
 import loginData from '../api/postLogin';
-
+import { AxiosError } from 'axios';
 import { setLoginUser } from '../store/LoginUser';
 import { setTokenData } from '../store/userTokenStore';
 
@@ -32,7 +32,7 @@ export default function Login() {
   // const token: string = useSelector((state: RootState) => state.token.token);
   // const user: Member = useSelector((state: RootState) => state.member);
 
-  const loginMutation = useMutation<void, unknown, LoginData>(
+  const loginMutation = useMutation<void, AxiosError, LoginData>(
     async () => {
       const result = await loginData(`${BASE_URL}/auth/login`, data);
       console.log(result);
@@ -74,6 +74,13 @@ export default function Login() {
           dispatch(setTokenData({ token: '', memberId: 0 }));
         }
       },
+      onError: (error) => {
+        if (error.response?.status === 401){
+          alert("아이디 또는 비밀번호를 확인해주세요");
+        }else{
+          alert("서버연결중 에러가 발생했습니다.")
+        }
+      }
     },
   );
 

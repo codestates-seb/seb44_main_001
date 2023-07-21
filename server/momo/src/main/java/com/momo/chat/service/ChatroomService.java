@@ -1,0 +1,193 @@
+package com.momo.chat.service;
+
+import com.momo.chat.dto.MessageResponseDto;
+import com.momo.chat.entity.Chatroom;
+import com.momo.chat.entity.MemberChatroom;
+import com.momo.chat.entity.Message;
+import com.momo.chat.repository.ChatroomRepository;
+import com.momo.chat.repository.MemberChatroomRepository;
+import com.momo.chat.repository.MessageRepository;
+import com.momo.exception.BusinessLogicException;
+import com.momo.exception.ExceptionCode;
+import com.momo.member.entity.Member;
+import com.momo.member.repository.MemberRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+@Service
+@Slf4j
+@RequiredArgsConstructor
+@Transactional
+public class ChatroomService {
+    private final MemberRepository memberRepository;
+    private final MemberChatroomRepository memberChatroomRepository;
+    private final ChatroomRepository chatroomRepository;
+    private final MessageRepository messageRepository;
+    private final SimpMessagingTemplate template;
+
+    public Chatroom createChatroom(Long memberId, Long otherMemberId, String roomName, String roomType) {
+        LocalDateTime now = LocalDateTime.now();
+        String newMessage = "새 채팅방이 생성되었습니다.";
+
+        Member member = memberRepository.findById(memberId).get();
+        Chatroom chatroom = Chatroom.from("new chatroom", newMessage, now, roomType);
+        chatroom.addRoomKing(member);
+        Chatroom savedChatroom = chatroomRepository.save(chatroom);
+
+        Message message = Message.from(newMessage, member, savedChatroom, now, roomType);
+        messageRepository.save(message);
+
+        if (roomType.equals(Chatroom.RoomType.PERSONAL.getType())) {
+            verifyPersonalDuplicateRoom(memberId, otherMemberId);
+
+            Member otherMember = memberRepository.findById(otherMemberId).get();
+            MemberChatroom memberChatRoom = MemberChatroom.from(member, savedChatroom, otherMember.getNickname());
+            MemberChatroom memberChatRoom2 = MemberChatroom.from(otherMember, savedChatroom, member.getNickname());
+            memberChatroomRepository.save(memberChatRoom);
+            memberChatroomRepository.save(memberChatRoom2);
+
+        } else if (roomType.equals(Chatroom.RoomType.GROUP.getType())) {
+            chatroom.changeName(roomName);
+            MemberChatroom memberChatRoom = MemberChatroom.from(member, savedChatroom, roomName);
+            memberChatroomRepository.save(memberChatRoom);
+        }
+        return savedChatroom;
+    }
+
+    private void verifyPersonalDuplicateRoom(Long memberId, Long otherMemberId) {
+        if (memberId.equals(otherMemberId)) {
+            throw new BusinessLogicException(ExceptionCode.MEMBER_DUPLICATED);
+        }
+        List<MemberChatroom> chatrooms = memberChatroomRepository.findAllByMember_MemberId(memberId);
+        List<MemberChatroom> chatrooms2 = memberChatroomRepository.findAllByMember_MemberId(otherMemberId);
+        Optional<MemberChatroom> first = chatrooms.stream()
+                .filter(cr -> {
+                    long count = chatrooms2.stream()
+                            .filter(cr2 -> cr.getChatroom().equals(cr2.getChatroom()))
+                            .count();
+                    return count > 0;
+                })
+                .findFirst();
+        if (first.isPresent()) {
+            throw new BusinessLogicException(ExceptionCode.MEMBER_DUPLICATED);
+        }
+    }
+
+    public void inviteMember(Long memberId, Long otherMemberId, Long roomId) {
+        Chatroom chatroom = chatroomRepository.findById(roomId).get();
+        Member member = memberRepository.findById(memberId).get();
+        Member otherMember = memberRepository.findById(otherMemberId).get();
+        LocalDateTime now = LocalDateTime.now();
+        String message = otherMember.getNickname() + "님이 입장하셨습니다.";
+
+        verifyGroupDuplicateInvitation(chatroom, member, otherMember);
+
+        chatroom.updateLastMessage(message, now);
+        MemberChatroom memberChatRoom = MemberChatroom.from(otherMember, chatroom, chatroom.getName());
+        memberChatroomRepository.save(memberChatRoom);
+
+        Message newMessage = Message.from(message, otherMember, chatroom, now, Message.ParticipantType.NOTIFICATION.toString());
+        Message savedMessage = messageRepository.save(newMessage);
+
+        template.convertAndSend("/sub/chat/room/" + roomId, MessageResponseDto.from(savedMessage));
+    }
+
+    private void verifyGroupDuplicateInvitation(Chatroom chatroom, Member member, Member otherMember) {
+        if (!chatroom.getRoomKing().equals(member)) {
+            throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_ROOMKING);
+        }
+        MemberChatroom memberChatroom = memberChatroomRepository.findByChatroomAndMember(chatroom, otherMember);
+        if (memberChatroom != null) {
+            throw new BusinessLogicException(ExceptionCode.MEMBER_ALREADY_IN_ROOM);
+        }
+    }
+
+    public List<MemberChatroom> getRooms(Long memberId) {
+        Member member = memberRepository.findById(memberId).get();
+
+        List<MemberChatroom> memberChatRooms = memberChatroomRepository.getRooms(member);
+
+        return memberChatRooms;
+    }
+
+    public void setOnline(Long memberId, Long roomId) {
+        Member member = memberRepository.findById(memberId).get();
+        Chatroom chatroom = chatroomRepository.findById(roomId).get();
+        MemberChatroom memberChatroom = memberChatroomRepository.findByChatroomAndMember(chatroom, member);
+        memberChatroom.setOnline();
+        memberChatroomRepository.save(memberChatroom);
+    }
+
+    public void setOffline(Long memberId, Long roomId) {
+        Member member = memberRepository.findById(memberId).get();
+        Chatroom chatroom = chatroomRepository.findById(roomId).get();
+        MemberChatroom memberChatroom = memberChatroomRepository.findByChatroomAndMember(chatroom, member);
+        memberChatroom.setOffline();
+        memberChatroomRepository.save(memberChatroom);
+    }
+
+    public List<Message> getMessages(Long roomId) {
+        Chatroom chatroom = chatroomRepository.findById(roomId).get();
+
+        List<Message> messages = messageRepository.findAllByChatroomOrderBySentTime(chatroom);
+
+        return messages;
+    }
+
+    public void getoutRoom(Long memberId, Long roomId) {
+        Member member = memberRepository.findById(memberId).get();
+        Chatroom chatroom = chatroomRepository.findById(roomId).get();
+        if (chatroom.getRoomKing().equals(member)) {
+            messageRepository.deleteByChatroom(chatroom);
+            memberChatroomRepository.deleteByChatroom(chatroom);
+            chatroomRepository.delete(chatroom);
+            return;
+        }
+        List<MemberChatroom> memberChatrooms = memberChatroomRepository.getMemberChatrooms(chatroom);
+        int curSize = memberChatrooms.size();
+        String message = member.getNickname() + "님이 퇴장하셨습니다.";
+        LocalDateTime now = LocalDateTime.now();
+
+        Message newMessage = Message.from(message, member, chatroom, now, Message.ParticipantType.NOTIFICATION.toString());
+        Message savedMessage = messageRepository.save(newMessage);
+        template.convertAndSend("/sub/chat/room/" + chatroom.getChatroomId(), MessageResponseDto.from(savedMessage));
+
+        MemberChatroom memberChatroom = memberChatrooms.stream()
+                .filter(mc -> mc.getMember().equals(member))
+                .findFirst().get();
+        memberChatroomRepository.delete(memberChatroom);
+
+
+
+        if (curSize == 1) {
+            messageRepository.deleteByChatroom(chatroom);
+            chatroomRepository.delete(chatroom);
+        }
+    }
+
+    public void sendMessage(Long memberId, Long roomId, String content) {
+        Member member = memberRepository.findById(memberId).get();
+        LocalDateTime now = LocalDateTime.now();
+
+        Chatroom chatroom = chatroomRepository.findById(roomId).get();
+        chatroom.updateLastMessage(content, now);
+
+        List<MemberChatroom> memberChatrooms = memberChatroomRepository.getMemberChatrooms(chatroom);
+        memberChatrooms.stream()
+                .filter(mc -> mc.getChatStatus().equals(MemberChatroom.ChatStatus.OFFLINE))
+                .forEach(mc -> mc.addUnreadCount());
+
+        Message message = Message.from(content, member, chatroom, now, Message.ParticipantType.MEMBER.toString());
+
+        Message savedMessage = messageRepository.save(message);
+
+        template.convertAndSend("/sub/chat/room/" + chatroom.getChatroomId(), MessageResponseDto.from(savedMessage));
+    }
+}

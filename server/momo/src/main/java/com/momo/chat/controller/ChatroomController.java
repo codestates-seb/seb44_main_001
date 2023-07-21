@@ -1,93 +1,92 @@
 package com.momo.chat.controller;
 
-
-import com.momo.chat.dto.ChatroomRegisterDto;
-import com.momo.chat.dto.RoomResponseDto;
-import com.momo.chat.dto.RoomsDto;
+import com.momo.chat.dto.*;
 import com.momo.chat.entity.Chatroom;
 import com.momo.chat.entity.MemberChatroom;
 import com.momo.chat.entity.Message;
 import com.momo.chat.interceptor.MemberInterceptor;
-import com.momo.chat.repository.ChatroomRepository;
-import com.momo.chat.repository.MemberChatroomRepository;
-import com.momo.chat.repository.MessageRepository;
-import com.momo.member.entity.Member;
-import com.momo.member.repository.MemberRepository;
+import com.momo.chat.service.ChatroomService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/chats")
+@RequestMapping("/rooms")
 public class ChatroomController {
-    private final MemberRepository memberRepository;
-    private final MemberChatroomRepository memberChatroomRepository;
-    private final ChatroomRepository chatroomRepository;
-    private final MessageRepository messageRepository;
+    private final ChatroomService chatroomService;
 
-//    @GetMapping
-//    public String hello(){
-//        return "hello";
-//    }
     @PostMapping("/register")
-    public ResponseEntity createRoom(@RequestBody ChatroomRegisterDto chatroomRegisterDto) {
+    public Long createRoom(@RequestBody ChatroomRegisterDto chatroomRegisterDto) {
         Long memberId = MemberInterceptor.currentMemberStore.get();
-        LocalDateTime now = LocalDateTime.now();
+        Long otherMemberId = chatroomRegisterDto.getMemberId();
+        String roomName = chatroomRegisterDto.getRoomName();
+        String roomType = chatroomRegisterDto.getRoomType();
 
-        Member member = memberRepository.findById(memberId).get();
-        Member otherMember = memberRepository.findById(chatroomRegisterDto.getMemberId()).get();
+        Chatroom chatroom = chatroomService.createChatroom(memberId, otherMemberId, roomName, roomType);
 
-        Chatroom chatroom = Chatroom.builder()
-                .lastMessage("새 채팅방이 생성되었습니다!")
-                .lastMessageSentTime(now)
-                .build();
+        return chatroom.getChatroomId();
+    }
 
-        Message message = Message.builder()
-                .message("새 채팅방이 생성되었습니다!")
-                .member(member)
-                .chatroom(chatroom)
-                .sentTime(now)
-                .build();
+    @PostMapping("/invite")
+    public ResponseEntity inviteMember(@RequestBody ChatroomInviteDto inviteDto) {
+        Long memberId = MemberInterceptor.currentMemberStore.get();
+        Long roomId = inviteDto.getRoomId();
+        Long otherMemberId = inviteDto.getMemberId();
 
-        chatroomRepository.save(chatroom);
-        messageRepository.save(message);
-
-        MemberChatroom memberChatRoom = MemberChatroom.builder()
-                .member(member)
-                .other(otherMember)
-                .chatroom(chatroom)
-                .build();
-
-        MemberChatroom memberChatRoom2 = MemberChatroom.builder()
-                .member(otherMember)
-                .other(member)
-                .chatroom(chatroom)
-                .build();
-
-        memberChatroomRepository.save(memberChatRoom);
-        memberChatroomRepository.save(memberChatRoom2);
-        return new ResponseEntity(chatroom.getChatroomId(), HttpStatus.OK);
+        chatroomService.inviteMember(memberId, otherMemberId, roomId);
+        return ResponseEntity.ok().build();
     }
 //
-    @GetMapping
-    public ResponseEntity getRooms() {
+    @GetMapping("/list")
+    public RoomsDto getRooms() {
         Long memberId = MemberInterceptor.currentMemberStore.get();
-        List<MemberChatroom> memberChatRooms = memberChatroomRepository.getRooms(memberId);
-        List<RoomResponseDto> roomResponseDtos = memberChatRooms.stream()
-                .map(memberChatRoom -> RoomResponseDto.from(memberChatRoom.getChatroom(), memberChatRoom.getOther().getNickname()))
+        List<MemberChatroom> rooms = chatroomService.getRooms(memberId);
+
+        List<RoomResponseDto> roomResponseDtos = rooms.stream()
+                .map(memberChatRoom -> RoomResponseDto.from(memberChatRoom))
                 .collect(Collectors.toList());
-        return new ResponseEntity(RoomsDto.builder()
+
+        return RoomsDto.builder()
                         .rooms(roomResponseDtos)
-                        .build(),
-                HttpStatus.OK);
+                        .build();
     }
 
+    @PostMapping("/{roomId}/online")
+    public ResponseEntity setOnline(@PathVariable Long roomId) {
+        Long memberId = MemberInterceptor.currentMemberStore.get();
+        chatroomService.setOnline(memberId, roomId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{roomId}/offline")
+    public ResponseEntity setOffline(@PathVariable Long roomId) {
+        Long memberId = MemberInterceptor.currentMemberStore.get();
+        chatroomService.setOffline(memberId, roomId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{roomId}")
+    public ChatMessagesDto getMessages(@PathVariable Long roomId) {
+        List<Message> messages = chatroomService.getMessages(roomId);
+
+        List<MessageResponseDto> messageSendDtos = messages.stream()
+                .map(message -> MessageResponseDto.from(message))
+                .collect(Collectors.toList());
+        return ChatMessagesDto.builder()
+                .chats(messageSendDtos)
+                .build();
+    }
+
+    @DeleteMapping("/{roomId}")
+    public ResponseEntity getOut(@PathVariable Long roomId) {
+        Long memberId = MemberInterceptor.currentMemberStore.get();
+        chatroomService.getoutRoom(memberId, roomId);
+
+        return ResponseEntity.ok().build();
+    }
 
 }

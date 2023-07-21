@@ -8,11 +8,13 @@ import { useDispatch } from 'react-redux';
 import { setMyData } from './pages/Login/store/MyUserData';
 import Footer from './common/components/Footer';
 import { AxiosError } from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 export default function App() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const token: string | null = localStorage.getItem('Authorization');
   const memberId: string | null = localStorage.getItem('MemberId');
@@ -27,7 +29,7 @@ export default function App() {
       },
       onError: (error) => {
         if (error.response?.status === 401 && token) {
-          alert("토큰이 만료되었습니다. 다시 로그인해주세요.");
+          alert('토큰이 만료되었습니다. 다시 로그인해주세요.');
           localStorage.clear();
           navigate('/login');
         } else {
@@ -40,7 +42,7 @@ export default function App() {
   return (
     <>
       <GlobalStyle />
-      <Header />
+      {location.pathname !== '/' && <Header />}
       <Router />
       <Footer />
     </>

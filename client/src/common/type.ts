@@ -131,16 +131,16 @@ export type Member = {
 
 export type EditMember = {
   memberPatchDto: {
-    welcomeMsg: string;
-    nickname: string;
+    welcomeMsg?: string;
+    nickname?: string;
     locationId: number;
   };
   file: string | Blob | null;
 };
 
 export type MemberPatchDto = {
-  welcomeMsg: string;
-  nickname: string;
+  welcomeMsg?: string;
+  nickname?: string;
   locationId: number;
 };
 

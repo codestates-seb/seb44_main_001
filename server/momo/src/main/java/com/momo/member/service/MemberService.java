@@ -115,7 +115,7 @@ public class MemberService {
     private void verifiedEmailExists(String email) {
         memberRepository.findByEmail(email)
                 .ifPresent(existingUser -> {
-                    throw new RuntimeException("이미 존재하는 이메일입니다.");
+                    throw new BusinessLogicException(ExceptionCode.MEMBER_EXISTS);
                 });
     }
 
@@ -123,7 +123,7 @@ public class MemberService {
     private void verifiedNicknameExists(String nickname) {
         memberRepository.findByNickname(nickname)
                 .ifPresent(existingUser -> {
-                    throw new RuntimeException("이미 존재하는 닉네임입니다.");
+                    throw new BusinessLogicException(ExceptionCode.NICKNAME_EXISTS);
                 });
     }
 }

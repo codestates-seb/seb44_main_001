@@ -24,7 +24,7 @@ import { BASE_URL } from '../../../common/util/constantValue';
 //   email: string;
 // }
 
-export default function KakaoSignup() {
+export default function OauthSignup() {
   const [nickname, setNickname] = useState('');
   const [age, setAge] = useState<number | null>(null);
   const [isMale, setIsMale] = useState<boolean | null>(null);
@@ -36,11 +36,10 @@ export default function KakaoSignup() {
     (state: RootState) => state.authSignup,
   );
 
-  const memberId = 1;
-
   const kakaoMutation = useMutation<void, unknown, SignupPatchData>(
     async () => {
       const storedToken = localStorage.getItem('Authorization');
+      const memberId = localStorage.getItem('memberId');
       if (storedToken) {
         const result = await patchMyData(
           `${BASE_URL}/members/${memberId}`,

@@ -42,7 +42,7 @@ export default function Footer() {
     {
       name: '조명인',
       github: 'myoungincho729',
-      image: 'https://avatars.githubusercontent.com/u/104813146?v=4',
+      image: 'https://media.tenor.com/SxT-vuls8kkAAAAd/sijalica.gif',
     },
   ];
 

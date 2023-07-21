@@ -1,17 +1,19 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import Modal from 'react-modal';
 
 import { RootState } from '../store/RootStore';
 import { FaArrowRightFromBracket } from 'react-icons/fa6';
 import { HiMiniXMark } from 'react-icons/hi2';
+import { FaPersonRunning } from 'react-icons/fa6';
 import Button from './Button';
 import { resetStates } from '../../pages/Login/store/MyUserData';
 import { BASE_URL } from '../../common/util/constantValue';
 
 import logo from '../assets/logo/MOMO.png';
+import singMomo from '../assets/logo/singMomo.svg';
 import profile from '../assets/profile.svg';
 
 import kakao from '../../common/assets/logo/kakao-logo.png';
@@ -21,6 +23,11 @@ import { postLogout } from '../util/customHook/api/postLogout';
 import { setChatModal } from '../store/ChatModalStore';
 import { useMutation } from 'react-query';
 Modal.setAppElement('#root');
+
+export type SubProps = {
+  $sub: string;
+  className: string;
+};
 
 export default function Header() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -47,10 +54,10 @@ export default function Header() {
         localStorage.clear();
         dispatch(setChatModal(false));
       },
-      onError: () =>{
+      onError: () => {
         navigate('/login');
         localStorage.clear();
-      }
+      },
     },
   );
 
@@ -78,15 +85,20 @@ export default function Header() {
   return (
     <Head>
       <Link to="/">
-        <div>
+        <Logo>
           <img src={logo} alt="로고이미지" style={{ height: '39px' }} />
-        </div>
+          <HoverImage
+            src={singMomo}
+            alt="노래모모"
+            style={{ height: '39px' }}
+          />
+        </Logo>
       </Link>
       {token ? (
         <MenuContainer>
-          <Link to="/lists" className="margin-small text">
+          <StyledLink to="/lists" className="margin-small text">
             모모리스트
-          </Link>
+          </StyledLink>
           <UserContainer onClick={handleMyProfile}>
             <img
               src={myData.profileImage ? `${myData.profileImage}` : profile}
@@ -98,11 +110,15 @@ export default function Header() {
             </div>
           </UserContainer>
           <Button onClick={handleWriteButtonClick} children={'모집 글 작성'} />
-          <div className="margin-left">
-            <div onClick={handleLogout}>
-              <LogOut size={20} />
-            </div>
-          </div>
+          <LogoutButton
+            className="margin-left"
+            $sub="안녕하세요"
+            onClick={handleLogout}
+          >
+            <FaPersonRunning className="hoverIcon" size={25} />
+            <LogOut className="originalIcon" size={25} />
+            {/* <div className="tooltip">로그아웃</div> */}
+          </LogoutButton>
         </MenuContainer>
       ) : (
         <div>
@@ -198,6 +214,58 @@ const MenuContainer = styled.div`
   display: flex;
   align-items: center;
 `;
+const Logo = styled.div`
+  position: relative;
+  display: inline-block;
+`;
+const StyledLink = styled(Link)`
+  &:hover {
+    color: var(--color-pink-1);
+  }
+`;
+const tadaAnimation = keyframes`
+  0%, 100% {
+    transform: translateX(0) translateY(0);
+  }
+  10% {
+    transform: translateX(10px) translateY(-5px);
+  }
+  20% {
+    transform: translateX(20px) translateY(5px);
+  }
+  30% {
+    transform: translateX(30px) translateY(-5px);
+  }
+  40% {
+    transform: translateX(40px) translateY(5px);
+  }
+  50% {
+    transform: translateX(50px) translateY(-5px);
+  }
+  60% {
+    transform: translateX(40px) translateY(5px);
+  }
+  70% {
+    transform: translateX(30px) translateY(-5px);
+  }
+  80% {
+    transform: translateX(20px) translateY(5px);
+  }
+  90% {
+    transform: translateX(10px) translateY(-5px);
+  }
+`;
+
+const HoverImage = styled.img`
+  position: absolute;
+  top: 0;
+  left: 100%;
+  opacity: 0;
+  ${Logo}:hover & {
+    opacity: 1;
+    animation: ${tadaAnimation} 1.5s ease-in-out;
+  }
+`;
 
 const UserContainer = styled.div`
   display: flex;
@@ -206,8 +274,12 @@ const UserContainer = styled.div`
   cursor: pointer;
   border-radius: 10px;
   padding: 0.5rem;
-  img {
+  > img {
     border-radius: 50%;
+    margin-left: 0;
+  }
+  &:hover{
+    background-color: #3971a2;
   }
 `;
 
@@ -233,7 +305,7 @@ const ModalContainer = styled(Modal)`
   }
 `;
 
-const ModalButtonContainer = styled.div`
+export const ModalButtonContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -251,7 +323,8 @@ const Xmark = styled(HiMiniXMark)`
   margin-bottom: 30px;
 `;
 
-const ModalButton = styled(Button)`
+export const ModalButton = styled(Button)`
+  position: relative;
   width: 100%;
   margin-bottom: 10px;
   text-align: center;
@@ -261,20 +334,21 @@ const ModalButton = styled(Button)`
   height: 50px;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 `;
 
-const KakaoBtn = styled(ModalButton)`
-  background-color: #ffe34e;
+export const KakaoBtn = styled(ModalButton)`
+  background-color: #fef01b;
 
   &:hover {
-    background-color: #ffe03d;
+    background-color: #ffdd34;
   }
   &:active {
-    background-color: #f9d724;
+    background-color: #f3cd12;
   }
 `;
 
-const GoogleBtn = styled(ModalButton)`
+export const GoogleBtn = styled(ModalButton)`
   background-color: white;
 
   &:hover {
@@ -283,4 +357,60 @@ const GoogleBtn = styled(ModalButton)`
   &:active {
     background-color: #d5e3ff;
   }
+`;
+
+const LogoutButton = styled.button<SubProps>`
+  position: relative;
+  * {
+    position: absolute;
+    top: -13px;
+    right: -10px;
+    transition: opacity 0.5s ease;
+  }
+  .hoverIcon {
+    color: var(--color-pink-1);
+    opacity: 0;
+  }
+  &:hover {
+    .hoverIcon {
+      opacity: 1;
+    }
+    .originalIcon {
+      opacity: 0;
+    }
+    .tooltip {
+      opacity: 1;
+      /* transform: translateX(-50%) scale(1); */
+    }
+  }
+  /* &:hover:after {
+    .tooltip {
+      content: ${(props) => `'${props.$sub}'`};
+    }
+  }
+  .tooltip {
+    position: absolute;
+    top: -15px;
+    right: -20px;
+    background-color: var(--color-pink-2);
+    width: 100px;
+    height: 40px;
+    padding: 5px;
+    border-radius: 5px;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 0.3s ease;
+    font-size: 1.2rem;
+    &:after {
+      content: '';
+      position: absolute;
+      top: 15px;
+      right: -120px;
+      margin-top: -5px;
+      border-width: 10px;
+      border-style: solid;
+      border-color: transparent transparent transparent var(--color-pink-2);
+      width: 100px;
+    }
+  } */
 `;

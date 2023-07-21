@@ -63,7 +63,7 @@ const Wrapper = styled(Link)`
   border: 2px solid var(--color-black);
   border-radius: 10px;
   padding: 1.5rem;
-  transition: transform 0.3s ease-out;
+  transition: transform 0.2s ease-out;
   animation: ${slideDownAnimation} 0.5s ease-in-out;
   * {
     color: var(--color-black);
@@ -71,7 +71,11 @@ const Wrapper = styled(Link)`
   &:hover {
     border-color: var(--color-pink-1);
     transform: translate(-5px, -5px);
-    box-shadow: 3px 3px 5px var(--color-pink-2);
+    box-shadow: 5px 5px 0px 0px rgba(255, 192, 203, 1);
+  }
+  &:active{
+    box-shadow: none;
+    transform: translate(0, 0);
   }
 `;
 
