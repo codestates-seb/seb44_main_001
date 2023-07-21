@@ -40,10 +40,7 @@ export default function User() {
 
   const fetchUser = useMutation<void, unknown, number>(
     (memberId: number) => {
-      return getMember(
-        `${BASE_URL}/members/${memberId}`,
-        token as string,
-      );
+      return getMember(`${BASE_URL}/members/${memberId}`, token as string);
     },
     {
       onSuccess: (data) => {
@@ -51,12 +48,12 @@ export default function User() {
         console.log(`fetch User!!! : `, data);
       },
       onError: () => {
-        alert("존재하지 않는 회원입니다!");
+        alert('존재하지 않는 회원입니다!');
         navigate(-1);
-      }
-    }
+      },
+    },
   );
-  
+
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -143,6 +140,7 @@ const ProfileImg = styled.img`
   height: 10rem;
   border-radius: 50%;
   margin-right: 2rem;
+  object-fit: cover;
 `;
 const ProfileBox = styled.div`
   display: flex;

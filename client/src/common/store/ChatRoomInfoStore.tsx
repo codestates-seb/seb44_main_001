@@ -5,6 +5,7 @@ export const chatRoomInfoSlice = createSlice({
   initialState: {
     roomName: '',
     roomId: 0,
+    // roomType: '',
   },
   reducers: {
     setChatRoomInfo: (_state, action) => {
@@ -12,6 +13,7 @@ export const chatRoomInfoSlice = createSlice({
       return {
         roomName: action.payload.roomName,
         roomId: action.payload.roomId,
+        // roomType: action.payload.roomType,
       };
     },
   },

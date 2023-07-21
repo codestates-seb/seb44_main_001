@@ -51,7 +51,8 @@ export default function ChatInvitationModal() {
         onChange={handleInput}
       />
       <Nicknames>
-        {nicknames.length !== 0 &&
+        {nicknames &&
+          nicknames.length !== 0 &&
           nicknames.map((nickname) => (
             <div onClick={() => handleInvite(nickname)}>{nickname}</div>
           ))}

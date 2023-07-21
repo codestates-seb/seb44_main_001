@@ -57,9 +57,7 @@ export default function UserModal({
     {
       onSuccess: (data) => {
         console.log(data);
-        dispatch(
-          setChatRoomInfo({ roomId: data.chatroomId, roomName: nickname }),
-        );
+        dispatch(setChatRoomInfo({ roomId: data, roomName: nickname }));
         dispatch(setChatModal(true));
       },
     },

@@ -2,7 +2,7 @@ import { AiFillWechat } from 'react-icons/ai';
 import { keyframes, styled } from 'styled-components';
 import Modal from 'react-modal';
 import { useEffect, useState } from 'react';
-import { modalStyle } from '../ModalStyle';
+import { modalStyle } from '../modalStyle';
 import ChatMain from '../components/ChatMain';
 import ChatRoom from '../components/ChatRoom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,9 +15,10 @@ import { ChatData, ChatRoomData, Room } from '../../../type';
 import * as StompJs from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import postOnline from '../api/postOnline';
+import { setChatRoomInfo } from '../../../store/ChatRoomInfoStore';
 
 export default function ChatButton() {
-  const [messages, setMessages] = useState([{}]);
+  const [messages, setMessages] = useState<ChatData[]>([]);
 
   const [prevRoom, setPrevRoom] = useState<Room[]>([
     {
@@ -44,7 +45,7 @@ export default function ChatButton() {
 
   const client = new StompJs.Client({
     brokerURL:
-      'ws://ec2-3-34-45-1.ap-northeast-2.compute.amazonaws.com:8080/stomp/chat',
+      'ws://ec2-54-180-137-136.ap-northeast-2.compute.amazonaws.com:8080/stomp/chat',
     connectHeaders: {
       Authorization: token as string,
     },
@@ -58,10 +59,6 @@ export default function ChatButton() {
     };
   }
 
-  const updateMessages = (prevMessages: ChatData[], newMessage: ChatData) => {
-    return [...prevMessages, newMessage];
-  };
-
   const updatePrevRoom = (_prevRoom: Room[], newRoom: Room[]) => {
     return [...newRoom];
   };
@@ -70,10 +67,12 @@ export default function ChatButton() {
     'roomList',
     () => getRoomList(`${BASE_URL}/rooms/list`),
     {
+      enabled: chatRoom === 0,
       refetchInterval: 5000,
       onSuccess: (data) => {
         setIsDataDifferent(
-          data.rooms.filter((rooom) => rooom.unreadCount !== 0).length !== 0,
+          !isOpen &&
+            data.rooms.filter((rooom) => rooom.unreadCount !== 0).length !== 0,
         );
         setPrevRoom((prevRoom) => updatePrevRoom(prevRoom, data.rooms));
       },
@@ -93,6 +92,18 @@ export default function ChatButton() {
 
   const handleModalClose = () => {
     dispatch(setChatModal(false));
+    dispatch(setChatRoomInfo({ roomName: '', roomId: 0 }));
+  };
+
+  const handleWebSocketMessage = (message: StompJs.IMessage) => {
+    const receivedMessage = JSON.parse(message.body);
+    console.table(receivedMessage);
+    setTimeout(() => {
+      setMessages((prevMessages) => {
+        return [...prevMessages, receivedMessage];
+      }),
+        0;
+    });
   };
 
   useEffect(() => {
@@ -104,19 +115,10 @@ export default function ChatButton() {
 
         const subscription = client.subscribe(
           `/sub/chat/room/${chatRoom}`,
-          (message) => {
-            console.log(chatRoom + '번방에 입장하였습니다.');
-
-            const receivedMessage = JSON.parse(message.body);
-
-            setMessages((prevMessages) =>
-              updateMessages(prevMessages as ChatData[], receivedMessage),
-            );
-          },
+          handleWebSocketMessage,
         );
 
         setSubscription(subscription);
-
         postOnlineMutation.mutate(chatRoom);
       };
     }
@@ -129,20 +131,24 @@ export default function ChatButton() {
       if (subscription) {
         subscription.unsubscribe();
         setSubscription(null);
-        setIsDataDifferent(false);
         getRoomQuery.refetch();
       }
-      setIsDataDifferent(false);
       getRoomQuery.refetch();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatRoom]);
 
+  useEffect(() => {
+    if (isOpen) {
+      setIsDataDifferent(false);
+    }
+  }, [isOpen]);
+
   return (
     <Container>
       <button
         onClick={isOpen ? handleModalClose : handleModalOpen}
-        className={!isDataDifferent ? 'on' : ''}
+        className={isDataDifferent ? 'on' : ''}
       >
         <AiFillWechat size={48} color={'var(--color-white)'} />
       </button>
@@ -215,7 +221,7 @@ const Container = styled.section`
 
   .on {
     > svg {
-      /* animation: colorChange 1s infinite; */
+      animation: colorChange 1s infinite;
     }
   }
 `;

@@ -7,12 +7,13 @@ export default async function loginData(url: string, data: LoginData) {
 
     const res = await axios.post(url, data, { headers });
 
-    const token = res.headers['authorization'];
+    const accessToken = res.headers['authorization'];
     const memberId = res.headers['memberid'];
+    const refreshToken = res.headers['refresh'];
 
     console.log(res);
 
-    return { token, memberId };
+    return { accessToken, memberId, refreshToken };
   } catch (err) {
     console.log(err);
     return { token: '', memberId: 0 };

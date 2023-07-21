@@ -40,7 +40,9 @@ export default function CommentInput() {
   };
 
   const handleSubmit = () => {
-    postMutation.mutate(data);
+    if (data.content) {
+      postMutation.mutate(data);
+    }
   };
 
   const handleKeyUp = (event: KeyboardEvent<HTMLTextAreaElement>) => {

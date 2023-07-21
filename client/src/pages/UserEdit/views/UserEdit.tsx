@@ -227,6 +227,7 @@ const ProfileImage = styled.img`
   height: 11.1rem;
   border-radius: 50%;
   border: 2px solid var(--color-black);
+  object-fit: cover;
 `;
 
 const ImgEditButton = styled.button`
