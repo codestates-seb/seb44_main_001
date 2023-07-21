@@ -1,5 +1,6 @@
 package com.momo.postlike.controller;
 
+import com.momo.post.dto.PostResponseDto;
 import com.momo.postlike.dto.PostLikePostDto;
 import com.momo.postlike.dto.PostLikeResponseDto;
 import com.momo.postlike.entity.PostLike;
