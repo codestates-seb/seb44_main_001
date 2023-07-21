@@ -5,7 +5,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/momo?characterEncoding=UTF-8&serverTimezone=UTC
     username: root
-    password: root
+    password: rladbs12!@
     driver-class-name: com.mysql.cj.jdbc.Driver
   servlet:
     multipart:
@@ -24,7 +24,7 @@ spring:
             level:
               root: DEBUG
   redis:
-    host: your_host
+    host: localhost
     port: 6379
   security:
     oauth2:
