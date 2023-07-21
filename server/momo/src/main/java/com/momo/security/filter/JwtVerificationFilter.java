@@ -1,9 +1,16 @@
 package com.momo.security.filter;
 
+import com.momo.exception.BusinessLogicException;
+import com.momo.exception.ExceptionCode;
+import com.momo.member.entity.Member;
+import com.momo.member.repository.MemberRepository;
 import com.momo.security.jwt.JwtTokenizer;
 import com.momo.security.service.TokenBlacklistService;
+import com.momo.security.service.TokenService;
 import com.momo.security.utils.MomoAuthorityUtils;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.security.SignatureException;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,11 +31,19 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     private final JwtTokenizer jwtTokenizer;
     private final MomoAuthorityUtils authorityUtils;
     private final TokenBlacklistService tokenBlacklistService;
+    private final MemberRepository memberRepository;
+    private final TokenService tokenService;
 
-    public JwtVerificationFilter(JwtTokenizer jwtTokenizer, MomoAuthorityUtils authorityUtils, TokenBlacklistService tokenBlacklistService) {
+    public JwtVerificationFilter(JwtTokenizer jwtTokenizer,
+                                 MomoAuthorityUtils authorityUtils,
+                                 TokenBlacklistService tokenBlacklistService,
+                                 MemberRepository memberRepository,
+                                 TokenService tokenService) {
         this.jwtTokenizer = jwtTokenizer;
         this.authorityUtils = authorityUtils;
         this.tokenBlacklistService = tokenBlacklistService;
+        this.memberRepository = memberRepository;
+        this.tokenService = tokenService;
     }
 
     @Override
@@ -57,12 +72,24 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // System.out.println("# JwtVerificationFilter");
-        /* Redis를 통한 토큰 검증 */
+        // if 토큰이 만료가 됐어 -> 리프레시 토큰을 확인해 -> 리프레시 토큰이 괜찮으면 액세스 토큰을 새로 발급해줘
+        /* Redis를 통한 토큰 검증과 만료된 토큰에 대한 로직 */
         String token = extractTokenFromRequest(request);
-        if (token != null && tokenBlacklistService.isTokenBlacklisted(token)) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Invalid token.");
-            return;
+        if (token != null && tokenBlacklistService.isTokenBlacklisted(token) || jwtTokenizer.validateToken(token) ) {
+            // 멤버를 찾아야돼
+            String refreshToken = request.getHeader("Refresh");
+            if(jwtTokenizer.validateToken(refreshToken)) {
+                Jws<Claims> claims = jwtTokenizer.getClaims(token, jwtTokenizer.getBase64EncodedSecretKey());
+                String email = claims.getBody().get("username", String.class);
+                Member member = memberRepository.findByEmail(email)
+                        .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+
+                String newToken = tokenService.delegateAccessToken(member);
+                response.setHeader("Authorization", "Bearer " + newToken);
+            } else {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Invalid token.");
+            }
         }
         try {
             Map<String, Object> claims = verifyJws(request);

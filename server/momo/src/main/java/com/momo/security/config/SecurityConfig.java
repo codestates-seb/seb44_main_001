@@ -1,7 +1,6 @@
 package com.momo.security.config;
 
 import com.momo.member.repository.MemberRepository;
-import com.momo.member.service.MemberService;
 import com.momo.security.filter.JwtAuthenticationFilter;
 import com.momo.security.filter.JwtVerificationFilter;
 import com.momo.security.handler.MemberAccessDeniedHandler;
@@ -10,8 +9,8 @@ import com.momo.security.jwt.JwtTokenizer;
 
 import com.momo.security.oauth2.handler_.OAuth2MemberSuccessHandler;
 
-import com.momo.security.repository.RefreshTokenRepository;
 import com.momo.security.service.TokenBlacklistService;
+import com.momo.security.service.TokenService;
 import com.momo.security.utils.MomoAuthorityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,7 +45,7 @@ public class SecurityConfig {
     private final MomoAuthorityUtils authorityUtils;
     private final TokenBlacklistService tokenBlacklistService;
     private final MemberRepository memberRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final TokenService tokenService;
 
 
     @Bean
@@ -82,7 +81,7 @@ public class SecurityConfig {
                         .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
-                        .successHandler(new OAuth2MemberSuccessHandler(jwtTokenizer, authorityUtils, memberRepository, refreshTokenRepository))
+                        .successHandler(new OAuth2MemberSuccessHandler(jwtTokenizer, authorityUtils, memberRepository))
                 );
 
 
@@ -99,6 +98,7 @@ public class SecurityConfig {
         configuration.setAllowCredentials(true);
         configuration.addExposedHeader("Authorization");
         configuration.addExposedHeader("memberId");
+        configuration.addExposedHeader("Refresh");
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
@@ -111,10 +111,10 @@ public class SecurityConfig {
         public void configure(HttpSecurity builder) throws Exception {
             AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
 
-            JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtTokenizer, refreshTokenRepository);
+            JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtTokenizer);
             jwtAuthenticationFilter.setFilterProcessesUrl("/auth/login");
 
-            JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, authorityUtils, tokenBlacklistService);
+            JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, authorityUtils, tokenBlacklistService, memberRepository, tokenService);
 
             builder
                     .addFilter(jwtAuthenticationFilter)
