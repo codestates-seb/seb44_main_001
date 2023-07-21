@@ -22,10 +22,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class JwtVerificationFilter extends OncePerRequestFilter {
     private final JwtTokenizer jwtTokenizer;
@@ -71,38 +71,41 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     /* EXCEPTION 관련 */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // System.out.println("# JwtVerificationFilter");
-        // if 토큰이 만료가 됐어 -> 리프레시 토큰을 확인해 -> 리프레시 토큰이 괜찮으면 액세스 토큰을 새로 발급해줘
         /* Redis를 통한 토큰 검증과 만료된 토큰에 대한 로직 */
         String token = extractTokenFromRequest(request);
-        if (token != null && tokenBlacklistService.isTokenBlacklisted(token) || jwtTokenizer.validateToken(token) ) {
+        if (token != null && tokenBlacklistService.isTokenBlacklisted(token) || !jwtTokenizer.validateToken(token) ) {
             // 멤버를 찾아야돼
             String refreshToken = request.getHeader("Refresh");
-            if(jwtTokenizer.validateToken(refreshToken)) {
-                Jws<Claims> claims = jwtTokenizer.getClaims(token, jwtTokenizer.getBase64EncodedSecretKey());
-                String email = claims.getBody().get("username", String.class);
-                Member member = memberRepository.findByEmail(email)
-                        .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+            if (jwtTokenizer.validateToken(refreshToken)) {
+                try {
+                    Jws<Claims> claims = jwtTokenizer.getClaims(refreshToken, jwtTokenizer.getBase64EncodedSecretKey());
+                    String email = claims.getBody().get("sub", String.class);
+                    Member member = memberRepository.findByEmail(email)
+                            .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
 
-                String newToken = tokenService.delegateAccessToken(member);
-                response.setHeader("Authorization", "Bearer " + newToken);
+                    String newToken = tokenService.delegateAccessToken(member);
+                    response.setHeader("Authorization", "Bearer " + newToken);
+
+                    RefreshedAccessTokenRequestWrapper refreshedRequest = new RefreshedAccessTokenRequestWrapper(request, newToken); // 만료된 토큰 대신 새로만든 토큰을 다시 넣어 request 생성
+                    Map<String, Object> findMemberClaim = verifyJws(refreshedRequest);
+                    setAuthenticationToContext(findMemberClaim);
+                    filterChain.doFilter(refreshedRequest, response);
+
+                } catch (SignatureException se) {
+                    request.setAttribute("exception", se);
+                } catch (ExpiredJwtException ee) {
+                    request.setAttribute("exception", ee);
+                } catch (Exception e) {
+                    request.setAttribute("exception", e);
+                }
             } else {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("Invalid token.");
             }
+        } else {
+            Map<String, Object> findMemberClaim = verifyJws(request);
+            setAuthenticationToContext(findMemberClaim);
+            filterChain.doFilter(request, response);
         }
-        try {
-            Map<String, Object> claims = verifyJws(request);
-            setAuthenticationToContext(claims);
-        } catch (SignatureException se) {
-            request.setAttribute("exception", se);
-        } catch (ExpiredJwtException ee) {
-            request.setAttribute("exception", ee);
-        } catch (Exception e) {
-            request.setAttribute("exception", e);
-        }
-
-        filterChain.doFilter(request, response);
     }
 
     private String extractTokenFromRequest(HttpServletRequest request) {
@@ -111,5 +114,33 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
             return authorizationHeader.substring(7);
         }
         return null;
+    }
+}
+
+class RefreshedAccessTokenRequestWrapper extends HttpServletRequestWrapper {
+    private final String refreshedAccessToken;
+
+    public RefreshedAccessTokenRequestWrapper(HttpServletRequest request, String refreshedAccessToken) {
+        super(request);
+        this.refreshedAccessToken = refreshedAccessToken;
+    }
+
+    @Override
+    public String getHeader(String name) {
+        if ("Authorization".equalsIgnoreCase(name)) {
+            return "Bearer " + refreshedAccessToken;
+        }
+        return super.getHeader(name);
+    }
+
+    @Override
+    public Enumeration<String> getHeaderNames() {
+        Map<String, String> headerMap = new HashMap<>();
+        Enumeration<String> headerNames = super.getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            String name = headerNames.nextElement();
+            headerMap.put(name, getHeader(name));
+        }
+        return Collections.enumeration(headerMap.keySet());
     }
 }
