@@ -7,6 +7,7 @@ public enum ExceptionCode {
     MEMBER_EXISTS(409, "Member exists"),
     MEMBER_ALREADY_IN_ROOM(404, "MEMBER_ALREADY_IN_ROOM"),
     MEMBER_NOT_ROOMKING(404, "MEMBER_NOT_ROOMKING"),
+    NICKNAME_EXISTS(409, "Nickname Exist"),
     MEMBER_DUPLICATED(404, "MEMBER_DUPLICATED"),
     POST_NOT_FOUND(404, "Post not found"),
     CANNOT_CHANGE_QUESTION(403, "Question can not change"),
