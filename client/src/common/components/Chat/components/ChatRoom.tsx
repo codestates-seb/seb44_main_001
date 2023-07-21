@@ -21,7 +21,7 @@ export default function ChatRoom({
   setMessages,
 }: {
   messages: ChatData[];
-  setMessages: React.Dispatch<React.SetStateAction<object[]>>;
+  setMessages: React.Dispatch<React.SetStateAction<ChatData[]>>;
 }) {
   const [myChat, setMyChat] = useState({ roomId: 0, content: '' });
 
@@ -44,8 +44,6 @@ export default function ChatRoom({
     (state: RootState) => state.chatRoomInfo.roomName,
   );
 
-  const newMessages = messages.slice(1);
-
   const userName = useSelector((state: RootState) => state.myData.nickname);
 
   const chatWrapperRef = useRef<HTMLDivElement>(null);
@@ -57,7 +55,7 @@ export default function ChatRoom({
       enabled: roomId !== 0 && roomId !== undefined,
       onSuccess: (data) => {
         setPrevChat(data.chats);
-        setMessages([{}]);
+        setMessages([]);
       },
     },
   );
@@ -73,7 +71,7 @@ export default function ChatRoom({
 
   useEffect(() => {
     return () => {
-      setMessages([{}]);
+      setMessages([]);
       if (roomId) {
         postOfflineMutation.mutate(roomId);
       }
@@ -85,10 +83,11 @@ export default function ChatRoom({
     if (chatWrapperRef.current) {
       chatWrapperRef.current.scrollTop = chatWrapperRef.current.scrollHeight;
     }
-  }, [roomId, newMessages]);
+  }, [roomId, messages]);
 
   const handleChatPage = () => {
     dispatch(setChatRoomInfo({ roomId: 0, roomName: '' }));
+    postOfflineMutation.mutate(roomId);
   };
 
   const handleChatInput = (event: ChangeEvent<HTMLInputElement>) => {
@@ -116,13 +115,16 @@ export default function ChatRoom({
     roomId !== 0 && (
       <Container>
         <ChatHeader>
-          <BiArrowBack size={24} onClick={handleChatPage} />
-          <h1>
-            {`${roomName} 님과의 채팅방`.length > 20
-              ? `${roomName} 님과의 채팅방`.slice(0, 20)
-              : `${roomName} 님과의 채팅방`}
-          </h1>
+          <div>
+            <BiArrowBack size={24} onClick={handleChatPage} />
+            <h1>
+              {`${roomName} 님과의 채팅방`.length > 20
+                ? `${roomName} 님과의 채팅방`.slice(0, 20)
+                : `${roomName} 님과의 채팅방`}
+            </h1>
+          </div>
           <BsPersonPlusFill size={24} onClick={handleInvitation} />
+          {/* 채팅방 목록 겟요청 응답에 룸타입 생기면 조건 분기 */}
         </ChatHeader>
         <ChatWrapper ref={chatWrapperRef}>
           <Chat>
@@ -159,7 +161,7 @@ export default function ChatRoom({
             })}
           </Chat>
           <Chat>
-            {newMessages.map((message, idx) => {
+            {messages.map((message, idx) => {
               if (message.participantType === 'NOTIFICATION') {
                 return (
                   <Notification key={message.sentTime}>
@@ -215,13 +217,14 @@ const Container = styled.main`
   color: var(--color-black);
   display: flex;
   flex-direction: column;
+  padding: 0;
 `;
 
 const ChatHeader = styled.section`
   position: sticky;
   top: 0;
   display: flex;
-  justify-content: start;
+  justify-content: space-between;
   align-items: center;
   width: 100%;
   padding: 1rem 0.5rem 1rem 0.5rem;
@@ -230,16 +233,26 @@ const ChatHeader = styled.section`
   height: 3rem;
 
   > :first-child {
-    cursor: pointer;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+
+    > :first-child {
+      cursor: pointer;
+    }
+
+    > h1 {
+      margin-left: 1rem;
+      font-size: var(--font-size-s);
+    }
   }
 
-  > h1 {
-    margin-left: 1rem;
-    font-size: var(--font-size-s);
+  > :last-child {
   }
 
   > svg {
     cursor: pointer;
+    color: var(--color-black);
   }
 `;
 
@@ -253,7 +266,6 @@ const Chat = styled.section`
   flex-direction: column;
   justify-content: start;
   align-items: center;
-  height: fit-content;
 `;
 
 const OthersChat = styled.div`
@@ -262,14 +274,14 @@ const OthersChat = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: start;
-  margin-top: 1rem;
+  margin: 0.25rem 0;
 
   > :first-child {
     color: #ff6c6c;
     padding: 0.3rem 0.5rem 0.3rem 0.5rem;
     background: var(--color-pink-3);
     border-radius: 20px;
-    margin: 0.5rem 0 0.2rem 0.5rem;
+    margin: 0 0 0.2rem 0.5rem;
   }
 
   > :last-child {
@@ -291,7 +303,7 @@ const OthersChat = styled.div`
 
     > :last-child {
       font-size: var(--font-size-xs);
-      margin: 0.5rem;
+      margin: 0.5rem 0 0 0.5rem;
     }
   }
 `;
@@ -309,11 +321,11 @@ const MyChat = styled.div`
     justify-content: end;
     flex-wrap: wrap-reverse;
     max-width: calc(100% - 5rem);
-    margin-top: 1rem;
+    margin: 0.25rem 0;
 
     > :first-child {
       font-size: var(--font-size-xs);
-      margin: 0.5rem;
+      margin: 0.5rem 0.5rem 0 0;
     }
 
     > :last-child {
@@ -322,7 +334,7 @@ const MyChat = styled.div`
       border-radius: 20px;
       border: 2px solid var(--color-black);
       margin: 0 0.5rem 0 0;
-      max-width: calc(100% - 0.5rem);
+
       overflow-wrap: break-word;
     }
   }

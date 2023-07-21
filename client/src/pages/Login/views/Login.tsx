@@ -36,8 +36,9 @@ export default function Login() {
     async () => {
       const result = await loginData(`${BASE_URL}/auth/login`, data);
       console.log(result);
-      localStorage.setItem('Authorization', result.token);
+      localStorage.setItem('Authorization', result.accessToken);
       localStorage.setItem('MemberId', result.memberId);
+      localStorage.setItem('RefreshToken', result.refreshToken);
     },
     {
       onSuccess: () => {
@@ -95,17 +96,13 @@ export default function Login() {
 
   const fetchUser = useMutation<void, unknown, number>(
     async (memberId: number) => {
-      const token: string | null = localStorage.getItem('Authorization');
-      const userData = await MyData(
-        `${BASE_URL}/members/${memberId}`,
-        token as string,
-      );
+      const userData = await MyData(`${BASE_URL}/members/${memberId}`);
       dispatch(setMyData(userData));
       console.log(`fetch User!!! : `, userData);
     },
   );
 
-  const handleLogin = (e:React.SyntheticEvent) => {
+  const handleLogin = (e: React.SyntheticEvent) => {
     e.preventDefault();
     loginMutation.mutate(data);
   };

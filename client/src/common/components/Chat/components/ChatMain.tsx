@@ -9,6 +9,8 @@ import { calculateTimeDifference } from '../../../util/timeDifferenceCalculator'
 import { UseQueryResult, useMutation } from 'react-query';
 import deleteRoom from '../api/deleteRoom';
 import { useState } from 'react';
+import { BsFillPlusCircleFill } from 'react-icons/bs';
+import CreateRoomModal from './CreateRoomModal';
 
 export default function ChatMain({
   handleModalClose,
@@ -24,6 +26,8 @@ export default function ChatMain({
   const dispatch = useDispatch();
 
   const [roomToDelete, setRoomToDelete] = useState(0);
+
+  const [createRoomModal, setCreateRoomModal] = useState(false);
 
   const deleteMutation = useMutation(
     'deleteRoom',
@@ -49,10 +53,17 @@ export default function ChatMain({
     setIsDataDifferent(false);
   };
 
+  const handleCreateRoom = () => {
+    setCreateRoomModal(true);
+  };
+
   return (
     <Container>
       <ChatHeader>
-        <h1>채팅방</h1>
+        <div>
+          <h1>채팅방</h1>
+          <BsFillPlusCircleFill size={24} onClick={handleCreateRoom} />
+        </div>
         <MdOutlineClose size={32} onClick={handleModalClose} />
       </ChatHeader>
       <ChatList>
@@ -82,6 +93,10 @@ export default function ChatMain({
           ))}
         </Chat>
       </ChatList>
+      <CreateRoomModal
+        isOpen={createRoomModal}
+        setCreateRoomModal={setCreateRoomModal}
+      />
     </Container>
   );
 }
@@ -110,8 +125,15 @@ const ChatHeader = styled.section`
     font-size: var(--font-size-m);
   }
 
-  > :last-child {
-    cursor: pointer;
+  > :first-child {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    > :last-child {
+      cursor: pointer;
+      margin-left: 1rem;
+    }
   }
 `;
 
