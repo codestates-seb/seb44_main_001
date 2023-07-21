@@ -7,5 +7,6 @@ import lombok.Setter;
 @Setter
 public class ChatroomRegisterDto {
     private Long memberId;
+    private String roomName;
     private String roomType;
 }
