@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -26,6 +27,8 @@ public class MemberChatroom {
     private String roomName;
 
     private Long unreadCount;
+
+    private LocalDateTime lastCheckedTime;
 
     @Enumerated(EnumType.STRING)
     private ChatStatus chatStatus;
@@ -59,12 +62,13 @@ public class MemberChatroom {
         this.unreadCount = 0L;
     }
 
-    public void setOffline(){
-        this.chatStatus = ChatStatus.OFFLINE;
-    }
-
     public void setOnline(){
         this.chatStatus = ChatStatus.ONLINE;
         this.unreadCount = 0L;
+    }
+
+    public void setOffline(){
+        this.chatStatus = ChatStatus.OFFLINE;
+        this.lastCheckedTime = LocalDateTime.now();
     }
 }

@@ -16,15 +16,17 @@ public class RoomResponseDto {
     private Long unreadCount;
     private String lastMessage;
     private LocalDateTime lastSentTime;
+    private LocalDateTime lastCheckedTime;
 
 
     @Builder
-    public RoomResponseDto(Long roomId, String roomName, Long unreadCount, String lastMessage, LocalDateTime lastSentTime) {
+    public RoomResponseDto(Long roomId, String roomName, Long unreadCount, String lastMessage, LocalDateTime lastSentTime, LocalDateTime lastCheckedTime) {
         this.roomId = roomId;
         this.roomName = roomName;
         this.unreadCount = unreadCount;
         this.lastMessage = lastMessage;
         this.lastSentTime = lastSentTime;
+        this.lastCheckedTime = lastCheckedTime;
     }
 
     public static RoomResponseDto from(MemberChatroom memberChatroom) {
@@ -34,6 +36,7 @@ public class RoomResponseDto {
                 .unreadCount(memberChatroom.getUnreadCount())
                 .lastMessage(memberChatroom.getChatroom().getLastMessage())
                 .lastSentTime(memberChatroom.getChatroom().getLastMessageSentTime())
+                .lastCheckedTime(memberChatroom.getLastCheckedTime())
                 .build();
     }
 }

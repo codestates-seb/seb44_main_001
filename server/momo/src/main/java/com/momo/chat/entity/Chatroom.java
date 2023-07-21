@@ -31,8 +31,8 @@ public class Chatroom {
 
     @Getter
     public enum RoomType {
-        PERSONAL("personal"),
-        GROUP("group");
+        PERSONAL("PERSONAL"),
+        GROUP("GROUP");
 
         private String type;
 
@@ -44,8 +44,8 @@ public class Chatroom {
         public String getType() {
             return type;
         }
-    }
 
+    }
     @Builder
     public Chatroom(String name, String lastMessage, LocalDateTime lastMessageSentTime, RoomType roomType) {
         this.name = name;
@@ -54,20 +54,9 @@ public class Chatroom {
         this.roomType = roomType;
     }
 
-    @Builder
-    public Chatroom(String name, String lastMessage, LocalDateTime lastMessageSentTime) {
-        this.name = name;
-        this.lastMessage = lastMessage;
-        this.lastMessageSentTime = lastMessageSentTime;
+    public void changeName(String roomName) {
+        this.name = roomName;
     }
-
-    @Builder
-    public Chatroom(String name) {
-        this.name = name;
-    }
-
-
-
 
     public void addRoomKing(Member member) {
         this.roomKing = member;
