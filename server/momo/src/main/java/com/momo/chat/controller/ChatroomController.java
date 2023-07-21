@@ -23,11 +23,22 @@ public class ChatroomController {
     public Long createRoom(@RequestBody ChatroomRegisterDto chatroomRegisterDto) {
         Long memberId = MemberInterceptor.currentMemberStore.get();
         Long otherMemberId = chatroomRegisterDto.getMemberId();
+        String roomName = chatroomRegisterDto.getRoomName();
         String roomType = chatroomRegisterDto.getRoomType();
 
-        Chatroom chatroom = chatroomService.createChatroom(memberId, otherMemberId, roomType);
+        Chatroom chatroom = chatroomService.createChatroom(memberId, otherMemberId, roomName, roomType);
 
         return chatroom.getChatroomId();
+    }
+
+    @PostMapping("/invite")
+    public ResponseEntity inviteMember(@RequestBody ChatroomInviteDto inviteDto) {
+        Long memberId = MemberInterceptor.currentMemberStore.get();
+        Long roomId = inviteDto.getRoomId();
+        Long otherMemberId = inviteDto.getMemberId();
+
+        chatroomService.inviteMember(memberId, otherMemberId, roomId);
+        return ResponseEntity.ok().build();
     }
 //
     @GetMapping("/list")
