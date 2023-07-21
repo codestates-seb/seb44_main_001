@@ -25,9 +25,12 @@ export const GlobalStyle = createGlobalStyle`
   }
   main {
     padding-bottom: 6rem;
+    height: 100%;
   }
   button{
     cursor: pointer;
+    background-color: transparent;
+    border: none;
   }
   :root { 
   /* Color */

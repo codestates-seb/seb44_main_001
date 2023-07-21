@@ -29,6 +29,7 @@ import Modal from 'react-modal';
 import { ModalStyle } from '../ModalStyle';
 import ModalMain from '../components/ModalMain';
 import { patchMyDataInfo } from '../api/patchMyDataInfo';
+import { AxiosError } from 'axios';
 
 export default function UserEdit() {
   const dispatch = useDispatch();
@@ -36,7 +37,6 @@ export default function UserEdit() {
 
   // const user: Member = useSelector((state: RootState) => state.member);
   const myData = useSelector((state: RootState) => state.myData);
-  // console.log('!!!!', myData);
   const location = useSelector((state: RootState) => state.location);
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
@@ -44,7 +44,7 @@ export default function UserEdit() {
   const [welcomeMsg, setWelcomeMsg] = useState(myData.welcomeMsg);
   const [uploadedImage, setUploadedImage] = useState<string>('');
   const [uploadedFile, setUploadedFile] = useState<File | null | string>(null); // 파일 상태 변수 추가
-
+  const [isValidate, setIsValidate] = useState(true);
   // const [editLocation,setEditLocation]= useSelector(myData.location);
   // const [isSelected, setIsSelected] = useState(false);
   // 전역 설정을 안한다면? 이거 지워도 되나??
@@ -103,7 +103,7 @@ export default function UserEdit() {
       },
     );
 
-  const patchInfoMutation: UseMutationResult<void, unknown, MemberPatchDto> =
+  const patchInfoMutation: UseMutationResult<void, AxiosError, MemberPatchDto> =
     useMutation(
       (memberPatchDto) => {
         const url = `${BASE_URL}/members/${myData.memberId}`;
@@ -115,7 +115,11 @@ export default function UserEdit() {
           navigate(`/user/${myData.memberId}`);
         },
         onError: (error) => {
-          console.error(error);
+          if (error.response?.status === 500) {
+            setIsValidate(false);
+          } else {
+            console.error(error);
+          }
         },
       },
     );
@@ -135,8 +139,8 @@ export default function UserEdit() {
     }
     const editedInfo: EditMember = {
       memberPatchDto: {
-        welcomeMsg: welcomeMsg,
-        nickname: nickname,
+        ...(myData.nickname === nickname ? {} : { nickname }),
+        ...(myData.welcomeMsg === welcomeMsg ? {} : { welcomeMsg }),
         locationId: location.locationId,
       },
       file: uploadedFile,
@@ -171,17 +175,25 @@ export default function UserEdit() {
                   onChange={handleImgChange}
                 />
               </ImgEditButton>
-              <div>이메일 주소</div>
-              <div>{myData.email}</div>
             </ImageContainer>
             <InputContainer>
+              <InputBox>
+                <Text>이메일 주소</Text>
+                <TextInput
+                  value={myData.email}
+                  isValidate={true}
+                  onChange={handleNicknameChange}
+                  disabled
+                />
+              </InputBox>
               <InputBox>
                 <Text>닉네임</Text>
                 <TextInput
                   value={nickname}
-                  isValidate={true}
+                  isValidate={isValidate}
                   onChange={handleNicknameChange}
                 />
+                {isValidate || <Message>중복된 닉네임 입니다.</Message>}
               </InputBox>
               <InputBox>
                 <Text>지역</Text>
@@ -226,7 +238,6 @@ const ProfileImage = styled.img`
   width: 11.1rem;
   height: 11.1rem;
   border-radius: 50%;
-  border: 2px solid var(--color-black);
 `;
 
 const ImgEditButton = styled.button`
@@ -254,4 +265,8 @@ const BtnContainer = styled.div`
   & :first-child {
     margin-right: 1rem;
   }
+`;
+
+const Message = styled.div`
+  margin-top: 1rem;
 `;
