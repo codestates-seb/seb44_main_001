@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export default async function postOffline(url: string) {
+export default async function getUserNickname(url: string) {
   try {
     const token = localStorage.getItem('Authorization');
 
@@ -9,8 +9,9 @@ export default async function postOffline(url: string) {
       'ngrok-skip-browser-warning': '69420',
     };
 
-    const res = await axios.post(url, null, { headers });
+    const res = await axios.get(url, { headers });
     console.log(res);
+    return res.data;
   } catch (err) {
     console.log(err);
   }

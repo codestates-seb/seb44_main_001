@@ -9,7 +9,7 @@ export default async function postOnline(url: string) {
       'ngrok-skip-browser-warning': '69420',
     };
 
-    const res = await axios.post(url, { headers });
+    const res = await axios.post(url, null, { headers });
     console.log(res);
   } catch (err) {
     console.log(err);

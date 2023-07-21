@@ -149,9 +149,12 @@ export default function CommentList() {
                   <>
                     <CommentInfo>
                       <div>
+                        {data.memberInfo.image}
+                        {/* 머지하고 댓글 등록 되는지 확인 후 css 수정 */}
                         {data.isPostWriter
                           ? `${data.memberInfo.nickname} (작성자)`
                           : data.memberInfo.nickname}
+                        {/* 호버시 모달 뜨게끔 수정 */}
                       </div>
                       {data.editedAt === data.createdAt ? (
                         <div>{calculateTimeDifference(data.createdAt)}</div>
@@ -257,6 +260,7 @@ const CommentContent = styled.div`
     width: 90%;
     display: flex;
     justify-content: start;
+    text-align: start;
   }
 `;
 

@@ -1,13 +1,13 @@
 import ReactModal from 'react-modal';
 
-export const modalStyle: ReactModal.Styles = {
+export const articleModalStyle: ReactModal.Styles = {
   overlay: {
     position: 'absolute',
     backgroundColor: 'var(--color-white)',
     top: '26rem',
     left: 'calc((100% - 46rem)/2)',
-    width: '6rem',
-    height: '4rem',
+    width: '8rem',
+    height: '7rem',
     zIndex: 1000,
     borderRadius: '5px',
   },
@@ -20,8 +20,8 @@ export const modalStyle: ReactModal.Styles = {
     overflow: 'auto',
     top: '0',
     left: '0',
-    width: '6rem',
-    height: '4rem',
+    width: '8rem',
+    height: '7rem',
     WebkitOverflowScrolling: 'touch',
     borderRadius: '5px',
     outline: 'none',

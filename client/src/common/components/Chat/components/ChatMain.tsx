@@ -3,26 +3,36 @@ import { MdOutlineClose } from 'react-icons/md';
 import { AiFillDelete } from 'react-icons/ai';
 import { useDispatch } from 'react-redux';
 import { setChatRoomInfo } from '../../../store/ChatRoomInfoStore';
-import { Room } from '../../../type';
+import { ChatRoomData, Room } from '../../../type';
 import { BASE_URL } from '../../../util/constantValue';
 import { calculateTimeDifference } from '../../../util/timeDifferenceCalculator';
-import { useMutation } from 'react-query';
+import { UseQueryResult, useMutation } from 'react-query';
 import deleteRoom from '../api/deleteRoom';
 import { useState } from 'react';
 
 export default function ChatMain({
   handleModalClose,
   prevRoom,
+  getRoomQuery,
+  setIsDataDifferent,
 }: {
   handleModalClose: () => void;
   prevRoom: Room[];
+  getRoomQuery: UseQueryResult<ChatRoomData, unknown>;
+  setIsDataDifferent: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const dispatch = useDispatch();
 
   const [roomToDelete, setRoomToDelete] = useState(0);
 
-  const deleteMutation = useMutation('deleteRoom', () =>
-    deleteRoom(`${BASE_URL}/rooms/${roomToDelete}`),
+  const deleteMutation = useMutation(
+    'deleteRoom',
+    () => deleteRoom(`${BASE_URL}/rooms/${roomToDelete}`),
+    {
+      onSuccess: () => {
+        getRoomQuery.refetch();
+      },
+    },
   );
 
   const handleChatRoomClick = (room: Room) => {
@@ -33,8 +43,10 @@ export default function ChatMain({
     setRoomToDelete(roomId);
   };
 
-  const handleDelete = () => {
+  const handleDelete = (event: MouseEvent) => {
+    event.stopPropagation();
     deleteMutation.mutate();
+    setIsDataDifferent(false);
   };
 
   return (
@@ -50,9 +62,7 @@ export default function ChatMain({
               <div>
                 <div>
                   <div>{room.roomName}</div>
-                  {/* {room.lastCheckTime < room.lastSentTime && (
-                    <div>{CHAT_NOTICE}</div>
-                  )} */}
+                  {room.unreadCount !== 0 && <div>{room.unreadCount}</div>}
                 </div>
                 <div>{calculateTimeDifference(room.lastSentTime)}</div>
               </div>

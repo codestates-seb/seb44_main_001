@@ -172,11 +172,11 @@ const Head = styled.header`
   color: var(--color-black);
 
   .margin-small {
-    margin: 10px;
+    margin: 10px 0 10px 10px;
   }
 
   .margin-left {
-    margin-left: 10px;
+    margin-left: 20px;
   }
 
   .icon {
