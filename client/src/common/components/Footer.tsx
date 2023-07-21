@@ -3,14 +3,14 @@ import { styled } from 'styled-components';
 interface LinkWithTooltipProps {
   $image: string;
   backgroundImage?: string;
-  key:string;
-  href:string;
-  target:string;
+  key: string;
+  href: string;
+  target: string;
 }
 
 export default function Footer() {
   const githubUrl = 'https://github.com/';
-  const users = [
+  const feTeam = [
     {
       name: '김진솔',
       github: 'jinsoul75',
@@ -26,10 +26,13 @@ export default function Footer() {
       github: 'shyesoo',
       image: 'https://avatars.githubusercontent.com/u/101123722?v=4',
     },
+  ];
+
+  const beTeam = [
     {
       name: '김윤',
       github: 'Yooney1',
-      image: '',
+      image: 'https://avatars.githubusercontent.com/u/124560300?v=4',
     },
     {
       name: '최우형',
@@ -39,14 +42,26 @@ export default function Footer() {
     {
       name: '조명인',
       github: 'myoungincho729',
-      image: '',
+      image: 'https://avatars.githubusercontent.com/u/104813146?v=4',
     },
   ];
+
   return (
     <Wapper>
       <Content>
         Copyright 2023. [ FE{' '}
-        {users.map((user) => (
+        {feTeam.map((user) => (
+          <LinkWithTooltip
+            key={user.github}
+            href={`${githubUrl}${user.github}`}
+            target="_blank"
+            $image={user.image}
+          >
+            {`${user.name} `}
+          </LinkWithTooltip>
+        ))}{' '}
+        BE{' '}
+        {beTeam.map((user) => (
           <LinkWithTooltip
             key={user.github}
             href={`${githubUrl}${user.github}`}
@@ -55,8 +70,7 @@ export default function Footer() {
           >
             {user.name}
           </LinkWithTooltip>
-        ))}/
-
+        ))}
         ]. All rights reserved.
       </Content>
     </Wapper>
