@@ -11,6 +11,8 @@ import com.momo.post.dto.*;
 import com.momo.post.entity.Post;
 import com.momo.post.mapper.PostMapper;
 import com.momo.post.repository.PostRepository;
+import com.momo.postlike.entity.PostLike;
+import com.momo.postlike.repository.PostLikeRepository;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -29,14 +31,17 @@ public class PostService {
     private final MemberRepository memberRepository;
     private final CategoryRepository categoryRepository;
     private final LocationRepository locationRepository;
+    private final PostLikeRepository postLikeRepository;
 
-    public PostService(PostRepository postRepository, PostMapper postMapper, MemberRepository memberRepository, CategoryRepository categoryRepository, LocationRepository locationRepository) {
+    public PostService(PostRepository postRepository, PostMapper postMapper, MemberRepository memberRepository, CategoryRepository categoryRepository, LocationRepository locationRepository, PostLikeRepository postLikeRepository) {
         this.postRepository = postRepository;
         this.postMapper = postMapper;
         this.memberRepository = memberRepository;
         this.categoryRepository = categoryRepository;
         this.locationRepository = locationRepository;
+        this.postLikeRepository = postLikeRepository;
     }
+
     private PostResponseDto createPostResponseDto(Post post) {
         PostResponseDto responseDto = postMapper.postToPostResponseDto(post);
         responseDto.setMemberInfo(MemberInfo.builder()
@@ -432,5 +437,57 @@ public class PostService {
         return postPage.getContent().stream()
                 .map(this::createPostResponseDto)
                 .collect(Collectors.toList());
+    }
+    public List<PostResponseDto> getPostLikedByMember(Long memberId) {
+        List<PostLike> likedPosts = postLikeRepository.findByMember_MemberIdAndIsLikedTrue(memberId);
+        List<PostResponseDto> postResponseDtos = new ArrayList<>();
+
+        for (PostLike postLike : likedPosts) {
+            Post post = postLike.getPost();
+
+            MemberInfo memberInfo = MemberInfo.builder()
+                    .memberId(post.getMember().getMemberId())
+                    .nickname(post.getMember().getNickname())
+                    .profileImage(post.getMember().getProfileImage())
+                    .build();
+
+            CategoryInfo categoryInfo = CategoryInfo.builder()
+                    .categoryId(post.getCategory().getCategoryId())
+                    .name(post.getCategory().getName())
+                    .build();
+
+            LocationInfo locationInfo = LocationInfo.builder()
+                    .locationId(post.getLocation().getLocationId())
+                    .city(post.getLocation().getCity())
+                    .province(post.getLocation().getProvince())
+                    .build();
+
+            // 태그 정보
+            List<String> tags = post.getTags();
+
+            // 좋아요 여부
+            boolean isLiked = true;
+
+            // 좋아요 수
+            Long postLikeCount = post.getPostLikeCount();
+
+            PostResponseDto postResponseDto = new PostResponseDto(
+                    post.getPostId(),
+                    post.getTitle(),
+                    post.getContent(),
+                    post.getCreatedAt(),
+                    post.getEditedAt(),
+                    categoryInfo,
+                    locationInfo,
+                    memberInfo,
+                    tags,
+                    isLiked,
+                    postLikeCount
+            );
+
+            postResponseDtos.add(postResponseDto);
+        }
+
+        return postResponseDtos;
     }
 }

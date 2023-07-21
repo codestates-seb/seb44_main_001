@@ -1,5 +1,9 @@
 package com.momo.postlike.service;
 
+import com.momo.post.dto.CategoryInfo;
+import com.momo.post.dto.LocationInfo;
+import com.momo.post.dto.MemberInfo;
+import com.momo.post.dto.PostResponseDto;
 import com.momo.post.entity.Post;
 import com.momo.postlike.dto.PostLikeResponseDto;
 import com.momo.member.repository.MemberRepository;
@@ -10,7 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -46,7 +52,7 @@ public class PostLikeService {
         Post post = postRepository.getById(postId);
         postLike.setPost(post);
         postLike.setMember(memberRepository.getById(memberId));
-        postLike.setLiked(isLiked);
+        postLike.setLiked(true); // 좋아요를 누를 때 is_liked를 true로 설정
         postLikeRepository.save(postLike);
 
         // 게시글의 좋아요 개수 갱신
@@ -70,6 +76,7 @@ public class PostLikeService {
             updatePostLikeCount(postId);
         }
     }
+
     private void updatePostLikeCount(Long postId) {
         long likeCount = postLikeRepository.countByPost_PostId(postId);
         Post post = postRepository.getById(postId);
