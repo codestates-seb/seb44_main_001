@@ -11,7 +11,20 @@ import pinkWave2 from '../../../common/assets/images/pinkWave2.svg';
 import category from '../../../common/assets/images/categoryImg.png';
 import MovingTag from './MovingTag';
 import { Layout } from '../../../common/style';
+import {
+  GoogleBtn,
+  KakaoBtn,
+  ModalButton,
+} from '../../../common/components/Header';
+import kakao from '../../../common/assets/logo/kakao-logo.png';
+import google from '../../../common/assets/logo/google-logo.png';
+import momo from '../../../common/assets/logo/onlyPeach.svg';
+import { BASE_URL } from '../../../common/util/constantValue';
+
 export default function Home() {
+  const kakaoLink = `${BASE_URL}/oauth2/authorization/kakao`;
+  const googleLink = `${BASE_URL}/oauth2/authorization/google`;
+
   return (
     <Layout>
       <Wrapper>
@@ -19,16 +32,41 @@ export default function Home() {
           <TextContainer>
             <TextBox>
               <h1 style={{ margin: '10px' }}>🔊&nbsp;모모할 친구 구해요~!</h1>
-              <h3 style={{ marginBottom: '20px' }}>
-                모모 커뮤니티에서 원하는 사람을 모집해보아요.
-              </h3>
+              <h3>모모 커뮤니티에서 원하는 사람을 모집해보아요.</h3>
               <LinkContainer>
-                <TextStyle>아직 가입하지 않으셨다면?&nbsp;👉</TextStyle>
-                <Link to="/signup">
-                  <LinkStyle>가입하기</LinkStyle>
-                </Link>
+                <TextStyle>아직 가입하지 않으셨다면?</TextStyle>
+                <BtnContainer>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignContent: 'center',
+                      width: '200px',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <NormalBtnBox to="/signup">
+                      <ModalButton style={{ width: '50px' }}>
+                        <img src={momo} style={{ height: '25px' }} />
+                        <Tooltip1>일반 회원가입하기</Tooltip1>
+                      </ModalButton>
+                    </NormalBtnBox>
+                    <KakaoBtn2 href={kakaoLink}>
+                      <KakaoBtn style={{ width: '50px' }}>
+                        <img src={kakao} style={{ height: '20px' }} />
+                        <Tooltip2>카카오톡으로 간편 가입하기</Tooltip2>
+                      </KakaoBtn>
+                    </KakaoBtn2>
+                    <GoogleBtn2 href={googleLink}>
+                      <GoogleBtn style={{ width: '50px' }}>
+                        <img src={google} style={{ height: '20px' }} />
+                        <Tooltip3>구글계정으로 간편 가입하기</Tooltip3>
+                      </GoogleBtn>
+                    </GoogleBtn2>
+                  </div>
+                </BtnContainer>
               </LinkContainer>
-              <LinkContainer>
+              <LinkContainer style={{ flexDirection: 'row' }}>
                 <TextStyle>이미 모모의 회원이세요?&nbsp;👉</TextStyle>
                 <Link to="/login">
                   <LinkStyle>로그인하기</LinkStyle>
@@ -127,6 +165,7 @@ const Wrapper = styled.div`
 
 const Page1 = styled(Wrapper)`
   margin-top: 50px;
+  margin-bottom: 50px;
   flex-direction: row;
   padding: 50px;
 `;
@@ -163,7 +202,7 @@ const TextBox = styled.div`
   color: var(--color-black);
   font-family: 'BR-Bold';
   min-width: 500px;
-  height: 300px;
+
   padding: 50px;
 `;
 
@@ -178,6 +217,7 @@ const Tail = styled.div`
 
 const LinkContainer = styled.div`
   display: flex;
+  flex-direction: column;
   align-items: center;
   margin-top: 20px;
 `;
@@ -262,4 +302,50 @@ const AllTagContainer = styled.div`
   height: 260px;
   margin-top: 30px;
   background-color: var(--color-pink-1);
+`;
+
+const BtnContainer = styled.div`
+  position: relative;
+`;
+
+const Tooltip1 = styled.div`
+  visibility: hidden;
+  position: absolute;
+  font-size: 10px;
+  color: white;
+  background-color: var(--color-pink-1);
+  border-radius: 5px;
+  padding: 5px;
+  z-index: 1;
+  top: calc(100% + 5px);
+  word-wrap: none;
+  white-space: nowrap;
+`;
+
+const Tooltip2 = styled(Tooltip1)`
+  background-color: #fef01b;
+  color: var(--color-black);
+`;
+
+const Tooltip3 = styled(Tooltip1)`
+  background-color: #4175df;
+`;
+
+const NormalBtnBox = styled(Link)`
+  position: relative;
+  :hover ${Tooltip1} {
+    visibility: visible;
+  }
+`;
+
+const KakaoBtn2 = styled.a`
+  :hover ${Tooltip2} {
+    visibility: visible;
+  }
+`;
+
+const GoogleBtn2 = styled.a`
+  :hover ${Tooltip3} {
+    visibility: visible;
+  }
 `;

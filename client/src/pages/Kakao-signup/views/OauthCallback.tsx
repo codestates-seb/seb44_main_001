@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export default function KakaoCallback() {
+export default function OauthCallback() {
   const navigation = useNavigate();
 
   useEffect(() => {
@@ -15,7 +15,7 @@ export default function KakaoCallback() {
       localStorage.setItem('Authorization', token);
       localStorage.setItem('memberId', memberId);
 
-      navigation('/kakao-signup');
+      navigation('/oauth-signup');
     } else {
       console.log('오예스 실패! err!');
       navigation('/err');
