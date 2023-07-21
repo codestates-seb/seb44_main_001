@@ -1,4 +1,4 @@
-import { styled } from 'styled-components';
+import { keyframes, styled } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { CardData, MemberInfo } from '../type';
 import profile from '../assets/profile.svg';
@@ -26,13 +26,13 @@ export default function Card({
         <span className="nickname">{nickname}</span>
       </UserInfo>
       <Content>
-          <div className="title">{title}</div>
-          <div className="content">
-            {content.length >= 90 ? `${content?.slice(0, 75)}...` : content}
-          </div>
+        <div className="title">{title}</div>
+        <div className="content">
+          {content.length >= 90 ? `${content?.slice(0, 75)}...` : content}
+        </div>
       </Content>
       <TagSection>
-        {tags.slice(0,4).map((tag:string) => (
+        {tags.slice(0, 4).map((tag: string) => (
           <div key={tag}>{`#${tag}`}</div>
         ))}
       </TagSection>
@@ -43,6 +43,16 @@ export default function Card({
     </Wrapper>
   );
 }
+const slideDownAnimation = keyframes`
+  from {
+    transform: translateY(15%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+`;
 
 const Wrapper = styled(Link)`
   display: flex;
@@ -53,11 +63,15 @@ const Wrapper = styled(Link)`
   border: 2px solid var(--color-black);
   border-radius: 10px;
   padding: 1.5rem;
+  transition: transform 0.3s ease-out;
+  animation: ${slideDownAnimation} 0.5s ease-in-out;
   * {
     color: var(--color-black);
   }
   &:hover {
     border-color: var(--color-pink-1);
+    transform: translate(-5px, -5px);
+    box-shadow: 3px 3px 5px var(--color-pink-2);
   }
 `;
 

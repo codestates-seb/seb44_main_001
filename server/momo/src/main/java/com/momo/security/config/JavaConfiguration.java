@@ -1,5 +1,6 @@
 package com.momo.security.config;
 
+import com.momo.location.repository.LocationRepository;
 import com.momo.member.repository.MemberRepository;
 import com.momo.member.service.MemberService;
 import com.momo.security.utils.MomoAuthorityUtils;
@@ -12,7 +13,8 @@ public class JavaConfiguration {
     @Bean
     public MemberService dbMemberService(MemberRepository memberRepository,
                                          PasswordEncoder passwordEncoder,
-                                         MomoAuthorityUtils authorityUtils) {
-        return new MemberService(memberRepository, passwordEncoder, authorityUtils);
+                                         MomoAuthorityUtils authorityUtils,
+                                         LocationRepository locationRepository) {
+        return new MemberService(memberRepository, passwordEncoder, authorityUtils, locationRepository);
     }
 }

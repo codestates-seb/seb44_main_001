@@ -14,7 +14,7 @@ import {
 } from 'react-query';
 import { ChangeEvent, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getComment } from '../api/getComment';
+import getComment from '../api/getComment';
 import {
   CommentListToGet,
   CommentToGet,
@@ -26,7 +26,7 @@ import { MdModeEditOutline } from 'react-icons/md';
 import deleteComment from '../api/deleteComment';
 import Button from '../../../common/components/Button';
 import patchComment from '../api/patchComment';
-import { calculateTimeDifference } from '../../../common/util/timeCalculator';
+import { calculateTimeDifference } from '../../../common/util/timeDifferenceCalculator';
 
 export default function CommentList() {
   const queryClient = useQueryClient();
@@ -149,9 +149,12 @@ export default function CommentList() {
                   <>
                     <CommentInfo>
                       <div>
+                        {data.memberInfo.image}
+                        {/* 머지하고 댓글 등록 되는지 확인 후 css 수정 */}
                         {data.isPostWriter
                           ? `${data.memberInfo.nickname} (작성자)`
                           : data.memberInfo.nickname}
+                        {/* 호버시 모달 뜨게끔 수정 */}
                       </div>
                       {data.editedAt === data.createdAt ? (
                         <div>{calculateTimeDifference(data.createdAt)}</div>
@@ -257,6 +260,7 @@ const CommentContent = styled.div`
     width: 90%;
     display: flex;
     justify-content: start;
+    text-align: start;
   }
 `;
 

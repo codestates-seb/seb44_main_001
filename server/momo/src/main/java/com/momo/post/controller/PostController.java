@@ -5,6 +5,7 @@ import com.momo.post.dto.PostPatchDto;
 import com.momo.post.dto.PostPostDto;
 import com.momo.post.dto.PostResponseDto;
 import com.momo.post.service.PostService;
+import com.momo.postlike.service.PostLikeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,19 +17,28 @@ import java.util.List;
 @RequestMapping("/posts")
 public class PostController {
     private final PostService postService;
-
+    private final PostLikeService postLikeService;
     @Autowired
-    public PostController(PostService postService) {
+    public PostController(PostService postService, PostLikeService postLikeService) {
         this.postService = postService;
+        this.postLikeService = postLikeService;
     }
+
 
     @GetMapping("/{postId}")
     public ResponseEntity<PostResponseDto> getPostById(
             @PathVariable Long postId,
-            @RequestParam(defaultValue = "1") int page
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(required = false) Long memberId
     ) {
         try {
             PostResponseDto responseDto = postService.getPostById(postId, page);
+
+            if (memberId != null) {
+                boolean isLiked = postLikeService.isPostLikedByMember(postId, memberId);
+                responseDto.setLiked(isLiked);
+            }
+
             return new ResponseEntity<>(responseDto, HttpStatus.OK);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

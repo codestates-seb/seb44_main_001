@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 export default async function getMember(url: string, token: string) {
-  try {
     const headers = {
       'ngrok-skip-browser-warning': '69420',
       Authorization: `${token}`,
@@ -12,8 +11,4 @@ export default async function getMember(url: string, token: string) {
     console.log(res);
 
     return res.data;
-  } catch (err) {
-    console.log(err);
-    return { err };
-  }
 }

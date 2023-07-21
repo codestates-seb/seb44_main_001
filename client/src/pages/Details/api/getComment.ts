@@ -1,8 +1,13 @@
 import axios from 'axios';
 
-export async function getComment(url: string) {
+export default async function getComment(url: string) {
   try {
-    const headers = { 'ngrok-skip-browser-warning': '69420' };
+    const token = localStorage.getItem('Authorization');
+
+    const headers = {
+      Authorization: token,
+      'ngrok-skip-browser-warning': '69420',
+    };
 
     const res = await axios.get(url, {
       headers,

@@ -15,13 +15,15 @@ import getMember from '../api/getMember';
 import ChatButton from '../../../common/components/Chat/views/ChatModal';
 import { PiMapPinBold } from 'react-icons/pi';
 import { setUserData } from '../store/MemberStore';
+import UserPostsCards from '../components/UserPostsCards';
 
 export default function User() {
-  const params = useParams<{ memberId: string }>();
-  const { memberId } = params;
+  const navigate = useNavigate();
 
-  // const token: string = useSelector((state: RootState) => state.token.token); 이 부분을 아래처럼 수정
+  const memberId = useParams().memberId || '';
+
   const token: string | null = localStorage.getItem('Authorization');
+
   const data = useSelector((state: RootState) => state.member);
 
   const dispatch = useDispatch();
@@ -37,17 +39,29 @@ export default function User() {
   }, [storedMemberId, data]);
 
   const fetchUser = useMutation<void, unknown, number>(
-    async (memberId: number) => {
-      const userData = await getMember(
+    (memberId: number) => {
+      return getMember(
         `${BASE_URL}/members/${memberId}`,
         token as string,
       );
-      dispatch(setUserData(userData));
-      console.log(`fetch User!!! : `, userData);
     },
+    {
+      onSuccess: (data) => {
+        dispatch(setUserData(data));
+        console.log(`fetch User!!! : `, data);
+      },
+      onError: () => {
+        alert("존재하지 않는 회원입니다!");
+        navigate(-1);
+      }
+    }
   );
-
+  
   useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
     if (memberId) {
       const numberId = parseInt(memberId, 10);
       fetchUser.mutate(numberId, {
@@ -62,46 +76,57 @@ export default function User() {
     if (!memberId) {
       console.log('memberId is not found!!');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [memberId]);
 
   return (
-    <div>
-      {data ? (
-        <>
-          <SemiHeader title={`${data.nickname} 의 프로필`} content="" />
-          <Layout>
-            <Background>
-              <ProfileContainer>
-                <ProfileContentBox style={{ display: 'flex' }}>
-                  <ProfileImg
-                    src={data.profileImage ? `${data.profileImage}` : profile}
-                  />
-                  <ProfileBox>
-                    <ProfileItem style={{ fontSize: 'x-large' }}>
-                      {data.nickname}
-                    </ProfileItem>
-                    <ProfileItem style={{ display: 'flex' }}>
-                      <LocationIcon />
-                      &nbsp;
-                      <div>{data.location}</div>
-                    </ProfileItem>
-                    <ProfileItem>{data.isMale ? `남자` : `여자`}</ProfileItem>
-                    <ProfileItem>{`${data.age}년생`}</ProfileItem>
-                  </ProfileBox>
-                </ProfileContentBox>
-                {isMine ? <Button children={'프로필 수정'} /> : <>&nbsp;</>}
-              </ProfileContainer>
-              <MsgBox>
-                <div>{data.welcomeMsg}</div>
-              </MsgBox>
-            </Background>
-            <ChatButton />
-          </Layout>
-        </>
-      ) : (
-        <p>로드 중...</p>
-      )}
-    </div>
+    <main>
+      <div>
+        {data ? (
+          <>
+            <SemiHeader title={`${data.nickname} 의 프로필`} content="" />
+            <Layout>
+              <Background>
+                <ProfileContainer>
+                  <ProfileContentBox style={{ display: 'flex' }}>
+                    <ProfileImg
+                      src={data.profileImage ? `${data.profileImage}` : profile}
+                    />
+                    <ProfileBox>
+                      <ProfileItem style={{ fontSize: 'x-large' }}>
+                        {data.nickname}
+                      </ProfileItem>
+                      <ProfileItem style={{ display: 'flex' }}>
+                        <LocationIcon />
+                        &nbsp;
+                        <div>{`${data.location.city} ${data.location.province}`}</div>
+                      </ProfileItem>
+                      <ProfileItem>{data.isMale ? `남자` : `여자`}</ProfileItem>
+                      <ProfileItem>{`${data.age}년생`}</ProfileItem>
+                    </ProfileBox>
+                  </ProfileContentBox>
+                  {isMine ? (
+                    <Button
+                      onClick={() => navigate('/user/edit')}
+                      children={'프로필 수정'}
+                    />
+                  ) : (
+                    <>&nbsp;</>
+                  )}
+                </ProfileContainer>
+                <MsgBox>
+                  <div>{data.welcomeMsg}</div>
+                </MsgBox>
+              </Background>
+              <ChatButton />
+            </Layout>
+          </>
+        ) : (
+          <p>로드 중...</p>
+        )}
+      </div>
+      <UserPostsCards memberId={memberId} nickname={data.nickname} />
+    </main>
   );
 }
 
@@ -115,6 +140,8 @@ export const ProfileContainer = styled.div`
 
 const ProfileImg = styled.img`
   width: 10rem;
+  height: 10rem;
+  border-radius: 50%;
   margin-right: 2rem;
 `;
 const ProfileBox = styled.div`

@@ -7,7 +7,7 @@ import { Layout } from '../../../common/style';
 import SemiHeader from '../../../common/components/SemiHeader';
 import { Background, Text, TextInput } from '../../Signup/views/Signup';
 import { RootState } from '../../../common/store/RootStore';
-import { LoginData, Member } from '../../../common/type';
+import { LoginData } from '../../../common/type';
 import loginData from '../api/postLogin';
 
 import { setLoginUser } from '../store/LoginUser';
@@ -40,7 +40,7 @@ export default function Login() {
       localStorage.setItem('MemberId', result.memberId);
     },
     {
-      onSuccess: async () => {
+      onSuccess: () => {
         const storedToken = localStorage.getItem('Authorization');
         const storedMemberId = localStorage.getItem('MemberId');
         console.log('storedToken: ', storedToken);
@@ -56,7 +56,7 @@ export default function Login() {
             }),
           );
 
-          await fetchUser.mutate(memberId, {
+          fetchUser.mutate(memberId, {
             // 이 부분을 추가하세요.
             onSuccess: () => {
               console.log('UserData fetched successfully');
@@ -66,7 +66,8 @@ export default function Login() {
             },
           });
 
-          navigation(`/user/${memberId}`, { state: memberId });
+          // navigation(`/user/${memberId}`, { state: memberId });
+          navigation('/lists');
         } else {
           // 토큰과 memberId 가져오기 실패
           dispatch(setTokenData({ token: '', memberId: 0 }));
@@ -97,8 +98,9 @@ export default function Login() {
     },
   );
 
-  const handleLogin = async () => {
-    await loginMutation.mutate(data);
+  const handleLogin = (e:React.SyntheticEvent) => {
+    e.preventDefault();
+    loginMutation.mutate(data);
   };
 
   return (
@@ -111,7 +113,7 @@ export default function Login() {
             카카오톡&nbsp;로그인
           </KakaoBtn>
           <Background style={{ marginTop: '20px', width: '30rem' }}>
-            <ContentWrapper>
+            <ContentWrapper onSubmit={handleLogin}>
               <InputBox>
                 <Text>이메일</Text>
                 <TextInput
@@ -119,6 +121,7 @@ export default function Login() {
                   style={{ width: '300px' }}
                   onChange={handleUsernameChange}
                   isValidate={true}
+                  type="text"
                 />
               </InputBox>
               <InputBox>
@@ -131,7 +134,7 @@ export default function Login() {
                 />
               </InputBox>
               <div style={{ padding: '10px' }}></div>
-              <Button children={'로그인'} onClick={handleLogin} />
+              <Button children={'로그인'} type="submit" />
               <div
                 style={{
                   display: 'flex',
@@ -154,7 +157,7 @@ export default function Login() {
   );
 }
 
-const ContentWrapper = styled.div`
+const ContentWrapper = styled.form`
   display: flex;
   flex-direction: column;
   justify-content: center;

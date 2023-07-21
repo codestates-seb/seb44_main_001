@@ -13,7 +13,7 @@ export const getData = async (
       ...(selectedCategory && { categoryId: selectedCategory }),
       locationId: selectedLocation,
       page: pageParam,
-      pageSize: 12,
+      pageSize: 9,
     },
     headers: {
       'ngrok-skip-browser-warning': '69420',
