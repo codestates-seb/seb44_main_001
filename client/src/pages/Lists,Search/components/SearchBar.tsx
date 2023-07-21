@@ -1,4 +1,4 @@
-import { SetStateAction, useState } from 'react';
+import { CSSProperties, SetStateAction, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
@@ -6,10 +6,19 @@ import { AiOutlineSearch } from 'react-icons/ai';
 import { RootState } from '../../../common/store/RootStore';
 import { MdCancel } from 'react-icons/md';
 
+type SearchInputProps = {
+  $isClicked: boolean;
+  type: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  placeholder: string;
+  style?: CSSProperties;
+};
+
 export default function SearchBar() {
   const navigate = useNavigate();
   const [inputValue, setInputValue] = useState('');
-
+  const [isCliked, setIsClicked] = useState(false);
   const selectedLocation = useSelector(
     (state: RootState) => state.selectedLocation,
   );
@@ -37,10 +46,31 @@ export default function SearchBar() {
     setInputValue('');
   };
 
+  const searchInputRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    const handleDocumentClick = (e: MouseEvent) => {
+      if (
+        searchInputRef.current &&
+        !searchInputRef.current.contains(e.target as Node)
+      ) {
+        setIsClicked(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleDocumentClick);
+
+    // return () => {
+    //   document.removeEventListener('mousedown', handleDocumentClick);
+    // };
+  }, []);
+
   return (
     <Wrapper>
-      <form onSubmit={handleInputSubmit}>
+      <form onSubmit={handleInputSubmit} ref={searchInputRef}>
         <SearchInput
+          onClick={() => setIsClicked(true)}
+          $isClicked={isCliked}
           type="text"
           value={inputValue}
           onChange={handleInputChange}
@@ -63,7 +93,6 @@ const Wrapper = styled.div`
   display: flex;
   margin-top: 3rem;
   position: relative;
-
   & button {
     position: absolute;
     background: none;
@@ -73,12 +102,16 @@ const Wrapper = styled.div`
   }
 `;
 
-const SearchInput = styled.input`
+const SearchInput = styled.input<SearchInputProps>`
   display: flex;
   width: 37.5rem;
   height: 3.125rem;
-  padding: 0.5rem;
-
+  padding: 1rem 1rem 1rem 3rem;
+  border-radius: 20px;
+  box-shadow: ${({ $isClicked }) =>
+    $isClicked ? 'none' : '5px 5px var(--color-black)'};
+  border: ${({ $isClicked }) =>
+    $isClicked ? '4px solid var(--color-pink-1)' : 'none'};
   &:focus {
     outline: none;
   }
