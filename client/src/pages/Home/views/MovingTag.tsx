@@ -177,7 +177,7 @@ const Container = styled.div`
   width: 100%;
 `;
 
-const moveFromRight = keyframes`
+const moveFromLeft = keyframes`
   0% {
     transform: translateX(0%);
   }
@@ -186,12 +186,12 @@ const moveFromRight = keyframes`
   }
 `;
 
-const moveFromLeft = keyframes`
+const moveFromRight = keyframes`
   0% {
-    transform: translateX(-500%);
+    transform: translateX(-300%);
   }
   100% {
-    transform: translateX(0%);
+    transform: translateX(200%);
   }
 `;
 

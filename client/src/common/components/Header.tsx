@@ -305,7 +305,7 @@ const ModalContainer = styled(Modal)`
   }
 `;
 
-const ModalButtonContainer = styled.div`
+export const ModalButtonContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -323,7 +323,8 @@ const Xmark = styled(HiMiniXMark)`
   margin-bottom: 30px;
 `;
 
-const ModalButton = styled(Button)`
+export const ModalButton = styled(Button)`
+  position: relative;
   width: 100%;
   margin-bottom: 10px;
   text-align: center;
@@ -333,20 +334,21 @@ const ModalButton = styled(Button)`
   height: 50px;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 `;
 
-const KakaoBtn = styled(ModalButton)`
-  background-color: #ffe34e;
+export const KakaoBtn = styled(ModalButton)`
+  background-color: #fef01b;
 
   &:hover {
-    background-color: #ffe03d;
+    background-color: #ffdd34;
   }
   &:active {
-    background-color: #f9d724;
+    background-color: #f3cd12;
   }
 `;
 
-const GoogleBtn = styled(ModalButton)`
+export const GoogleBtn = styled(ModalButton)`
   background-color: white;
 
   &:hover {
