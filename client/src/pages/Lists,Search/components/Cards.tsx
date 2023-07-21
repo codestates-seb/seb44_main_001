@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { UseInfiniteQueryResult, useInfiniteQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
+
 import { RootState } from '../../../common/store/RootStore';
 import { getData } from '../api/getData';
 import { CardData } from '../../../common/type';
@@ -10,8 +11,11 @@ import { BASE_URL } from '../../../common/util/constantValue';
 import { setCategory } from '../../../common/store/CategoryStore';
 import { setLocation } from '../../../common/store/LocationStore';
 import { resetCreatedPost } from '../../Write,Edit/store/CreatedPost';
+
 import Card from '../../../common/components/Card';
-import roundingPeach from '../../../common/assets/images/roundingPeach.svg';
+import roundingMomo from '../../../common/assets/images/roundingMomo.svg';
+import cryingMomo from '../../../common/assets/images/cryingMomo1.svg';
+import TopButton from '../../../common/components/TopButton';
 
 export default function Cards() {
   const dispatch = useDispatch();
@@ -24,9 +28,6 @@ export default function Cards() {
   const selectedCategoryId = useSelector(
     (state: RootState) => state.selectedCategory.categoryId,
   );
-
-  // console.log('선택한 로케이션 아이디', selectedLocationId);
-  // console.log('선택한 카테고리 아이디', selectedCategoryId);
 
   const {
     data,
@@ -88,12 +89,18 @@ export default function Cards() {
   if (isLoading)
     return (
       <Loading>
-        <img src={roundingPeach} alt="loading" />
+        <img src={roundingMomo} alt="loading" />
         <div className="message">로딩중...</div>
       </Loading>
     );
 
-  if (isError) return <Error>서버와의 연결이 끊어졌어요😢</Error>;
+  if (isError)
+    return (
+      <Error>
+        <img src={cryingMomo} alt="error" />
+        <div>서버와의 연결이 끊어졌어요</div>
+      </Error>
+    );
 
   const flattenedData = data?.pages.flatMap((page) => page);
 
@@ -115,8 +122,12 @@ export default function Cards() {
           ))}
         </Lists>
       ) : (
-        <Message>조건과 일치하는 모임이 없어요🥲</Message>
+        <Message>
+          <img src={cryingMomo} alt="no-data" />
+          <div>조건과 일치하는 모임이 없어요ㅠㅠ</div>
+        </Message>
       )}
+      <TopButton/>
       <div ref={scrollTargetRef}></div>
     </Wrapper>
   );
@@ -143,6 +154,10 @@ const Lists = styled.div`
 `;
 
 const Message = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   font-size: var(--font-size-l);
 `;
 
@@ -165,25 +180,9 @@ const Loading = styled.div`
     animation: rotateAnimation 2s linear infinite;
   }
 
-  /* animation: bounce_frames 0.5s infinite;
-  animation-direction: alternate;
-  animation-timing-function: cubic-bezier(0.5, 0.05, 1, 0.5);
-  @keyframes bounce_frames {
-    from {
-      transform: translate3d(0, 0, 0);
-    }
-    to {
-      transform: translate3d(0, 50px, 0);
-    }
-  } */
-
   .message {
     margin-top: 1rem;
     font-size: var(--font-size-l);
-  }
-  img {
-    width: 10rem;
-    height: 10rem;
   }
 `;
 

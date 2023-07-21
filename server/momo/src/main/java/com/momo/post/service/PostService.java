@@ -57,7 +57,7 @@ public class PostService {
     }
 
     public List<PostResponseDto> getAllPosts(int page) {
-        int pageSize = 12;
+        int pageSize = 9;
         Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("postId").descending());
         Page<Post> postPage = postRepository.findAll(pageable);
 
@@ -153,7 +153,7 @@ public class PostService {
         postRepository.delete(post);
     }
     public List<PostResponseDto> getPostsByMember(Long memberId, int page) {
-        int pageSize = 12;
+        int pageSize = 9;
         Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("postId").descending());
 
         Page<Post> postPage = postRepository.findByMember_MemberId(memberId, pageable);
@@ -163,7 +163,7 @@ public class PostService {
                 .collect(Collectors.toList());
     }
     public List<PostResponseDto> getPostsByLocation(Long locationId, int page) {
-        int pageSize = 12;
+        int pageSize = 9;
         Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("postId").descending());
 
         Page<Post> postPage;
@@ -188,7 +188,7 @@ public class PostService {
     }
 
     public List<PostResponseDto> getPostsByCategory(Long categoryId, int page) {
-        int pageSize = 12;
+        int pageSize = 9;
         Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("postId").descending());
 
         Page<Post> postPage;
@@ -213,7 +213,7 @@ public class PostService {
     }
 
     public List<PostResponseDto> getPostsByCategoryAndLocation(Long categoryId, Long locationId, int page) {
-        int pageSize = 12;
+        int pageSize = 9;
         Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("postId").descending());
 
         Page<Post> postPage;
@@ -268,7 +268,7 @@ public class PostService {
         if (keyword == null || keyword.isEmpty()) {
             return Collections.emptyList();
         }
-        int pageSize = 12;
+        int pageSize = 9;
         Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("postId").descending());
 
         Specification<Post> specification = (root, query, criteriaBuilder) -> {
@@ -293,7 +293,7 @@ public class PostService {
                 .collect(Collectors.toList());
     }
     public List<PostResponseDto> searchPostsByLocation(String keyword, Long locationId, int page) {
-        int pageSize = 12;
+        int pageSize = 9;
         Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("postId").descending());
 
         Specification<Post> searchSpecification = (root, query, criteriaBuilder) -> {
@@ -334,7 +334,7 @@ public class PostService {
                 .collect(Collectors.toList());
     }
     public List<PostResponseDto> searchPostsByCategory(String keyword, Long categoryId, int page) {
-        int pageSize = 12;
+        int pageSize = 9;
         Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("postId").descending());
 
         Specification<Post> searchSpecification = (root, query, criteriaBuilder) -> {
@@ -375,7 +375,7 @@ public class PostService {
                 .collect(Collectors.toList());
     }
     public List<PostResponseDto> searchPostsByCategoryAndLocation(Long categoryId, Long locationId, String keyword, int page) {
-        int pageSize = 12;
+        int pageSize = 9;
         Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("postId").descending());
 
         Specification<Post> searchSpecification = (root, query, criteriaBuilder) -> {

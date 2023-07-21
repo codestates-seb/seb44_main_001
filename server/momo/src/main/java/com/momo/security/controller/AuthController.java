@@ -2,9 +2,7 @@ package com.momo.security.controller;
 
 import com.momo.member.entity.Member;
 import com.momo.member.repository.MemberRepository;
-import com.momo.security.entity.RefreshToken;
 import com.momo.security.jwt.JwtTokenizer;
-import com.momo.security.repository.RefreshTokenRepository;
 import com.momo.security.service.TokenBlacklistService;
 import com.momo.security.service.TokenService;
 import io.jsonwebtoken.Claims;
@@ -25,14 +23,15 @@ public class AuthController {
     private final TokenBlacklistService tokenBlacklistService;
     private final TokenService tokenService;
     private final MemberRepository memberRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
 
-    public AuthController(JwtTokenizer jwtTokenizer, TokenBlacklistService tokenBlacklistService, TokenService tokenService, MemberRepository memberRepository, RefreshTokenRepository refreshTokenRepository) {
+    public AuthController(JwtTokenizer jwtTokenizer,
+                          TokenBlacklistService tokenBlacklistService,
+                          TokenService tokenService,
+                          MemberRepository memberRepository) {
         this.jwtTokenizer = jwtTokenizer;
         this.tokenBlacklistService = tokenBlacklistService;
         this.tokenService = tokenService;
         this.memberRepository = memberRepository;
-        this.refreshTokenRepository = refreshTokenRepository;
     }
 
     @GetMapping("/login-form")
@@ -62,24 +61,5 @@ public class AuthController {
         }
     }
 
-    /* AccessToken 재발급 */
-    @PostMapping("/refresh/{member-id}")
-    public ResponseEntity<String> refreshAccessToken(@PathVariable("member-id") Long memberId) {
-        RefreshToken refreshToken = refreshTokenRepository.findByMemberId(memberId);
-
-        Jws<Claims> claims = tokenService.checkRefreshToken(refreshToken.getRefreshToken());
-        String email = claims.getBody().getSubject();
-        Optional<Member> optionalMember = memberRepository.findByEmail(email);
-
-        if (optionalMember.isPresent()) {
-            Member member = optionalMember.get();
-            String accessToken = tokenService.delegateAccessToken(member);
-
-            return ResponseEntity.ok().header("Authorization", "Bearer " + accessToken).body("New AccessToken");
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Member not found");
-        }
-
-    }
 
 }
