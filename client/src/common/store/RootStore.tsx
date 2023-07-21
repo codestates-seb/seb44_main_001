@@ -9,12 +9,11 @@ import { setLoginSlice } from '../../pages/Login/store/LoginUser';
 import { memberSlice } from '../../pages/User/store/MemberStore';
 import { totalCommentsSlice } from './CommentPageStore';
 import { tokenSlice } from '../../pages/Login/store/userTokenStore';
-
 import { myDataSlice } from '../../pages/Login/store/MyUserData';
 import { chatModalSlice } from './ChatModalStore';
 import { updatedUserSlice } from '../../pages/Kakao-signup/store/UpdatedUserData';
 import { chatRoomInfoSlice } from './ChatRoomInfoStore';
-
+import { chatInvitationModalSlice } from '../components/Chat/store/ChatInvitationModal';
 
 const rootReducer = combineReducers({
   category: categorySlice.reducer,
@@ -31,6 +30,7 @@ const rootReducer = combineReducers({
   totalComments: totalCommentsSlice.reducer,
   chatRoomInfo: chatRoomInfoSlice.reducer,
   chatModal: chatModalSlice.reducer,
+  chatInvitationModal: chatInvitationModalSlice.reducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

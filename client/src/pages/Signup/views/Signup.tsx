@@ -47,8 +47,15 @@ export default function Signup() {
 
   const data: SignupData = useSelector((state: RootState) => state.signup);
 
-  const signupMutation = useMutation<void, unknown, SignupData>(() =>
-    signupData(`${BASE_URL}/members/register`, data),
+  const signupMutation = useMutation<void, unknown, SignupData>(
+    (data) => signupData(`${BASE_URL}/members/register`, data),
+    // {
+    //   onError: (error: AxiosError) => {
+    //     if (error.response?.status === 500) {
+    //       alert('이메일 또는 닉네임이 이미 존재합니다.');
+    //     }
+    //   },
+    // },
   );
 
   useEffect(() => {

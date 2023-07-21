@@ -42,3 +42,5 @@ export const CHAT_NOTICE = 'New';
 export const SEND_CHAT = '채팅 보내기';
 
 export const VIEW_PROFILE = '프로필 보기';
+
+export const INVITE = '초대하기';
