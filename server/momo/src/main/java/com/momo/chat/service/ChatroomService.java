@@ -48,14 +48,14 @@ public class ChatroomService {
             verifyPersonalDuplicateRoom(memberId, otherMemberId);
 
             Member otherMember = memberRepository.findById(otherMemberId).get();
-            MemberChatroom memberChatRoom = MemberChatroom.from(member, savedChatroom, otherMember.getNickname());
-            MemberChatroom memberChatRoom2 = MemberChatroom.from(otherMember, savedChatroom, member.getNickname());
+            MemberChatroom memberChatRoom = MemberChatroom.from(member, savedChatroom, otherMember.getNickname(), now);
+            MemberChatroom memberChatRoom2 = MemberChatroom.from(otherMember, savedChatroom, member.getNickname(), now);
             memberChatroomRepository.save(memberChatRoom);
             memberChatroomRepository.save(memberChatRoom2);
 
         } else if (roomType.equals(Chatroom.RoomType.GROUP.getType())) {
             chatroom.changeName(roomName);
-            MemberChatroom memberChatRoom = MemberChatroom.from(member, savedChatroom, roomName);
+            MemberChatroom memberChatRoom = MemberChatroom.from(member, savedChatroom, roomName, now);
             memberChatroomRepository.save(memberChatRoom);
         }
         return savedChatroom;
@@ -90,7 +90,7 @@ public class ChatroomService {
         verifyGroupDuplicateInvitation(chatroom, member, otherMember);
 
         chatroom.updateLastMessage(message, now);
-        MemberChatroom memberChatRoom = MemberChatroom.from(otherMember, chatroom, chatroom.getName());
+        MemberChatroom memberChatRoom = MemberChatroom.from(otherMember, chatroom, chatroom.getName(), now);
         memberChatroomRepository.save(memberChatRoom);
 
         Message newMessage = Message.from(message, otherMember, chatroom, now, Message.ParticipantType.NOTIFICATION.toString());
