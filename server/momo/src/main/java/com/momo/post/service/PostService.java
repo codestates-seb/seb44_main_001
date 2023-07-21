@@ -158,7 +158,7 @@ public class PostService {
         postRepository.delete(post);
     }
     public List<PostResponseDto> getPostsByMember(Long memberId, int page) {
-        int pageSize = 9;
+        int pageSize = 3;
         Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("postId").descending());
 
         Page<Post> postPage = postRepository.findByMember_MemberId(memberId, pageable);
@@ -438,11 +438,12 @@ public class PostService {
                 .map(this::createPostResponseDto)
                 .collect(Collectors.toList());
     }
-    public List<PostResponseDto> getPostLikedByMember(Long memberId) {
-        List<PostLike> likedPosts = postLikeRepository.findByMember_MemberIdAndIsLikedTrue(memberId);
+    public List<PostResponseDto> getPostLikedByMember(Long memberId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<PostLike> likedPostsPage = postLikeRepository.findByMember_MemberIdAndIsLikedTrue(memberId, pageable);
         List<PostResponseDto> postResponseDtos = new ArrayList<>();
 
-        for (PostLike postLike : likedPosts) {
+        for (PostLike postLike : likedPostsPage.getContent()) {
             Post post = postLike.getPost();
 
             MemberInfo memberInfo = MemberInfo.builder()
