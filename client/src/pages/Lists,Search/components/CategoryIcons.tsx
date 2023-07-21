@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { styled } from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
+
 import { setSelectedCategory } from '../store/SelectedCategory';
 import { RootState } from '../../../common/store/RootStore';
 import { Categories, Category } from '../../../common/type';
