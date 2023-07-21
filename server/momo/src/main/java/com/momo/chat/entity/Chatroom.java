@@ -1,5 +1,6 @@
 package com.momo.chat.entity;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.momo.member.entity.Member;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,22 +15,35 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Chatroom {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long chatroomId;
     private String name;
 
     private String lastMessage;
     private LocalDateTime lastMessageSentTime;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "roomking_id")
     private Member roomKing;
 
     @Enumerated(EnumType.STRING)
     private RoomType roomType;
 
+    @Getter
     public enum RoomType {
-        PERSONAL, GROUP
+        PERSONAL("personal"),
+        GROUP("group");
+
+        private String type;
+
+        RoomType(String type) {
+            this.type = type;
+        }
+
+        @JsonValue
+        public String getType() {
+            return type;
+        }
     }
 
     @Builder

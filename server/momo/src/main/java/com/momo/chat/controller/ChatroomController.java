@@ -20,14 +20,14 @@ public class ChatroomController {
     private final ChatroomService chatroomService;
 
     @PostMapping("/register")
-    public Chatroom createRoom(@RequestBody ChatroomRegisterDto chatroomRegisterDto) {
+    public Long createRoom(@RequestBody ChatroomRegisterDto chatroomRegisterDto) {
         Long memberId = MemberInterceptor.currentMemberStore.get();
         Long otherMemberId = chatroomRegisterDto.getMemberId();
         String roomType = chatroomRegisterDto.getRoomType();
 
         Chatroom chatroom = chatroomService.createChatroom(memberId, otherMemberId, roomType);
 
-        return chatroom;
+        return chatroom.getChatroomId();
     }
 //
     @GetMapping("/list")
