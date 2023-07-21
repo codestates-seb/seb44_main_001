@@ -1,15 +1,11 @@
 package com.momo.postlike.service;
 
-import com.momo.post.dto.PostResponseDto;
 import com.momo.post.entity.Post;
-import com.momo.post.service.PostService;
 import com.momo.postlike.dto.PostLikeResponseDto;
-import com.momo.postlike.mapper.PostLikeMapper;
 import com.momo.member.repository.MemberRepository;
 import com.momo.post.repository.PostRepository;
 import com.momo.postlike.entity.PostLike;
 import com.momo.postlike.repository.PostLikeRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,15 +19,12 @@ public class PostLikeService {
     private final PostLikeRepository postLikeRepository;
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
-    private final PostLikeMapper postLikeMapper;
-    private final PostService postService;
 
-    public PostLikeService(PostLikeRepository postLikeRepository, PostRepository postRepository, MemberRepository memberRepository, PostLikeMapper postLikeMapper, PostService postService) {
+
+    public PostLikeService(PostLikeRepository postLikeRepository, PostRepository postRepository, MemberRepository memberRepository) {
         this.postLikeRepository = postLikeRepository;
         this.postRepository = postRepository;
         this.memberRepository = memberRepository;
-        this.postLikeMapper = postLikeMapper;
-        this.postService = postService;
     }
 
     public boolean isPostLikedByMember(Long postId, Long memberId) {
