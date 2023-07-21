@@ -11,6 +11,10 @@ import { useMutation, useQuery } from 'react-query';
 import getPrevChat from '../api/getPrevChat';
 import postChat from '../api/postChat';
 import postOffline from '../api/postOffline';
+import { calculateTimeDifference } from '../../../util/timeDifferenceCalculator';
+import { BsPersonPlusFill } from 'react-icons/bs';
+import ChatInvitationModal from './ChatInvitationModal';
+import { setChatInvitationModal } from '../store/ChatInvitationModal';
 
 export default function ChatRoom({
   messages,
@@ -44,6 +48,8 @@ export default function ChatRoom({
 
   const userName = useSelector((state: RootState) => state.myData.nickname);
 
+  const chatWrapperRef = useRef<HTMLDivElement>(null);
+
   useQuery<PrevChatData, unknown>(
     'prevChats',
     () => getPrevChat(`${BASE_URL}/rooms/${roomId}`),
@@ -65,9 +71,24 @@ export default function ChatRoom({
     (roomId) => postOffline(`${BASE_URL}/rooms/${roomId}/offline`),
   );
 
+  useEffect(() => {
+    return () => {
+      setMessages([{}]);
+      if (roomId) {
+        postOfflineMutation.mutate(roomId);
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (chatWrapperRef.current) {
+      chatWrapperRef.current.scrollTop = chatWrapperRef.current.scrollHeight;
+    }
+  }, [roomId, newMessages]);
+
   const handleChatPage = () => {
     dispatch(setChatRoomInfo({ roomId: 0, roomName: '' }));
-    postOfflineMutation.mutate(roomId);
   };
 
   const handleChatInput = (event: ChangeEvent<HTMLInputElement>) => {
@@ -87,62 +108,85 @@ export default function ChatRoom({
     }
   };
 
-  useEffect(() => {
-    return () => {
-      setMessages([{}]);
-      postOfflineMutation.mutate(roomId);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const chatWrapperRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (chatWrapperRef.current && newMessages.length > 0) {
-      chatWrapperRef.current.scrollTop = chatWrapperRef.current.scrollHeight;
-    }
-  }, [roomId, newMessages]);
+  const handleInvitation = () => {
+    dispatch(setChatInvitationModal(true));
+  };
 
   return (
     roomId !== 0 && (
       <Container>
         <ChatHeader>
           <BiArrowBack size={24} onClick={handleChatPage} />
-          <h1>{`${roomName} 님과의 채팅방`}</h1>
+          <h1>
+            {`${roomName} 님과의 채팅방`.length > 20
+              ? `${roomName} 님과의 채팅방`.slice(0, 20)
+              : `${roomName} 님과의 채팅방`}
+          </h1>
+          <BsPersonPlusFill size={24} onClick={handleInvitation} />
         </ChatHeader>
         <ChatWrapper ref={chatWrapperRef}>
           <Chat>
             {prevChat?.map((chat, idx) => {
-              if (chat.nickname !== userName) {
+              if (chat.participantType === 'NOTIFICATION') {
                 return (
-                  <OthersChat key={idx}>
-                    <div>{chat.nickname}</div>
-                    <div>{chat.content}</div>
-                  </OthersChat>
+                  <Notification key={chat.sentTime}>
+                    <div>
+                      <p>{chat.content}</p>
+                    </div>
+                  </Notification>
+                );
+              }
+              if (chat.nickname === userName) {
+                return (
+                  <MyChat key={chat.sentTime}>
+                    <div>
+                      <p>{calculateTimeDifference(chat.sentTime)}</p>
+                      <p>{chat.content}</p>
+                    </div>
+                  </MyChat>
                 );
               } else {
                 return (
-                  <MyChat key={chat.sentTime}>
-                    <div>{chat.content}</div>
-                  </MyChat>
+                  <OthersChat key={idx}>
+                    <div>{chat.nickname}</div>
+                    <div>
+                      <p>{chat.content}</p>
+                      <p>{calculateTimeDifference(chat.sentTime)}</p>
+                    </div>
+                  </OthersChat>
                 );
               }
             })}
           </Chat>
           <Chat>
             {newMessages.map((message, idx) => {
-              if (message.nickname !== userName) {
+              if (message.participantType === 'NOTIFICATION') {
                 return (
-                  <OthersChat key={idx}>
-                    <div>{message.nickname}</div>
-                    <div>{message.content}</div>
-                  </OthersChat>
+                  <Notification key={message.sentTime}>
+                    <div>
+                      <p>{message.content}</p>
+                    </div>
+                  </Notification>
+                );
+              }
+              if (message.nickname === userName) {
+                return (
+                  <MyChat key={message.sentTime}>
+                    <div>
+                      <p>{calculateTimeDifference(message.sentTime)}</p>
+                      <p>{message.content}</p>
+                    </div>
+                  </MyChat>
                 );
               } else {
                 return (
-                  <MyChat key={message.sentTime}>
-                    <div>{message.content}</div>
-                  </MyChat>
+                  <OthersChat key={idx}>
+                    <div>{message.nickname}</div>
+                    <div>
+                      <p>{message.content}</p>
+                      <p>{calculateTimeDifference(message.sentTime)}</p>
+                    </div>
+                  </OthersChat>
                 );
               }
             })}
@@ -157,6 +201,7 @@ export default function ChatRoom({
           />
           <FiSend onClick={handleSend} size={20} />
         </ChatInputSection>
+        <ChatInvitationModal />
       </Container>
     )
   );
@@ -192,6 +237,10 @@ const ChatHeader = styled.section`
     margin-left: 1rem;
     font-size: var(--font-size-s);
   }
+
+  > svg {
+    cursor: pointer;
+  }
 `;
 
 const ChatWrapper = styled.div`
@@ -213,22 +262,37 @@ const OthersChat = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: start;
-  height: fit-content;
+  margin-top: 1rem;
 
   > :first-child {
     color: #ff6c6c;
     padding: 0.3rem 0.5rem 0.3rem 0.5rem;
     background: var(--color-pink-3);
     border-radius: 20px;
-    margin: 0.5rem 0 0 0.5rem;
+    margin: 0.5rem 0 0.2rem 0.5rem;
   }
 
   > :last-child {
-    padding: 0.3rem 0.5rem 0.3rem 0.5rem;
-    background: var(--color-white);
-    border-radius: 20px;
-    border: 2px solid var(--color-black);
-    margin: 0.2rem 0 0 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    flex-wrap: wrap;
+    max-width: calc(100% - 5rem);
+
+    > :first-child {
+      padding: 0.3rem 0.5rem 0.3rem 0.5rem;
+      background: var(--color-white);
+      border-radius: 20px;
+      border: 2px solid var(--color-black);
+      margin: 0.2rem 0 0 0.5rem;
+      max-width: 100%;
+      overflow-wrap: break-word;
+    }
+
+    > :last-child {
+      font-size: var(--font-size-xs);
+      margin: 0.5rem;
+    }
   }
 `;
 
@@ -240,8 +304,40 @@ const MyChat = styled.div`
   align-items: end;
 
   > div {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    flex-wrap: wrap-reverse;
+    max-width: calc(100% - 5rem);
+    margin-top: 1rem;
+
+    > :first-child {
+      font-size: var(--font-size-xs);
+      margin: 0.5rem;
+    }
+
+    > :last-child {
+      padding: 0.3rem 0.5rem 0.3rem 0.5rem;
+      background: var(--color-pink-2);
+      border-radius: 20px;
+      border: 2px solid var(--color-black);
+      margin: 0 0.5rem 0 0;
+      max-width: calc(100% - 0.5rem);
+      overflow-wrap: break-word;
+    }
+  }
+`;
+
+const Notification = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  > div {
     padding: 0.3rem 0.5rem 0.3rem 0.5rem;
-    background: var(--color-pink-2);
+    background: var(--color-gray);
     border-radius: 20px;
     border: 2px solid var(--color-black);
     margin: 0.5rem 0.5rem 0 0;
@@ -254,6 +350,7 @@ const ChatInputSection = styled.section`
   height: 2rem;
   display: flex;
   align-items: center;
+
   > input {
     width: 100%;
     padding: 0.5rem;

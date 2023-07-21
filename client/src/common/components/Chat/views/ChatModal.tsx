@@ -14,7 +14,6 @@ import { setChatModal } from '../../../store/ChatModalStore';
 import { ChatData, ChatRoomData, Room } from '../../../type';
 import * as StompJs from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import isEqual from 'lodash/isEqual';
 import postOnline from '../api/postOnline';
 
 export default function ChatButton() {
@@ -67,14 +66,15 @@ export default function ChatButton() {
     return [...newRoom];
   };
 
-  useQuery<ChatRoomData, unknown>(
+  const getRoomQuery = useQuery<ChatRoomData, unknown>(
     'roomList',
     () => getRoomList(`${BASE_URL}/rooms/list`),
     {
-      enabled: isOpen && !chatRoom,
       refetchInterval: 5000,
       onSuccess: (data) => {
-        setIsDataDifferent(!isEqual(prevRoom, data.rooms));
+        setIsDataDifferent(
+          data.rooms.filter((rooom) => rooom.unreadCount !== 0).length !== 0,
+        );
         setPrevRoom((prevRoom) => updatePrevRoom(prevRoom, data.rooms));
       },
     },
@@ -88,13 +88,12 @@ export default function ChatButton() {
 
   const handleModalOpen = () => {
     dispatch(setChatModal(true));
+    getRoomQuery.refetch();
   };
 
   const handleModalClose = () => {
     dispatch(setChatModal(false));
   };
-
-  //TODO 채팅방 삭제 버튼 클릭 시 구독 취소
 
   useEffect(() => {
     if (chatRoom !== 0) {
@@ -130,7 +129,11 @@ export default function ChatButton() {
       if (subscription) {
         subscription.unsubscribe();
         setSubscription(null);
+        setIsDataDifferent(false);
+        getRoomQuery.refetch();
       }
+      setIsDataDifferent(false);
+      getRoomQuery.refetch();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatRoom]);
@@ -139,7 +142,7 @@ export default function ChatButton() {
     <Container>
       <button
         onClick={isOpen ? handleModalClose : handleModalOpen}
-        className={isDataDifferent ? 'on' : ''}
+        className={!isDataDifferent ? 'on' : ''}
       >
         <AiFillWechat size={48} color={'var(--color-white)'} />
       </button>
@@ -153,6 +156,8 @@ export default function ChatButton() {
           <ChatMain
             handleModalClose={handleModalClose}
             prevRoom={prevRoom as Room[]}
+            getRoomQuery={getRoomQuery}
+            setIsDataDifferent={setIsDataDifferent}
           />
         )}
         <ChatRoom messages={messages as ChatData[]} setMessages={setMessages} />
@@ -196,25 +201,21 @@ const Container = styled.section`
     }
   }
 
-  @keyframes shake {
+  @keyframes colorChange {
     0% {
-      transform: translateX(0);
+      color: white;
+    }
+    75% {
+      color: #ff8181;
     }
     100% {
-      transform: translateY(-10px);
-    }
-  }
-
-  @keyframes colorChange {
-    from {
-      background: linear-gradient(90deg, var(--color-pink-1), red);
-    }
-    to {
-      background: linear-gradient(90deg, red, var(--color-pink-1));
+      color: white;
     }
   }
 
   .on {
-    animation: shake 0.5s infinite, clolrChange 2s infinite;
+    > svg {
+      /* animation: colorChange 1s infinite; */
+    }
   }
 `;

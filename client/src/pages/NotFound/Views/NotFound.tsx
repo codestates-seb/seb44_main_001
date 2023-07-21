@@ -1,6 +1,7 @@
 import { styled } from 'styled-components';
 import Logo from '../../../common/assets/logo/MOMO.png';
 import NotFound404 from '../../../common/assets/images/NotFound404.png';
+
 export default function NotFound() {
   return (
     <Wrapper>
@@ -17,4 +18,4 @@ const Wrapper = styled.div`
   align-items: center;
   width: 100%;
   height: 100vh;
-`
+`;
