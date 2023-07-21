@@ -117,7 +117,7 @@ export default function Header() {
           >
             <FaPersonRunning className="hoverIcon" size={25} />
             <LogOut className="originalIcon" size={25} />
-            <div className="tooltip">로그아웃</div>
+            {/* <div className="tooltip">로그아웃</div> */}
           </LogoutButton>
         </MenuContainer>
       ) : (
@@ -381,7 +381,7 @@ const LogoutButton = styled.button<SubProps>`
       /* transform: translateX(-50%) scale(1); */
     }
   }
-  &:hover:after {
+  /* &:hover:after {
     .tooltip {
       content: ${(props) => `'${props.$sub}'`};
     }
@@ -410,5 +410,5 @@ const LogoutButton = styled.button<SubProps>`
       border-color: transparent transparent transparent var(--color-pink-2);
       width: 100px;
     }
-  }
+  } */
 `;
