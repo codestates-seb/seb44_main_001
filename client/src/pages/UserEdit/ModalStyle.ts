@@ -1,6 +1,6 @@
 import ReactModal from 'react-modal';
 
-export const ConfirmStyle: ReactModal.Styles = {
+export const ModalStyle: ReactModal.Styles = {
   overlay:{
     position: 'fixed',
   },
@@ -13,7 +13,7 @@ export const ConfirmStyle: ReactModal.Styles = {
     overflow: 'scroll',
     transform: 'translate(-50%, -50%)',
     width: '30rem',
-    height: '15rem',
+    height: '30rem',
     top: '50%',
     left: '50%',
     WebkitOverflowScrolling: 'touch',

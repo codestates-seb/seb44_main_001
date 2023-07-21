@@ -4,6 +4,7 @@ import { deleteMember } from '../api/deleteMember';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import { BASE_URL } from '../../../common/util/constantValue';
+import cryingMoMo2 from '../../../common/assets/images/cryingMoMo2.svg'
 
 type HandleModalChangeFunction = () => void;
 
@@ -16,6 +17,7 @@ export default function ModalMain({handleModalChange}: { handleModalChange: Hand
     () => deleteMember(`${BASE_URL}/members/${memberId}`),
     {
       onSuccess: () => {
+        localStorage.clear();
         navigate('/');
       },
       onError: (error) => {
@@ -30,7 +32,8 @@ export default function ModalMain({handleModalChange}: { handleModalChange: Hand
 
   return (
     <Wrapper>
-      <div>정말 탈퇴하시겠습니까?</div>
+      <div className='ask'>정말 탈퇴하시겠습니까?</div>
+      <img src={cryingMoMo2} alt='cryimg-momo'/>
       <ButtonWrapper>
         <Button children={'회원탈퇴'} onClick={handleDeleteMember} />
         <Button children={'취소'} onClick={handleModalChange} />
@@ -39,11 +42,15 @@ export default function ModalMain({handleModalChange}: { handleModalChange: Hand
   );
 }
 
-const Wrapper = styled.main`
+const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
+  padding:3rem;
+  .ask{
+    font-size: var(--font-size-l);
+  }
 `;
 
 const ButtonWrapper = styled.div`

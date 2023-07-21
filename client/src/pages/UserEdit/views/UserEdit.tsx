@@ -26,7 +26,7 @@ import ChatButton from '../../../common/components/Chat/views/ChatModal';
 import { UseMutationResult, useMutation, useQueryClient } from 'react-query';
 import { BASE_URL } from '../../../common/util/constantValue';
 import Modal from 'react-modal';
-import { ConfirmStyle } from '../confirmStyle';
+import { ModalStyle } from '../ModalStyle';
 import ModalMain from '../components/ModalMain';
 import { patchMyDataInfo } from '../api/patchMyDataInfo';
 
@@ -121,7 +121,18 @@ export default function UserEdit() {
     );
 
   const handleEdit = () => {
-    console.log('수정~');
+    if (!nickname) {
+      window.alert('제목을 입력해주세요!');
+      return;
+    }
+    if (!location.locationId) {
+      window.alert('지역을 선택해주세요!');
+      return;
+    }
+    if (!welcomeMsg) {
+      window.alert('내용을 입력해주세요!');
+      return;
+    }
     const editedInfo: EditMember = {
       memberPatchDto: {
         welcomeMsg: welcomeMsg,
@@ -140,20 +151,8 @@ export default function UserEdit() {
   return (
     <>
       <SemiHeader title={`프로필 편집`} content="" />
-      <AllContainer>
-        <NevContainer>
-          <NevItem>프로필 수정</NevItem>
-          <NevItem>내 글 보기</NevItem>
-          <button onClick={handleModalChange}>회원 탈퇴</button>
-        </NevContainer>
-        <Modal
-          isOpen={isOpen}
-          style={ConfirmStyle}
-          onRequestClose={handleModalChange}
-        >
-          <ModalMain handleModalChange={handleModalChange} />
-        </Modal>
-        <Layout>
+      <Layout>
+        <AllContainer>
           <Background>
             <ImageContainer>
               {uploadedImage ? (
@@ -172,6 +171,8 @@ export default function UserEdit() {
                   onChange={handleImgChange}
                 />
               </ImgEditButton>
+              <div>이메일 주소</div>
+              <div>{myData.email}</div>
             </ImageContainer>
             <InputContainer>
               <InputBox>
@@ -195,29 +196,27 @@ export default function UserEdit() {
                 />
               </InputBox>
             </InputContainer>
-            <Button children={'수정하기'} onClick={handleEdit} />
+            <BtnContainer>
+              <Button children={'수정하기'} onClick={handleEdit} />
+              <Button children={'회원탈퇴'} onClick={handleModalChange} />
+            </BtnContainer>
+            <Modal
+              isOpen={isOpen}
+              style={ModalStyle}
+              onRequestClose={handleModalChange}
+            >
+              <ModalMain handleModalChange={handleModalChange} />
+            </Modal>
           </Background>
           <ChatButton />
-        </Layout>
-      </AllContainer>
+        </AllContainer>
+      </Layout>
     </>
   );
 }
 
 const AllContainer = styled.div`
   display: flex;
-`;
-
-const NevContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-width: 200px;
-  background-color: white;
-  padding: 3rem;
-`;
-
-const NevItem = styled.div`
-  margin: 0.5rem;
 `;
 
 const ImageContainer = styled.div`
@@ -227,6 +226,7 @@ const ProfileImage = styled.img`
   width: 11.1rem;
   height: 11.1rem;
   border-radius: 50%;
+  border: 2px solid var(--color-black);
 `;
 
 const ImgEditButton = styled.button`
@@ -248,4 +248,10 @@ const ImgEditInput = styled.input`
 const InputContainer = styled.div`
   display: flex;
   flex-direction: column;
+`;
+
+const BtnContainer = styled.div`
+  & :first-child {
+    margin-right: 1rem;
+  }
 `;

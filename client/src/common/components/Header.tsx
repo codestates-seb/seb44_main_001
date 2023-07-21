@@ -23,11 +23,10 @@ import { useMutation } from 'react-query';
 Modal.setAppElement('#root');
 
 export default function Header() {
-  // const [isLogged, setIsLogged] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   const myData = useSelector((state: RootState) => state.myData);
-  // const myId = useSelector((state: RootState) => state.token.memberId);
-  // 아래는 추가한 부분
+
   const token = localStorage.getItem('Authorization');
   const myId = localStorage.getItem('MemberId');
 
@@ -37,16 +36,6 @@ export default function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (myData && myData.nickname) {
-  //     setIsLogged(true);
-  //     console.log('setIsLogged true로 변경');
-  //   } else {
-  //     setIsLogged(false);
-  //     console.log('setIsLogged false로 변경');
-  //   }
-  // }, [myData]);
-
   const logoutPostMutaion = useMutation(
     () => {
       return postLogout(`${BASE_URL}/auth/logout`);
@@ -55,11 +44,13 @@ export default function Header() {
       onSuccess: () => {
         dispatch(resetStates());
         navigate('/login');
-        localStorage.removeItem('Authorization');
-        localStorage.removeItem('MemberId');
-        localStorage.removeItem('selectedLocation');
+        localStorage.clear();
         dispatch(setChatModal(false));
       },
+      onError: () =>{
+        navigate('/login');
+        localStorage.clear();
+      }
     },
   );
 
@@ -80,6 +71,10 @@ export default function Header() {
     setIsModalOpen(false);
   };
 
+  const handleWriteButtonClick = () => {
+    navigate('/write');
+  };
+
   return (
     <Head>
       <Link to="/">
@@ -87,8 +82,6 @@ export default function Header() {
           <img src={logo} alt="로고이미지" style={{ height: '39px' }} />
         </div>
       </Link>
-      {/* 아래는 수정한 부분 */}
-      {/* {isLogged && myData ? ( */}
       {token ? (
         <MenuContainer>
           <Link to="/lists" className="margin-small text">
@@ -104,6 +97,7 @@ export default function Header() {
               {myData.nickname}
             </div>
           </UserContainer>
+          <Button onClick={handleWriteButtonClick} children={'모집 글 작성'} />
           <div className="margin-left">
             <div onClick={handleLogout}>
               <LogOut size={20} />
@@ -114,7 +108,10 @@ export default function Header() {
         <div>
           <MenuContainer>
             <Link to="/login" className="text">
-              <Button children={'로그인'} onClick={handleLogout}></Button>
+              <Button
+                children={'로그인'}
+                onClick={() => navigate('/login')}
+              ></Button>
             </Link>
             <Button
               children={'회원가입'}
@@ -205,7 +202,10 @@ const MenuContainer = styled.div`
 const UserContainer = styled.div`
   display: flex;
   align-items: center;
+  margin-right: 1rem;
   cursor: pointer;
+  border-radius: 10px;
+  padding: 0.5rem;
   img {
     border-radius: 50%;
   }
@@ -213,6 +213,7 @@ const UserContainer = styled.div`
 
 const LogOut = styled(FaArrowRightFromBracket)`
   color: var(--color-black);
+  cursor: pointer;
 `;
 
 const ModalContainer = styled(Modal)`

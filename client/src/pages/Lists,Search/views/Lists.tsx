@@ -13,9 +13,9 @@ export default function Lists() {
 
   return (
     <Wrapper>
-      <ListsHeader />
-      {isPathLists ? <CategoryIcons /> : null}
       <SearchBar />
+      {isPathLists ? <CategoryIcons /> : null}
+      <ListsHeader />
       <Cards />
       <ChatButton />
     </Wrapper>
