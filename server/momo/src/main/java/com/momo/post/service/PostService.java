@@ -83,6 +83,7 @@ public class PostService {
         post.setContent(processContent(postDto.getContent()));
         post.setTags(processTags(postDto.getTags()));
         post.setCreatedAt(LocalDateTime.now());
+        post.setCommentCount(0L);
 
         Member member = memberRepository.findById(postDto.getMemberId())
                 .orElseThrow(() -> new NotFoundException("ID가 " + postDto.getMemberId() + "인 멤버를 찾을 수 없습니다."));
@@ -482,6 +483,9 @@ public class PostService {
             // 좋아요 수
             Long postLikeCount = post.getPostLikeCount();
 
+            // 댓글 수
+            Long commentCount = post.getCommentCount();
+
             PostResponseDto postResponseDto = new PostResponseDto(
                     post.getPostId(),
                     post.getTitle(),
@@ -493,7 +497,8 @@ public class PostService {
                     memberInfo,
                     tags,
                     isLiked,
-                    postLikeCount
+                    postLikeCount,
+                    commentCount
             );
 
             postResponseDtos.add(postResponseDto);
