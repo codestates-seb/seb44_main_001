@@ -100,6 +100,10 @@ public class MemberService {
         memberRepository.deleteAll();
     }
 
+    public List<Member> getMembersWithNickname(String nickname) {
+        return memberRepository.findByNicknameStartsWithOrderByNickname(nickname);
+    }
+
     /* optional값 멤버 구별 */
     private Member findVerifiedMember(Long memberId) {
         Optional<Member> optionalMember =
