@@ -3,6 +3,7 @@ package com.momo.member.controller;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.momo.comment.dto.MemberInfo;
 import com.momo.member.dto.MemberPatchDto;
 import com.momo.member.dto.MemberPostDto;
 import com.momo.member.entity.Member;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/members")
@@ -109,6 +111,14 @@ public class MemberController {
     public ResponseEntity deleteMembers() {
         memberService.removeMembers();
         return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/search")
+    public List<MemberInfo> findMembersWithNickname(@RequestParam String nickname) {
+        List<Member> members = memberService.getMembersWithNickname(nickname);
+        return members.stream()
+                .map(member -> MemberInfo.from(member))
+                .collect(Collectors.toList());
     }
 
     private String saveImageToS3(MultipartFile image) throws IOException {
