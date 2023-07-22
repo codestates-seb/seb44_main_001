@@ -39,6 +39,7 @@ public class ChatroomService {
         Member member = memberRepository.findById(memberId).get();
         Chatroom chatroom = Chatroom.from("new chatroom", newMessage, now, roomType);
         chatroom.addRoomKing(member);
+        chatroom.addMemberCount();
         Chatroom savedChatroom = chatroomRepository.save(chatroom);
 
         Message message = Message.from(newMessage, member, savedChatroom, now, roomType);
@@ -46,6 +47,8 @@ public class ChatroomService {
 
         if (roomType.equals(Chatroom.RoomType.PERSONAL.getType())) {
             verifyPersonalDuplicateRoom(memberId, otherMemberId);
+            chatroom.addMemberCount();
+            chatroomRepository.save(savedChatroom);
 
             Member otherMember = memberRepository.findById(otherMemberId).get();
             MemberChatroom memberChatRoom = MemberChatroom.from(member, savedChatroom, otherMember.getNickname(), now);
@@ -82,7 +85,6 @@ public class ChatroomService {
 
     public void inviteMember(Long otherMemberId, Long roomId) {
         Chatroom chatroom = chatroomRepository.findById(roomId).get();
-        Member member = memberRepository.findById(memberId).get();
         Member otherMember = memberRepository.findById(otherMemberId).get();
         LocalDateTime now = LocalDateTime.now();
         String message = otherMember.getNickname() + "님이 입장하셨습니다.";
@@ -90,6 +92,7 @@ public class ChatroomService {
         verifyGroupDuplicateInvitation(chatroom, otherMember);
 
         chatroom.updateLastMessage(message, now);
+        chatroom.addMemberCount();
         MemberChatroom memberChatRoom = MemberChatroom.from(otherMember, chatroom, chatroom.getName(), now);
         memberChatroomRepository.save(memberChatRoom);
 
@@ -141,17 +144,13 @@ public class ChatroomService {
     public void getoutRoom(Long memberId, Long roomId) {
         Member member = memberRepository.findById(memberId).get();
         Chatroom chatroom = chatroomRepository.findById(roomId).get();
-        if (chatroom.getRoomKing().equals(member)) {
-            messageRepository.deleteByChatroom(chatroom);
-            memberChatroomRepository.deleteByChatroom(chatroom);
-            chatroomRepository.delete(chatroom);
-            return;
-        }
+
         List<MemberChatroom> memberChatrooms = memberChatroomRepository.getMemberChatrooms(chatroom);
         int curSize = memberChatrooms.size();
         String message = member.getNickname() + "님이 퇴장하셨습니다.";
         LocalDateTime now = LocalDateTime.now();
 
+        chatroom.subMemberCount();
         Message newMessage = Message.from(message, member, chatroom, now, Message.ParticipantType.NOTIFICATION.toString());
         Message savedMessage = messageRepository.save(newMessage);
         template.convertAndSend("/sub/chat/room/" + chatroom.getChatroomId(), MessageResponseDto.from(savedMessage));
@@ -160,8 +159,6 @@ public class ChatroomService {
                 .filter(mc -> mc.getMember().equals(member))
                 .findFirst().get();
         memberChatroomRepository.delete(memberChatroom);
-
-
 
         if (curSize == 1) {
             messageRepository.deleteByChatroom(chatroom);
