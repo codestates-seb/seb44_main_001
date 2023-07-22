@@ -99,10 +99,7 @@ public class ChatroomService {
         template.convertAndSend("/sub/chat/room/" + roomId, MessageResponseDto.from(savedMessage));
     }
 
-    private void verifyGroupDuplicateInvitation(Chatroom chatroom, Member member, Member otherMember) {
-        if (!chatroom.getRoomKing().equals(member)) {
-            throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_ROOMKING);
-        }
+    private void verifyGroupDuplicateInvitation(Chatroom chatroom, Member otherMember) {
         MemberChatroom memberChatroom = memberChatroomRepository.findByChatroomAndMember(chatroom, otherMember);
         if (memberChatroom != null) {
             throw new BusinessLogicException(ExceptionCode.MEMBER_ALREADY_IN_ROOM);
