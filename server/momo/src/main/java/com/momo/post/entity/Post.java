@@ -53,8 +53,23 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<PostLike> postLikes = new ArrayList<>();
 
+    private Long commentCount;
+
     public void setMemberId(Long memberId) {
         this.member = new Member();
         this.member.setMemberId(memberId);
+    }
+
+    public void addCommentCount() {
+        this.commentCount++;
+    }
+
+    public void subCommentCount() {
+        this.commentCount--;
+    }
+
+    public void deleteComment(Comment comment) {
+        this.comments.remove(comment);
+        subCommentCount();
     }
 }

@@ -49,6 +49,8 @@ public class CommentService {
         comment.addMember(member);
         comment.addPost(post);
 
+        post.addCommentCount();
+
         return commentRepository.save(comment);
     }
 
@@ -90,10 +92,12 @@ public class CommentService {
 
     public void deleteComment(Long commentId, Long memberId) {
         Comment comment = getExistingComment(commentId);
+        Post post = comment.getPost();
         Member member = getExistingMember(memberId);
 
         verifyCommentWriter(comment, member);
 
+        post.deleteComment(comment);
         commentRepository.delete(comment);
     }
 }

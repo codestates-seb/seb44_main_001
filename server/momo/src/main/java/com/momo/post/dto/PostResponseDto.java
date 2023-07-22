@@ -22,8 +22,9 @@ public class PostResponseDto {
     private List<String> tags;
     private boolean isLiked;
     private Long postLikeCount;
+    private Long commentCount;
 
-    public PostResponseDto(Long postId, String title, String content, LocalDateTime createdAt, LocalDateTime editedAt, CategoryInfo categoryInfo, LocationInfo locationInfo, MemberInfo memberInfo, List<String> tags, boolean isLiked, Long postLikeCount) {
+    public PostResponseDto(Long postId, String title, String content, LocalDateTime createdAt, LocalDateTime editedAt, CategoryInfo categoryInfo, LocationInfo locationInfo, MemberInfo memberInfo, List<String> tags, boolean isLiked, Long postLikeCount, Long commentCount) {
         this.postId = postId;
         this.title = title;
         this.content = content;
@@ -35,6 +36,7 @@ public class PostResponseDto {
         this.tags = tags;
         this.isLiked = isLiked;
         this.postLikeCount = postLikeCount;
+        this.commentCount = commentCount;
     }
 
     public PostResponseDto(Long postLikeCount,Boolean isLiked) {
