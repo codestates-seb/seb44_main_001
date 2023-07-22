@@ -80,14 +80,14 @@ public class ChatroomService {
         }
     }
 
-    public void inviteMember(Long memberId, Long otherMemberId, Long roomId) {
+    public void inviteMember(Long otherMemberId, Long roomId) {
         Chatroom chatroom = chatroomRepository.findById(roomId).get();
         Member member = memberRepository.findById(memberId).get();
         Member otherMember = memberRepository.findById(otherMemberId).get();
         LocalDateTime now = LocalDateTime.now();
         String message = otherMember.getNickname() + "님이 입장하셨습니다.";
 
-        verifyGroupDuplicateInvitation(chatroom, member, otherMember);
+        verifyGroupDuplicateInvitation(chatroom, otherMember);
 
         chatroom.updateLastMessage(message, now);
         MemberChatroom memberChatRoom = MemberChatroom.from(otherMember, chatroom, chatroom.getName(), now);
