@@ -13,8 +13,6 @@ import {
   VIEW_PROFILE,
 } from '../../../common/util/constantValue';
 import { setChatRoomInfo } from '../../../common/store/ChatRoomInfoStore';
-import * as StompJs from '@stomp/stompjs';
-import SockJS from 'sockjs-client';
 
 export default function UserModal({
   isUserModalOpen,
@@ -32,17 +30,6 @@ export default function UserModal({
   const memberId = data?.memberInfo.memberId;
 
   const nickname = data?.memberInfo.nickname;
-
-  const client = new StompJs.Client({
-    brokerURL:
-      'ws://ec2-3-34-45-1.ap-northeast-2.compute.amazonaws.com:8080/stomp/chat',
-  });
-
-  if (typeof WebSocket !== 'function') {
-    client.webSocketFactory = function () {
-      return new SockJS(`${BASE_URL}/stomp/chat`) as StompJs.IStompSocket;
-    };
-  }
 
   const postPseronalChatMutation = useMutation(
     'ChatMembers',
