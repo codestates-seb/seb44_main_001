@@ -9,7 +9,6 @@ export const locationSlice = createSlice({
   },
   reducers: {
     setLocation: (_state, action) => {
-      console.log(action.payload); //! 배포 시 삭제
       return {
         locationId: action.payload.locationId,
         city: action.payload.city,

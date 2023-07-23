@@ -6,7 +6,6 @@ export default async function getUserNickname(url: string) {
     const refreshToken = localStorage.getItem('RefreshToken');
 
     const headers = {
-      'ngrok-skip-browser-warning': '69420',
       Authorization: accessToken,
       Refresh: refreshToken,
     };

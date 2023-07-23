@@ -13,7 +13,6 @@ export const updatedUserSlice = createSlice({
   initialState,
   reducers: {
     setUpdatedUser: (_state, action) => {
-      console.log(action.payload); //! 배포 시 삭제
       return {
         location: action.payload.location,
         welcomeMsg: action.payload.welcomeMsg,

@@ -21,10 +21,6 @@ import { useMutation } from 'react-query';
 import { BASE_URL } from '../../../common/util/constantValue';
 import { useNavigate } from 'react-router-dom';
 
-// interface KakaoData {
-//   email: string;
-// }
-
 export default function OauthSignup() {
   const [nickname, setNickname] = useState('');
   const [age, setAge] = useState<number | null>(null);
@@ -43,12 +39,11 @@ export default function OauthSignup() {
       const storedToken = localStorage.getItem('Authorization');
       const memberId = localStorage.getItem('memberId');
       if (storedToken) {
-        const result = await patchMyData(
+        await patchMyData(
           `${BASE_URL}/members/${memberId}`,
           storedToken,
           patchData,
         );
-        console.log(result);
       }
     },
   );

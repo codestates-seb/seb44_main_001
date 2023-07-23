@@ -18,7 +18,6 @@ export default function useCategorySetter() {
 
     if (!categories) {
       queryClient.prefetchQuery(['getCategory']);
-      console.log('categories are saved');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

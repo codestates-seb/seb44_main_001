@@ -5,9 +5,8 @@ export const deleteMember = async (url: string) => {
 
   const headers = {
     Authorization: token,
-    'ngrok-skip-browser-warning': '69420',
   };
 
   const res = await axios.delete(url, { headers });
-  return res.data
+  return res.data;
 };

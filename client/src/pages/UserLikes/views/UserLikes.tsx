@@ -27,7 +27,6 @@ export default function UserLikes() {
   }: UseInfiniteQueryResult<CardData[], unknown> = useInfiniteQuery(
     ['userPosts'],
     ({ pageParam = 1 }) => {
-      console.log(`${BASE_URL}/posts/like/member/${memberId}`);
       return getMyLikes(`${BASE_URL}/posts/like/member/${memberId}`, pageParam);
     },
     {

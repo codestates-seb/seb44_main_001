@@ -7,7 +7,6 @@ export const patchMyDataInfo = async (url: string, data: MemberPatchDto) => {
 
   const headers = {
     Authorization: token,
-    'ngrok-skip-browser-warning': '69420',
   };
 
   const res = await axios.patch(url, data, { headers });

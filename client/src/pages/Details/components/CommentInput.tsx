@@ -37,7 +37,6 @@ export default function CommentInput() {
 
   const handleCommentChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setContent(event.target.value);
-    console.log(content);
   };
 
   const handleSubmit = () => {

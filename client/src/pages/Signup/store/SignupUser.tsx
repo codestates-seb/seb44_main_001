@@ -13,7 +13,6 @@ export const setSignupSlice = createSlice({
   },
   reducers: {
     setSignupUser: (_state, action) => {
-      console.log(action.payload); //! 배포 시 삭제
       return {
         email: action.payload.email,
         password: action.payload.password,

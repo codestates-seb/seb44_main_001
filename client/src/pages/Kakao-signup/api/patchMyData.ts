@@ -8,12 +8,10 @@ export default async function patchMyData(
 ) {
   try {
     const headers = {
-      'ngrok-skip-browser-warning': '69420',
       Authorization: `${token}`,
     };
 
-    const res = await axios.patch(url, data, { headers });
-    console.log(res);
+    await axios.patch(url, data, { headers });
   } catch (err) {
     console.log(err);
   }

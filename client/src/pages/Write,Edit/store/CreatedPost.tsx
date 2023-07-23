@@ -14,7 +14,6 @@ export const createdPostSlice = createSlice({
   initialState,
   reducers: {
     setCreatedPost: (_state, action) => {
-      console.log(action.payload); //! 배포 시 삭제
       return {
         title: action.payload.title,
         content: action.payload.content,

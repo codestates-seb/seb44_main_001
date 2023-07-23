@@ -87,7 +87,6 @@ export default function ChatModal() {
 
   const handleWebSocketMessage = (message: StompJs.IMessage) => {
     const receivedMessage = JSON.parse(message.body);
-    console.table(receivedMessage);
     setTimeout(() => {
       setMessages((prevMessages) => {
         return [...prevMessages, receivedMessage];
@@ -101,8 +100,6 @@ export default function ChatModal() {
       client.activate();
 
       client.onConnect = function () {
-        console.log('websocket is connected');
-
         const subscription = client.subscribe(
           `/sub/chat/room/${chatRoom}`,
           handleWebSocketMessage,
