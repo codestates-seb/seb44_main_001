@@ -36,8 +36,7 @@ export default function ChatModal() {
   const chatRoom = useSelector((state: RootState) => state.chatRoomInfo.roomId);
 
   const client = new StompJs.Client({
-    brokerURL:
-      'ws://ec2-54-180-137-136.ap-northeast-2.compute.amazonaws.com:8080/stomp/chat',
+    brokerURL: 'wss://momomomo.shop:8080/stomp/chat',
     connectHeaders: {
       Authorization: token as string,
     },
@@ -45,9 +44,7 @@ export default function ChatModal() {
 
   if (typeof WebSocket !== 'function') {
     client.webSocketFactory = function () {
-      return new SockJS(
-        'https://e9e5-49-163-135-89.ngrok-free.app/stomp/chat',
-      ) as StompJs.IStompSocket;
+      return new SockJS(`${BASE_URL}/stomp/chat`) as StompJs.IStompSocket;
     };
   }
 
