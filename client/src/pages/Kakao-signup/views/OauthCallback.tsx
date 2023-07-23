@@ -12,7 +12,7 @@ export default function OauthCallback() {
     const memberId = params.get('member_id');
 
     if (token && memberId) {
-      localStorage.setItem('Authorization', token);
+      localStorage.setItem('Authorization', `Bearer ${token}`);
       localStorage.setItem('memberId', memberId);
 
       console.log('오예스 성공!!!!!!!!!!!!!');
