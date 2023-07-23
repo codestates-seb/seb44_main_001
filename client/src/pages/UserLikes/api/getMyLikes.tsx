@@ -1,18 +1,18 @@
 import axios from 'axios';
 
-export const getUserPosts = async (
+export const getMyLikes = async (
   url: string,
-  memberId: string | null,
   pageParam: number,
 ) => {
   const res = await axios(url, {
     params: {
-      ...(memberId && { memberId }),
       page: pageParam,
+      pageSize: 9,
     },
     headers: {
       'ngrok-skip-browser-warning': '69420',
     },
   });
+  console.log(res);
   return res.data;
 };

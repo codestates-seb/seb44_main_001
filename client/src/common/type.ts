@@ -85,6 +85,8 @@ export type CardData = {
   locationInfo: LocationInfo;
   categoryInfo: CategoryInfo;
   tags: string[];
+  postLikeCount: number | null;
+  commentCount: number | null;
 };
 
 export type MemberInfo = {

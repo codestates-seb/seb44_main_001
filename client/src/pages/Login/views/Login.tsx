@@ -28,10 +28,7 @@ export default function Login() {
   const navigation = useNavigate();
 
   const data: LoginData = useSelector((state: RootState) => state.login);
-
-  // const token: string = useSelector((state: RootState) => state.token.token);
-  // const user: Member = useSelector((state: RootState) => state.member);
-
+  
   const loginMutation = useMutation<void, AxiosError, LoginData>(
     async () => {
       const result = await loginData(`${BASE_URL}/auth/login`, data);
@@ -108,7 +105,7 @@ export default function Login() {
   };
 
   return (
-    <div>
+    <main>
       <SemiHeader title="로그인" content="모모에 오신것을 환영합니다!" />
       <Layout>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -157,7 +154,7 @@ export default function Login() {
           </Background>
         </div>
       </Layout>
-    </div>
+    </main>
   );
 }
 

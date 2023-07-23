@@ -2,6 +2,8 @@ import { keyframes, styled } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { CardData, MemberInfo } from '../type';
 import profile from '../assets/profile.svg';
+import peach_off from '../assets/icons/peach_off.svg';
+import comment from '../assets/icons/comment.svg';
 
 export default function Card({
   title,
@@ -11,6 +13,8 @@ export default function Card({
   locationInfo,
   categoryInfo,
   tags,
+  postLikeCount,
+  commentCount,
 }: CardData) {
   const { profileImage, nickname }: MemberInfo = memberInfo;
   const { city, province } = locationInfo;
@@ -36,10 +40,20 @@ export default function Card({
           <div key={tag}>{`#${tag}`}</div>
         ))}
       </TagSection>
-      <SortArea>
-        <div className="location">{`${city} ${province}`}</div>
-        <div className="category">{category}</div>
-      </SortArea>
+      <SortAndIcon>
+        <SortSection>
+          <div className="location">{`${city} ${province}`}</div>
+          <div className="category">{category}</div>
+        </SortSection>
+        <IconSection>
+          <img src={peach_off} alt="likes" />
+          <span className="marginRight">
+            {postLikeCount === null ? 0 : postLikeCount}
+          </span>
+          <img src={comment} alt="comment" />
+          <span>{commentCount === null ? 0 : commentCount}</span>
+        </IconSection>
+      </SortAndIcon>
     </Wrapper>
   );
 }
@@ -73,7 +87,7 @@ const Wrapper = styled(Link)`
     transform: translate(-5px, -5px);
     box-shadow: 5px 5px 0px 0px rgba(255, 192, 203, 1);
   }
-  &:active{
+  &:active {
     box-shadow: none;
     transform: translate(0, 0);
   }
@@ -103,7 +117,13 @@ const Content = styled.div`
   }
 `;
 
-const SortArea = styled.div`
+const SortAndIcon = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const SortSection = styled.div`
   display: flex;
   .location {
     margin-right: 1rem;
@@ -112,6 +132,17 @@ const SortArea = styled.div`
     padding: 0.5rem;
     background-color: var(--color-pink-1);
     border-radius: 5px;
+  }
+`;
+const IconSection = styled.div`
+  display: flex;
+  align-items: center;
+  .marginRight {
+    margin-right: 0.5rem;
+  }
+  img {
+    margin-right: 0.3rem;
+    height: 1.5rem;
   }
 `;
 

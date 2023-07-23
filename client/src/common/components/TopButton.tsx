@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { styled } from 'styled-components';
 import goTopMomo from '../assets/icons/goTopMomo.svg';
+import useScrollToToop from '../util/customHook/useScrollToTop';
 
 export default function TopButton() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // 스크롤 이벤트를 감지하여 버튼의 표시 여부 결정
     const handleScroll = () => {
       if (window.scrollY > 300) {
         setIsVisible(true);
@@ -17,16 +17,14 @@ export default function TopButton() {
 
     window.addEventListener('scroll', handleScroll);
 
-    // 컴포넌트가 언마운트될 때 이벤트 리스너 해제
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+  
   const handleClickTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useScrollToToop();
   };
 
   return (
@@ -47,9 +45,12 @@ const TopBtn = styled.button`
   bottom: 20%;
   right: 80px;
   font-size: var(--font-size-m);
+  border-radius: 50px;
   animation: bounce_frames 0.5s infinite;
   animation-direction: alternate;
   animation-timing-function: cubic-bezier(0.5, 0.05, 1, 0.5);
+  padding: 0.5rem;
+  background-color: #ffcad072;
   @keyframes bounce_frames {
     from {
       transform: translate3d(0, 0, 0);
@@ -58,7 +59,7 @@ const TopBtn = styled.button`
       transform: translate3d(0, 10px, 0);
     }
   }
-  & :hover {
-    color: var(--color-pink-1);
+  &:hover {
+    background-color: var(--color-pink-2);
   }
 `;

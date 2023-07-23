@@ -8,26 +8,36 @@ import TopButton from '../../../common/components/TopButton';
 import { useState } from 'react';
 import roundingMomo from '../../../common/assets/images/roundingMomo.svg';
 import cryingMomo from '../../../common/assets/images/cryingMomo1.svg';
+import cryingMomo2 from '../../../common/assets/images/cryingMomo2.svg';
 import Button from '../../../common/components/Button';
+import coupleMomo from '../../../common/assets/logo/coupleMomo.svg';
 
 export default function UserPostsCards({
   memberId,
   nickname,
+  isMine,
 }: {
   memberId: string;
   nickname: string;
+  isMine: boolean;
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(3);
+  const [sort, setSort] = useState('');
+
   const {
     data: userPosts,
     fetchNextPage,
     hasNextPage,
     isError,
   }: UseInfiniteQueryResult<CardData[], unknown> = useInfiniteQuery(
-    ['userPosts'],
+    ['userPosts', sort, memberId],
     ({ pageParam = 1 }) => {
-      return getUserPosts(`${BASE_URL}/posts/member`, memberId, pageParam);
+      const urlPath = `${BASE_URL}/posts${sort}/member${
+        sort && `/${memberId}`
+      }`;
+      const isMemberId = sort ? null : memberId;
+      return getUserPosts(urlPath, isMemberId, pageParam);
     },
     {
       getNextPageParam: (lastPage, allPages) => {
@@ -75,10 +85,28 @@ export default function UserPostsCards({
 
   return (
     <Wrapper>
+      <img className="momoImg" src={coupleMomo} alt="couple-momo" />
       <FeedSection>
         <span className="username">{`${nickname}`}</span>
         <span>님의 피드</span>
       </FeedSection>
+      {isMine && (
+        <ButtonSection>
+          <Button
+            children={'내가 쓴 글 보기'}
+            onClick={() => {
+              setSort('');
+            }}
+          />
+          <Button
+            children={'내가 좋아요 한 글 보기'}
+            onClick={() => {
+              setSort('/like');
+            }}
+          />
+        </ButtonSection>
+      )}
+
       {flattenedData && flattenedData.length ? (
         <>
           <Lists>
@@ -92,6 +120,8 @@ export default function UserPostsCards({
                 categoryInfo={post.categoryInfo}
                 postId={post.postId}
                 tags={post.tags}
+                postLikeCount={post.postLikeCount}
+                commentCount={post.commentCount}
               />
             ))}
           </Lists>
@@ -106,7 +136,10 @@ export default function UserPostsCards({
           </ButtonWrapper>
         </>
       ) : (
-        <Message>작성한 모임글이 없어요</Message>
+        <Message>
+          <img src={cryingMomo2} alt='no-data'/>
+          {sort ? '좋아요 누른 글이 없어요' : '작성한 모임글이 없어요'}
+        </Message>
       )}
       <TopButton />
     </Wrapper>
@@ -117,6 +150,9 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  .momoImg {
+    height: 3rem;
+  }
 `;
 
 const Lists = styled.div`
@@ -138,14 +174,25 @@ const Lists = styled.div`
 
 const Message = styled.div`
   font-size: var(--font-size-l);
+  margin-top: 3rem;
+  display: flex;
+  flex-direction: column;
 `;
 
 const FeedSection = styled.div`
   display: flex;
   align-items: center;
+  margin-top: 1rem;
   .username {
     font-size: var(--font-size-m);
     font-family: 'BR-Bold';
+  }
+`;
+
+const ButtonSection = styled.div`
+  margin-top: 1rem;
+  & :first-child {
+    margin-right: 1rem;
   }
 `;
 
