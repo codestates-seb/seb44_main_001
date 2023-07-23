@@ -12,10 +12,11 @@ import { setCategory } from '../../../common/store/CategoryStore';
 import { setLocation } from '../../../common/store/LocationStore';
 import { resetCreatedPost } from '../../Write,Edit/store/CreatedPost';
 
+import TopButton from '../../../common/components/TopButton';
 import Card from '../../../common/components/Card';
 import roundingMomo from '../../../common/assets/images/roundingMomo.svg';
 import cryingMomo from '../../../common/assets/images/cryingMomo1.svg';
-import TopButton from '../../../common/components/TopButton';
+import momoFriends from '../../../common/assets/logo/momofriends.svg';
 
 export default function Cards() {
   const dispatch = useDispatch();
@@ -107,27 +108,34 @@ export default function Cards() {
   return (
     <Wrapper>
       {flattenedData && flattenedData.length ? (
-        <Lists>
-          {flattenedData.map((post: CardData, index: number) => (
-            <Card
-              key={index}
-              title={post.title}
-              content={post.content.replace(/<[^>]*>/g, '')}
-              memberInfo={post.memberInfo}
-              locationInfo={post.locationInfo}
-              categoryInfo={post.categoryInfo}
-              postId={post.postId}
-              tags={post.tags}
-            />
-          ))}
-        </Lists>
+        <ListWrapper>
+          <Lists>
+            {flattenedData.map((post: CardData, index: number) => (
+              <Card
+                key={index}
+                title={post.title}
+                content={post.content.replace(/<[^>]*>/g, '')}
+                memberInfo={post.memberInfo}
+                locationInfo={post.locationInfo}
+                categoryInfo={post.categoryInfo}
+                postId={post.postId}
+                tags={post.tags}
+                postLikeCount={post.postLikeCount}
+                commentCount={post.commentCount}
+              />
+            ))}
+          </Lists>
+          <div className="momoFriendsImg">
+            <img src={momoFriends} alt="momoFriends" />
+          </div>
+        </ListWrapper>
       ) : (
         <Message>
           <img src={cryingMomo} alt="no-data" />
           <div>조건과 일치하는 모임이 없어요ㅠㅠ</div>
         </Message>
       )}
-      <TopButton/>
+      <TopButton />
       <div ref={scrollTargetRef}></div>
     </Wrapper>
   );
@@ -141,7 +149,7 @@ const Lists = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 2rem;
-
+  margin-bottom: 10rem;
   @media (max-width: 832px) {
     grid-template-columns: repeat(1, 1fr);
   }
@@ -189,4 +197,14 @@ const Loading = styled.div`
 const Error = styled.div`
   margin-top: 3rem;
   font-size: var(--font-size-l);
+`;
+
+const ListWrapper = styled.div`
+  .momoFriendsImg {
+    position: absolute;
+    margin-top: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 5rem;
+  }
 `;

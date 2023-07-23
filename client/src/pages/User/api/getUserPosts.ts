@@ -2,12 +2,12 @@ import axios from 'axios';
 
 export const getUserPosts = async (
   url: string,
-  memberId: string,
+  memberId: string | null,
   pageParam: number,
 ) => {
   const res = await axios(url, {
     params: {
-      memberId: memberId,
+      ...(memberId && { memberId }),
       page: pageParam,
     },
     headers: {
