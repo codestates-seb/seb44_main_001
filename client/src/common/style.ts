@@ -20,11 +20,13 @@ export const GlobalStyle = createGlobalStyle`
     min-height: 100%;
     background-color: var(--color-light-yellow);
   }
+
   #root{
-    position: relative;
+    position: absolute;
   }
+
   main {
-    padding-bottom: 6rem;
+    padding-bottom: 5rem;
     height: 100%;
   }
   button{

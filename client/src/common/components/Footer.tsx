@@ -2,10 +2,6 @@ import { styled } from 'styled-components';
 
 interface LinkWithTooltipProps {
   $image: string;
-  backgroundImage?: string;
-  key: string;
-  href: string;
-  target: string;
 }
 
 export default function Footer() {
@@ -50,26 +46,30 @@ export default function Footer() {
     <Wapper>
       <Content>
         Copyright 2023. [ FE{' '}
-        {feTeam.map((user) => (
-          <LinkWithTooltip
-            key={user.github}
-            href={`${githubUrl}${user.github}`}
-            target="_blank"
-            $image={user.image}
-          >
-            {`${user.name} `}
-          </LinkWithTooltip>
+        {feTeam.map((user, index) => (
+          <span key={user.github}>
+            <LinkWithTooltip
+              href={`${githubUrl}${user.github}`}
+              target="_blank"
+              $image={user.image}
+            >
+              {`${user.name} `}
+            </LinkWithTooltip>
+            {index < feTeam.length - 1 && ' '}
+          </span>
         ))}{' '}
         BE{' '}
-        {beTeam.map((user) => (
-          <LinkWithTooltip
-            key={user.github}
-            href={`${githubUrl}${user.github}`}
-            target="_blank"
-            $image={user.image}
-          >
-            {user.name}
-          </LinkWithTooltip>
+        {beTeam.map((user, index) => (
+          <span key={user.github}>
+            <LinkWithTooltip
+              href={`${githubUrl}${user.github}`}
+              target="_blank"
+              $image={user.image}
+            >
+              {user.name}
+            </LinkWithTooltip>
+            {index < beTeam.length - 1 && ' '}
+          </span>
         ))}
         ]. All rights reserved.
       </Content>
@@ -89,7 +89,7 @@ const Wapper = styled.footer`
 
 const Content = styled.div`
   padding: 1rem;
-  > a {
+  a {
     color: var(--color-black);
   }
 `;
