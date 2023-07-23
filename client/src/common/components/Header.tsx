@@ -268,6 +268,7 @@ const UserContainer = styled.div`
   border-radius: 20px;
   padding: 0.5rem;
   img {
+    object-fit: cover;
     border-radius: 50%;
   }
   &:hover {
