@@ -10,11 +10,9 @@ import Footer from './common/components/Footer';
 import { AxiosError } from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ChatModal from './common/components/Chat/views/ChatModal';
-import scrollToTop from './common/util/customHook/useScrollToTop';
 
 
 export default function App() {
-  scrollToTop();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
