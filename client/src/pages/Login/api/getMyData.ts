@@ -13,8 +13,14 @@ export default async function MyData(url: string) {
 
     const res = await axios.get(url, { headers });
 
-    console.log(res);
+    console.log(accessToken,res.headers.authorization)
+    if(!!res.headers.authorization && accessToken !== res.headers.authorization){
+      console.log("달라졌다!!!!!!!!!!!!!!!!!!!")
+    }
 
+    if (res.headers.authorization) {
+      localStorage.setItem('Authorization', res.headers.authorization);
+    }
     return res.data;
   } catch (err) {
     console.log(err);

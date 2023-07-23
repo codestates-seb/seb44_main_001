@@ -1,4 +1,10 @@
-import { CSSProperties, SetStateAction, useEffect, useRef, useState } from 'react';
+import {
+  CSSProperties,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
@@ -60,9 +66,9 @@ export default function SearchBar() {
 
     document.addEventListener('mousedown', handleDocumentClick);
 
-    // return () => {
-    //   document.removeEventListener('mousedown', handleDocumentClick);
-    // };
+    return () => {
+      document.removeEventListener('mousedown', handleDocumentClick);
+    };
   }, []);
 
   return (
@@ -74,7 +80,7 @@ export default function SearchBar() {
           type="text"
           value={inputValue}
           onChange={handleInputChange}
-          placeholder={`${selectedLocation.city} ${selectedLocation.province} 지역의 ${selectedCategory.name} 카테고리에서 검색하기`}
+          placeholder={`${selectedLocation.city} ${selectedLocation.province} 지역 ${selectedCategory.name} 카테고리 검색`}
         />
         {inputValue && (
           <DeleteButton type="reset" onClick={handleInputDelete}>
@@ -106,14 +112,21 @@ const SearchInput = styled.input<SearchInputProps>`
   display: flex;
   width: 37.5rem;
   height: 3.125rem;
-  padding: 1rem 1rem 1rem 3rem;
+  padding: 1rem 1rem 1rem 2rem;
   border-radius: 20px;
   box-shadow: ${({ $isClicked }) =>
     $isClicked ? 'none' : '5px 5px var(--color-black)'};
   border: ${({ $isClicked }) =>
     $isClicked ? '4px solid var(--color-pink-1)' : 'none'};
+  font-size: var(--font-size-s);
   &:focus {
     outline: none;
+  }
+  &::placeholder {
+    color: var(--color-black);
+  }
+  @media (max-width: 832px) {
+    width: 80vw;
   }
 `;
 
