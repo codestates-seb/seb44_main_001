@@ -15,7 +15,10 @@ export default async function postInvitation(
     };
 
     const res = await axios.post(url, data, { headers });
-    console.log(res);
+
+    if (res.headers.authorization) {
+      localStorage.setItem('Authorization', res.headers.authorization);
+    }
   } catch (err) {
     console.log(err);
   }

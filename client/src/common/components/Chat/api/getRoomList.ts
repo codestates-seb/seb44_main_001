@@ -13,14 +13,10 @@ export default async function getRoomList(url: string) {
 
     const res = await axios.get(url, { headers });
 
-    console.log(accessToken,res.headers.authorization)
-    if(!!res.headers.authorization && accessToken !== res.headers.authorization){
-      console.log("겟룸리스트로달라졌다!!!!!!!!!!!!!!!!!!!")
-    }
-
     if (res.headers.authorization) {
       localStorage.setItem('Authorization', res.headers.authorization);
     }
+
     return res.data;
   } catch (err) {
     console.log(err);

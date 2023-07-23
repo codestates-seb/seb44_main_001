@@ -12,7 +12,11 @@ export default async function getArticle(url: string) {
     };
 
     const res = await axios.get(url, { headers });
-    console.log(res);
+
+    if (res.headers.authorization) {
+      localStorage.setItem('Authorization', res.headers.authorization);
+    }
+
     return res.data;
   } catch (err) {
     console.log(err);

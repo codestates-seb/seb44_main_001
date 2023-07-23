@@ -5,12 +5,23 @@ type likeType = {
 };
 
 export const postLike = async (url: string, data: likeType) => {
-    const token = localStorage.getItem('Authorization');
-    const headers = {
-      Authorization: token,
-      'ngrok-skip-browser-warning': '69420',
-    };
-  const res = await axios.post(url, data, { headers });
-  return res.data;
-};
+  try {
+    const accessToken = localStorage.getItem('Authorization');
+    const refreshToken = localStorage.getItem('RefreshToken');
 
+    const headers = {
+      Authorization: accessToken,
+      Refresh: refreshToken,
+    };
+
+    const res = await axios.post(url, data, { headers });
+
+    if (res.headers.authorization) {
+      localStorage.setItem('Authorization', res.headers.authorization);
+    }
+
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
+};

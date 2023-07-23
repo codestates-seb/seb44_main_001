@@ -7,13 +7,15 @@ export default async function postComment(url: string, data: CommentToPost) {
     const refreshToken = localStorage.getItem('RefreshToken');
 
     const headers = {
-      'ngrok-skip-browser-warning': '69420',
       Authorization: accessToken,
       Refresh: refreshToken,
     };
 
     const res = await axios.post(url, data, { headers });
-    console.log(res);
+
+    if (res.headers.authorization) {
+      localStorage.setItem('Authorization', res.headers.authorization);
+    }
   } catch (err) {
     console.log(err);
   }
