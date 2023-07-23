@@ -269,6 +269,7 @@ const UserContainer = styled.div`
   padding: 0.5rem;
   img {
     border-radius: 50%;
+    object-fit: cover;
   }
   &:hover {
     background-color: var(--color-pink-3);

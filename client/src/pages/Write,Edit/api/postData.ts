@@ -3,15 +3,21 @@ import { ArticleToPost } from '../../../common/type';
 
 export default async function postData(url: string, data: ArticleToPost) {
   try {
-    const token = localStorage.getItem('Authorization');
+    const accessToken = localStorage.getItem('Authorization');
+    const refreshToken = localStorage.getItem('RefreshToken');
 
     const headers = {
-      Authorization: token,
       'ngrok-skip-browser-warning': '69420',
+      Authorization: accessToken,
+      Refresh: refreshToken,
     };
 
     const res = await axios.post(url, data, { headers });
-    console.log(res);
+
+    if (res.headers.authorization) {
+      localStorage.setItem('Authorization', res.headers.authorization);
+    }
+
     return res.data;
   } catch (err) {
     console.log(err);

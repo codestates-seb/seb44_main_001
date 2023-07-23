@@ -184,6 +184,7 @@ export type PrevChatData = {
 
 export type PostChat = {
   content: string;
+  roomId: number;
 };
 
 export type ChatMembers = {

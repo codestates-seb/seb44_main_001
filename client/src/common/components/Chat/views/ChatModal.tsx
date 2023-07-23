@@ -66,9 +66,7 @@ export default function ChatModal() {
           !isOpen &&
             data.rooms.filter((rooom) => rooom.unreadCount !== 0).length !== 0,
         );
-        console.log(
-          '이거' + data.rooms.filter((rooom) => rooom.unreadCount !== 0).length,
-        );
+
         setPrevRoom((prevRoom) => updatePrevRoom(prevRoom, data.rooms));
       },
     },
@@ -187,7 +185,7 @@ const Container = styled.section`
   position: fixed;
   bottom: 3rem;
   right: 3rem;
-
+  z-index: 10;
   > button {
     border: none;
     height: 5rem;
