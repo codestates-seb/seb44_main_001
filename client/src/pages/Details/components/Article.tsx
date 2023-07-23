@@ -83,7 +83,7 @@ export default function Article({ data }: { data?: ArticleToGet }) {
     },
   );
 
-  const deleteItemMutation = useMutation<void, unknown, void>(
+  const deleteItemMutation = useMutation<void, unknown>(
     () => deleteArticle(`${BASE_URL}/posts/${id}/${memberId}`),
     {
       onSuccess: () => {
