@@ -15,20 +15,12 @@ import { ChatData, ChatRoomData, Room } from '../../../type';
 import * as StompJs from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import postOnline from '../api/postOnline';
-import { setChatRoomInfo } from '../../../store/ChatRoomInfoStore';
+import { resetChatRoomInfo } from '../../../store/ChatRoomInfoStore';
 
-export default function ChatButton() {
+export default function ChatModal() {
   const [messages, setMessages] = useState<ChatData[]>([]);
 
-  const [prevRoom, setPrevRoom] = useState<Room[]>([
-    {
-      roomId: 0,
-      roomName: '',
-      unreadCount: 0,
-      lastMessage: '',
-      lastSentTime: '',
-    },
-  ]);
+  const [prevRoom, setPrevRoom] = useState<Room[] | []>([]);
 
   const [isDataDifferent, setIsDataDifferent] = useState(false);
 
@@ -74,6 +66,9 @@ export default function ChatButton() {
           !isOpen &&
             data.rooms.filter((rooom) => rooom.unreadCount !== 0).length !== 0,
         );
+        console.log(
+          '이거' + data.rooms.filter((rooom) => rooom.unreadCount !== 0).length,
+        );
         setPrevRoom((prevRoom) => updatePrevRoom(prevRoom, data.rooms));
       },
     },
@@ -92,7 +87,7 @@ export default function ChatButton() {
 
   const handleModalClose = () => {
     dispatch(setChatModal(false));
-    dispatch(setChatRoomInfo({ roomName: '', roomId: 0 }));
+    dispatch(resetChatRoomInfo());
   };
 
   const handleWebSocketMessage = (message: StompJs.IMessage) => {
@@ -161,12 +156,16 @@ export default function ChatButton() {
         {chatRoom === 0 && (
           <ChatMain
             handleModalClose={handleModalClose}
-            prevRoom={prevRoom as Room[]}
+            prevRoom={prevRoom}
             getRoomQuery={getRoomQuery}
             setIsDataDifferent={setIsDataDifferent}
           />
         )}
-        <ChatRoom messages={messages as ChatData[]} setMessages={setMessages} />
+        <ChatRoom
+          messages={messages as ChatData[]}
+          setMessages={setMessages}
+          handleModalClose={handleModalClose}
+        />
       </Modal>
     </Container>
   );
@@ -209,19 +208,13 @@ const Container = styled.section`
 
   @keyframes colorChange {
     0% {
-      color: white;
-    }
-    75% {
-      color: #ff8181;
     }
     100% {
-      color: white;
+      border: 5px solid #ff8181;
     }
   }
 
   .on {
-    > svg {
-      animation: colorChange 1s infinite;
-    }
+    animation: colorChange 1s infinite;
   }
 `;

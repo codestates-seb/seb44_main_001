@@ -9,7 +9,7 @@ import { setMyData } from './pages/Login/store/MyUserData';
 import Footer from './common/components/Footer';
 import { AxiosError } from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import ChatModal from './common/components/Chat/views/ChatModal';
 
 export default function App() {
   const dispatch = useDispatch();
@@ -21,7 +21,7 @@ export default function App() {
 
   useQuery<void, AxiosError, number>(
     'userInfo',
-    () => MyData(`${BASE_URL}/members/${memberId}`, token as string),
+    () => MyData(`${BASE_URL}/members/${memberId}`),
     {
       enabled: token !== null,
       onSuccess: (data) => {
@@ -44,6 +44,7 @@ export default function App() {
       <GlobalStyle />
       {location.pathname !== '/' && <Header />}
       <Router />
+      {token && <ChatModal />}
       <Footer />
     </>
   );

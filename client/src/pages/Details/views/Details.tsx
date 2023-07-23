@@ -9,7 +9,6 @@ import { ArticleToGet } from '../../../common/type';
 import getArticle from '../api/getArticle';
 import { BASE_URL } from '../../../common/util/constantValue';
 import { useParams } from 'react-router-dom';
-import ChatButton from '../../../common/components/Chat/views/ChatModal';
 
 export default function Details() {
   const { id } = useParams();
@@ -37,7 +36,6 @@ export default function Details() {
           <CommentInput />
           <CommentList />
         </Container>
-        <ChatButton />
       </Layout>
     </>
   );

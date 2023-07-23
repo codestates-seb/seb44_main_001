@@ -8,7 +8,7 @@ import User from './pages/User/views/User';
 import UserEdit from './pages/UserEdit/views/UserEdit';
 import Lists from './pages/Lists,Search/views/Lists';
 import Details from './pages/Details/views/Details';
-import OauthCallback from './pages/Kakao-signup/views/KakaoCallback';
+import OauthCallback from './pages/Kakao-signup/views/OauthCallback';
 import NotFound404 from './pages/NotFound/views/NotFound404';
 
 const Router = () => {

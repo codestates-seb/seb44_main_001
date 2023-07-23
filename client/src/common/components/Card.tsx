@@ -73,7 +73,7 @@ const Wrapper = styled(Link)`
     transform: translate(-5px, -5px);
     box-shadow: 5px 5px 0px 0px rgba(255, 192, 203, 1);
   }
-  &:active{
+  &:active {
     box-shadow: none;
     transform: translate(0, 0);
   }
@@ -87,6 +87,7 @@ const UserInfo = styled.div`
     height: 2rem;
     margin-right: 0.5rem;
     border-radius: 50%;
+    object-fit: cover;
   }
 `;
 

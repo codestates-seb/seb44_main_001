@@ -20,12 +20,12 @@ import { AxiosError } from 'axios';
 interface TextInputProps {
   type?: string;
   value: string;
-  isValidate: boolean;
+  isValidate?: boolean;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   style?: React.CSSProperties;
-  isDuplicateEmail?:boolean;
-  isDuplicateNickname? : boolean;
+  isDuplicateEmail?: boolean;
+  isDuplicateNickname?: boolean;
 }
 
 interface TextAreaProps {
@@ -56,33 +56,34 @@ export default function Signup() {
 
   const data: SignupData = useSelector((state: RootState) => state.signup);
 
-  const signupMutation = useMutation<void, AxiosError<ErrorResponse>, SignupData>(
-    (data) => signupData(`${BASE_URL}/members/register`, data),
-    {
-      onSuccess: () => {
-        navigation('/login');
-      },
-      onError: (error) => {
-        if (
-          error.response?.status === 409 &&
-          error.response?.data?.message === 'Member exists'
-        ) {
-          alert('이메일이 이미 존재합니다.');
-          setIsDuplicateEmail(true);
-        } else if (
-          error.response?.status === 409 &&
-          error.response?.data?.message === 'Nickname Exist'
-        ) {
-          alert('닉네임이 이미 존재합니다.');
-          setIsDuplicateNickname(true);
-        }
-        window.scrollTo({
-          top: 300,
-          behavior: 'smooth',
-        });
-      },
+  const signupMutation = useMutation<
+    void,
+    AxiosError<ErrorResponse>,
+    SignupData
+  >((data) => signupData(`${BASE_URL}/members/register`, data), {
+    onSuccess: () => {
+      navigation('/login');
     },
-  );
+    onError: (error) => {
+      if (
+        error.response?.status === 409 &&
+        error.response?.data?.message === 'Member exists'
+      ) {
+        alert('이메일이 이미 존재합니다.');
+        setIsDuplicateEmail(true);
+      } else if (
+        error.response?.status === 409 &&
+        error.response?.data?.message === 'Nickname Exist'
+      ) {
+        alert('닉네임이 이미 존재합니다.');
+        setIsDuplicateNickname(true);
+      }
+      window.scrollTo({
+        top: 300,
+        behavior: 'smooth',
+      });
+    },
+  });
 
   useEffect(() => {
     return () => {

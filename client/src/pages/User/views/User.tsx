@@ -12,10 +12,9 @@ import profile from '../../../common/assets/profile.svg';
 import { RootState } from '../../../common/store/RootStore';
 import { BASE_URL } from '../../../common/util/constantValue';
 import getMember from '../api/getMember';
-import ChatButton from '../../../common/components/Chat/views/ChatModal';
 import { PiMapPinBold } from 'react-icons/pi';
 import { setUserData } from '../store/MemberStore';
-import UserPostsCards from '../components/UserPostsCards';
+import UserPostsCards from '../components/userPostsCards';
 
 export default function User() {
   const navigate = useNavigate();
@@ -115,7 +114,6 @@ export default function User() {
                   <div>{data.welcomeMsg}</div>
                 </MsgBox>
               </Background>
-              <ChatButton />
             </Layout>
           </>
         ) : (

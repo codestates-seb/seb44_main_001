@@ -1,7 +1,9 @@
 import axios from 'axios';
-import { CommentToPost } from '../../../common/type';
 
-export default async function postComment(url: string, data: CommentToPost) {
+export default async function postInvitation(
+  url: string,
+  data: { memberId: number; roomId: number },
+) {
   try {
     const accessToken = localStorage.getItem('Authorization');
     const refreshToken = localStorage.getItem('RefreshToken');

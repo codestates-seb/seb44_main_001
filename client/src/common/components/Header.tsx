@@ -277,8 +277,9 @@ const UserContainer = styled.div`
   > img {
     border-radius: 50%;
     margin-left: 0;
+    object-fit: cover;
   }
-  &:hover{
+  &:hover {
     background-color: #3971a2;
   }
 `;

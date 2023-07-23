@@ -4,7 +4,6 @@ import SearchBar from '../components/SearchBar';
 import CategoryIcons from '../components/CategoryIcons';
 import Cards from '../components/Cards';
 import ListsHeader from '../components/ListsHeader';
-import ChatButton from '../../../common/components/Chat/views/ChatModal';
 
 export default function Lists() {
   const location = useLocation();
@@ -17,7 +16,6 @@ export default function Lists() {
       {isPathLists ? <CategoryIcons /> : null}
       <ListsHeader />
       <Cards />
-      <ChatButton />
     </Wrapper>
   );
 }

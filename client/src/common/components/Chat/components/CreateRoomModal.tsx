@@ -1,8 +1,15 @@
 import Modal from 'react-modal';
 import { createRoomModalStyle } from '../createRoomModalStyle';
 import { styled } from 'styled-components';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useState, KeyboardEvent } from 'react';
 import Button from '../../Button';
+import { useMutation } from 'react-query';
+import postNewRoomName from '../api/postNewRoomName';
+import { BASE_URL } from '../../../util/constantValue';
+import { NewRoom } from '../../../type';
+import { useDispatch } from 'react-redux';
+import { setChatModal } from '../../../store/ChatModalStore';
+import { setChatRoomInfo } from '../../../store/ChatRoomInfoStore';
 
 export default function CreateRoomModal({
   isOpen,
@@ -13,6 +20,33 @@ export default function CreateRoomModal({
 }) {
   const [roomName, setRoomName] = useState('');
 
+  const dispatch = useDispatch();
+
+  const memberId = Number(localStorage.getItem('MemberId'));
+
+  const data: NewRoom = {
+    memberId: memberId,
+    roomName: roomName,
+    roomType: 'GROUP',
+  };
+
+  const postMutation = useMutation(
+    'createRoom',
+    () => postNewRoomName(`${BASE_URL}/rooms/register`, data),
+    {
+      onSuccess: (data) => {
+        dispatch(setChatModal(true));
+        dispatch(
+          setChatRoomInfo({
+            roomId: data,
+            roomName: roomName,
+            roomType: 'GROUP',
+          }),
+        );
+      },
+    },
+  );
+
   const handleModalClose = () => {
     setCreateRoomModal(false);
   };
@@ -22,7 +56,15 @@ export default function CreateRoomModal({
   };
 
   const handleSubmit = () => {
-    console.log(roomName);
+    if (roomName.length) {
+      postMutation.mutate();
+    }
+  };
+
+  const handleKeyUp = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleSubmit();
+    }
   };
 
   return (
@@ -35,6 +77,8 @@ export default function CreateRoomModal({
       <RoomNameInput
         placeholder="생성할 그룹채팅방의 이름을 입력해주세요!"
         onChange={handleInput}
+        onKeyUp={handleKeyUp}
+        maxLength={15}
       />
       <Button onClick={handleSubmit}>그룹채팅방 생성</Button>
     </Modal>
