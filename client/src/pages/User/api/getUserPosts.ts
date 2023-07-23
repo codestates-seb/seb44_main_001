@@ -3,7 +3,7 @@ import axios from 'axios';
 export const getUserPosts = async (
   url: string,
   memberId: string | null,
-  pageParam: number,
+  pageParam: string,
 ) => {
   const res = await axios(url, {
     params: {

@@ -24,6 +24,7 @@ export default function UserPostsCards({
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(3);
   const [sort, setSort] = useState('');
+  const [pageParamState, setPageParamState] = useState(1);
 
   const {
     data: userPosts,
@@ -32,7 +33,7 @@ export default function UserPostsCards({
     isError,
   }: UseInfiniteQueryResult<CardData[], unknown> = useInfiniteQuery(
     ['userPosts', sort, memberId],
-    ({ pageParam = 1 }) => {
+    ({ pageParam = `${pageParamState}` }) => {
       const urlPath = `${BASE_URL}/posts${sort}/member${
         sort && `/${memberId}`
       }`;
@@ -96,12 +97,14 @@ export default function UserPostsCards({
             children={'내가 쓴 글 보기'}
             onClick={() => {
               setSort('');
+              setPageParamState(1);
             }}
           />
           <Button
             children={'내가 좋아요 한 글 보기'}
             onClick={() => {
               setSort('/like');
+              setPageParamState(0);
             }}
           />
         </ButtonSection>
@@ -137,7 +140,7 @@ export default function UserPostsCards({
         </>
       ) : (
         <Message>
-          <img src={cryingMomo2} alt='no-data'/>
+          <img src={cryingMomo2} alt="no-data" />
           {sort ? '좋아요 누른 글이 없어요' : '작성한 모임글이 없어요'}
         </Message>
       )}
