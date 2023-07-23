@@ -33,7 +33,7 @@ spring:
           kakao:
             client-id: ${KAKAO_CLIENT_KEY}
             client-secret: ${KAKAO_SECRET_KEY}
-            redirect-uri: http://ec2-3-34-45-1.ap-northeast-2.compute.amazonaws.com:8080/login/oauth2/code/kakao
+            redirect-uri: https://momomomo.shop:8080/login/oauth2/code/kakao
             client-authentication-method: POST
             authorization-grant-type: authorization_code
             client-name: Kakao
