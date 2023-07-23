@@ -404,7 +404,7 @@ const ChatInputSection = styled.section`
 
   > input {
     width: 100%;
-    padding: 0.5rem;
+    padding: 0.5rem 2rem 0.5rem 0.5rem;
     font-size: var(--font-size-s);
     color: var(--color-black) !important;
   }
