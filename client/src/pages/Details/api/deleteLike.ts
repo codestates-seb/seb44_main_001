@@ -16,6 +16,8 @@ export const deleteLike = async (url: string) => {
     if (res.headers.authorization) {
       localStorage.setItem('Authorization', res.headers.authorization);
     }
+
+    return res.data.likeCount
   } catch (err) {
     console.log(err);
   }
