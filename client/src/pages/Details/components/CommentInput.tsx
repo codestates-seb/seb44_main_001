@@ -46,17 +46,12 @@ export default function CommentInput() {
     }
   };
 
-  const handleKeyUp = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && event.shiftKey) {
       setContent((prevContent) => prevContent + '\n');
     } else if (event.key === 'Enter') {
-      handleSubmit();
-    }
-  };
-
-  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === 'Enter') {
       event.preventDefault();
+      handleSubmit();
     }
   };
 
@@ -67,7 +62,7 @@ export default function CommentInput() {
         <textarea
           value={content}
           onChange={handleCommentChange}
-          onKeyUp={handleKeyUp}
+          // onKeyUp={handleKeyUp}
           maxLength={100}
           onKeyDown={handleKeyDown}
         />
