@@ -1,5 +1,4 @@
 import { styled } from 'styled-components';
-import { MdOutlineClose } from 'react-icons/md';
 import { AiFillDelete } from 'react-icons/ai';
 import { useDispatch } from 'react-redux';
 import { setChatRoomInfo } from '../../../store/ChatRoomInfoStore';
@@ -9,8 +8,11 @@ import { calculateTimeDifference } from '../../../util/timeDifferenceCalculator'
 import { UseQueryResult, useMutation } from 'react-query';
 import deleteRoom from '../api/deleteRoom';
 import { useState } from 'react';
-import { BsFillPlusCircleFill } from 'react-icons/bs';
+import { BsPeopleFill } from 'react-icons/bs';
 import CreateRoomModal from './CreateRoomModal';
+import { FaPeopleGroup } from 'react-icons/fa6';
+import { CgCloseR } from 'react-icons/cg';
+import { FiPlusCircle } from 'react-icons/fi';
 
 export default function ChatMain({
   handleModalClose,
@@ -40,7 +42,18 @@ export default function ChatMain({
   );
 
   const handleChatRoomClick = (room: Room) => {
-    dispatch(setChatRoomInfo({ roomName: room.roomName, roomId: room.roomId }));
+    dispatch(
+      setChatRoomInfo({
+        roomName: room.roomName,
+        roomId: room.roomId,
+        roomType: room.roomType,
+        memberCount: room.memberCount,
+        unreadCount: room.unreadCount,
+        lastMessage: room.lastMessage,
+        lastSentTime: room.lastSentTime,
+        lastCheckedTime: room.lastCheckedTime,
+      }),
+    );
   };
 
   const handleMouseOver = (roomId: number) => {
@@ -49,8 +62,11 @@ export default function ChatMain({
 
   const handleDelete = (event: MouseEvent) => {
     event.stopPropagation();
-    deleteMutation.mutate();
-    setIsDataDifferent(false);
+    const userConfirmed = confirm('정말 채팅방을 삭제하시겠습니까?');
+    if (userConfirmed) {
+      deleteMutation.mutate();
+      setIsDataDifferent(false);
+    }
   };
 
   const handleCreateRoom = () => {
@@ -60,11 +76,11 @@ export default function ChatMain({
   return (
     <Container>
       <ChatHeader>
+        <h1>모모 채팅목록</h1>
         <div>
-          <h1>채팅방</h1>
-          <BsFillPlusCircleFill size={24} onClick={handleCreateRoom} />
+          <FiPlusCircle size={24} onClick={handleCreateRoom} />
+          <CgCloseR size={24} onClick={handleModalClose} />
         </div>
-        <MdOutlineClose size={32} onClick={handleModalClose} />
       </ChatHeader>
       <ChatList>
         <Chat>
@@ -72,7 +88,15 @@ export default function ChatMain({
             <div key={idx} onClick={() => handleChatRoomClick(room)}>
               <div>
                 <div>
-                  <div>{room.roomName}</div>
+                  <div>
+                    {room.roomType === 'PERSONAL' ? (
+                      <BsPeopleFill size={24} />
+                    ) : (
+                      <FaPeopleGroup size={24} />
+                    )}
+                    <div>{room.roomName}</div>
+                    <div>{room.memberCount}</div>
+                  </div>
                   {room.unreadCount !== 0 && <div>{room.unreadCount}</div>}
                 </div>
                 <div>{calculateTimeDifference(room.lastSentTime)}</div>
@@ -101,7 +125,7 @@ export default function ChatMain({
   );
 }
 
-const Container = styled.main`
+const Container = styled.section`
   width: 100%;
   background: var(--color-pink-3);
   overflow: auto;
@@ -115,24 +139,32 @@ const ChatHeader = styled.section`
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding: 1rem;
+  padding: 1rem 0.5rem 1rem 0.5rem;
   z-index: 20;
   background: var(--color-pink-3);
-  height: 4rem;
+  height: 3rem;
   border-bottom: 1px solid var(--color-gray);
 
   > h1 {
-    font-size: var(--font-size-m);
+    font-size: var(--font-size-s);
   }
 
-  > :first-child {
+  > :last-child {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+
+    :hover {
+      color: var(--color-pink-1);
+    }
+
+    > :first-child {
+      cursor: pointer;
+    }
 
     > :last-child {
       cursor: pointer;
-      margin-left: 1rem;
+      margin-left: 0.5rem;
     }
   }
 `;
@@ -141,6 +173,10 @@ const ChatList = styled.section``;
 
 const Chat = styled.div`
   font-size: var(--font-size-s);
+
+  > :hover {
+    border: 2px solid var(--color-pink-1);
+  }
 
   > :nth-child(2n + 1) {
     background: var(--color-white);
@@ -173,6 +209,21 @@ const Chat = styled.div`
         justify-content: start;
         font-family: 'BR-bold';
 
+        > :first-child {
+          display: flex;
+          align-items: center;
+
+          > :nth-child(2) {
+            margin: 0 0.5rem;
+          }
+
+          > :nth-child(3) {
+            background: var(--color-gray);
+            padding: 0.2rem;
+            border-radius: 5px;
+          }
+        }
+
         > :nth-child(2) {
           background: #ff6c6c;
           color: var(--color-white);
@@ -204,6 +255,17 @@ const Chat = styled.div`
 
       > :first-child {
         width: 90%;
+      }
+    }
+
+    > :last-child {
+      > :first-child {
+        color: var(--color-black) !important;
+      }
+      :hover {
+        color: var(--color-pink-1);
+      }
+      > :last-child {
       }
     }
   }

@@ -9,7 +9,9 @@ import { setMyData } from './pages/Login/store/MyUserData';
 import Footer from './common/components/Footer';
 import { AxiosError } from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
+import ChatModal from './common/components/Chat/views/ChatModal';
 import scrollToTop from './common/util/customHook/useScrollToTop';
+
 
 export default function App() {
   scrollToTop();
@@ -45,6 +47,7 @@ export default function App() {
       <GlobalStyle />
       {location.pathname !== '/' && <Header />}
       <Router />
+      {token && <ChatModal />}
       <Footer />
     </>
   );

@@ -1,4 +1,3 @@
-import ChatButton from '../../../common/components/Chat/views/ChatModal';
 import SemiHeader from '../../../common/components/SemiHeader';
 import { Layout } from '../../../common/style';
 import Form from '../components/Form';
@@ -12,7 +11,6 @@ export default function Write() {
         <Container>
           <Form />
         </Container>
-        <ChatButton />
       </Layout>
     </main>
   );

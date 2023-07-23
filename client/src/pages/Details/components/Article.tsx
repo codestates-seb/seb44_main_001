@@ -8,6 +8,7 @@ import { BASE_URL } from '../../../common/util/constantValue';
 import { MdModeEditOutline } from 'react-icons/md';
 import peach_on from '../../../common/assets/icons/peach_on.svg';
 import peach_off from '../../../common/assets/icons/peach_off.svg';
+import peach_hover from '../../../common/assets/icons/peach_hover.svg';
 import comment from '../../../common/assets/icons/comment.svg';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../common/store/RootStore';
@@ -22,13 +23,14 @@ import { calculateTimeDifference } from '../../../common/util/timeDifferenceCalc
 import { postLike } from '../api/postLike';
 import { deleteLike } from '../api/deleteLike';
 
-
 export default function Article({ data }: { data?: ArticleToGet }) {
   const [isLiked, setIsLiked] = useState(false);
 
   const [totalLikes, setTotalLikes] = useState<number>(0);
 
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+
+  const [isLikeHover, setIsLikeHover] = useState(false);
 
   const queryClient = useQueryClient();
 
@@ -132,14 +134,22 @@ export default function Article({ data }: { data?: ArticleToGet }) {
   };
 
   const handleClickLike = () => {
-    if(!memberId){
-      alert("로그인이 필요한 서비스입니다!")
+    if (!memberId) {
+      alert('로그인이 필요한 서비스입니다!');
       return;
-    }else if (isLiked) {
+    } else if (isLiked) {
       deleteLikeMutation.mutate();
     } else {
       postLikeMutaion.mutate();
     }
+  };
+
+  const handleHover = () => {
+    setIsLikeHover(true);
+  };
+
+  const handleOut = () => {
+    setIsLikeHover(false);
   };
 
   return (
@@ -158,14 +168,19 @@ export default function Article({ data }: { data?: ArticleToGet }) {
             onMouseOver={handleModalOpen}
             onMouseOut={handleModalClose}
           >
+            <ModalWrapper
+              onMouseOver={handleModalOpen}
+              onMouseOut={handleModalClose}
+              id="articleModalParent"
+            >
+              <UserModal
+                isUserModalOpen={isUserModalOpen}
+                handleModalClose={handleModalClose}
+                data={data}
+              />
+            </ModalWrapper>
             <img src={data.memberInfo.profileImage || profile} alt="user" />
             <div>{data.memberInfo.nickname}</div>
-            <UserModal
-              isUserModalOpen={isUserModalOpen}
-              handleModalOpen={handleModalOpen}
-              handleModalClose={handleModalClose}
-              data={data}
-            />
           </AuthorSection>
           <ContentSection>
             <div dangerouslySetInnerHTML={{ __html: data.content }} />
@@ -189,9 +204,20 @@ export default function Article({ data }: { data?: ArticleToGet }) {
             </div>
             <div>
               <div>
-                <Button type="button" onClick={handleClickLike}>
+                <Button
+                  type="button"
+                  onClick={handleClickLike}
+                  onMouseOver={handleHover}
+                  onMouseOut={handleOut}
+                >
                   <img
-                    src={isLiked ? `${peach_on}` : `${peach_off}`}
+                    src={
+                      isLiked
+                        ? `${peach_on}`
+                        : isLikeHover
+                        ? `${peach_hover}`
+                        : `${peach_off}`
+                    }
                     alt={isLiked ? 'Liked' : 'Not liked'}
                   />
                 </Button>
@@ -248,16 +274,25 @@ const AuthorSection = styled.section`
   position: relative;
   width: fit-content;
 
+  :hover {
+    color: var(--color-pink-1);
+  }
+
   & img {
     border-radius: 50%;
     height: 2rem;
     width: 2rem;
     margin-right: 1rem;
+    object-fit: cover;
   }
 
   > * {
     cursor: pointer;
   }
+`;
+
+const ModalWrapper = styled.div`
+  position: relative;
 `;
 
 const ContentSection = styled.section`
@@ -290,10 +325,18 @@ const InfoSection = styled.section`
       display: flex;
       align-items: center;
       color: var(--color-black);
+
+      :hover {
+        color: var(--color-pink-1);
+      }
     }
 
     > :nth-child(2) {
       cursor: pointer;
+
+      :hover {
+        color: var(--color-pink-1);
+      }
     }
   }
 
@@ -322,4 +365,10 @@ const Button = styled.button`
   border: none;
   height: 24px;
   cursor: pointer;
+
+  > svg {
+    :hover {
+      color: var(--color-pink-1);
+    }
+  }
 `;

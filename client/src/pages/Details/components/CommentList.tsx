@@ -28,6 +28,7 @@ import Button from '../../../common/components/Button';
 import patchComment from '../api/patchComment';
 import { calculateTimeDifference } from '../../../common/util/timeDifferenceCalculator';
 import profile from '../../../common/assets/profile.svg';
+import UserModal from './UserModal';
 
 export default function CommentList() {
   const queryClient = useQueryClient();
@@ -35,6 +36,8 @@ export default function CommentList() {
   const [commentId, setCommentId] = useState(0);
 
   const [editingCommentId, setEditingCommentId] = useState(0);
+
+  const [currentModal, setCurrentModal] = useState(0);
 
   const memberId = Number(localStorage.getItem('MemberId'));
 
@@ -100,6 +103,7 @@ export default function CommentList() {
   const handleDeleteComment = () => {
     if (window.confirm('정말로 삭제하시겠습니까?')) {
       deleteItemMutation.mutate();
+      setPage(1);
     }
   };
 
@@ -126,8 +130,12 @@ export default function CommentList() {
     setEditingCommentId(0);
   };
 
-  const handleUserProfile = () => {
-    console.log(123);
+  const handleModalOpen = (commentId: number) => {
+    setCurrentModal(commentId);
+  };
+
+  const handleModalClose = () => {
+    setCurrentModal(0);
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -155,19 +163,35 @@ export default function CommentList() {
                 ) : (
                   <>
                     <CommentInfo>
-                      <div onMouseOver={handleUserProfile}>
-                        <img
-                          src={
-                            data.memberInfo.image
-                              ? data.memberInfo.image
-                              : profile
-                          }
-                          alt="userProfile"
-                        />
+                      <div
+                        onMouseOver={() => handleModalOpen(data.commentId)}
+                        onMouseOut={handleModalClose}
+                      >
+                        <ModalWrapper
+                          onMouseOver={() => handleModalOpen(data.commentId)}
+                          onMouseOut={handleModalClose}
+                          id={`commentModalParent${data.commentId}`}
+                        >
+                          <UserModal
+                            isUserModalOpen={currentModal === data.commentId}
+                            handleModalClose={handleModalClose}
+                            data={data}
+                          />
+                        </ModalWrapper>
                         <div>
-                          {data.isPostWriter
-                            ? `${data.memberInfo.nickname} (작성자)`
-                            : data.memberInfo.nickname}
+                          <img
+                            src={
+                              data.memberInfo.image
+                                ? data.memberInfo.image
+                                : profile
+                            }
+                            alt="userProfile"
+                          />
+                          <div>
+                            {data.isPostWriter
+                              ? `${data.memberInfo.nickname} (작성자)`
+                              : data.memberInfo.nickname}
+                          </div>
                         </div>
                       </div>
                       {data.editedAt === data.createdAt ? (
@@ -264,23 +288,38 @@ const CommentInfo = styled.div`
   > :first-child {
     display: flex;
     align-items: center;
-
-    > img {
-      border-radius: 50%;
-      height: 2rem;
-      width: 2rem;
-      margin-right: 0.5rem;
-    }
-
     > :nth-child(2) {
-      font-family: 'BR-Bold';
-      font-size: var(--font-size-xs);
+      display: flex;
+      align-items: center;
+
+      > img {
+        border-radius: 50%;
+        height: 2rem;
+        width: 2rem;
+        margin-right: 0.5rem;
+        cursor: pointer;
+        object-fit: cover;
+      }
+
+      & :hover {
+        color: var(--color-pink-1);
+      }
+
+      > :nth-child(2) {
+        font-family: 'BR-Bold';
+        font-size: var(--font-size-xs);
+        cursor: pointer;
+      }
     }
   }
 
-  > :nth-child(2) {
+  > :nth-child(3) {
     font-size: var(--font-size-xs);
   }
+`;
+
+const ModalWrapper = styled.div`
+  position: relative;
 `;
 
 const CommentContent = styled.div`
@@ -296,6 +335,9 @@ const CommentContent = styled.div`
 `;
 
 const CommentEditIcons = styled.div`
+  :hover {
+    color: var(--color-pink-1);
+  }
   > * {
     margin-left: 0.5rem;
     cursor: pointer;

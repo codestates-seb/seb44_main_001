@@ -101,6 +101,7 @@ const UserInfo = styled.div`
     height: 2rem;
     margin-right: 0.5rem;
     border-radius: 50%;
+    object-fit: cover;
   }
 `;
 

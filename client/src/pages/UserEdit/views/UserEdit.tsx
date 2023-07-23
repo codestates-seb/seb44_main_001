@@ -22,7 +22,6 @@ import { setLocation } from '../../../common/store/LocationStore';
 import { resetCreatedPost } from '../../Write,Edit/store/CreatedPost';
 import { patchMyDataImg } from '../api/patchMyDataImg';
 import Button from '../../../common/components/Button';
-import ChatButton from '../../../common/components/Chat/views/ChatModal';
 import { UseMutationResult, useMutation, useQueryClient } from 'react-query';
 import { BASE_URL } from '../../../common/util/constantValue';
 import Modal from 'react-modal';
@@ -220,7 +219,6 @@ export default function UserEdit() {
               <ModalMain handleModalChange={handleModalChange} />
             </Modal>
           </Background>
-          <ChatButton />
         </AllContainer>
       </Layout>
     </>

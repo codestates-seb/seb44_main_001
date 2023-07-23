@@ -1,7 +1,7 @@
 import Modal from 'react-modal';
-import { articleModalStyle } from '../articleModalStyle';
+import { userModalStyle } from '../userModalStyle';
 import { Link } from 'react-router-dom';
-import { ArticleToGet } from '../../../common/type';
+import { ArticleToGet, CommentToGet } from '../../../common/type';
 import { useDispatch } from 'react-redux';
 import { setChatModal } from '../../../common/store/ChatModalStore';
 import { styled } from 'styled-components';
@@ -9,7 +9,6 @@ import { useMutation } from 'react-query';
 import postChatMembers from '../api/postChatMembers';
 import {
   BASE_URL,
-  INVITE,
   SEND_CHAT,
   VIEW_PROFILE,
 } from '../../../common/util/constantValue';
@@ -19,14 +18,12 @@ import SockJS from 'sockjs-client';
 
 export default function UserModal({
   isUserModalOpen,
-  handleModalOpen,
   handleModalClose,
   data,
 }: {
   isUserModalOpen: boolean;
-  handleModalOpen: () => void;
   handleModalClose: () => void;
-  data?: ArticleToGet;
+  data?: ArticleToGet | CommentToGet;
 }) {
   const dispatch = useDispatch();
 
@@ -49,41 +46,58 @@ export default function UserModal({
 
   const postPseronalChatMutation = useMutation(
     'ChatMembers',
-    (chatType: string) =>
+    () =>
       postChatMembers(`${BASE_URL}/rooms/register`, {
         memberId: memberId as number,
-        roomType: chatType === 'personal' ? 'PERSONAL' : 'GROUP',
+        roomName: nickname as string,
+        roomType: 'PERSONAL',
       }),
     {
       onSuccess: (data) => {
-        console.log(data);
-        dispatch(setChatRoomInfo({ roomId: data, roomName: nickname }));
+        dispatch(
+          setChatRoomInfo({
+            roomId: data,
+            roomName: nickname,
+            roomType: 'PERSONAL',
+          }),
+        );
         dispatch(setChatModal(true));
       },
     },
   );
 
-  const handleOpenChat = (chatType: string) => {
+  const handleOpenChat = () => {
     if (myId !== memberId) {
-      postPseronalChatMutation.mutate(chatType);
+      postPseronalChatMutation.mutate();
     }
   };
 
+  const isArticleToGet = (
+    data: ArticleToGet | CommentToGet,
+  ): data is ArticleToGet => {
+    return (data as ArticleToGet).postId !== undefined;
+  };
+
   return (
-    <div onMouseOver={handleModalOpen} onMouseOut={handleModalClose}>
-      <Modal
-        isOpen={isUserModalOpen}
-        style={articleModalStyle}
-        onRequestClose={handleModalClose}
-        ariaHideApp={false}
-      >
-        <TabSection>
-          <Link to={`/user/${data?.memberInfo.memberId}`}>{VIEW_PROFILE}</Link>
-          <div onClick={() => handleOpenChat('personal')}>{SEND_CHAT}</div>
-          <div onClick={() => handleOpenChat('group')}>{INVITE}</div>
-        </TabSection>
-      </Modal>
-    </div>
+    <Modal
+      isOpen={isUserModalOpen}
+      style={userModalStyle}
+      onRequestClose={handleModalClose}
+      ariaHideApp={true}
+      parentSelector={() => {
+        if (data && isArticleToGet(data)) {
+          return document.querySelector('#articleModalParent') as HTMLElement;
+        }
+        return document.querySelector(
+          `#commentModalParent${data?.commentId}`,
+        ) as HTMLElement;
+      }}
+    >
+      <TabSection>
+        <Link to={`/user/${data?.memberInfo.memberId}`}>{VIEW_PROFILE}</Link>
+        <div onClick={handleOpenChat}>{SEND_CHAT}</div>
+      </TabSection>
+    </Modal>
   );
 }
 
@@ -93,6 +107,10 @@ const TabSection = styled.section`
   justify-content: center;
   align-items: center;
   width: 100%;
+
+  :hover {
+    color: var(--color-pink-1);
+  }
 
   > * {
     display: flex;

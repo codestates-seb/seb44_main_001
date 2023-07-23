@@ -160,6 +160,9 @@ export type Room = {
   unreadCount: number;
   lastMessage: string;
   lastSentTime: string;
+  lastCheckedTime: string;
+  roomType: string;
+  memberCount: number;
 };
 
 export type ChatRoomData = {
@@ -185,6 +188,7 @@ export type PostChat = {
 
 export type ChatMembers = {
   memberId: number;
+  roomName: string;
   roomType: string;
 };
 
@@ -192,4 +196,16 @@ export type IsLikedType = {
   isLiked: boolean;
   memberId: number;
   postId: string | undefined;
+};
+
+export type NewRoom = {
+  memberId: number;
+  roomName: string;
+  roomType: string;
+};
+
+export type Nickname = {
+  memberId: number;
+  nickname: string;
+  profileImage: string;
 };

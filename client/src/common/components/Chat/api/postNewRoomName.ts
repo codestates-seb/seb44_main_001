@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { CommentToPost } from '../../../common/type';
+import { NewRoom } from '../../../type';
 
-export default async function postComment(url: string, data: CommentToPost) {
+export default async function postNewRoomName(url: string, data: NewRoom) {
   try {
     const accessToken = localStorage.getItem('Authorization');
     const refreshToken = localStorage.getItem('RefreshToken');
@@ -14,6 +14,7 @@ export default async function postComment(url: string, data: CommentToPost) {
 
     const res = await axios.post(url, data, { headers });
     console.log(res);
+    return res.data;
   } catch (err) {
     console.log(err);
   }

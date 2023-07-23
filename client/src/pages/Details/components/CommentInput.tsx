@@ -37,20 +37,26 @@ export default function CommentInput() {
 
   const handleCommentChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setContent(event.target.value);
+    console.log(content);
   };
 
   const handleSubmit = () => {
-    if (data.content) {
+    if (data.content.length > 0) {
       postMutation.mutate(data);
     }
   };
 
   const handleKeyUp = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && event.shiftKey) {
-      event.preventDefault();
+      setContent((prevContent) => prevContent + '\n');
     } else if (event.key === 'Enter') {
-      event.preventDefault();
       handleSubmit();
+    }
+  };
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
     }
   };
 
@@ -62,6 +68,8 @@ export default function CommentInput() {
           value={content}
           onChange={handleCommentChange}
           onKeyUp={handleKeyUp}
+          maxLength={100}
+          onKeyDown={handleKeyDown}
         />
       </InputSection>
       <ButtonSection>
