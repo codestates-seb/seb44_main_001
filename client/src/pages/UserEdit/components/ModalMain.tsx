@@ -4,7 +4,7 @@ import { deleteMember } from '../api/deleteMember';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import { BASE_URL } from '../../../common/util/constantValue';
-import cryingMoMo2 from '../../../common/assets/images/cryingMoMo2.svg'
+import cryingMoMo2 from '../../../common/assets/images/cryingMomo2.svg'
 
 type HandleModalChangeFunction = () => void;
 
