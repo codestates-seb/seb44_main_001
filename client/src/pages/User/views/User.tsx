@@ -122,7 +122,7 @@ export default function User() {
           <p>로드 중...</p>
         )}
       </div>
-      <UserPostsCards memberId={memberId} nickname={data.nickname} />
+      <UserPostsCards memberId={memberId} nickname={data.nickname} isMine={isMine} />
     </main>
   );
 }
