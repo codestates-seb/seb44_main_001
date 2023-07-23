@@ -122,7 +122,7 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
                 .scheme("https")
                 .host("letsmomo.netlify.app")
 //                .port(8080)
-                .path("/oauth-signup") // 여기에 추가 정보 입력 사이트로
+                .path("/oauth-callback") // 여기에 추가 정보 입력 사이트로
                 .queryParams(queryParams)
                 .build()
                 .toUri();
