@@ -19,6 +19,7 @@ import { SignupPatchData } from '../../../common/type';
 import { RootState } from '../../../common/store/RootStore';
 import { useMutation } from 'react-query';
 import { BASE_URL } from '../../../common/util/constantValue';
+import { useNavigate } from 'react-router-dom';
 
 // interface KakaoData {
 //   email: string;
@@ -31,6 +32,7 @@ export default function OauthSignup() {
   const [welcomeMsg, setWelcomeMsg] = useState('');
 
   const dispatch = useDispatch();
+  const navigation = useNavigate();
 
   const patchData: SignupPatchData = useSelector(
     (state: RootState) => state.authSignup,
@@ -78,6 +80,7 @@ export default function OauthSignup() {
 
   const handleSignup = async () => {
     await kakaoMutation.mutate(patchData);
+    navigation('/lists');
   };
 
   return (
