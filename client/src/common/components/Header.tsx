@@ -273,7 +273,7 @@ const UserContainer = styled.div`
     object-fit: cover;
   }
   &:hover {
-    background-color: var(--color-pink-3);
+    background-color: var(--color-pink-2);
   }
 `;
 

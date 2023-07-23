@@ -237,7 +237,6 @@ const ProfileImage = styled.img`
   width: 11.1rem;
   height: 11.1rem;
   border-radius: 50%;
-  border: 2px solid var(--color-black);
   object-fit: cover;
 `;
 

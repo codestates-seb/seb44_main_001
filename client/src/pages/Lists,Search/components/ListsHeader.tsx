@@ -63,7 +63,8 @@ export default function ListsHeader() {
     <Wrapper>
       <div className="listName">
         <span className="location">{listName}</span>
-        <span>{' '}{params.keyword ? '검색결과' : '모모리스트'}</span>
+        &nbsp;
+        <span>{params.keyword ? '검색결과' : '모모리스트'}</span>
       </div>
       {params.keyword ? null : (
         <SelectorWrapper>
