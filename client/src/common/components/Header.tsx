@@ -45,12 +45,12 @@ export default function Header() {
     {
       onSuccess: () => {
         dispatch(resetStates());
-        navigate('/login');
+        navigate('/');
         localStorage.clear();
         dispatch(setChatModal(false));
       },
       onError: () => {
-        navigate('/login');
+        navigate('/');
         localStorage.clear();
       },
     },
@@ -79,7 +79,7 @@ export default function Header() {
 
   return (
     <Head>
-      <Link to="/">
+      <Link to="/lists">
         <Logo>
           <img src={logo} alt="로고이미지" style={{ height: '39px' }} />
           <HoverImage

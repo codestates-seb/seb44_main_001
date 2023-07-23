@@ -30,7 +30,7 @@ export default function App() {
       },
       onError: (error) => {
         if (error.response?.status === 401 && token) {
-          navigate('/login');
+          navigate('/');
           localStorage.clear();
           alert('토큰이 만료되었습니다. 다시 로그인해주세요.');
         } else {
