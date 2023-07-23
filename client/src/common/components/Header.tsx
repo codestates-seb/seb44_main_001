@@ -24,11 +24,6 @@ import { setChatModal } from '../store/ChatModalStore';
 import { useMutation } from 'react-query';
 Modal.setAppElement('#root');
 
-export type SubProps = {
-  $sub: string;
-  className: string;
-};
-
 export default function Header() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -96,28 +91,31 @@ export default function Header() {
       </Link>
       {token ? (
         <MenuContainer>
-          <StyledLink to="/lists" className="margin-small text">
-            모모리스트
-          </StyledLink>
-          <UserContainer onClick={handleMyProfile}>
+          <UserContainer className="margin-left" onClick={handleMyProfile}>
             <img
               src={myData.profileImage ? `${myData.profileImage}` : profile}
               alt="프로필사진"
-              className="margin-left icon user-content"
+              className="icon user-content"
             />
             <div className="text" style={{ marginLeft: '5px' }}>
               {myData.nickname}
             </div>
           </UserContainer>
-          <Button onClick={handleWriteButtonClick} children={'모집 글 작성'} />
-          <LogoutButton
+          <Button
             className="margin-left"
-            $sub="안녕하세요"
-            onClick={handleLogout}
-          >
+            children="모모리스트"
+            onClick={() => {
+              navigate('/lists');
+            }}
+          />
+          <Button
+            className="margin-left"
+            onClick={handleWriteButtonClick}
+            children={'모집 글 작성'}
+          />
+          <LogoutButton onClick={handleLogout}>
             <FaPersonRunning className="hoverIcon" size={25} />
             <LogOut className="originalIcon" size={25} />
-            {/* <div className="tooltip">로그아웃</div> */}
           </LogoutButton>
         </MenuContainer>
       ) : (
@@ -218,11 +216,7 @@ const Logo = styled.div`
   position: relative;
   display: inline-block;
 `;
-const StyledLink = styled(Link)`
-  &:hover {
-    color: var(--color-pink-1);
-  }
-`;
+
 const tadaAnimation = keyframes`
   0%, 100% {
     transform: translateX(0) translateY(0);
@@ -270,17 +264,14 @@ const HoverImage = styled.img`
 const UserContainer = styled.div`
   display: flex;
   align-items: center;
-  margin-right: 1rem;
   cursor: pointer;
-  border-radius: 10px;
+  border-radius: 20px;
   padding: 0.5rem;
-  > img {
+  img {
     border-radius: 50%;
-    margin-left: 0;
-    object-fit: cover;
   }
   &:hover {
-    background-color: #3971a2;
+    background-color: var(--color-pink-3);
   }
 `;
 
@@ -360,8 +351,10 @@ export const GoogleBtn = styled(ModalButton)`
   }
 `;
 
-const LogoutButton = styled.button<SubProps>`
+const LogoutButton = styled.button`
   position: relative;
+  margin-left: 2rem;
+  margin-right: 1rem;
   * {
     position: absolute;
     top: -13px;
@@ -379,39 +372,5 @@ const LogoutButton = styled.button<SubProps>`
     .originalIcon {
       opacity: 0;
     }
-    .tooltip {
-      opacity: 1;
-      /* transform: translateX(-50%) scale(1); */
-    }
   }
-  /* &:hover:after {
-    .tooltip {
-      content: ${(props) => `'${props.$sub}'`};
-    }
-  }
-  .tooltip {
-    position: absolute;
-    top: -15px;
-    right: -20px;
-    background-color: var(--color-pink-2);
-    width: 100px;
-    height: 40px;
-    padding: 5px;
-    border-radius: 5px;
-    opacity: 0;
-    transform: scale(0.8);
-    transition: opacity 0.3s ease;
-    font-size: 1.2rem;
-    &:after {
-      content: '';
-      position: absolute;
-      top: 15px;
-      right: -120px;
-      margin-top: -5px;
-      border-width: 10px;
-      border-style: solid;
-      border-color: transparent transparent transparent var(--color-pink-2);
-      width: 100px;
-    }
-  } */
 `;

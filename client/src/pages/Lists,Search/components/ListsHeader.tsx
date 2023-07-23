@@ -37,11 +37,11 @@ export default function ListsHeader() {
     localStorage.setItem('selectedLocation', JSON.stringify(location));
   };
 
-  //로그인 했으면 유저의 지역으로 아니면 기본값인 서울로 랜더링
+  //로그인한 유저는 등록된 지역 비로그인 유저는 기본값인 서울로 랜더링
   useEffect(() => {
-    const LocalStorageLocaion = localStorage.getItem('selectedLocation');
-    if (LocalStorageLocaion) {
-      dispatch(setSelectedLocation(JSON.parse(LocalStorageLocaion)));
+    const LastSelectedLocation = localStorage.getItem('selectedLocation');
+    if (LastSelectedLocation) {
+      dispatch(setSelectedLocation(JSON.parse(LastSelectedLocation)));
     } else if (isLogin && myData) {
       dispatch(
         setSelectedLocation({
@@ -61,27 +61,31 @@ export default function ListsHeader() {
 
   return (
     <Wrapper>
-        <div className="listName">
-          <span className="location">{listName}</span>
-          <span>{params.keyword ? '검색결과' : '모모리스트'}</span>
-        </div>
-        {params.keyword ? null : (
-          <SelectorWrapper>
-            <LocationSelector />
-            <Button children={'지역 선택'} onClick={handleLocationSelection} />
-          </SelectorWrapper>
-        )}
+      <div className="listName">
+        <span className="location">{listName}</span>
+        <span>{' '}{params.keyword ? '검색결과' : '모모리스트'}</span>
+      </div>
+      {params.keyword ? null : (
+        <SelectorWrapper>
+          <LocationSelector />
+          <Button children={'지역 선택'} onClick={handleLocationSelection} />
+        </SelectorWrapper>
+      )}
     </Wrapper>
   );
 }
 
-const Wrapper = styled.div`
+export const Wrapper = styled.div`
   width: 1264px;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
   align-items: center;
   font-size: 1.5rem;
   margin-top: 3rem;
+  background-color: var(--color-white);
+  padding: 1rem;
+  border-radius: 10px;
+  border: 2px solid var(--color-black);
 
   select {
     width: 12rem;
@@ -115,9 +119,14 @@ const Wrapper = styled.div`
   //카드2개
   @media (min-width: 832px) and (max-width: 1264px) {
     width: 832px;
+
     .listName {
       margin-right: 0;
     }
+    select {
+    width: 10.5rem;
+    margin-right: 1rem;
+  }
   }
 
   //카드3개
@@ -129,7 +138,7 @@ const Wrapper = styled.div`
 const SelectorWrapper = styled.div`
   display: flex;
   align-items: center;
-  @media (max-width: 1264px) {
+  @media (max-width: 832px) {
     margin-top: 1rem;
   }
 `;

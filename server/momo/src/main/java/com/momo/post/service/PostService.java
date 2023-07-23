@@ -83,6 +83,7 @@ public class PostService {
         post.setContent(processContent(postDto.getContent()));
         post.setTags(processTags(postDto.getTags()));
         post.setCreatedAt(LocalDateTime.now());
+        post.setCommentCount(0L);
 
         Member member = memberRepository.findById(postDto.getMemberId())
                 .orElseThrow(() -> new NotFoundException("ID가 " + postDto.getMemberId() + "인 멤버를 찾을 수 없습니다."));
@@ -115,16 +116,25 @@ public class PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException("ID가 " + postId + "인 게시물을 찾을 수 없습니다."));
 
+        // Update member
         if (postDto.getMemberId() != null) {
             Member member = memberRepository.findById(postDto.getMemberId())
                     .orElseThrow(() -> new NotFoundException("ID가 " + postDto.getMemberId() + "인 멤버를 찾을 수 없습니다."));
             post.setMember(member);
         }
 
+        // Update category
         if (postDto.getCategoryId() != null) {
             Category category = categoryRepository.findById(postDto.getCategoryId())
                     .orElseThrow(() -> new NotFoundException("ID가 " + postDto.getCategoryId() + "인 카테고리를 찾을 수 없습니다."));
             post.setCategory(category);
+        }
+
+        // Update location
+        if (postDto.getLocationId() != null) {
+            Location location = locationRepository.findById(postDto.getLocationId())
+                    .orElseThrow(() -> new NotFoundException("ID가 " + postDto.getLocationId() + "인 위치를 찾을 수 없습니다."));
+            post.setLocation(location);
         }
 
         if (postDto.getTags() != null) {
@@ -145,6 +155,7 @@ public class PostService {
         Post updatedPost = postRepository.save(post);
         return createPostResponseDto(updatedPost);
     }
+
 
     public void deletePost(Long postId, Long memberId) {
         Optional<Post> postOptional = postRepository.findById(postId);
@@ -472,6 +483,9 @@ public class PostService {
             // 좋아요 수
             Long postLikeCount = post.getPostLikeCount();
 
+            // 댓글 수
+            Long commentCount = post.getCommentCount();
+
             PostResponseDto postResponseDto = new PostResponseDto(
                     post.getPostId(),
                     post.getTitle(),
@@ -483,7 +497,8 @@ public class PostService {
                     memberInfo,
                     tags,
                     isLiked,
-                    postLikeCount
+                    postLikeCount,
+                    commentCount
             );
 
             postResponseDtos.add(postResponseDto);

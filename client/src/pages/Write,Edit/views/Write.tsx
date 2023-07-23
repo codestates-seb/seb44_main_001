@@ -5,18 +5,18 @@ import { styled } from 'styled-components';
 
 export default function Write() {
   return (
-    <>
+    <main>
       <SemiHeader title="모모 친구 구하기" content="" />
       <Layout>
         <Container>
           <Form />
         </Container>
       </Layout>
-    </>
+    </main>
   );
 }
 
-const Container = styled.main`
+const Container = styled.div`
   display: flex;
   flex-direction: column;
   color: var(--color-black);

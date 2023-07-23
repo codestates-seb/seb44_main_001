@@ -38,19 +38,21 @@ public class MemberChatroom {
     }
 
     @Builder
-    public MemberChatroom(Member member, Chatroom chatroom, String roomName) {
+    public MemberChatroom(Member member, Chatroom chatroom, String roomName, LocalDateTime lastCheckedTime) {
         this.member = member;
         this.chatroom = chatroom;
         this.roomName = roomName;
+        this.lastCheckedTime = lastCheckedTime;
         this.unreadCount = 0L;
         this.chatStatus = ChatStatus.OFFLINE;
     }
 
-    public static MemberChatroom from(Member member, Chatroom chatroom, String roomName) {
+    public static MemberChatroom from(Member member, Chatroom chatroom, String roomName, LocalDateTime now) {
         return MemberChatroom.builder()
                 .roomName(roomName)
                 .member(member)
                 .chatroom(chatroom)
+                .lastCheckedTime(now)
                 .build();
     }
 

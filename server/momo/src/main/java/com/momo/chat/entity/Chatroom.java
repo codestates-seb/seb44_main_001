@@ -29,6 +29,8 @@ public class Chatroom {
     @Enumerated(EnumType.STRING)
     private RoomType roomType;
 
+    private Long memberCount;
+
     @Getter
     public enum RoomType {
         PERSONAL("PERSONAL"),
@@ -52,6 +54,15 @@ public class Chatroom {
         this.lastMessage = lastMessage;
         this.lastMessageSentTime = lastMessageSentTime;
         this.roomType = roomType;
+        this.memberCount = 0L;
+    }
+
+    public void addMemberCount() {
+        this.memberCount++;
+    }
+
+    public void subMemberCount() {
+        this.memberCount--;
     }
 
     public void changeName(String roomName) {

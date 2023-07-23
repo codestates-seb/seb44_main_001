@@ -33,11 +33,10 @@ public class ChatroomController {
 
     @PostMapping("/invite")
     public ResponseEntity inviteMember(@RequestBody ChatroomInviteDto inviteDto) {
-        Long memberId = MemberInterceptor.currentMemberStore.get();
         Long roomId = inviteDto.getRoomId();
         Long otherMemberId = inviteDto.getMemberId();
 
-        chatroomService.inviteMember(memberId, otherMemberId, roomId);
+        chatroomService.inviteMember(otherMemberId, roomId);
         return ResponseEntity.ok().build();
     }
 //

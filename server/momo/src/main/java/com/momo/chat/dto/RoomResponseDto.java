@@ -14,19 +14,21 @@ public class RoomResponseDto {
     private Long roomId;
     private String roomName;
     private Long unreadCount;
+    private Long memberCount;
     private String lastMessage;
+    private String roomType;
     private LocalDateTime lastSentTime;
     private LocalDateTime lastCheckedTime;
-
-
     @Builder
-    public RoomResponseDto(Long roomId, String roomName, Long unreadCount, String lastMessage, LocalDateTime lastSentTime, LocalDateTime lastCheckedTime) {
+    public RoomResponseDto(Long roomId, String roomName, Long unreadCount, String lastMessage, String roomType, LocalDateTime lastSentTime, LocalDateTime lastCheckedTime, Long memberCount) {
         this.roomId = roomId;
         this.roomName = roomName;
         this.unreadCount = unreadCount;
         this.lastMessage = lastMessage;
+        this.roomType = roomType;
         this.lastSentTime = lastSentTime;
         this.lastCheckedTime = lastCheckedTime;
+        this.memberCount = memberCount;
     }
 
     public static RoomResponseDto from(MemberChatroom memberChatroom) {
@@ -37,6 +39,8 @@ public class RoomResponseDto {
                 .lastMessage(memberChatroom.getChatroom().getLastMessage())
                 .lastSentTime(memberChatroom.getChatroom().getLastMessageSentTime())
                 .lastCheckedTime(memberChatroom.getLastCheckedTime())
+                .roomType(memberChatroom.getChatroom().getRoomType().getType())
+                .memberCount(memberChatroom.getChatroom().getMemberCount())
                 .build();
     }
 }

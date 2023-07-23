@@ -158,7 +158,7 @@ export default function Signup() {
   };
 
   return (
-    <div
+    <main
       style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
     >
       <SemiHeader title="회원가입" content="모모에 오신것을 환영합니다!" />
@@ -264,7 +264,7 @@ export default function Signup() {
           <Button children={'가입하기'} onClick={handleSignUp} />
         </Background>
       </Layout>
-    </div>
+    </main>
   );
 }
 
