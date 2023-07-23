@@ -63,7 +63,7 @@ export default function ListsHeader() {
     <Wrapper>
       <div className="listName">
         <span className="location">{listName}</span>
-        <span>{' '}{params.keyword ? '검색결과' : '모모리스트'}</span>
+        <span> {params.keyword ? '검색결과' : '모모리스트'}</span>
       </div>
       {params.keyword ? null : (
         <SelectorWrapper>
@@ -124,9 +124,9 @@ export const Wrapper = styled.div`
       margin-right: 0;
     }
     select {
-    width: 10.5rem;
-    margin-right: 1rem;
-  }
+      width: 10.5rem;
+      margin-right: 1rem;
+    }
   }
 
   //카드3개

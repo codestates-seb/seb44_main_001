@@ -1,12 +1,9 @@
-import { useEffect } from 'react';
 import { styled } from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
-
 import { setSelectedCategory } from '../store/SelectedCategory';
 import { RootState } from '../../../common/store/RootStore';
 import { Categories, Category } from '../../../common/type';
 import useCategorySetter from '../../../common/util/customHook/useCategorySetter';
-
 import pet from '../../../common/assets/icons/pet.svg';
 import food from '../../../common/assets/icons/food.svg';
 import culture from '../../../common/assets/icons/culture.svg';
@@ -26,11 +23,6 @@ export default function CategoryIcons() {
   const selectedCategory = useSelector(
     (state: RootState) => state.selectedCategory,
   );
-
-  useEffect(() => {
-    dispatch(setSelectedCategory({ categoryId: 1, name: '전체' }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const Icons = [all, pet, sports, study, game, food, culture, etc];
 
@@ -70,7 +62,7 @@ const Wrapper = styled.div`
   width: 37.5rem;
   margin-top: 3rem;
   @media (max-width: 832px) {
-    width:100%;
+    width: 100%;
   }
 `;
 const IconWrapper = styled.div`

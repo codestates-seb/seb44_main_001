@@ -14,7 +14,7 @@ export const selectedCategorySlice = createSlice({
       return {
         categoryId: payload.categoryId,
         name: payload.name,
-      }
+      };
     },
   },
 });
@@ -23,4 +23,4 @@ export const store = configureStore({
   reducer: selectedCategorySlice.reducer,
 });
 
-export const {setSelectedCategory} = selectedCategorySlice.actions;
+export const { setSelectedCategory } = selectedCategorySlice.actions;
