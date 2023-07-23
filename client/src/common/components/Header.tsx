@@ -22,6 +22,8 @@ import google from '../../common/assets/logo/google-logo.png';
 import { postLogout } from '../util/customHook/api/postLogout';
 import { setChatModal } from '../store/ChatModalStore';
 import { useMutation } from 'react-query';
+import { resetCreatedPost } from '../../pages/Write,Edit/store/CreatedPost';
+
 Modal.setAppElement('#root');
 
 export default function Header() {
@@ -74,6 +76,7 @@ export default function Header() {
   };
 
   const handleWriteButtonClick = () => {
+    dispatch(resetCreatedPost());
     navigate('/write');
   };
 

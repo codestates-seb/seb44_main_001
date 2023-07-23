@@ -25,7 +25,7 @@ export const createdPostSlice = createSlice({
       };
     },
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    resetCreatedPost: (_state) => initialState,
+    resetCreatedPost: () => initialState,
   },
 });
 
