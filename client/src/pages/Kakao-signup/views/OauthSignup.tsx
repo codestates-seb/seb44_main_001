@@ -30,7 +30,7 @@ export default function OauthSignup() {
   const [isMale, setIsMale] = useState<boolean | null>(null);
   const [welcomeMsg, setWelcomeMsg] = useState('');
 
-  const myData = useSelector((state: RootState) => state.authSignup);
+  // const myData = useSelector((state: RootState) => state.authSignup);
   const myToken = useSelector((state: RootState) => state.token);
   const queryClient = useQueryClient();
 
