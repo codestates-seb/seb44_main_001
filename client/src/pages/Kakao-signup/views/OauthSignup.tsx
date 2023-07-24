@@ -94,7 +94,7 @@ export default function OauthSignup() {
               <TextInput
                 value={nickname}
                 onChange={handleNicknameChange}
-                isValidate={true}
+                $isValidate={true}
                 placeholder="닉네임을 입력하세요. (나중에 수정할 수 있어요!)"
               />
             </InputBox>
