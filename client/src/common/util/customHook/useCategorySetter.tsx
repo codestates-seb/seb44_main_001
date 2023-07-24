@@ -8,8 +8,10 @@ export default function useCategorySetter() {
 
   useQuery(['getCategory'], () => getCategory(`${BASE_URL}/categories`), {
     enabled: false,
-    onSuccess: (response) => {
-      localStorage.setItem('categories', JSON.stringify(response));
+    onSuccess: (data) => {
+      if (data) {
+        localStorage.setItem('categories', JSON.stringify(data));
+      }
     },
   });
 
