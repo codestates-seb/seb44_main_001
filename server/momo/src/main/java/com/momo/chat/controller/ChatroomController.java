@@ -6,6 +6,7 @@ import com.momo.chat.entity.MemberChatroom;
 import com.momo.chat.entity.Message;
 import com.momo.chat.interceptor.MemberInterceptor;
 import com.momo.chat.service.ChatroomService;
+import com.momo.comment.dto.MemberInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -78,6 +79,11 @@ public class ChatroomController {
         return ChatMessagesDto.builder()
                 .chats(messageSendDtos)
                 .build();
+    }
+
+    @GetMapping("/{roomId}/members")
+    public List<MemberInfo> getMembersInRoom(@PathVariable Long roomId) {
+        return chatroomService.getMembers(roomId);
     }
 
     @DeleteMapping("/{roomId}")
