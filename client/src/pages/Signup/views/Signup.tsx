@@ -20,12 +20,13 @@ import { AxiosError } from 'axios';
 interface TextInputProps {
   type?: string;
   value: string;
-  isValidate?: boolean;
+  $isValidate?: boolean;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   style?: React.CSSProperties;
   isDuplicateEmail?: boolean;
   isDuplicateNickname?: boolean;
+  autocomplete?:string;
 }
 
 interface TextAreaProps {
@@ -171,7 +172,7 @@ export default function Signup() {
                 value={email}
                 style={{ width: '400px' }}
                 onChange={handleEmailChange}
-                isValidate={isValidEmail && !isDuplicateEmail}
+                $isValidate={isValidEmail && !isDuplicateEmail}
                 placeholder="이메일을 입력하세요. (ex. momo@gmail.com)"
               />
               {!isValidEmail && (
@@ -184,7 +185,7 @@ export default function Signup() {
                 value={password}
                 type="password"
                 onChange={handlePasswordChange}
-                isValidate={isValidPassword}
+                $isValidate={isValidPassword}
                 placeholder="비밀번호를 입력하세요."
               />
               {!isValidPassword && (
@@ -196,7 +197,7 @@ export default function Signup() {
               <TextInput
                 value={nickname}
                 onChange={handleNicknameChange}
-                isValidate={!isDuplicateNickname}
+                $isValidate={!isDuplicateNickname}
                 placeholder="닉네임을 입력하세요. (나중에 수정할 수 있어요!)"
               />
             </InputBox>
@@ -306,7 +307,7 @@ export const Text = styled.span`
 export const TextInput = styled.input<TextInputProps>`
   width: 300px;
   border: ${(props) =>
-    props.isValidate ? '2px solid var(--color-black)' : '2px solid red'};
+    props.$isValidate ? '2px solid var(--color-black)' : '2px solid red'};
   margin-top: 10px;
 `;
 const ErrorMessage = styled.div`

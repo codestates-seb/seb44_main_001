@@ -114,7 +114,7 @@ export default function Login() {
                   value={username}
                   style={{ width: '300px' }}
                   onChange={handleUsernameChange}
-                  isValidate={true}
+                  $isValidate={true}
                   type="text"
                 />
               </InputBox>
@@ -124,7 +124,8 @@ export default function Login() {
                   value={password}
                   type="password"
                   onChange={handlePasswordChange}
-                  isValidate={true}
+                  $isValidate={true}
+                  autocomplete="current-password"
                 />
               </InputBox>
               <div style={{ padding: '10px' }}></div>
