@@ -11,7 +11,6 @@ import { AxiosError } from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ChatModal from './common/components/Chat/views/ChatModal';
 
-
 export default function App() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -43,7 +42,11 @@ export default function App() {
   return (
     <>
       <GlobalStyle />
-      {location.pathname !== '/' && <Header />}
+      {!(
+        location.pathname === '/' ||
+        location.pathname === '/oauth-signup' ||
+        location.pathname === '/signup'
+      ) && <Header />}
       <Router />
       {token && <ChatModal />}
       <Footer />
