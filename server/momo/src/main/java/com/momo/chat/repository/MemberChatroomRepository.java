@@ -29,4 +29,7 @@ public interface MemberChatroomRepository extends JpaRepository<MemberChatroom, 
 
 
     void deleteByChatroom(Chatroom chatroom);
+
+    @Query(value = "select mc from MemberChatroom mc join fetch mc.member m join fetch m.roles r where mc.chatroom.chatroomId = :roomId order by m.nickname asc")
+    List<MemberChatroom> findMembersInRoom(Long roomId);
 }
