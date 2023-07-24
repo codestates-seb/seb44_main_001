@@ -22,6 +22,7 @@ import { useNavigate } from 'react-router-dom';
 import { setMyData } from '../../Login/store/MyUserData';
 import { AxiosError } from 'axios';
 import { patchMyData } from '../api/patchMyData';
+import { setTokenData } from '../../Login/store/userTokenStore';
 
 export default function OauthSignup() {
   const [nickname, setNickname] = useState('');
@@ -104,8 +105,11 @@ export default function OauthSignup() {
     );
 
   const handleSignup = () => {
+    const memberId = localStorage.getItem('memberId');
+    const token = localStorage.getItem('Authorization');
     if (localStorage.getItem('memberId')) {
       patchInfoMutation.mutate(patchData);
+      dispatch(setTokenData({ token: `Bearer ${token}`, memberId: memberId }));
     }
     navigation('/lists');
   };
