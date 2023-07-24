@@ -25,22 +25,22 @@
 <table>
 <tr align="center">
   <td align="center">
-    <img src="ReadMeImages/김진솔.jpg" style="width: 10rem; height: 11rem; display: block; margin: 0 auto; object-fit: cover;" />
+    <img src="ReadMeImages/김진솔.jpg" style="width: 10rem; height: 10rem; display: block; margin: 0 auto; object-fit: cover;" />
   </td>
   <td style="text-align: center;">
-    <img src="ReadMeImages/박무생.jpeg" style="width: 10rem; height: 11rem; display: block; margin: 0 auto; object-fit: cover;" />
+    <img src="ReadMeImages/박무생.jpeg" style="width: 10rem; height: 10rem; display: block; margin: 0 auto; object-fit: cover;" />
   </td>
   <td style="text-align: center;">
-    <img src="ReadMeImages/송혜수.jpeg" style="width: 10rem; height: 11rem; display: block; margin: 0 auto; object-fit: cover;" />
+    <img src="ReadMeImages/송혜수.jpeg" style="width: 10rem; height: 10rem; display: block; margin: 0 auto; object-fit: cover;" />
   </td>
   <td style="text-align: center;">
-    <img src="ReadMeImages/김윤.jpeg" style="width: 10rem; height: 11rem; display: block; margin: 0 auto; object-fit: cover;" />
+    <img src="ReadMeImages/김윤.jpeg" style="width: 10rem; height: 10rem; display: block; margin: 0 auto; object-fit: cover;" />
   </td>
   <td style="text-align: center;">
-    <img src="ReadMeImages/조명인.png" style="width: 10rem; height: 11rem; display: block; margin: 0 auto; object-fit: cover;" />
+    <img src="ReadMeImages/조명인.png" style="width: 10rem; height: 10rem; display: block; margin: 0 auto; object-fit: cover;" />
   </td>
   <td style="text-align: center;">
-    <img src="ReadMeImages/최우형.png" style="width: 10rem; height: 11rem; display: block; margin: 0 auto; object-fit: cover;" />
+    <img src="ReadMeImages/최우형.png" style="width: 10rem; height: 10rem; display: block; margin: 0 auto; object-fit: cover;" />
   </td>
 </tr>
   <tr align="center"> 
@@ -219,7 +219,12 @@
 
 # API 명세서
 
+[API 명세서](https://winter-capsule-505700.postman.co/workspace/MOMO-API~54336cac-5410-4f0c-809c-f5528fca8a18/documentation/26572262-c617bc6b-b185-4e17-af30-a8331cfebe8b)
+
 <br/>
 <br/>
 
 # ERD
+
+![ERD](https://github.com/codestates-seb/seb44_main_001/assets/124570875/73a09fd7-5b52-4fff-b146-0660e8a72068)
+
