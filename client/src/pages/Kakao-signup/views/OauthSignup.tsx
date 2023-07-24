@@ -84,7 +84,8 @@ export default function OauthSignup() {
   const patchInfoMutation: UseMutationResult<void, AxiosError, MemberPatchDto> =
     useMutation(
       (memberPatchDto) => {
-        const url = `${BASE_URL}/members/${myData.memberId}`;
+        const memberId = localStorage.getItem('memberId');
+        const url = `${BASE_URL}/members/${memberId}`;
         return patchMyData(url, memberPatchDto);
       },
       {
@@ -103,7 +104,9 @@ export default function OauthSignup() {
     );
 
   const handleSignup = () => {
-    patchInfoMutation.mutate(patchData);
+    if (localStorage.getItem('memberId')) {
+      patchInfoMutation.mutate(patchData);
+    }
     navigation('/lists');
   };
 
