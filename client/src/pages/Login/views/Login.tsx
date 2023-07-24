@@ -14,11 +14,13 @@ import { setLoginUser } from '../store/LoginUser';
 import { setTokenData } from '../store/userTokenStore';
 
 import kakao from '../../../common/assets/logo/kakao-logo.png';
+import google from '../../../common/assets/logo/google-logo.png';
 import Button from '../../../common/components/Button';
 
 import { BASE_URL } from '../../../common/util/constantValue';
 import MyData from '../api/getMyData';
 import { setMyData } from '../store/MyUserData';
+import { GoogleBtn, KakaoBtn } from '../../../common/components/Header';
 
 export default function Login() {
   const [username, setUsername] = useState('');
@@ -26,6 +28,9 @@ export default function Login() {
 
   const dispatch = useDispatch();
   const navigation = useNavigate();
+
+  const kakaoLink = `${BASE_URL}/oauth2/authorization/kakao`;
+  const googleLink = `${BASE_URL}/oauth2/authorization/google`;
 
   const data: LoginData = useSelector((state: RootState) => state.login);
 
@@ -101,11 +106,29 @@ export default function Login() {
     <main>
       <SemiHeader title="로그인" content="모모에 오신것을 환영합니다!" />
       <Layout>
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <KakaoBtn>
-            <img src={kakao} style={{ height: '20px', marginRight: '5px' }} />
-            카카오톡&nbsp;로그인
-          </KakaoBtn>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            marginTop: '20px',
+          }}
+        >
+          <a href={kakaoLink} style={{ display: 'block', width: '30rem' }}>
+            <KakaoBtn>
+              <img src={kakao} style={{ height: '20px', marginRight: '5px' }} />
+              카카오톡&nbsp;로그인
+            </KakaoBtn>
+          </a>
+          <a href={googleLink} style={{ display: 'block', width: '30rem' }}>
+            <GoogleBtn>
+              <img
+                src={google}
+                style={{ height: '20px', marginRight: '5px' }}
+              />
+              구글&nbsp;로그인
+            </GoogleBtn>
+          </a>
           <Background style={{ marginTop: '20px', width: '30rem' }}>
             <ContentWrapper onSubmit={handleLogin}>
               <InputBox>
@@ -162,27 +185,27 @@ const ContentWrapper = styled.form`
   margin-right: 50px;
 `;
 
-const KakaoBtn = styled.button`
-  background-color: #ffe34e;
-  display: flex;
-  width: 30rem;
-  align-items: center;
-  justify-content: center;
-  margin: 100px;
-  margin-bottom: 0;
-  border: solid 2px var(--color-black);
-  border-radius: 10px;
-  padding: 10px;
-  font-family: 'BR-Regular';
-  font-size: medium;
+// const KakaoBtn = styled.button`
+//   background-color: #ffe34e;
+//   display: flex;
+//   width: 30rem;
+//   align-items: center;
+//   justify-content: center;
+//   margin: 100px;
+//   margin-bottom: 0;
+//   border: solid 2px var(--color-black);
+//   border-radius: 10px;
+//   padding: 10px;
+//   font-family: 'BR-Regular';
+//   font-size: medium;
 
-  &:hover {
-    background-color: #ffe03d;
-  }
-  &:active {
-    background-color: #f9d724;
-  }
-`;
+//   &:hover {
+//     background-color: #ffe03d;
+//   }
+//   &:active {
+//     background-color: #f9d724;
+//   }
+// `;
 
 const InputBox = styled.div`
   display: flex;
