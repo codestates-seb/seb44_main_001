@@ -25,22 +25,22 @@
 <table>
 <tr align="center">
   <td align="center">
-    <img src="ReadMeImages/김진솔.jpg" style="width: 10rem; height: 10rem; display: block; margin: 0 auto; object-fit: cover;" />
+    <img src="ReadMeImages/김진솔.jpg" style="width: 10rem; height: 8rem; display: block; margin: 0 auto; object-fit: cover;" />
   </td>
   <td style="text-align: center;">
-    <img src="ReadMeImages/박무생.jpeg" style="width: 10rem; height: 10rem; display: block; margin: 0 auto; object-fit: cover;" />
+    <img src="ReadMeImages/박무생.jpeg" style="width: 10rem; height: 8rem; display: block; margin: 0 auto; object-fit: cover;" />
   </td>
   <td style="text-align: center;">
-    <img src="ReadMeImages/송혜수.jpeg" style="width: 10rem; height: 10rem; display: block; margin: 0 auto; object-fit: cover;" />
+    <img src="ReadMeImages/송혜수.jpeg" style="width: 10rem; height: 8rem; display: block; margin: 0 auto; object-fit: cover;" />
   </td>
   <td style="text-align: center;">
-    <img src="ReadMeImages/김윤.jpeg" style="width: 10rem; height: 10rem; display: block; margin: 0 auto; object-fit: cover;" />
+    <img src="ReadMeImages/김윤.jpeg" style="width: 10rem; height: 8rem; display: block; margin: 0 auto; object-fit: cover;" />
   </td>
   <td style="text-align: center;">
-    <img src="ReadMeImages/조명인.png" style="width: 10rem; height: 10rem; display: block; margin: 0 auto; object-fit: cover;" />
+    <img src="ReadMeImages/조명인.png" style="width: 10rem; height: 8rem; display: block; margin: 0 auto; object-fit: cover;" />
   </td>
   <td style="text-align: center;">
-    <img src="ReadMeImages/최우형.png" style="width: 10rem; height: 10rem; display: block; margin: 0 auto; object-fit: cover;" />
+    <img src="ReadMeImages/최우형.png" style="width: 10rem; height: 8rem; display: block; margin: 0 auto; object-fit: cover;" />
   </td>
 </tr>
   <tr align="center"> 
