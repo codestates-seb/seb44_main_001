@@ -28,7 +28,7 @@ public class CommentService {
     private final MemberRepository memberRepository;
     public Page<Comment> getCommentPage(Long postId, int page, int size) {
         verifyPostId(postId);
-        return commentRepository.findAllComments(postId, PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, "createdAt")));
+        return commentRepository.findAllComments(postId, PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt")));
     }
 
     private void verifyPostId(Long postId) {

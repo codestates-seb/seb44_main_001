@@ -7,6 +7,7 @@ import com.momo.chat.entity.Message;
 import com.momo.chat.repository.ChatroomRepository;
 import com.momo.chat.repository.MemberChatroomRepository;
 import com.momo.chat.repository.MessageRepository;
+import com.momo.comment.dto.MemberInfo;
 import com.momo.exception.BusinessLogicException;
 import com.momo.exception.ExceptionCode;
 import com.momo.member.entity.Member;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -183,5 +185,14 @@ public class ChatroomService {
         Message savedMessage = messageRepository.save(message);
 
         template.convertAndSend("/sub/chat/room/" + chatroom.getChatroomId(), MessageResponseDto.from(savedMessage));
+    }
+
+    public List<MemberInfo> getMembers(Long roomId) {
+        List<Member> membersInRoom = memberChatroomRepository.findMembersInRoom(roomId).stream()
+                .map(memberChatroom -> memberChatroom.getMember())
+                .collect(Collectors.toList());
+        return membersInRoom.stream()
+                .map(member -> MemberInfo.from(member))
+                .collect(Collectors.toList());
     }
 }

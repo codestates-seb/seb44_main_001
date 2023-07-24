@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+// import validateOauth from '../api/validateOauth';
+import { BASE_URL } from '../../../common/util/constantValue';
 
 export default function OauthCallback() {
   const navigation = useNavigate();
@@ -13,9 +15,26 @@ export default function OauthCallback() {
 
     if (token && memberId) {
       localStorage.setItem('Authorization', `Bearer ${token}`);
-      localStorage.setItem('memberId', memberId);
+      localStorage.setItem('MemberId', memberId);
 
-      navigation('/oauth-signup');
+      fetch(`${BASE_URL}/members/${memberId}`)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Failed to fetch member information');
+          }
+          return response.json();
+        })
+        .then((data) => {
+          if (data.nickname === null) {
+            navigation('/oauth-signup');
+          } else {
+            navigation('/lists');
+          }
+        })
+        .catch((error) => {
+          console.error('Error fetching member information:', error);
+          navigation('/err');
+        });
     } else {
       navigation('/err');
     }
