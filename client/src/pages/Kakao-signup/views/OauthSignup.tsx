@@ -108,7 +108,7 @@ export default function OauthSignup() {
   const handleSignup = () => {
     const memberId = localStorage.getItem('memberId');
     const token = localStorage.getItem('Authorization');
-    if (localStorage.getItem('memberId')) {
+    if (localStorage.getItem('MemberId')) {
       dispatch(setTokenData({ token: `Bearer ${token}`, memberId: memberId }));
       patchInfoMutation.mutate(patchData);
     }
