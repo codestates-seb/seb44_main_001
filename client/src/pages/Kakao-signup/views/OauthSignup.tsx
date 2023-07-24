@@ -31,7 +31,7 @@ export default function OauthSignup() {
   const [welcomeMsg, setWelcomeMsg] = useState('');
 
   // const myData = useSelector((state: RootState) => state.authSignup);
-  const myToken = useSelector((state: RootState) => state.token);
+  // const myToken = useSelector((state: RootState) => state.token);
   const queryClient = useQueryClient();
 
   const dispatch = useDispatch();
@@ -93,7 +93,7 @@ export default function OauthSignup() {
       {
         onSuccess: () => {
           queryClient.invalidateQueries('userInfo');
-          navigation(`/user/${myToken.memberId}`);
+          navigation('/lists');
         },
         onError: (error) => {
           if (error.response?.status === 500) {
