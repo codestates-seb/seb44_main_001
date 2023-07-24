@@ -243,7 +243,7 @@
 
 # API 명세서
 
-[API 명세서](https://documenter.getpostman.com/view/26572262/2s946maVGP){:target="_blank"}
+<a href="https://documenter.getpostman.com/view/26572262/2s946maVGP" target="_blank">API 명세서</a>
 
 <br/>
 <br/>
