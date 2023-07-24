@@ -69,8 +69,8 @@ export default function OauthSignup() {
   };
 
   const onLocationChange = (locationId: number | null) => {
-    dispatch(setUpdatedUser({ ...patchData, location: locationId }));
-    dispatch(setMyData({ ...patchData, location: locationId }));
+    dispatch(setUpdatedUser({ ...patchData, locationId: locationId }));
+    dispatch(setMyData({ ...patchData, locationId: locationId }));
   };
 
   const handleWelcomeMsgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
