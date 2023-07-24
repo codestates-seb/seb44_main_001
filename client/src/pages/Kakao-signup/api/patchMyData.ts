@@ -1,18 +1,13 @@
 import axios from 'axios';
-import { SignupPatchData } from '../../../common/type';
+import { MemberPatchDto } from '../../../common/type';
 
-export default async function patchMyData(
-  url: string,
-  token: string,
-  data: SignupPatchData,
-) {
-  try {
-    const headers = {
-      Authorization: `${token}`,
-    };
+export const patchMyData = async (url: string, data: MemberPatchDto) => {
+  const token = localStorage.getItem('Authorization');
 
-    await axios.patch(url, data, { headers });
-  } catch (err) {
-    console.log(err);
-  }
-}
+  const headers = {
+    Authorization: token,
+  };
+
+  const res = await axios.patch(url, data, { headers });
+  return res.data;
+};

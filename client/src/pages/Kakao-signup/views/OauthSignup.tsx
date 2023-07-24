@@ -13,20 +13,24 @@ import {
 import LocationSelector from '../../../common/components/LocationSelector';
 import Button from '../../../common/components/Button';
 import { useDispatch, useSelector } from 'react-redux';
-import patchMyData from '../api/patchMyData';
 import { setUpdatedUser } from '../store/UpdatedUserData';
-import { SignupPatchData } from '../../../common/type';
+import { MemberPatchDto, SignupPatchData } from '../../../common/type';
 import { RootState } from '../../../common/store/RootStore';
-import { useMutation } from 'react-query';
+import { UseMutationResult, useMutation, useQueryClient } from 'react-query';
 import { BASE_URL } from '../../../common/util/constantValue';
 import { useNavigate } from 'react-router-dom';
 import { setMyData } from '../../Login/store/MyUserData';
+import { AxiosError } from 'axios';
+import { patchMyData } from '../api/patchMyData';
 
 export default function OauthSignup() {
   const [nickname, setNickname] = useState('');
   const [age, setAge] = useState<number | null>(null);
   const [isMale, setIsMale] = useState<boolean | null>(null);
   const [welcomeMsg, setWelcomeMsg] = useState('');
+
+  const myData = useSelector((state: RootState) => state.myData);
+  const queryClient = useQueryClient();
 
   const dispatch = useDispatch();
   const navigation = useNavigate();
@@ -35,19 +39,17 @@ export default function OauthSignup() {
     (state: RootState) => state.authSignup,
   );
 
-  const kakaoMutation = useMutation<void, unknown, SignupPatchData>(
-    async () => {
-      const storedToken = localStorage.getItem('Authorization');
-      const memberId = localStorage.getItem('memberId');
-      if (storedToken) {
-        await patchMyData(
-          `${BASE_URL}/members/${memberId}`,
-          storedToken,
-          patchData,
-        );
-      }
-    },
-  );
+  // const kakaoMutation = useMutation<void, unknown, SignupPatchData>(
+  //   async () => {
+  //     const memberId = localStorage.getItem('memberId');
+  //     if (storedToken) {
+  //       await patchMyData(
+  //         `${BASE_URL}/members/${memberId}`,
+  //         patchData,
+  //       );
+  //     }
+  //   },
+  // );
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(e.target.value);
@@ -79,8 +81,29 @@ export default function OauthSignup() {
     dispatch(setMyData({ ...patchData, welcomeMsg: e.target.value }));
   };
 
-  const handleSignup = async () => {
-    await kakaoMutation.mutate(patchData);
+  const patchInfoMutation: UseMutationResult<void, AxiosError, MemberPatchDto> =
+    useMutation(
+      (memberPatchDto) => {
+        const url = `${BASE_URL}/members/${myData.memberId}`;
+        return patchMyData(url, memberPatchDto);
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries('userInfo');
+          navigation(`/user/${myData.memberId}`);
+        },
+        onError: (error) => {
+          if (error.response?.status === 500) {
+            console.log('오예스에서 500이 떴답니다~~~!!!!!!!~');
+          } else {
+            console.error(error);
+          }
+        },
+      },
+    );
+
+  const handleSignup = () => {
+    patchInfoMutation.mutate(patchData);
     navigation('/lists');
   };
 
