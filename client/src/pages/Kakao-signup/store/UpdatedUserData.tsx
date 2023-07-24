@@ -14,7 +14,7 @@ export const updatedUserSlice = createSlice({
   reducers: {
     setUpdatedUser: (_state, action) => {
       return {
-        location: action.payload.location,
+        locationId: action.payload.locationId,
         welcomeMsg: action.payload.welcomeMsg,
         nickname: action.payload.nickname,
         isMale: action.payload.isMale,
