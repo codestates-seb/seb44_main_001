@@ -13,7 +13,7 @@ export default function OauthCallback() {
 
     if (token && memberId) {
       localStorage.setItem('Authorization', `Bearer ${token}`);
-      localStorage.setItem('memberId', memberId);
+      localStorage.setItem('MemberId', memberId);
 
       navigation('/oauth-signup');
     } else {
