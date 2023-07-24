@@ -5,7 +5,6 @@ export const totalCommentsSlice = createSlice({
   initialState: '',
   reducers: {
     setTotalComments: (_state, action) => {
-      console.log(action.payload); //! 배포 시 삭제
       return action.payload;
     },
   },

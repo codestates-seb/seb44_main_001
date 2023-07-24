@@ -6,7 +6,6 @@ export const deleteLike = async (url: string) => {
     const refreshToken = localStorage.getItem('RefreshToken');
 
     const headers = {
-      'ngrok-skip-browser-warning': '69420',
       Authorization: accessToken,
       Refresh: refreshToken,
     };
@@ -17,7 +16,7 @@ export const deleteLike = async (url: string) => {
       localStorage.setItem('Authorization', res.headers.authorization);
     }
 
-    return res.data.likeCount
+    return res.data.likeCount;
   } catch (err) {
     console.log(err);
   }

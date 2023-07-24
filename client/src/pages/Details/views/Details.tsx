@@ -8,10 +8,16 @@ import { UseQueryResult, useQuery } from 'react-query';
 import { ArticleToGet } from '../../../common/type';
 import getArticle from '../api/getArticle';
 import { BASE_URL } from '../../../common/util/constantValue';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setSelectedCategory } from '../../Lists,Search/store/SelectedCategory';
 
 export default function Details() {
   const { id } = useParams();
+
+  const dispatch = useDispatch();
+
+  const navigate = useNavigate();
 
   const { data }: UseQueryResult<ArticleToGet, unknown> = useQuery(
     ['getData', id],
@@ -24,12 +30,53 @@ export default function Details() {
     },
   );
 
+  const locationData = {
+    locationId: data?.locationInfo.locationId,
+    city: data?.locationInfo.city,
+    province: data?.locationInfo.province,
+  };
+
+  const handleLocationClick = () => {
+    localStorage.setItem('selectedLocation', JSON.stringify(locationData));
+
+    dispatch(
+      setSelectedCategory({
+        categoryId: 1,
+        name: '전체',
+      }),
+    );
+
+    navigate('/lists');
+  };
+
+  const handleCategoryClick = () => {
+    localStorage.setItem('selectedLocation', JSON.stringify(locationData));
+
+    dispatch(
+      setSelectedCategory({
+        categoryId: data?.categoryInfo.categoryId,
+        name: data?.categoryInfo.name,
+      }),
+    );
+
+    navigate('/lists');
+  };
+
   return (
     <>
-      <SemiHeader
-        title={`${data?.locationInfo.city} ${data?.locationInfo.province} > ${data?.categoryInfo.name} > ${data?.title}`}
-        content=""
-      />
+      <SemiHeader title="" content="">
+        <TitleWrapper>
+          <div
+            onClick={handleLocationClick}
+            className="link"
+          >{`${data?.locationInfo.city} ${data?.locationInfo.province}`}</div>
+          <div>&nbsp;{'>'}&nbsp;</div>
+          <div onClick={handleCategoryClick} className="link">
+            {data?.categoryInfo.name}
+          </div>
+          <div>&nbsp;{`> ${data?.title}`}</div>
+        </TitleWrapper>
+      </SemiHeader>
       <Layout>
         <Container>
           <Article data={data && data} />
@@ -44,4 +91,29 @@ export default function Details() {
 const Container = styled.main`
   display: flex;
   flex-direction: column;
+`;
+
+const TitleWrapper = styled.div`
+  display: flex;
+  align-items: end;
+  background-color: var(--color-pink-1);
+  width: 100%;
+
+  min-width: 700px;
+
+  > .link {
+    cursor: pointer;
+  }
+
+  & h1 {
+    color: var(--color-black);
+    white-space: nowrap;
+    padding-bottom: 20px;
+    padding-left: calc((100vw - 50rem) / 2);
+
+    > div {
+      display: flex;
+      justify-content: start;
+    }
+  }
 `;

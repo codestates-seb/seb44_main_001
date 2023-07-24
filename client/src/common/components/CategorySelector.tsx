@@ -20,21 +20,19 @@ export default function CategorySelector({
 
   const pathName = window.location.pathname;
 
-  const categories: Categories | null = JSON.parse(
-    localStorage.getItem('categories') || 'null',
-  );
+  const categoriesString = localStorage.getItem('categories');
+  const categories: Categories =
+    categoriesString && JSON.parse(categoriesString);
 
   const category = useSelector((state: RootState) => state.category.name);
 
   const handleCategoryChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    const categoryId: number | null = JSON.parse(
-      localStorage.getItem('categories') || 'null',
-    )?.find(
+    const categoryId: number | undefined = categories?.find(
       (category: Category) => category.name === event.target.value,
     )?.categoryId;
     dispatch(setCategory({ name: event.target.value, categoryId: categoryId }));
     if (onCategoryChange) {
-      onCategoryChange(categoryId);
+      onCategoryChange(categoryId as number);
     }
   };
 

@@ -4,9 +4,9 @@ const initialState = {
   memberId: 0,
   email: '',
   location: {
-    city:'',
-    province:'',
-    locationId:0,
+    city: '',
+    province: '',
+    locationId: 0,
   },
   welcomeMsg: '',
   profileImage: '',
@@ -22,7 +22,6 @@ export const myDataSlice = createSlice({
   initialState,
   reducers: {
     setMyData: (_state, action) => {
-      console.log(action.payload); //! 배포 시 삭제
       return {
         memberId: action.payload.memberId,
         email: action.payload.email,

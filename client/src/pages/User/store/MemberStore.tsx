@@ -21,7 +21,6 @@ export const memberSlice = createSlice({
   initialState,
   reducers: {
     setUserData: (_state, action) => {
-      console.log(action.payload); //! 배포 시 삭제
       return {
         memberId: action.payload.memberId,
         email: action.payload.email,

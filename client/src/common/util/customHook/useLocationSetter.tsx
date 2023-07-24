@@ -18,7 +18,6 @@ export default function useLocationSetter() {
 
     if (!locations) {
       queryClient.prefetchQuery(['getLocation']);
-      console.log('locations are saved');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

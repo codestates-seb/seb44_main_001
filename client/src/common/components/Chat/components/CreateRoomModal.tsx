@@ -8,7 +8,6 @@ import postNewRoomName from '../api/postNewRoomName';
 import { BASE_URL } from '../../../util/constantValue';
 import { NewRoom } from '../../../type';
 import { useDispatch } from 'react-redux';
-import { setChatModal } from '../../../store/ChatModalStore';
 import { setChatRoomInfo } from '../../../store/ChatRoomInfoStore';
 
 export default function CreateRoomModal({
@@ -35,7 +34,6 @@ export default function CreateRoomModal({
     () => postNewRoomName(`${BASE_URL}/rooms/register`, data),
     {
       onSuccess: (data) => {
-        dispatch(setChatModal(true));
         dispatch(
           setChatRoomInfo({
             roomId: data,
@@ -43,6 +41,7 @@ export default function CreateRoomModal({
             roomType: 'GROUP',
           }),
         );
+        setRoomName('');
       },
     },
   );
@@ -56,13 +55,14 @@ export default function CreateRoomModal({
   };
 
   const handleSubmit = () => {
-    if (roomName.length) {
+    if (roomName.length > 0) {
       postMutation.mutate();
     }
   };
 
-  const handleKeyUp = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
+  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter' && roomName.length) {
+      event.preventDefault();
       handleSubmit();
     }
   };
@@ -77,8 +77,9 @@ export default function CreateRoomModal({
       <RoomNameInput
         placeholder="생성할 그룹채팅방의 이름을 입력해주세요!"
         onChange={handleInput}
-        onKeyUp={handleKeyUp}
+        onKeyDown={handleKeyDown}
         maxLength={15}
+        autoFocus
       />
       <Button onClick={handleSubmit}>그룹채팅방 생성</Button>
     </Modal>

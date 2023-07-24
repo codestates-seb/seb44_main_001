@@ -2,7 +2,7 @@ import { AiFillWechat } from 'react-icons/ai';
 import { keyframes, styled } from 'styled-components';
 import Modal from 'react-modal';
 import { useEffect, useState } from 'react';
-import { modalStyle } from '../ModalStyle';
+import { modalStyle } from '../modalStyle';
 import ChatMain from '../components/ChatMain';
 import ChatRoom from '../components/ChatRoom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -87,7 +87,6 @@ export default function ChatModal() {
 
   const handleWebSocketMessage = (message: StompJs.IMessage) => {
     const receivedMessage = JSON.parse(message.body);
-    console.table(receivedMessage);
     setTimeout(() => {
       setMessages((prevMessages) => {
         return [...prevMessages, receivedMessage];
@@ -101,8 +100,6 @@ export default function ChatModal() {
       client.activate();
 
       client.onConnect = function () {
-        console.log('websocket is connected');
-
         const subscription = client.subscribe(
           `/sub/chat/room/${chatRoom}`,
           handleWebSocketMessage,

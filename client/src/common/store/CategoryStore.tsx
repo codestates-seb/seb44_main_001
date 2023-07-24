@@ -8,7 +8,6 @@ export const categorySlice = createSlice({
   },
   reducers: {
     setCategory: (_state, action) => {
-      console.log(action.payload); //! 배포 시 삭제
       return {
         categoryId: action.payload.categoryId,
         name: action.payload.name,

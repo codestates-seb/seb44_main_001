@@ -9,10 +9,7 @@ export const calculateTimeDifference = (time: string) => {
   const dayDiff: number = Math.floor(difference / (1000 * 60 * 60 * 24));
 
   if (secondDiff < 60) {
-    if (secondDiff <= 1) {
-      return '방금';
-    }
-    return `${secondDiff + 1}초 전`;
+    return `방금`;
   }
 
   if (minuteDiff < 60) {

@@ -25,9 +25,8 @@ export default function LocationSelector({
 
   const dispatch = useDispatch();
 
-  const locations: Locations | null = JSON.parse(
-    localStorage.getItem('locations') || 'null',
-  );
+  const locationsString = localStorage.getItem('locations');
+  const locations: Locations = locationsString && JSON.parse(locationsString);
 
   const city = useSelector((state: RootState) => state.location.city);
 
@@ -38,16 +37,14 @@ export default function LocationSelector({
   };
 
   const handleProvinceChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    const locationId: number | null = JSON.parse(
-      localStorage.getItem('locations') || 'null',
-    )?.find(
+    const locationId: number | undefined = locations?.find(
       (location: Location) =>
         location.city === city && location.province === event.target.value,
     )?.locationId;
 
     dispatch(setLocation({ city, province: event.target.value, locationId }));
     if (onLocationChange) {
-      onLocationChange(locationId);
+      onLocationChange(locationId as number);
     }
   };
 

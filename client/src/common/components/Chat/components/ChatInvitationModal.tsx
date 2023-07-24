@@ -11,6 +11,7 @@ import { ChangeEvent, useState } from 'react';
 import profile from '../../../../common/assets/profile.svg';
 import { Nickname } from '../../../type';
 import postInvitation from '../api/postInvitation';
+import Button from '../../Button';
 
 export default function ChatInvitationModal({ roomId }: { roomId: number }) {
   const [searchItem, setSearchItem] = useState('');
@@ -62,27 +63,36 @@ export default function ChatInvitationModal({ roomId }: { roomId: number }) {
       onRequestClose={handleModalClose}
       ariaHideApp={false}
     >
-      <NicknameInput
-        placeholder="초대하실 분의 닉네임을 입력해주세요!"
-        onChange={handleInput}
-        maxLength={20}
-      />
-      <Nicknames>
-        {nicknames &&
-          nicknames.length !== 0 &&
-          nicknames.map((nickname) => (
-            <div
-              key={nickname.memberId}
-              onClick={() => handleInvite(nickname.memberId)}
-            >
-              <img
-                src={nickname.profileImage ? nickname.profileImage : profile}
-                alt={nickname.nickname}
-              />
-              <div>{nickname.nickname}</div>
-            </div>
-          ))}
-      </Nicknames>
+      <div>
+        <NicknameInput
+          placeholder="초대하실 분의 닉네임을 입력해주세요!"
+          onChange={handleInput}
+          maxLength={20}
+        />
+        <Nicknames>
+          <div>
+            {nicknames &&
+              nicknames.length !== 0 &&
+              nicknames.map((nickname) => (
+                <div
+                  key={nickname.memberId}
+                  onClick={() => handleInvite(nickname.memberId)}
+                >
+                  <img
+                    src={
+                      nickname.profileImage ? nickname.profileImage : profile
+                    }
+                    alt={nickname.nickname}
+                  />
+                  <div>{nickname.nickname}</div>
+                </div>
+              ))}
+          </div>
+          <div>
+            <Button onClick={handleModalClose}>초대 완료</Button>
+          </div>
+        </Nicknames>
+      </div>
     </Modal>
   );
 }
@@ -93,21 +103,35 @@ const NicknameInput = styled.input`
 `;
 
 const Nicknames = styled.div`
-  > div {
+  display: flex;
+  flex-direction: column;
+
+  > :first-child {
+    height: 22rem;
+
+    > div {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+      color: var(--color-black);
+      cursor: pointer;
+      width: fit-content;
+      overflow: auto;
+
+      :hover {
+        color: var(--color-pink-1);
+      }
+
+      > img {
+        height: 2rem;
+        margin-right: 0.5rem;
+      }
+    }
+  }
+
+  > :last-child {
     display: flex;
-    align-items: center;
-    margin-bottom: 1rem;
-    color: var(--color-black);
-    cursor: pointer;
-    width: fit-content;
-
-    :hover {
-      color: var(--color-pink-1);
-    }
-
-    > img {
-      height: 2rem;
-      margin-right: 0.5rem;
-    }
+    width: 100%;
+    justify-content: center;
   }
 `;

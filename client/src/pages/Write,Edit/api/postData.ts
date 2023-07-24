@@ -7,7 +7,6 @@ export default async function postData(url: string, data: ArticleToPost) {
     const refreshToken = localStorage.getItem('RefreshToken');
 
     const headers = {
-      'ngrok-skip-browser-warning': '69420',
       Authorization: accessToken,
       Refresh: refreshToken,
     };

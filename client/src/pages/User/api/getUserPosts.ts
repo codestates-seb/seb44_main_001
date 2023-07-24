@@ -10,9 +10,7 @@ export const getUserPosts = async (
       ...(memberId && { memberId }),
       page: pageParam,
     },
-    headers: {
-      'ngrok-skip-browser-warning': '69420',
-    },
+    headers: {},
   });
   return res.data;
 };

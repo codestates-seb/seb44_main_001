@@ -59,7 +59,6 @@ export default function Article({ data }: { data?: ArticleToGet }) {
     },
     {
       onSuccess: (responseData) => {
-        console.log('조아요');
         setIsLiked(true);
         setTotalLikes(responseData.likeCount);
       },
@@ -73,7 +72,6 @@ export default function Article({ data }: { data?: ArticleToGet }) {
     () => deleteLike(`${BASE_URL}/likes/${id}/${memberId}`),
     {
       onSuccess: (responseData) => {
-        console.log('시러요');
         setIsLiked(false);
         setTotalLikes(responseData.likeCount);
       },
