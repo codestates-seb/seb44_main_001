@@ -243,7 +243,7 @@
 
 # API 명세서
 
-[API 명세서]([https://winter-capsule-505700.postman.co/workspace/MOMO-API~54336cac-5410-4f0c-809c-f5528fca8a18/documentation/26572262-c617bc6b-b185-4e17-af30-a8331cfebe8b](https://documenter.getpostman.com/view/26572262/2s946maVGP))
+[API 명세서](https://documenter.getpostman.com/view/26572262/2s946maVGP)
 
 <br/>
 <br/>
