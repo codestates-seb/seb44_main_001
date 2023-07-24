@@ -86,7 +86,7 @@ export default function OauthSignup() {
   const patchInfoMutation: UseMutationResult<void, AxiosError, MemberPatchDto> =
     useMutation(
       (memberPatchDto) => {
-        const memberId = localStorage.getItem('memberId');
+        const memberId = localStorage.getItem('MemberId');
         const url = `${BASE_URL}/members/${memberId}`;
         return patchMyData(url, memberPatchDto);
       },
@@ -106,7 +106,7 @@ export default function OauthSignup() {
     );
 
   const handleSignup = () => {
-    const memberId = localStorage.getItem('memberId');
+    const memberId = localStorage.getItem('MemberId');
     const token = localStorage.getItem('Authorization');
     if (localStorage.getItem('MemberId')) {
       dispatch(setTokenData({ token: `Bearer ${token}`, memberId: memberId }));
