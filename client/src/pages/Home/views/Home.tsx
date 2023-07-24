@@ -28,6 +28,18 @@ export default function Home() {
   return (
     <Layout>
       <Wrapper>
+        <GotoList>
+          <Link to="/lists">
+            <LinkStyle
+              style={{
+                fontSize: '15px',
+                marginRight: '30px',
+              }}
+            >
+              가입하지않고 모모 구경해보기
+            </LinkStyle>
+          </Link>
+        </GotoList>
         <Page1>
           <TextContainer>
             <TextBox>
@@ -160,6 +172,13 @@ const Wrapper = styled.div`
   align-items: center;
   justify-content: center;
   color: var(--color-black);
+  width: 100%;
+`;
+
+const GotoList = styled.div`
+  display: flex;
+  margin: 20px;
+  justify-content: flex-end;
   width: 100%;
 `;
 
