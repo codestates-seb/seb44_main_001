@@ -24,12 +24,12 @@
 <div align="center">
 <table>
   <tr align="center">
-    <td align="center"><img src="ReadMeImages/김진솔.jpg" style="object-fit: cover; width: 10rem; height: 12rem;" /></td>
-    <td style="text-align: center;"><img src="ReadMeImages/박무생.jpeg" style="object-fit: cover; width: 10rem; height: 12rem;" /></td>
-    <td style="text-align: center;"><img src="ReadMeImages/송혜수.jpeg" style="object-fit: cover; width: 10rem; height: 12rem;" /></td>
-    <td style="text-align: center;"><img src="ReadMeImages/김윤.jpeg" style="object-fit: cover; width: 10rem; height: 12rem;" /></td>
-    <td style="text-align: center;"><img src="ReadMeImages/조명인.png" style="object-fit: cover; width: 10rem; height: 12rem;" /></td>
-    <td style="text-align: center;"><img src="ReadMeImages/최우형.png" style="object-fit: cover; width: 10rem; height: 12rem;" /></td>
+    <td align="center"><img src="ReadMeImages/김진솔.jpg" style="object-fit: cover; width: 10rem; height: 11rem;" /></td>
+    <td style="text-align: center;"><img src="ReadMeImages/박무생.jpeg" style="object-fit: cover; width: 10rem; height: 11rem;" /></td>
+    <td style="text-align: center;"><img src="ReadMeImages/송혜수.jpeg" style="object-fit: cover; width: 10rem; height: 11rem;" /></td>
+    <td style="text-align: center;"><img src="ReadMeImages/김윤.jpeg" style="object-fit: cover; width: 10rem; height: 11rem;" /></td>
+    <td style="text-align: center;"><img src="ReadMeImages/조명인.png" style="object-fit: cover; width: 10rem; height: 11rem;" /></td>
+    <td style="text-align: center;"><img src="ReadMeImages/최우형.png" style="object-fit: cover; width: 10rem; height: 11rem;" /></td>
   </tr>
   <tr align="center"> 
     <td><a href="https://github.com/jinsoul75">김진솔</a></td>
