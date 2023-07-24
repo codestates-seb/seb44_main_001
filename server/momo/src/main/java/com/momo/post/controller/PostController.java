@@ -139,7 +139,7 @@ public class PostController {
     @GetMapping("/like/member/{memberId}")
     public ResponseEntity<List<PostResponseDto>> getPostLikedByMember(
             @PathVariable Long memberId,
-            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "9") int size) {
         List<PostResponseDto> likedPosts = postService.getPostLikedByMember(memberId, page, size);
         return ResponseEntity.ok(likedPosts);
