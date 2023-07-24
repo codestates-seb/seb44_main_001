@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { keyframes, styled } from 'styled-components';
+import { css, keyframes, styled } from 'styled-components';
 
 import logo from '../../../common/assets/logo/grayLogo.png';
 import couple from '../../../common/assets/logo/coupleMomo.svg';
@@ -166,6 +166,16 @@ const floatAnimation2 = keyframes`
   }
 `;
 
+const fadeInAnimation = keyframes`
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+`;
+
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -208,7 +218,11 @@ const TextContainer = styled.div`
   display: flex;
   align-items: center;
   padding: 50px;
-  animation: ${floatAnimation2} 2s ease-in-out infinite alternate;
+  opacity: 0;
+  animation: ${fadeInAnimation} 1s forwards,
+    ${floatAnimation2} 2s ease-in-out infinite alternate;
+  animation-delay: 1s;
+  /* animation: ${floatAnimation2} 2s ease-in-out infinite alternate; */
 `;
 
 const TextBox = styled.div`
@@ -266,7 +280,8 @@ const LogoContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  animation: ${floatAnimation1} 2s ease-in-out infinite alternate;
+  animation: ${fadeInAnimation} 1s forwards,
+    ${floatAnimation1} 2s ease-in-out infinite alternate;
 `;
 
 const ImgContainer = styled.div`
