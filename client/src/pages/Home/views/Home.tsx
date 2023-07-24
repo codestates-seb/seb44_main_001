@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { css, keyframes, styled } from 'styled-components';
+import { keyframes, styled } from 'styled-components';
 
 import logo from '../../../common/assets/logo/grayLogo.png';
 import couple from '../../../common/assets/logo/coupleMomo.svg';
