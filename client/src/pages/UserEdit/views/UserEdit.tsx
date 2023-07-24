@@ -180,7 +180,7 @@ export default function UserEdit() {
                 <Text>이메일 주소</Text>
                 <TextInput
                   value={myData.email}
-                  isValidate={true}
+                  $isValidate={true}
                   onChange={handleNicknameChange}
                   disabled
                 />
@@ -189,7 +189,7 @@ export default function UserEdit() {
                 <Text>닉네임</Text>
                 <TextInput
                   value={nickname}
-                  isValidate={isValidate}
+                  $isValidate={isValidate}
                   onChange={handleNicknameChange}
                 />
                 {isValidate || <Message>중복된 닉네임 입니다.</Message>}
