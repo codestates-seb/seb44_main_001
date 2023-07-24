@@ -250,5 +250,5 @@
 
 # ERD
 
-![ERD](https://github.com/codestates-seb/seb44_main_001/assets/124570875/73a09fd7-5b52-4fff-b146-0660e8a72068)
+![ERD](ReadMeImages/ERD.png)
 
