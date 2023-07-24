@@ -8,8 +8,10 @@ export default function useLocationSetter() {
 
   useQuery(['getLocation'], () => getLocation(`${BASE_URL}/locations`), {
     enabled: false,
-    onSuccess: (response) => {
-      localStorage.setItem('locations', JSON.stringify(response));
+    onSuccess: (data) => {
+      if (data) {
+        localStorage.setItem('locations', JSON.stringify(data));
+      }
     },
   });
 
