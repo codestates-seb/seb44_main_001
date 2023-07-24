@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import validateOauth from '../api/validateOauth';
+// import validateOauth from '../api/validateOauth';
 import { BASE_URL } from '../../../common/util/constantValue';
 
 export default function OauthCallback() {
