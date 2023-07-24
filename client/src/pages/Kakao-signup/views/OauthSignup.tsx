@@ -30,7 +30,8 @@ export default function OauthSignup() {
   const [isMale, setIsMale] = useState<boolean | null>(null);
   const [welcomeMsg, setWelcomeMsg] = useState('');
 
-  const myData = useSelector((state: RootState) => state.myData);
+  const myData = useSelector((state: RootState) => state.authSignup);
+  const myToken = useSelector((state: RootState) => state.token);
   const queryClient = useQueryClient();
 
   const dispatch = useDispatch();
@@ -92,7 +93,7 @@ export default function OauthSignup() {
       {
         onSuccess: () => {
           queryClient.invalidateQueries('userInfo');
-          navigation(`/user/${myData.memberId}`);
+          navigation(`/user/${myToken.memberId}`);
         },
         onError: (error) => {
           if (error.response?.status === 500) {
@@ -108,8 +109,8 @@ export default function OauthSignup() {
     const memberId = localStorage.getItem('memberId');
     const token = localStorage.getItem('Authorization');
     if (localStorage.getItem('memberId')) {
-      patchInfoMutation.mutate(patchData);
       dispatch(setTokenData({ token: `Bearer ${token}`, memberId: memberId }));
+      patchInfoMutation.mutate(patchData);
     }
     navigation('/lists');
   };
