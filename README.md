@@ -1,10 +1,16 @@
-# SEB 44th MAIN Project 1조 <span style="color: #e91b3b;">T1</span>
+# SEB 44th MAIN Project 1조 T1
 
-![로고](ReadMeImages/로고.png)
+<div  align="center">
+    <img src="ReadMeImages/로고.png" alt="로고" />
+</div>
 
-![문구](ReadMeImages/문구.png)
+<div  align="center">
+    <img src="ReadMeImages/문구.png" alt="문구" />
+</div>
 
-<div  style="text-align: center;">
+<br />
+
+<div align="center">
 <a href="https://letsmomo.netlify.app/">
 모모 체험하러 가기!
 </a>
@@ -15,33 +21,34 @@
 
 # 팀원 소개
 
-<table style="width: 100%; text-align: center;">
-<tr>
-    <td><img src="ReadMeImages/김진솔.jpg" style="object-fit: cover; width: 80px; height: 120px;" /></td>
-    <td><img src="ReadMeImages/박무생.jpeg" style="object-fit: cover; width: 80px; height: 120px;" /></td>
-    <td><img src="ReadMeImages/송혜수.jpeg" style="object-fit: cover; width: 80px; height: 120px;" /></td>
-    <td><img src="ReadMeImages/김윤.jpeg" style="object-fit: cover; width: 80px; height: 120px;" /></td>
-    <td><img src="ReadMeImages/조명인.png" style="object-fit: cover; width: 80px; height: 120px;" /></td>
-    <td><img src="ReadMeImages/최우형.png" style="object-fit: cover; width: 80px; height: 120px;" /></td>
-</tr>
-        <tr>
-        <td><a href="https://github.com/jinsoul75">
-        김진솔</a></td>
-        <td><a href="https://github.com/Mooobi">박무생</a></td>
-        <td><a href="https://github.com/shyesoo">송혜수</a></td>
-        <td><a href="https://github.com/Yooney1">김윤</a></td>
-        <td><a href="https://github.com/myoungincho729">조명인</a></td>
-        <td><a href="https://github.com/rktdngud">최우형</a></td>
-    </tr>
-    <tr>
-        <td>FE 팀장</td>
-        <td>FE</td>
-        <td>FE</td>
-        <td>BE 부팀장</td>
-        <td>BE</td>
-        <td>BE</td>
-    </tr>
+<div align="center">
+<table>
+  <tr align="center">
+    <td align="center"><img src="ReadMeImages/김진솔.jpg" style="object-fit: cover; width: 10rem; height: 12rem;" /></td>
+    <td style="text-align: center;"><img src="ReadMeImages/박무생.jpeg" style="object-fit: cover; width: 10rem; height: 12rem;" /></td>
+    <td style="text-align: center;"><img src="ReadMeImages/송혜수.jpeg" style="object-fit: cover; width: 10rem; height: 12rem;" /></td>
+    <td style="text-align: center;"><img src="ReadMeImages/김윤.jpeg" style="object-fit: cover; width: 10rem; height: 12rem;" /></td>
+    <td style="text-align: center;"><img src="ReadMeImages/조명인.png" style="object-fit: cover; width: 10rem; height: 12rem;" /></td>
+    <td style="text-align: center;"><img src="ReadMeImages/최우형.png" style="object-fit: cover; width: 10rem; height: 12rem;" /></td>
+  </tr>
+  <tr align="center"> 
+    <td><a href="https://github.com/jinsoul75">김진솔</a></td>
+    <td><a href="https://github.com/Mooobi">박무생</a></td>
+    <td><a href="https://github.com/shyesoo">송혜수</a></td>
+    <td><a href="https://github.com/Yooney1">김윤</a></td>
+    <td><a href="https://github.com/myoungincho729">조명인</a></td>
+    <td><a href="https://github.com/rktdngud">최우형</a></td>
+  </tr>
+  <tr align="center">
+    <td >FE 팀장</td>
+    <td>FE</td>
+    <td>FE</td>
+    <td>BE 부팀장</td>
+    <td>BE</td>
+    <td>BE</td>
+  </tr>
 </table>
+</div>
 
 <details>
   <summary>담당 파트</summary>
