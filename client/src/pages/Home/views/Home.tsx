@@ -1,6 +1,5 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { keyframes, styled } from 'styled-components';
-
 import logo from '../../../common/assets/logo/grayLogo.png';
 import couple from '../../../common/assets/logo/coupleMomo.svg';
 import recruit from '../../../common/assets/logo/recruitMomo.svg';
@@ -20,10 +19,23 @@ import kakao from '../../../common/assets/logo/kakao-logo.png';
 import google from '../../../common/assets/logo/google-logo.png';
 import momo from '../../../common/assets/logo/onlyPeach.svg';
 import { BASE_URL } from '../../../common/util/constantValue';
+import ChatImages from '../components/ChatImages';
+import { useEffect } from 'react';
 
 export default function Home() {
   const kakaoLink = `${BASE_URL}/oauth2/authorization/kakao`;
   const googleLink = `${BASE_URL}/oauth2/authorization/google`;
+
+  const token = localStorage.getItem('Authorization');
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (token) {
+      navigate('/lists');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Layout>
@@ -66,11 +78,19 @@ export default function Home() {
                   </div>
                 </BtnContainer>
               </LinkContainer>
-              <LinkContainer style={{ flexDirection: 'row' }}>
-                <TextStyle>이미 모모의 회원이세요?&nbsp;👉</TextStyle>
-                <Link to="/login">
-                  <LinkStyle>로그인하기</LinkStyle>
-                </Link>
+              <LinkContainer>
+                <div>
+                  <TextStyle>이미 모모의 회원이세요?&nbsp;👉</TextStyle>
+                  <Link to="/login">
+                    <LinkStyle>로그인하기</LinkStyle>
+                  </Link>
+                </div>
+                <div>
+                  <TextStyle>먼저 만나볼래요?&nbsp;👉</TextStyle>
+                  <Link to="/lists">
+                    <LinkStyle>둘러보기</LinkStyle>
+                  </Link>
+                </div>
               </LinkContainer>
             </TextBox>
             <Tail />
@@ -105,14 +125,7 @@ export default function Home() {
         </Page2>
         <img src={pinkWave2} style={{ width: '100%' }} />
         <Page3>
-          <img
-            src={category}
-            style={{
-              width: '600px',
-              borderRadius: '30px',
-              marginRight: '30px',
-            }}
-          />
+          <ChatImages />
           <Page2TextBox>
             <h1 style={{ margin: '10px' }}>
               함께할 사람을 찾아 친분을 다져요.
@@ -220,6 +233,11 @@ const LinkContainer = styled.div`
   flex-direction: column;
   align-items: center;
   margin-top: 20px;
+
+  > div {
+    display: flex;
+    align-items: center;
+  }
 `;
 
 const LinkStyle = styled.a`
