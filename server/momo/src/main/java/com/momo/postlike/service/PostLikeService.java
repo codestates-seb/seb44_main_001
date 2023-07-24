@@ -66,7 +66,7 @@ public class PostLikeService {
     }
 
 
-    public void deletePostLike(Long postId, Long memberId) {
+    public ResponseEntity<PostLikeResponseDto> deletePostLike(Long postId, Long memberId) {
         List<PostLike> postLikes = postLikeRepository.findByPost_PostIdAndMember_MemberId(postId, memberId);
         if (!postLikes.isEmpty()) {
             PostLike postLike = postLikes.get(0);
@@ -74,9 +74,16 @@ public class PostLikeService {
 
             // 게시글의 좋아요 개수 갱신
             updatePostLikeCount(postId);
+
+            long likeCount = postLikeRepository.countByPost_PostId(postId);
+            boolean isLiked = postLikeRepository.existsByPost_PostIdAndMember_MemberId(postId, memberId);
+            PostLikeResponseDto responseDto = new PostLikeResponseDto(likeCount, isLiked);
+
+            return ResponseEntity.ok(responseDto);
+        } else {
+            return ResponseEntity.notFound().build();
         }
     }
-
     private void updatePostLikeCount(Long postId) {
         long likeCount = postLikeRepository.countByPost_PostId(postId);
         Post post = postRepository.getById(postId);
