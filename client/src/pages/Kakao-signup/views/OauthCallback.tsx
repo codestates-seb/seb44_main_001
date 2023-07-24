@@ -17,7 +17,11 @@ export default function OauthCallback() {
       localStorage.setItem('Authorization', `Bearer ${token}`);
       localStorage.setItem('MemberId', memberId);
 
-      fetch(`${BASE_URL}/members/${memberId}`)
+      fetch(`${BASE_URL}/members/${memberId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
         .then((response) => {
           if (!response.ok) {
             throw new Error('Failed to fetch member information');
