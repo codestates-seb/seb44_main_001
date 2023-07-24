@@ -20,6 +20,7 @@ import { RootState } from '../../../common/store/RootStore';
 import { useMutation } from 'react-query';
 import { BASE_URL } from '../../../common/util/constantValue';
 import { useNavigate } from 'react-router-dom';
+import { setMyData } from '../../Login/store/MyUserData';
 
 export default function OauthSignup() {
   const [nickname, setNickname] = useState('');
@@ -51,26 +52,31 @@ export default function OauthSignup() {
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(e.target.value);
     dispatch(setUpdatedUser({ ...patchData, nickname: e.target.value }));
+    dispatch(setMyData({ ...patchData, nickname: e.target.value }));
   };
 
   const handleBirthYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setAge(parseInt(e.target.value));
     dispatch(setUpdatedUser({ ...patchData, age: e.target.value }));
+    dispatch(setMyData({ ...patchData, age: e.target.value }));
   };
 
   const handleIsMaleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const isMale = e.target.value === 'male';
     setIsMale(isMale);
     dispatch(setUpdatedUser({ ...patchData, isMale: isMale }));
+    dispatch(setMyData({ ...patchData, isMale: isMale }));
   };
 
   const onLocationChange = (locationId: number | null) => {
     dispatch(setUpdatedUser({ ...patchData, location: locationId }));
+    dispatch(setMyData({ ...patchData, location: locationId }));
   };
 
   const handleWelcomeMsgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setWelcomeMsg(e.target.value);
     dispatch(setUpdatedUser({ ...patchData, welcomeMsg: e.target.value }));
+    dispatch(setMyData({ ...patchData, welcomeMsg: e.target.value }));
   };
 
   const handleSignup = async () => {
