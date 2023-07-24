@@ -1,7 +1,7 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  location: 0,
+  locationId: 0,
   welcomeMsg: '',
   nickname: '',
   isMale: true,
@@ -14,7 +14,7 @@ export const updatedUserSlice = createSlice({
   reducers: {
     setUpdatedUser: (_state, action) => {
       return {
-        location: action.payload.location,
+        locationId: action.payload.location,
         welcomeMsg: action.payload.welcomeMsg,
         nickname: action.payload.nickname,
         isMale: action.payload.isMale,

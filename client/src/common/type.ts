@@ -147,7 +147,7 @@ export type MemberPatchDto = {
 };
 
 export type SignupPatchData = {
-  location: number;
+  locationId: number;
   welcomeMsg: string;
   nickname: string;
   isMale: boolean;
