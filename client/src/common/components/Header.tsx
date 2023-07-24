@@ -84,7 +84,21 @@ export default function Header() {
 
   return (
     <Head>
-      <Link to="/lists">
+      <Link
+        to="/lists"
+        onClick={() => {
+          dispatch(
+            setSelectedLocation({
+              locationId: 1,
+              city: myData.location.city,
+              province: myData.location.province,
+            }),
+          );
+          dispatch(setSelectedCategory({ categoryId: 1, name: '전체' }));
+          localStorage.removeItem('selectedLocation');
+          navigate('/lists');
+        }}
+      >
         <Logo>
           <img src={logo} alt="로고이미지" style={{ height: '39px' }} />
           <HoverImage
@@ -106,22 +120,6 @@ export default function Header() {
               {myData.nickname}
             </div>
           </UserContainer>
-          <Button
-            className="margin-left"
-            children="모모리스트"
-            onClick={() => {
-              dispatch(
-                setSelectedLocation({
-                  locationId: 1,
-                  city: myData.location.city,
-                  province: myData.location.province,
-                }),
-              );
-              dispatch(setSelectedCategory({ categoryId: 1, name: '전체' }));
-              localStorage.removeItem('selectedLocation');
-              navigate('/lists');
-            }}
-          />
           <Button
             className="margin-left"
             onClick={handleWriteButtonClick}
