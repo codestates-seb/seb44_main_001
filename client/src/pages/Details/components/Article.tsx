@@ -60,7 +60,7 @@ export default function Article({ data }: { data?: ArticleToGet }) {
     {
       onSuccess: (responseData) => {
         setIsLiked(true);
-        setTotalLikes(responseData.likeCount);
+        setTotalLikes(responseData);
       },
       onError: (error) => {
         console.error('요청 실패:', error);
@@ -73,7 +73,7 @@ export default function Article({ data }: { data?: ArticleToGet }) {
     {
       onSuccess: (responseData) => {
         setIsLiked(false);
-        setTotalLikes(responseData.likeCount);
+        setTotalLikes(responseData);
       },
       onError: (error) => {
         console.error('요청 실패:', error);

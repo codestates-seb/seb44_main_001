@@ -20,7 +20,7 @@ export const postLike = async (url: string, data: likeType) => {
       localStorage.setItem('Authorization', res.headers.authorization);
     }
 
-    return res.data;
+    return res.data.likeCount;
   } catch (err) {
     console.log(err);
   }
