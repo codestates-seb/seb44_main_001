@@ -16,7 +16,6 @@ export const chatRoomInfoSlice = createSlice({
   initialState: initialState,
   reducers: {
     setChatRoomInfo: (_state, action) => {
-      console.log(action.payload); //! 배포 시 삭제
       return {
         roomName: action.payload.roomName,
         roomId: action.payload.roomId,

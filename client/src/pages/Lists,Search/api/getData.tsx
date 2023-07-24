@@ -15,9 +15,7 @@ export const getData = async (
       page: pageParam,
       pageSize: 9,
     },
-    headers: {
-      'ngrok-skip-browser-warning': '69420',
-    },
+    headers: {},
   });
   return res.data;
 };

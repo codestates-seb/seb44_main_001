@@ -28,11 +28,10 @@ export default function Login() {
   const navigation = useNavigate();
 
   const data: LoginData = useSelector((state: RootState) => state.login);
-  
+
   const loginMutation = useMutation<void, AxiosError, LoginData>(
     async () => {
       const result = await loginData(`${BASE_URL}/auth/login`, data);
-      console.log(result);
       localStorage.setItem('Authorization', result.accessToken);
       localStorage.setItem('MemberId', result.memberId);
       localStorage.setItem('RefreshToken', result.refreshToken);
@@ -41,8 +40,6 @@ export default function Login() {
       onSuccess: () => {
         const storedToken = localStorage.getItem('Authorization');
         const storedMemberId = localStorage.getItem('MemberId');
-        console.log('storedToken: ', storedToken);
-        console.log('storedMemberId: ', storedMemberId);
 
         if (!!storedToken && !!storedMemberId) {
           const memberId = parseInt(storedMemberId, 10);
@@ -56,9 +53,6 @@ export default function Login() {
 
           fetchUser.mutate(memberId, {
             // 이 부분을 추가하세요.
-            onSuccess: () => {
-              console.log('UserData fetched successfully');
-            },
             onError: () => {
               console.log('An error occurred while fetching UserData');
             },
@@ -72,12 +66,12 @@ export default function Login() {
         }
       },
       onError: (error) => {
-        if (error.response?.status === 401){
-          alert("아이디 또는 비밀번호를 확인해주세요");
-        }else{
-          alert("서버연결중 에러가 발생했습니다.")
+        if (error.response?.status === 401) {
+          alert('아이디 또는 비밀번호를 확인해주세요');
+        } else {
+          alert('서버연결중 에러가 발생했습니다.');
         }
-      }
+      },
     },
   );
 
@@ -95,7 +89,6 @@ export default function Login() {
     async (memberId: number) => {
       const userData = await MyData(`${BASE_URL}/members/${memberId}`);
       dispatch(setMyData(userData));
-      console.log(`fetch User!!! : `, userData);
     },
   );
 

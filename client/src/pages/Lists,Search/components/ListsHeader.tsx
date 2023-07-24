@@ -125,9 +125,9 @@ export const Wrapper = styled.div`
       margin-right: 0;
     }
     select {
-    width: 10.5rem;
-    margin-right: 1rem;
-  }
+      width: 10.5rem;
+      margin-right: 1rem;
+    }
   }
 
   //카드3개

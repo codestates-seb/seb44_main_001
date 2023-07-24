@@ -49,13 +49,12 @@ export default function Form() {
 
   useEffect(() => {
     dispatch(setCreatedPost({ ...data, memberId: memberId }));
-    if (!id) {
-      return () => {
-        dispatch(resetCreatedPost());
-        dispatch(setCategory({ categoryId: 0, name: '' }));
-        dispatch(setLocation({ locationId: 0, city: '', province: '' }));
-      };
-    }
+
+    return () => {
+      dispatch(resetCreatedPost());
+      dispatch(setCategory({ categoryId: 0, name: '' }));
+      dispatch(setLocation({ locationId: 0, city: '', province: '' }));
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -117,7 +116,7 @@ export default function Form() {
           placeholder={TITLE_INPUT_PLACEHOLDER}
           onChange={handleTitleChange}
           maxLength={20}
-          defaultValue={data.title}
+          value={data.title}
         />
       </TitleSection>
       <label htmlFor="location">{LOCATION}</label>

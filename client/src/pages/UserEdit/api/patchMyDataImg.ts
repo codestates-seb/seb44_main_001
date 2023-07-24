@@ -18,7 +18,6 @@ export const patchMyDataImg = async (url: string, data: EditMember) => {
 
   const headers = {
     Authorization: token,
-    'ngrok-skip-browser-warning': '69420',
     'Content-Type': 'multipart/form-data',
   };
 

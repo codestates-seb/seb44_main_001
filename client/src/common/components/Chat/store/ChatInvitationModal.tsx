@@ -5,7 +5,6 @@ export const chatInvitationModalSlice = createSlice({
   initialState: false,
   reducers: {
     setChatInvitationModal: (_state, action) => {
-      console.log(action.payload); //! 배포 시 삭제
       return action.payload;
     },
   },

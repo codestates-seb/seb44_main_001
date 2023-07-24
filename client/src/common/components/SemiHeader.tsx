@@ -5,15 +5,20 @@ import friends from '../assets/logo/momofriends.svg';
 interface SemiHeaderProps {
   title: string;
   content: string;
+  children?: React.ReactNode;
 }
 
-export default function SemiHeader({ title, content }: SemiHeaderProps) {
+export default function SemiHeader({
+  title,
+  content,
+  children,
+}: SemiHeaderProps) {
   return (
     <SemiContainer>
       {/* <div style={{ height: '400px' }}></div> */}
       <div>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <Title>{title}</Title>
+          <Title>{children ? children : title}</Title>
           <Content>{content}</Content>
         </div>
       </div>

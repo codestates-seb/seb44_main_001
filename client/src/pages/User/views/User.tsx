@@ -44,7 +44,6 @@ export default function User() {
     {
       onSuccess: (data) => {
         dispatch(setUserData(data));
-        console.log(`fetch User!!! : `, data);
       },
       onError: () => {
         alert('존재하지 않는 회원입니다!');
@@ -61,9 +60,6 @@ export default function User() {
     if (memberId) {
       const numberId = parseInt(memberId, 10);
       fetchUser.mutate(numberId, {
-        onSuccess: () => {
-          console.log('UserProfile fetched successfully');
-        },
         onError: () => {
           console.log('An error occurred while fetching UserProfile');
         },
@@ -120,7 +116,11 @@ export default function User() {
           <p>로드 중...</p>
         )}
       </div>
-      <UserPostsCards memberId={memberId} nickname={data.nickname} isMine={isMine} />
+      <UserPostsCards
+        memberId={memberId}
+        nickname={data.nickname}
+        isMine={isMine}
+      />
     </main>
   );
 }

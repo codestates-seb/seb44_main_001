@@ -15,11 +15,8 @@ export default function OauthCallback() {
       localStorage.setItem('Authorization', `Bearer ${token}`);
       localStorage.setItem('memberId', memberId);
 
-      console.log('오예스 성공!!!!!!!!!!!!!');
-
       navigation('/oauth-signup');
     } else {
-      console.log('오예스 실패! err!');
       navigation('/err');
     }
   }, [navigation]);

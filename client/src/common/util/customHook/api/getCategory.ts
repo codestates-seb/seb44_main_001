@@ -2,10 +2,20 @@ import axios from 'axios';
 
 export default async function getCategory(url: string) {
   try {
-    const headers = { 'ngrok-skip-browser-warning': '69420' };
+    const accessToken = localStorage.getItem('Authorization');
+    const refreshToken = localStorage.getItem('RefreshToken');
+
+    const headers = {
+      Authorization: accessToken,
+      Refresh: refreshToken,
+    };
 
     const res = await axios.get(url, { headers });
-    console.log(res);
+
+    if (res.headers.authorization) {
+      localStorage.setItem('Authorization', res.headers.authorization);
+    }
+
     return res.data;
   } catch (err) {
     console.log(err);
