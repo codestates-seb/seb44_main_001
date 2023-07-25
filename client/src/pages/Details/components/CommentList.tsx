@@ -258,7 +258,7 @@ export default function CommentList() {
 
 const Container = styled.section`
   color: var(--color-black);
-  margin-bottom: 2rem;
+  margin-bottom: 5rem;
 
   > :first-child {
     margin-bottom: 1rem;
