@@ -295,7 +295,7 @@ const ModalWrapper = styled.div`
 
 const ContentSection = styled.section`
   margin-bottom: 2rem;
-  min-height: 20rem;
+  min-height: 10rem;
   line-height: 1.5;
 `;
 
