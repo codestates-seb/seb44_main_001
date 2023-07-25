@@ -6,16 +6,18 @@ import { RootState } from '../../../store/RootStore';
 import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { FiSend } from 'react-icons/fi';
 import { BASE_URL } from '../../../util/constantValue';
-import { PrevChatData, PostChat, ChatData } from '../../../type';
+import { PrevChatData, PostChat, ChatData, RoomMember } from '../../../type';
 import { useMutation, useQuery } from 'react-query';
 import getPrevChat from '../api/getPrevChat';
 import postChat from '../api/postChat';
 import postOffline from '../api/postOffline';
 import { calculateTimeDifference } from '../../../util/timeDifferenceCalculator';
-import { BsPersonPlusFill } from 'react-icons/bs';
+import { BsFillPersonFill, BsPersonPlusFill } from 'react-icons/bs';
 import ChatInvitationModal from './ChatInvitationModal';
 import { setChatInvitationModal } from '../store/ChatInvitationModal';
 import { CgCloseR } from 'react-icons/cg';
+import getRoomMember from '../api/getRoomMember';
+import RoomMemberModal from './RoomMemberModal';
 
 export default function ChatRoom({
   messages,
@@ -30,7 +32,9 @@ export default function ChatRoom({
 
   const [prevChat, setPrevChat] = useState<ChatData[] | []>([]);
 
-  const [chatInputDisabled, setChatInputDisabled] = useState(false);
+  const [chatInputDisabled, setChatInputDisabled] = useState(true);
+
+  const [roomMemberMoalIsOpen, setRoomMemberModalIsOpen] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -69,6 +73,14 @@ export default function ChatRoom({
     },
   );
 
+  const { data: roomMember } = useQuery<RoomMember[], unknown>(
+    'roomMember',
+    () => getRoomMember(`${BASE_URL}/rooms/${roomId}/members`),
+    {
+      enabled: roomId !== 0 && roomId !== undefined,
+    },
+  );
+
   const postMutation = useMutation<void, unknown, PostChat>('postChat', () =>
     postChat(`${BASE_URL}/chats`, myChat),
   );
@@ -82,6 +94,7 @@ export default function ChatRoom({
     return () => {
       setMessages([]);
       setPrevChat([]);
+      setChatInputDisabled(true);
       if (roomId) {
         postOfflineMutation.mutate(roomId);
       }
@@ -123,6 +136,10 @@ export default function ChatRoom({
     dispatch(setChatInvitationModal(true));
   };
 
+  const handleRoomMemberModal = () => {
+    setRoomMemberModalIsOpen(true);
+  };
+
   return (
     roomId !== 0 && (
       <Container>
@@ -136,9 +153,13 @@ export default function ChatRoom({
                 ? `${roomName} 님과의 채팅방`.slice(0, 20)
                 : `${roomName} 님과의 채팅방`}
             </h1>
+            <div onClick={handleRoomMemberModal}>
+              <BsFillPersonFill size={20} />
+              <div>{roomMember?.length}</div>
+            </div>
           </div>
           <div>
-            {roomType === 'GROUP' && (
+            {roomMember && roomType === 'GROUP' && roomMember?.length < 11 && (
               <BsPersonPlusFill size={24} onClick={handleInvitation} />
             )}
             <CgCloseR size={24} onClick={handleModalClose} />
@@ -224,7 +245,15 @@ export default function ChatRoom({
           />
           <FiSend onClick={handleSend} size={20} />
         </ChatInputSection>
-        <ChatInvitationModal roomId={roomId} />
+        <ChatInvitationModal
+          roomId={roomId}
+          roomMember={roomMember as RoomMember[]}
+        />
+        <RoomMemberModal
+          roomMember={roomMember as RoomMember[]}
+          roomMemberMoalIsOpen={roomMemberMoalIsOpen}
+          setRoomMemberModalIsOpen={setRoomMemberModalIsOpen}
+        />
       </Container>
     )
   );
@@ -267,9 +296,23 @@ const ChatHeader = styled.section`
     }
 
     > h1 {
-      margin-left: 0.5rem;
+      margin: 0 0.5rem;
       font-size: var(--font-size-s);
       color: var(--color-black) !important;
+    }
+
+    > :nth-child(3) {
+      display: flex;
+      justify-content: center;
+      align-items: end;
+      background: var(--color-gray);
+      padding: 0.2rem;
+      border-radius: 5px;
+      cursor: pointer;
+
+      > :first-child {
+        margin-right: 0.2rem;
+      }
     }
   }
 

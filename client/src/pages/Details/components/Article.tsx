@@ -36,6 +36,8 @@ export default function Article({ data }: { data?: ArticleToGet }) {
 
   const memberId = Number(localStorage.getItem('MemberId'));
 
+  const token = localStorage.getItem('Authorization');
+
   const { id } = useParams();
 
   const dispatch = useDispatch();
@@ -124,7 +126,9 @@ export default function Article({ data }: { data?: ArticleToGet }) {
   };
 
   const handleModalOpen = () => {
-    setIsUserModalOpen(true);
+    if (token) {
+      setIsUserModalOpen(true);
+    }
   };
 
   const handleModalClose = () => {
@@ -295,8 +299,9 @@ const ModalWrapper = styled.div`
 
 const ContentSection = styled.section`
   margin-bottom: 2rem;
-  min-height: 20rem;
+  min-height: 10rem;
   line-height: 1.5;
+  font-size: 1.125rem;
 `;
 
 const TagSection = styled.section`

@@ -57,11 +57,13 @@ export default function CreateRoomModal({
   const handleSubmit = () => {
     if (roomName.length > 0) {
       postMutation.mutate();
+    } else {
+      alert('채팅방 이름을 입력해주세요!');
     }
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter' && roomName.length) {
+    if (event.key === 'Enter' && roomName.length > 0) {
       event.preventDefault();
       handleSubmit();
     }

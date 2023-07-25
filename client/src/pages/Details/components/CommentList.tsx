@@ -41,6 +41,8 @@ export default function CommentList() {
 
   const memberId = Number(localStorage.getItem('MemberId'));
 
+  const token = localStorage.getItem('Authorization');
+
   const [editedComment, setEditedComment] = useState({
     memberId: memberId,
     content: '',
@@ -131,7 +133,9 @@ export default function CommentList() {
   };
 
   const handleModalOpen = (commentId: number) => {
-    setCurrentModal(commentId);
+    if (token) {
+      setCurrentModal(commentId);
+    }
   };
 
   const handleModalClose = () => {
@@ -258,7 +262,7 @@ export default function CommentList() {
 
 const Container = styled.section`
   color: var(--color-black);
-  margin-bottom: 2rem;
+  margin-bottom: 5rem;
 
   > :first-child {
     margin-bottom: 1rem;

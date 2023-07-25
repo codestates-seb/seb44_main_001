@@ -147,7 +147,7 @@ export type MemberPatchDto = {
 };
 
 export type SignupPatchData = {
-  locationId: number;
+  location: number;
   welcomeMsg: string;
   nickname: string;
   isMale: boolean;
@@ -208,5 +208,11 @@ export type NewRoom = {
 export type Nickname = {
   memberId: number;
   nickname: string;
-  profileImage: string;
+  image: string;
+};
+
+export type RoomMember = {
+  memberId: number;
+  nickname: string;
+  image: string;
 };
