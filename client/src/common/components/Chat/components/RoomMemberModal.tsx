@@ -29,9 +29,7 @@ export default function RoomMemberModal({
             return (
               <div key={roomMember.memberId}>
                 <img
-                  src={
-                    roomMember.profileImage ? roomMember.profileImage : profile
-                  }
+                  src={roomMember.image ? roomMember.image : profile}
                   alt={roomMember.nickname}
                 />
                 <div>{roomMember.nickname}</div>
@@ -59,6 +57,9 @@ const RoomMembers = styled.div`
 
     > img {
       height: 2rem;
+      width: 2rem;
+      object-fit: cover;
+      border-radius: 50%;
       margin-right: 0.5rem;
     }
   }

@@ -214,5 +214,5 @@ export type Nickname = {
 export type RoomMember = {
   memberId: number;
   nickname: string;
-  profileImage: string;
+  image: string;
 };
