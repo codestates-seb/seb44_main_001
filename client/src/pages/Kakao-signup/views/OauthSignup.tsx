@@ -31,7 +31,7 @@ export default function OauthSignup() {
   const [welcomeMsg, setWelcomeMsg] = useState('');
 
   // const myData = useSelector((state: RootState) => state.authSignup);
-  const myToken = useSelector((state: RootState) => state.token);
+  // const myToken = useSelector((state: RootState) => state.token);
   const queryClient = useQueryClient();
 
   const dispatch = useDispatch();
@@ -86,14 +86,14 @@ export default function OauthSignup() {
   const patchInfoMutation: UseMutationResult<void, AxiosError, MemberPatchDto> =
     useMutation(
       (memberPatchDto) => {
-        const memberId = localStorage.getItem('memberId');
+        const memberId = localStorage.getItem('MemberId');
         const url = `${BASE_URL}/members/${memberId}`;
         return patchMyData(url, memberPatchDto);
       },
       {
         onSuccess: () => {
           queryClient.invalidateQueries('userInfo');
-          navigation(`/user/${myToken.memberId}`);
+          navigation('/lists');
         },
         onError: (error) => {
           if (error.response?.status === 500) {
@@ -106,7 +106,7 @@ export default function OauthSignup() {
     );
 
   const handleSignup = () => {
-    const memberId = localStorage.getItem('memberId');
+    const memberId = localStorage.getItem('MemberId');
     const token = localStorage.getItem('Authorization');
     if (localStorage.getItem('MemberId')) {
       dispatch(setTokenData({ token: `Bearer ${token}`, memberId: memberId }));
