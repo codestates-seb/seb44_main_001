@@ -9,11 +9,17 @@ import getUserNickname from '../api/getUserNickname';
 import { BASE_URL } from '../../../util/constantValue';
 import { ChangeEvent, useState } from 'react';
 import profile from '../../../../common/assets/profile.svg';
-import { Nickname } from '../../../type';
+import { Nickname, RoomMember } from '../../../type';
 import postInvitation from '../api/postInvitation';
 import Button from '../../Button';
 
-export default function ChatInvitationModal({ roomId }: { roomId: number }) {
+export default function ChatInvitationModal({
+  roomId,
+  roomMember,
+}: {
+  roomId: number;
+  roomMember: RoomMember[];
+}) {
   const [searchItem, setSearchItem] = useState('');
 
   const [nicknames, setNicknames] = useState<Nickname[] | []>([]);
@@ -52,8 +58,15 @@ export default function ChatInvitationModal({ roomId }: { roomId: number }) {
     }
   };
 
-  const handleInvite = (memberId: number) => {
-    inviteMutation.mutate(memberId);
+  const handleInvite = (nickname: Nickname) => {
+    const isInvited = roomMember.some(
+      (member) => member.nickname === nickname.nickname,
+    );
+    if (!isInvited) {
+      inviteMutation.mutate(nickname.memberId);
+    } else {
+      alert('이미 초대된 유저입니다.');
+    }
   };
 
   return (
@@ -76,7 +89,7 @@ export default function ChatInvitationModal({ roomId }: { roomId: number }) {
               nicknames.map((nickname) => (
                 <div
                   key={nickname.memberId}
-                  onClick={() => handleInvite(nickname.memberId)}
+                  onClick={() => handleInvite(nickname)}
                 >
                   <img
                     src={

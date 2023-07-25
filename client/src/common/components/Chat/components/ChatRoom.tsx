@@ -161,7 +161,7 @@ export default function ChatRoom({
             </div>
           </div>
           <div>
-            {roomType === 'GROUP' && (
+            {roomMember && roomType === 'GROUP' && roomMember?.length < 11 && (
               <BsPersonPlusFill size={24} onClick={handleInvitation} />
             )}
             <CgCloseR size={24} onClick={handleModalClose} />
@@ -247,7 +247,10 @@ export default function ChatRoom({
           />
           <FiSend onClick={handleSend} size={20} />
         </ChatInputSection>
-        <ChatInvitationModal roomId={roomId} />
+        <ChatInvitationModal
+          roomId={roomId}
+          roomMember={roomMember as RoomMember[]}
+        />
         <RoomMemberModal
           roomMember={roomMember as RoomMember[]}
           roomMemberMoalIsOpen={roomMemberMoalIsOpen}
@@ -308,6 +311,10 @@ const ChatHeader = styled.section`
       padding: 0.2rem;
       border-radius: 5px;
       cursor: pointer;
+
+      > :first-child {
+        margin-right: 0.2rem;
+      }
     }
   }
 
