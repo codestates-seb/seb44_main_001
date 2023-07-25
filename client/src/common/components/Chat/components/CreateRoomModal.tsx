@@ -57,6 +57,8 @@ export default function CreateRoomModal({
   const handleSubmit = () => {
     if (roomName.length > 0) {
       postMutation.mutate();
+    } else {
+      alert('채팅방 이름을 입력해주세요!');
     }
   };
 
