@@ -224,10 +224,6 @@ const MenuContainer = styled.div`
   display: flex;
   align-items: center;
 `;
-const Logo = styled.div`
-  position: relative;
-  display: inline-block;
-`;
 
 const tadaAnimation = keyframes`
   0%, 100% {
@@ -267,7 +263,14 @@ const HoverImage = styled.img`
   top: 0;
   left: 100%;
   opacity: 0;
-  ${Logo}:hover & {
+  cursor: default;
+`;
+
+const Logo = styled.div`
+  position: relative;
+  display: inline-block;
+
+  img:first-child:hover + ${HoverImage} {
     opacity: 1;
     animation: ${tadaAnimation} 1.5s ease-in-out;
   }
