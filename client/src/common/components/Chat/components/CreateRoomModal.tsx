@@ -61,7 +61,7 @@ export default function CreateRoomModal({
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter' && roomName.length) {
+    if (event.key === 'Enter' && roomName.length > 0) {
       event.preventDefault();
       handleSubmit();
     }
