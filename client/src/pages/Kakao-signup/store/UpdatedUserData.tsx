@@ -1,7 +1,7 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  location: 0,
+  locationId: 0,
   welcomeMsg: '',
   nickname: '',
   isMale: true,

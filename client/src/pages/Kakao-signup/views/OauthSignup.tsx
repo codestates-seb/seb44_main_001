@@ -83,27 +83,30 @@ export default function OauthSignup() {
     dispatch(setMyData({ ...patchData, welcomeMsg: e.target.value }));
   };
 
-  const patchInfoMutation: UseMutationResult<void, AxiosError, MemberPatchDto> =
-    useMutation(
-      (memberPatchDto) => {
-        const memberId = localStorage.getItem('MemberId');
-        const url = `${BASE_URL}/members/${memberId}`;
-        return patchMyData(url, memberPatchDto);
+  const patchInfoMutation: UseMutationResult<
+    void,
+    AxiosError,
+    MemberPatchDto | SignupPatchData
+  > = useMutation(
+    (memberPatchDto) => {
+      const memberId = localStorage.getItem('MemberId');
+      const url = `${BASE_URL}/members/${memberId}`;
+      return patchMyData(url, memberPatchDto as MemberPatchDto);
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('userInfo');
+        navigation('/lists');
       },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries('userInfo');
-          navigation('/lists');
-        },
-        onError: (error) => {
-          if (error.response?.status === 500) {
-            console.log('오예스에서 500이 떴답니다~~~!!!!!!!~');
-          } else {
-            console.error(error);
-          }
-        },
+      onError: (error) => {
+        if (error.response?.status === 500) {
+          console.log('오예스에서 500이 떴답니다~~~!!!!!!!~');
+        } else {
+          console.error(error);
+        }
       },
-    );
+    },
+  );
 
   const handleSignup = () => {
     const memberId = localStorage.getItem('MemberId');
