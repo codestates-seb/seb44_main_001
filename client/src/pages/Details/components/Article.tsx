@@ -297,6 +297,7 @@ const ContentSection = styled.section`
   margin-bottom: 2rem;
   min-height: 10rem;
   line-height: 1.5;
+  font-size: 1.125rem;
 `;
 
 const TagSection = styled.section`
