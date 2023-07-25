@@ -23,9 +23,6 @@ import { postLogout } from '../util/customHook/api/postLogout';
 import { setChatModal } from '../store/ChatModalStore';
 import { useMutation } from 'react-query';
 import { resetCreatedPost } from '../../pages/Write,Edit/store/CreatedPost';
-import { setSelectedCategory } from '../../pages/Lists,Search/store/SelectedCategory';
-import { setSelectedLocation } from '../../pages/Lists,Search/store/SelectedLocation';
-
 Modal.setAppElement('#root');
 
 export default function Header() {
@@ -86,18 +83,6 @@ export default function Header() {
     <Head>
       <Link
         to="/lists"
-        onClick={() => {
-          dispatch(
-            setSelectedLocation({
-              locationId: 1,
-              city: myData.location.city,
-              province: myData.location.province,
-            }),
-          );
-          dispatch(setSelectedCategory({ categoryId: 1, name: '전체' }));
-          localStorage.removeItem('selectedLocation');
-          navigate('/lists');
-        }}
       >
         <Logo>
           <img src={logo} alt="로고이미지" style={{ height: '39px' }} />

@@ -216,3 +216,9 @@ export type RoomMember = {
   nickname: string;
   image: string;
 };
+
+export type TokenType = {
+  accessToken: string;
+  refreshToken: string;
+  memberId: string;
+};

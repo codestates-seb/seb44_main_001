@@ -21,6 +21,7 @@ export default function App() {
 
   useQuery<void, AxiosError, number>(
     'userInfo',
+    // 요청 url /members/userInfo 로 바뀔예정
     () => MyData(`${BASE_URL}/members/${memberId}`),
     {
       enabled: !!token,

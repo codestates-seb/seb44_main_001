@@ -15,6 +15,7 @@ import getMember from '../api/getMember';
 import { PiMapPinBold } from 'react-icons/pi';
 import { setUserData } from '../store/MemberStore';
 import UserPostsCards from '../components/userPostsCards';
+import { ALERTLOGIN } from '../../../common/util/constantValue';
 
 export default function User() {
   const navigate = useNavigate();
@@ -57,6 +58,11 @@ export default function User() {
       top: 0,
       behavior: 'smooth',
     });
+    if (!token) {
+      alert(ALERTLOGIN);
+      navigate(-1);
+      return;
+    }
     if (memberId) {
       const numberId = parseInt(memberId, 10);
       fetchUser.mutate(numberId, {
