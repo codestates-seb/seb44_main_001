@@ -81,8 +81,6 @@ export default function ChatRoom({
     },
   );
 
-  console.log(roomMember);
-
   const postMutation = useMutation<void, unknown, PostChat>('postChat', () =>
     postChat(`${BASE_URL}/chats`, myChat),
   );

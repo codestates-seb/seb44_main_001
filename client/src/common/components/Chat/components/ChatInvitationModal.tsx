@@ -4,7 +4,7 @@ import { RootState } from '../../../store/RootStore';
 import { setChatInvitationModal } from '../store/ChatInvitationModal';
 import { chatInvitationModalStyle } from '../chatInvitationModalStyle';
 import { styled } from 'styled-components';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import getUserNickname from '../api/getUserNickname';
 import { BASE_URL } from '../../../util/constantValue';
 import { ChangeEvent, useState } from 'react';
@@ -28,12 +28,18 @@ export default function ChatInvitationModal({
 
   const isOpen = useSelector((state: RootState) => state.chatInvitationModal);
 
+  const queryClient = useQueryClient();
+
   useQuery(
     ['nickname', searchItem],
     () => getUserNickname(`${BASE_URL}/members/search?nickname=${searchItem}`),
     {
       enabled: isOpen && searchItem.length !== 0,
-      onSuccess: (data) => setNicknames(data),
+      onSuccess: (data) => {
+        setNicknames(data);
+        queryClient.invalidateQueries('roomMember');
+        console.log(data);
+      },
     },
   );
 
@@ -58,7 +64,7 @@ export default function ChatInvitationModal({
     }
   };
 
-  const handleInvite = (nickname: Nickname) => {
+  const handleInvite = async (nickname: Nickname) => {
     const isInvited = roomMember.some(
       (member) => member.nickname === nickname.nickname,
     );
@@ -92,9 +98,7 @@ export default function ChatInvitationModal({
                   onClick={() => handleInvite(nickname)}
                 >
                   <img
-                    src={
-                      nickname.profileImage ? nickname.profileImage : profile
-                    }
+                    src={nickname.image ? nickname.image : profile}
                     alt={nickname.nickname}
                   />
                   <div>{nickname.nickname}</div>
@@ -137,6 +141,9 @@ const Nicknames = styled.div`
 
       > img {
         height: 2rem;
+        width: 2rem;
+        object-fit: cover;
+        border-radius: 50%;
         margin-right: 0.5rem;
       }
     }
