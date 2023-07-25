@@ -43,3 +43,5 @@ export const SEND_CHAT = '채팅 보내기';
 export const VIEW_PROFILE = '프로필 보기';
 
 export const INVITE = '초대하기';
+
+export const ALERTLOGIN = '로그인이 필요한 서비스입니다.'

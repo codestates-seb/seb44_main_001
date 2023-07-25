@@ -22,6 +22,7 @@ import { useEffect } from 'react';
 import { calculateTimeDifference } from '../../../common/util/timeDifferenceCalculator';
 import { postLike } from '../api/postLike';
 import { deleteLike } from '../api/deleteLike';
+import { ALERTLOGIN } from '../../../common/util/constantValue';
 
 export default function Article({ data }: { data?: ArticleToGet }) {
   const [isLiked, setIsLiked] = useState(false);
@@ -133,7 +134,7 @@ export default function Article({ data }: { data?: ArticleToGet }) {
 
   const handleClickLike = () => {
     if (!memberId) {
-      alert('로그인이 필요한 서비스입니다!');
+      alert(ALERTLOGIN);
       return;
     } else if (isLiked) {
       deleteLikeMutation.mutate();
