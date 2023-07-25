@@ -7,7 +7,7 @@ import { Layout } from '../../../common/style';
 import SemiHeader from '../../../common/components/SemiHeader';
 import { Background, Text, TextInput } from '../../Signup/views/Signup';
 import { RootState } from '../../../common/store/RootStore';
-import { LoginData } from '../../../common/type';
+import { LoginData, TokenType } from '../../../common/type';
 import loginData from '../api/postLogin';
 import { AxiosError } from 'axios';
 import { setLoginUser } from '../store/LoginUser';
@@ -34,28 +34,28 @@ export default function Login() {
 
   const data: LoginData = useSelector((state: RootState) => state.login);
 
-  const loginMutation = useMutation<void, AxiosError, LoginData>(
-    async () => {
-      const result = await loginData(`${BASE_URL}/auth/login`, data);
-      localStorage.setItem('Authorization', result.accessToken);
-      localStorage.setItem('MemberId', result.memberId);
-      localStorage.setItem('RefreshToken', result.refreshToken);
+  const loginMutation = useMutation<TokenType, AxiosError, LoginData>(
+    () => {
+      return loginData(`${BASE_URL}/auth/login`, data);
     },
     {
-      onSuccess: () => {
+      onSuccess: (result: TokenType) => {
+        localStorage.setItem('Authorization', result.accessToken);
+        localStorage.setItem('RefreshToken', result.refreshToken);
+        localStorage.setItem('MemberId', result.memberId);
+
         const storedToken = localStorage.getItem('Authorization');
-        const storedMemberId = localStorage.getItem('MemberId');
+        const storedMemberId = Number(result.memberId);
 
         if (!!storedToken && !!storedMemberId) {
-          const memberId = parseInt(storedMemberId, 10);
-          // fetchUser.mutate(memberId);
+          const memberId = storedMemberId;
           dispatch(
             setTokenData({
               token: storedToken,
               memberId: memberId,
             }),
           );
-
+          console.log('dddd', memberId);
           fetchUser.mutate(memberId, {
             // 이 부분을 추가하세요.
             onError: () => {
@@ -63,7 +63,6 @@ export default function Login() {
             },
           });
 
-          // navigation(`/user/${memberId}`, { state: memberId });
           navigation('/lists');
         } else {
           // 토큰과 memberId 가져오기 실패
@@ -92,7 +91,9 @@ export default function Login() {
 
   const fetchUser = useMutation<void, unknown, number>(
     async (memberId: number) => {
+      // 요청 url /members/userInfo 로 바뀔예정
       const userData = await MyData(`${BASE_URL}/members/${memberId}`);
+      console.log(userData);
       dispatch(setMyData(userData));
     },
   );
@@ -148,7 +149,7 @@ export default function Login() {
                   type="password"
                   onChange={handlePasswordChange}
                   $isValidate={true}
-                  autocomplete="current-password"
+                  autoComplete="current-password"
                 />
               </InputBox>
               <div style={{ padding: '10px' }}></div>
