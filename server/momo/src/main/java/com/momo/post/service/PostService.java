@@ -58,6 +58,8 @@ public class PostService {
                 .city(post.getLocation().getCity())
                 .province(post.getLocation().getProvince())
                 .build());
+        responseDto.setImageUrl(post.getImageUrl());
+
         return responseDto;
     }
 
@@ -486,6 +488,9 @@ public class PostService {
             // 댓글 수
             Long commentCount = post.getCommentCount();
 
+            // 이미지 URL
+            String imageUrl = post.getImageUrl();
+
             PostResponseDto postResponseDto = new PostResponseDto(
                     post.getPostId(),
                     post.getTitle(),
@@ -498,7 +503,8 @@ public class PostService {
                     tags,
                     isLiked,
                     postLikeCount,
-                    commentCount
+                    commentCount,
+                    imageUrl // 이미지 URL 추가
             );
 
             postResponseDtos.add(postResponseDto);
@@ -506,4 +512,5 @@ public class PostService {
 
         return postResponseDtos;
     }
+
 }

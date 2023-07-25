@@ -16,5 +16,5 @@ public class PostPostDto {
     private Long categoryId;
     private Long locationId;
     private List<String> tags;
-    //    private String imageUrl;
+    private String imageUrl;
 }

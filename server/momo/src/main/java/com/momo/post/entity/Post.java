@@ -30,6 +30,7 @@ public class Post extends BaseEntity {
     private List<String> tags;
     private boolean isLiked;
     private Long postLikeCount;
+    private String imageUrl;
 
 
     private LocalDateTime createdAt;
