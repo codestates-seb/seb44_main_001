@@ -135,9 +135,13 @@ export default function ChatModal() {
     <Container>
       <button
         onClick={isOpen ? handleModalClose : handleModalOpen}
-        className={isDataDifferent ? 'on' : ''}
+        className={isDataDifferent ? 'colorOn' : ''}
       >
-        <AiFillWechat size={48} color={'var(--color-white)'} />
+        <AiFillWechat
+          size={48}
+          color={'var(--color-white)'}
+          className={isDataDifferent ? 'pulseOn' : ''}
+        />
       </button>
       <Modal
         isOpen={isOpen}
@@ -192,7 +196,7 @@ const Container = styled.section`
       var(--color-pink-2)
     );
 
-    > svg {
+    > .pulseOn {
       animation: ${pulseAnimation} 1s ease-in-out infinite;
       border-radius: 50%;
     }
@@ -206,7 +210,7 @@ const Container = styled.section`
     }
   }
 
-  .on {
+  .colorOn {
     animation: colorChange 1s infinite;
   }
 `;
