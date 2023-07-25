@@ -190,11 +190,7 @@ const Container = styled.section`
     width: 5rem;
     border-radius: 50%;
     cursor: pointer;
-    background: linear-gradient(
-      90deg,
-      var(--color-pink-1),
-      var(--color-pink-2)
-    );
+    background: linear-gradient(90deg, var(--color-pink-1), #ff7787);
 
     > .pulseOn {
       animation: ${pulseAnimation} 1s ease-in-out infinite;
