@@ -125,5 +125,12 @@ public class JwtTokenizer {
         return encodeBase64SecretKey(secretKey);
     }
 
+    /* 토큰 멤버 아이디 추출 */
+    public Integer getMemberIdFromToken(String accessToken) {
+        Jws<Claims> claimsJws = getClaims(accessToken, getBase64EncodedSecretKey());
+        Claims claims = claimsJws.getBody();
+        return (Integer) claims.get("memberId");
+
+    }
 
 }
