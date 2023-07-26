@@ -42,31 +42,17 @@ export default function Login() {
       onSuccess: (result: TokenType) => {
         localStorage.setItem('Authorization', result.accessToken);
         localStorage.setItem('RefreshToken', result.refreshToken);
-        localStorage.setItem('MemberId', result.memberId);
 
         const storedToken = localStorage.getItem('Authorization');
-        const storedMemberId = Number(result.memberId);
 
-        if (!!storedToken && !!storedMemberId) {
-          const memberId = storedMemberId;
+        if (storedToken) {
           dispatch(
             setTokenData({
               token: storedToken,
-              memberId: memberId,
             }),
           );
-          console.log('dddd', memberId);
-          fetchUser.mutate(memberId, {
-            // 이 부분을 추가하세요.
-            onError: () => {
-              console.log('An error occurred while fetching UserData');
-            },
-          });
-
+          fetchUser.mutate();
           navigation('/lists');
-        } else {
-          // 토큰과 memberId 가져오기 실패
-          dispatch(setTokenData({ token: '', memberId: 0 }));
         }
       },
       onError: (error) => {
@@ -89,12 +75,14 @@ export default function Login() {
     dispatch(setLoginUser({ ...data, password: e.target.value }));
   };
 
-  const fetchUser = useMutation<void, unknown, number>(
-    async (memberId: number) => {
-      // 요청 url /members/userInfo 로 바뀔예정
-      const userData = await MyData(`${BASE_URL}/members/${memberId}`);
-      console.log(userData);
-      dispatch(setMyData(userData));
+  const fetchUser = useMutation<void, unknown>(
+    () => {
+      return MyData(`${BASE_URL}/members/userInfo`);
+    },
+    {
+      onSuccess: (userData) => {
+        dispatch(setMyData(userData));
+      },
     },
   );
 

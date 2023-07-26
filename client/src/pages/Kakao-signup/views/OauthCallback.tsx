@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-// import validateOauth from '../api/validateOauth';
 import { BASE_URL } from '../../../common/util/constantValue';
 
 export default function OauthCallback() {
@@ -8,18 +7,22 @@ export default function OauthCallback() {
 
   useEffect(() => {
     const params = new URL(window.location.href).searchParams;
-    // const params = new URL(document.location.toString()).searchParams;
+
     const token = params.get('access_token');
-    // const refreshToken = params.get('refreshToken');
+    const refreshToken = params.get('refresh_token');
     const memberId = params.get('member_id');
 
     if (token && memberId) {
       localStorage.setItem('Authorization', `Bearer ${token}`);
-      localStorage.setItem('MemberId', memberId);
+      localStorage.setItem('RefreshToken', `Bearer ${refreshToken}`)
+
+      const storedAccessToken = localStorage.getItem('Authorization');
+      const storedRefreshToken = localStorage.getItem('RefreshToken');
 
       fetch(`${BASE_URL}/members/${memberId}`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${storedAccessToken}`,
+          Refresh: `Bearer ${storedRefreshToken}`,
         },
       })
         .then((response) => {

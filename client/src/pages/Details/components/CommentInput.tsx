@@ -10,13 +10,15 @@ import { useMutation, useQueryClient } from 'react-query';
 import { CommentToPost } from '../../../common/type';
 import postComment from '../api/postComment';
 import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../common/store/RootStore';
 
 export default function CommentInput() {
   const [content, setContent] = useState('');
 
   const { id } = useParams();
 
-  const memberId = Number(localStorage.getItem('MemberId'));
+  const memberId = useSelector((state: RootState) => state.myData.memberId);
 
   const token = localStorage.getItem('Authorization');
 

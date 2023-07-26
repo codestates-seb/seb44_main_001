@@ -15,6 +15,7 @@ export default async function MyData(url: string) {
     if (res.headers.authorization) {
       localStorage.setItem('Authorization', res.headers.authorization);
     }
+
     return res.data;
   } catch (err) {
     console.log(err);

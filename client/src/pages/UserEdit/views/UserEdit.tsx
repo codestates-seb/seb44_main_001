@@ -34,20 +34,18 @@ export default function UserEdit() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // const user: Member = useSelector((state: RootState) => state.member);
   const myData = useSelector((state: RootState) => state.myData);
   const location = useSelector((state: RootState) => state.location);
+  
   const queryClient = useQueryClient();
+
   const [isOpen, setIsOpen] = useState(false);
   const [nickname, setNickname] = useState(myData.nickname);
   const [welcomeMsg, setWelcomeMsg] = useState(myData.welcomeMsg);
   const [uploadedImage, setUploadedImage] = useState<string>('');
-  const [uploadedFile, setUploadedFile] = useState<File | null | string>(null); // 파일 상태 변수 추가
+  const [uploadedFile, setUploadedFile] = useState<File | null | string>(null);
   const [isValidate, setIsValidate] = useState(true);
-  // const [editLocation,setEditLocation]= useSelector(myData.location);
-  // const [isSelected, setIsSelected] = useState(false);
-  // 전역 설정을 안한다면? 이거 지워도 되나??
-  // 왜 지역만 전역상태로 저장한걸 바꿔야하는가? 왜냐면 저 컴포넌트자체가 전역 상태로 관리되고 있기 때문에
+
   const handleModalChange = () => {
     setIsOpen(!isOpen);
   };
@@ -132,10 +130,6 @@ export default function UserEdit() {
       window.alert('지역을 선택해주세요!');
       return;
     }
-    if (!welcomeMsg) {
-      window.alert('내용을 입력해주세요!');
-      return;
-    }
     const editedInfo: EditMember = {
       memberPatchDto: {
         ...(myData.nickname === nickname ? {} : { nickname }),
@@ -216,7 +210,7 @@ export default function UserEdit() {
               style={ModalStyle}
               onRequestClose={handleModalChange}
             >
-              <ModalMain handleModalChange={handleModalChange} />
+              <ModalMain memberId={myData.memberId} handleModalChange={handleModalChange} />
             </Modal>
           </Background>
         </AllContainer>

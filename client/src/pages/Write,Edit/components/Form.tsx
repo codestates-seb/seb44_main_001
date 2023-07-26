@@ -33,7 +33,7 @@ export default function Form() {
 
   const { id } = useParams();
 
-  const memberId = Number(localStorage.getItem('MemberId'));
+  const memberId = useSelector((state: RootState) => state.myData.memberId);
 
   const data: ArticleToPost = useSelector(
     (state: RootState) => state.createdPost,

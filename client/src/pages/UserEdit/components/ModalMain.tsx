@@ -4,20 +4,25 @@ import { deleteMember } from '../api/deleteMember';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import { BASE_URL } from '../../../common/util/constantValue';
-import cryingMoMo2 from '../../../common/assets/images/cryingMomo2.svg'
+import cryingMoMo2 from '../../../common/assets/images/cryingMomo2.svg';
 
 type HandleModalChangeFunction = () => void;
 
-export default function ModalMain({handleModalChange}: { handleModalChange: HandleModalChangeFunction }) {
+export default function ModalMain({
+  handleModalChange,
+  memberId,
+}: {
+  handleModalChange: HandleModalChangeFunction;
+  memberId: number;
+}) {
   const navigate = useNavigate();
-
-  const memberId = localStorage.getItem('MemberId');
 
   const deleteMemberMutation = useMutation<void, unknown, void>(
     () => deleteMember(`${BASE_URL}/members/${memberId}`),
     {
       onSuccess: () => {
         localStorage.clear();
+        alert("회원 탈퇴 정상 처리 되었습니다. 감사합니다.")
         navigate('/');
       },
       onError: (error) => {
@@ -32,8 +37,8 @@ export default function ModalMain({handleModalChange}: { handleModalChange: Hand
 
   return (
     <Wrapper>
-      <div className='ask'>정말 탈퇴하시겠습니까?</div>
-      <img src={cryingMoMo2} alt='cryimg-momo'/>
+      <div className="ask">정말 탈퇴하시겠습니까?</div>
+      <img src={cryingMoMo2} alt="cryimg-momo" />
       <ButtonWrapper>
         <Button children={'회원탈퇴'} onClick={handleDeleteMember} />
         <Button children={'취소'} onClick={handleModalChange} />
@@ -47,8 +52,8 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
-  padding:3rem;
-  .ask{
+  padding: 3rem;
+  .ask {
     font-size: var(--font-size-l);
   }
 `;

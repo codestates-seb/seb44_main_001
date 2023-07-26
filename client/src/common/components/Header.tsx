@@ -31,7 +31,6 @@ export default function Header() {
   const myData = useSelector((state: RootState) => state.myData);
 
   const token = localStorage.getItem('Authorization');
-  const myId = localStorage.getItem('MemberId');
 
   const kakaoLink = `${BASE_URL}/oauth2/authorization/kakao`;
   const googleLink = `${BASE_URL}/oauth2/authorization/google`;
@@ -63,7 +62,7 @@ export default function Header() {
 
   const handleMyProfile = (e: React.MouseEvent) => {
     e.preventDefault();
-    navigate(`/user/${myId}`, { state: myId });
+    navigate(`/user/${myData.memberId}`, { state: myData.memberId });
   };
 
   const handleModalOpen = () => {
@@ -181,7 +180,7 @@ const Head = styled.header`
   padding: 10px 20px;
   background-color: white;
   color: var(--color-black);
-
+  border-bottom: 1px solid var(--color-gray);
   .margin-small {
     margin: 10px 0 10px 10px;
   }
