@@ -10,6 +10,10 @@ import Footer from './common/components/Footer';
 import { AxiosError } from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ChatModal from './common/components/Chat/views/ChatModal';
+import { Quill } from 'react-quill';
+import { ImageResize } from 'quill-image-resize-module-ts';
+
+Quill.register('modules/imageResize', ImageResize);
 
 export default function App() {
   const dispatch = useDispatch();
