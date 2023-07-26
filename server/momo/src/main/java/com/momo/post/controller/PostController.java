@@ -173,7 +173,7 @@ public class PostController {
     ) {
         postService.deletePost(postId, memberId);
     }
-    @PostMapping("/upload-image")
+    @PostMapping("/upload-imag")
     public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
         try {
 
