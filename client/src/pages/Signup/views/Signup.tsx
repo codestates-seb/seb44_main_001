@@ -26,7 +26,7 @@ interface TextInputProps {
   style?: React.CSSProperties;
   isDuplicateEmail?: boolean;
   isDuplicateNickname?: boolean;
-  autocomplete?:string;
+  autocomplete?: string;
 }
 
 interface TextAreaProps {
@@ -70,13 +70,13 @@ export default function Signup() {
         error.response?.status === 409 &&
         error.response?.data?.message === 'Member exists'
       ) {
-        alert('이메일이 이미 존재합니다.');
+        alert('입력하신 이메일이 이미 존재합니다.');
         setIsDuplicateEmail(true);
       } else if (
         error.response?.status === 409 &&
         error.response?.data?.message === 'Nickname Exist'
       ) {
-        alert('닉네임이 이미 존재합니다.');
+        alert('입력하신 닉네임이 이미 존재합니다.');
         setIsDuplicateNickname(true);
       }
       window.scrollTo({
@@ -145,10 +145,9 @@ export default function Signup() {
       password === '' ||
       nickname === '' ||
       age === null ||
-      isMale === null ||
-      welcomeMsg === ''
+      isMale === null
     ) {
-      alert('빈칸을 모두 채워주세요.');
+      alert('필수 항목을 모두 채워주세요.');
       window.scrollTo({
         top: 300,
         behavior: 'smooth',
@@ -167,7 +166,10 @@ export default function Signup() {
         <Background>
           <ContentWrapper>
             <InputBox>
-              <Text>이메일</Text>
+              <div style={{ fontSize: '13px', marginBottom: '10px' }}>
+                *가 붙은 항목은 필수 항목입니다.
+              </div>
+              <Text>이메일 *</Text>
               <TextInput
                 value={email}
                 style={{ width: '400px' }}
@@ -180,7 +182,7 @@ export default function Signup() {
               )}
             </InputBox>
             <InputBox>
-              <Text>비밀번호</Text>
+              <Text>비밀번호 *</Text>
               <TextInput
                 value={password}
                 type="password"
@@ -193,7 +195,7 @@ export default function Signup() {
               )}
             </InputBox>
             <InputBox>
-              <Text>닉네임</Text>
+              <Text>닉네임 *</Text>
               <TextInput
                 value={nickname}
                 onChange={handleNicknameChange}
@@ -202,7 +204,7 @@ export default function Signup() {
               />
             </InputBox>
             <InputBox>
-              <Text>출생년도</Text>
+              <Text>출생년도 *</Text>
               <DropdownInput
                 value={age === null ? '' : age}
                 onChange={handleBirthYearChange}
@@ -219,7 +221,7 @@ export default function Signup() {
               </DropdownInput>
             </InputBox>
             <InputBox>
-              <Text>성별</Text>
+              <Text>성별 *</Text>
               <div style={{ display: 'flex' }}>
                 <div style={{ marginTop: '10px', marginRight: '30px' }}>
                   <label htmlFor="male" style={{ fontSize: '15px' }}>
@@ -250,7 +252,7 @@ export default function Signup() {
               </div>
             </InputBox>
             <InputBox>
-              <Text>지역</Text>
+              <Text>지역 *</Text>
               <LocationSelector onLocationChange={onLocationChange} />
             </InputBox>
             <InputBox>
