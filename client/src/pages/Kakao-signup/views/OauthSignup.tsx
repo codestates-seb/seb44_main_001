@@ -16,13 +16,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setUpdatedUser } from '../store/UpdatedUserData';
 import { MemberPatchDto, SignupPatchData } from '../../../common/type';
 import { RootState } from '../../../common/store/RootStore';
-import { UseMutationResult, useMutation, useQueryClient } from 'react-query';
+import { UseMutationResult, useMutation, useQuery, useQueryClient } from 'react-query';
 import { BASE_URL } from '../../../common/util/constantValue';
 import { useNavigate } from 'react-router-dom';
 import { setMyData } from '../../Login/store/MyUserData';
 import { AxiosError } from 'axios';
 import { patchMyData } from '../api/patchMyData';
 import { setTokenData } from '../../Login/store/userTokenStore';
+import MyData from '../../Login/api/getMyData';
 
 export default function OauthSignup() {
   const [nickname, setNickname] = useState('');
@@ -40,6 +41,7 @@ export default function OauthSignup() {
   );
 
   const memberId = useSelector((state:RootState)=>state.myData.memberId);
+  const token = localStorage.getItem('Authorization');
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -73,6 +75,19 @@ export default function OauthSignup() {
     dispatch(setMyData({ ...patchData, welcomeMsg: e.target.value }));
   };
 
+  useQuery<void, AxiosError, number>(
+    'userInfo',
+    () => MyData(`${BASE_URL}/members/userInfo`),
+    {
+      onSuccess: (data) => {
+        dispatch(setMyData(data));
+      },
+      onError: (error) => {
+          console.error('오류가 발생했습니다.', error.message);
+      },
+    },
+  );
+  
   const patchInfoMutation: UseMutationResult<
     void,
     AxiosError,
@@ -98,7 +113,6 @@ export default function OauthSignup() {
   );
 
   const handleSignup = () => {
-    const token = localStorage.getItem('Authorization');
     if (nickname === '' || age === null || isMale === null) {
       alert('필수 항목을 모두 채워주세요.');
       window.scrollTo({
