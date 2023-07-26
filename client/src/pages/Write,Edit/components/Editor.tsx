@@ -43,7 +43,7 @@ function Editor({ data }: { data: ArticleToPost }) {
 
         console.log(result);
 
-        const IMG_URL = result.data.url;
+        const IMG_URL = result.data;
 
         const editor = quillRef.current && quillRef.current.getEditor();
 
