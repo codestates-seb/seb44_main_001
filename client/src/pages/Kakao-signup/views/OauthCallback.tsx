@@ -1,9 +1,12 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BASE_URL } from '../../../common/util/constantValue';
+import { useDispatch } from 'react-redux';
+import { setMyData } from '../../Login/store/MyUserData';
 
 export default function OauthCallback() {
   const navigation = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const params = new URL(window.location.href).searchParams;
@@ -35,6 +38,7 @@ export default function OauthCallback() {
           if (data.nickname === null) {
             navigation('/oauth-signup');
           } else {
+            dispatch(setMyData(data));
             navigation('/lists');
           }
         })
@@ -45,6 +49,7 @@ export default function OauthCallback() {
     } else {
       navigation('/err');
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigation]);
 
   return <></>;
