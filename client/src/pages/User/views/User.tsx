@@ -113,7 +113,11 @@ export default function User() {
                   )}
                 </ProfileContainer>
                 <MsgBox>
-                  <div>{data.welcomeMsg}</div>
+                  {data.welcomeMsg ? (
+                    <div>{data.welcomeMsg}</div>
+                  ) : (
+                    <div>자기소개가 없습니다.</div>
+                  )}
                 </MsgBox>
               </Background>
             </Layout>
