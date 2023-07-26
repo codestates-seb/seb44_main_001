@@ -33,7 +33,7 @@ export default function Form() {
 
   const { id } = useParams();
 
-  const memberId = Number(localStorage.getItem('MemberId'));
+  const memberId = useSelector((state: RootState) => state.myData.memberId);
 
   const data: ArticleToPost = useSelector(
     (state: RootState) => state.createdPost,
@@ -95,7 +95,9 @@ export default function Form() {
   };
 
   const handleTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    dispatch(setCreatedPost({ ...data, title: event.target.value }));
+    if (event.target.value.length < 21) {
+      dispatch(setCreatedPost({ ...data, title: event.target.value }));
+    }
   };
 
   const onLocationChange = (locationId: number | null) => {
@@ -104,6 +106,10 @@ export default function Form() {
 
   const onCategoryChange = (categoryId: number | null) => {
     dispatch(setCreatedPost({ ...data, categoryId: categoryId }));
+  };
+
+  const handleCancel = () => {
+    navigate(-1);
   };
 
   return (
@@ -130,6 +136,7 @@ export default function Form() {
       <TagsInput data={data} />
       <ButtonSection>
         <Button children={id ? UPDATE : REGISTER} onClick={handleSubmit} />
+        <Button children="취소" onClick={handleCancel} />
       </ButtonSection>
     </>
   );
@@ -172,6 +179,18 @@ const ContentSection = styled.section`
 
 const ButtonSection = styled.section`
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   margin: 1rem 0 1rem 0;
+
+  > :nth-child(2) {
+    background: var(--color-gray);
+
+    &:hover {
+      background: #dddddd;
+    }
+
+    &:active {
+      background: #eeeeee;
+    }
+  }
 `;

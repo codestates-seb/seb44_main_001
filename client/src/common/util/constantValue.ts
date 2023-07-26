@@ -4,7 +4,8 @@ export const TITLE_INPUT_PLACEHOLDER = '내가 원하는 친구를 모집해봐�
 
 export const CONTENT_INPUT_PLACEHOLDER = '어떤 친구를 만나고 싶나요?';
 
-export const TAG_INPUT_PLACEHOLDER = 'Enter를 눌러 태그를 추가해보세요!';
+export const TAG_INPUT_PLACEHOLDER =
+  'Enter를 눌러 태그를 추가해보세요! 띄어쓰기는 안돼요!';
 
 export const CITY_MESSAGE = '지역을 선택해주세요!';
 
@@ -43,3 +44,5 @@ export const SEND_CHAT = '채팅 보내기';
 export const VIEW_PROFILE = '프로필 보기';
 
 export const INVITE = '초대하기';
+
+export const ALERTLOGIN = '로그인이 필요한 서비스입니다.'

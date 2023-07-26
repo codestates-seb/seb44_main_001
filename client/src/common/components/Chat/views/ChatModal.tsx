@@ -16,6 +16,7 @@ import * as StompJs from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import postOnline from '../api/postOnline';
 import { resetChatRoomInfo } from '../../../store/ChatRoomInfoStore';
+import postOffline from '../api/postOffline';
 
 export default function ChatModal() {
   const [messages, setMessages] = useState<ChatData[]>([]);
@@ -75,6 +76,11 @@ export default function ChatModal() {
     (roomId) => postOnline(`${BASE_URL}/rooms/${roomId}/online`),
   );
 
+  const postOfflineMutation = useMutation<void, unknown, number>(
+    'postOffline',
+    (roomId) => postOffline(`${BASE_URL}/rooms/${roomId}/offline`),
+  );
+
   const handleModalOpen = () => {
     dispatch(setChatModal(true));
     getRoomQuery.refetch();
@@ -83,6 +89,9 @@ export default function ChatModal() {
   const handleModalClose = () => {
     dispatch(setChatModal(false));
     dispatch(resetChatRoomInfo());
+    if (chatRoom) {
+      postOfflineMutation.mutate(chatRoom);
+    }
   };
 
   const handleWebSocketMessage = (message: StompJs.IMessage) => {
@@ -135,9 +144,13 @@ export default function ChatModal() {
     <Container>
       <button
         onClick={isOpen ? handleModalClose : handleModalOpen}
-        className={isDataDifferent ? 'on' : ''}
+        className={isDataDifferent ? 'colorOn' : ''}
       >
-        <AiFillWechat size={48} color={'var(--color-white)'} />
+        <AiFillWechat
+          size={48}
+          color={'var(--color-white)'}
+          className={isDataDifferent ? 'pulseOn' : ''}
+        />
       </button>
       <Modal
         isOpen={isOpen}
@@ -186,13 +199,9 @@ const Container = styled.section`
     width: 5rem;
     border-radius: 50%;
     cursor: pointer;
-    background: linear-gradient(
-      90deg,
-      var(--color-pink-1),
-      var(--color-pink-2)
-    );
+    background: linear-gradient(90deg, var(--color-pink-1), #ff7787);
 
-    > svg {
+    > .pulseOn {
       animation: ${pulseAnimation} 1s ease-in-out infinite;
       border-radius: 50%;
     }
@@ -206,7 +215,7 @@ const Container = styled.section`
     }
   }
 
-  .on {
+  .colorOn {
     animation: colorChange 1s infinite;
   }
 `;

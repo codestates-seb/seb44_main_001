@@ -21,7 +21,7 @@ import {
   CommentToPost,
 } from '../../../common/type';
 import { setTotalComments } from '../../../common/store/CommentPageStore';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { MdModeEditOutline } from 'react-icons/md';
 import deleteComment from '../api/deleteComment';
 import Button from '../../../common/components/Button';
@@ -29,6 +29,7 @@ import patchComment from '../api/patchComment';
 import { calculateTimeDifference } from '../../../common/util/timeDifferenceCalculator';
 import profile from '../../../common/assets/profile.svg';
 import UserModal from './UserModal';
+import { RootState } from '../../../common/store/RootStore';
 
 export default function CommentList() {
   const queryClient = useQueryClient();
@@ -39,7 +40,9 @@ export default function CommentList() {
 
   const [currentModal, setCurrentModal] = useState(0);
 
-  const memberId = Number(localStorage.getItem('MemberId'));
+  const memberId = useSelector((state: RootState) => state.myData.memberId);
+
+  const token = localStorage.getItem('Authorization');
 
   const [editedComment, setEditedComment] = useState({
     memberId: memberId,
@@ -131,7 +134,9 @@ export default function CommentList() {
   };
 
   const handleModalOpen = (commentId: number) => {
-    setCurrentModal(commentId);
+    if (token) {
+      setCurrentModal(commentId);
+    }
   };
 
   const handleModalClose = () => {
@@ -258,7 +263,7 @@ export default function CommentList() {
 
 const Container = styled.section`
   color: var(--color-black);
-  margin-bottom: 2rem;
+  margin-bottom: 5rem;
 
   > :first-child {
     margin-bottom: 1rem;

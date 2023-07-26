@@ -10,6 +10,10 @@ import Footer from './common/components/Footer';
 import { AxiosError } from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ChatModal from './common/components/Chat/views/ChatModal';
+import { Quill } from 'react-quill';
+import { ImageResize } from 'quill-image-resize-module-ts';
+
+Quill.register('modules/imageResize', ImageResize);
 
 export default function App() {
   const dispatch = useDispatch();
@@ -17,11 +21,10 @@ export default function App() {
   const location = useLocation();
 
   const token: string | null = localStorage.getItem('Authorization');
-  const memberId: string | null = localStorage.getItem('MemberId');
 
   useQuery<void, AxiosError, number>(
     'userInfo',
-    () => MyData(`${BASE_URL}/members/${memberId}`),
+    () => MyData(`${BASE_URL}/members/userInfo`),
     {
       enabled: !!token,
       onSuccess: (data) => {

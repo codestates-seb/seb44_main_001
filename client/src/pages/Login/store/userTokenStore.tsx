@@ -4,13 +4,11 @@ export const tokenSlice = createSlice({
   name: 'token',
   initialState: {
     token: '',
-    memberId: 0,
   },
   reducers: {
     setTokenData: (_state, action) => {
       return {
         token: action.payload.token,
-        memberId: action.payload.memberId,
       };
     },
   },

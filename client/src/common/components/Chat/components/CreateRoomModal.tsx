@@ -7,8 +7,9 @@ import { useMutation } from 'react-query';
 import postNewRoomName from '../api/postNewRoomName';
 import { BASE_URL } from '../../../util/constantValue';
 import { NewRoom } from '../../../type';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setChatRoomInfo } from '../../../store/ChatRoomInfoStore';
+import { RootState } from '../../../store/RootStore';
 
 export default function CreateRoomModal({
   isOpen,
@@ -21,7 +22,7 @@ export default function CreateRoomModal({
 
   const dispatch = useDispatch();
 
-  const memberId = Number(localStorage.getItem('MemberId'));
+  const memberId = useSelector((state: RootState) => state.myData.memberId);
 
   const data: NewRoom = {
     memberId: memberId,
@@ -57,11 +58,13 @@ export default function CreateRoomModal({
   const handleSubmit = () => {
     if (roomName.length > 0) {
       postMutation.mutate();
+    } else {
+      alert('채팅방 이름을 입력해주세요!');
     }
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter' && roomName.length) {
+    if (event.key === 'Enter' && roomName.length > 0) {
       event.preventDefault();
       handleSubmit();
     }

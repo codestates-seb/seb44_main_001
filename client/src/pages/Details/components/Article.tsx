@@ -22,6 +22,7 @@ import { useEffect } from 'react';
 import { calculateTimeDifference } from '../../../common/util/timeDifferenceCalculator';
 import { postLike } from '../api/postLike';
 import { deleteLike } from '../api/deleteLike';
+import { ALERTLOGIN } from '../../../common/util/constantValue';
 
 export default function Article({ data }: { data?: ArticleToGet }) {
   const [isLiked, setIsLiked] = useState(false);
@@ -34,13 +35,15 @@ export default function Article({ data }: { data?: ArticleToGet }) {
 
   const queryClient = useQueryClient();
 
-  const memberId = Number(localStorage.getItem('MemberId'));
-
+  const token = localStorage.getItem('Authorization');
+  
   const { id } = useParams();
-
+  
   const dispatch = useDispatch();
-
+  
   const navigate = useNavigate();
+  
+  const memberId = useSelector((state: RootState) => state.myData.memberId);
 
   const totalComments = useSelector((state: RootState) => state.totalComments);
 
@@ -124,7 +127,9 @@ export default function Article({ data }: { data?: ArticleToGet }) {
   };
 
   const handleModalOpen = () => {
-    setIsUserModalOpen(true);
+    if (token) {
+      setIsUserModalOpen(true);
+    }
   };
 
   const handleModalClose = () => {
@@ -133,7 +138,7 @@ export default function Article({ data }: { data?: ArticleToGet }) {
 
   const handleClickLike = () => {
     if (!memberId) {
-      alert('로그인이 필요한 서비스입니다!');
+      alert(ALERTLOGIN);
       return;
     } else if (isLiked) {
       deleteLikeMutation.mutate();
@@ -198,7 +203,6 @@ export default function Article({ data }: { data?: ArticleToGet }) {
               {memberId === data?.memberInfo.memberId && (
                 <AiFillDelete size={24} onClick={handleDelete} />
               )}
-              {/* 클릭 시 삭제 확인 창 뜨게 수정해야함 */}
             </div>
             <div>
               <div>
@@ -295,8 +299,9 @@ const ModalWrapper = styled.div`
 
 const ContentSection = styled.section`
   margin-bottom: 2rem;
-  min-height: 20rem;
+  min-height: 10rem;
   line-height: 1.5;
+  font-size: 1.125rem;
 `;
 
 const TagSection = styled.section`

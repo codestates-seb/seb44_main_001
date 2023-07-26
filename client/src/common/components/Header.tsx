@@ -23,9 +23,6 @@ import { postLogout } from '../util/customHook/api/postLogout';
 import { setChatModal } from '../store/ChatModalStore';
 import { useMutation } from 'react-query';
 import { resetCreatedPost } from '../../pages/Write,Edit/store/CreatedPost';
-import { setSelectedCategory } from '../../pages/Lists,Search/store/SelectedCategory';
-import { setSelectedLocation } from '../../pages/Lists,Search/store/SelectedLocation';
-
 Modal.setAppElement('#root');
 
 export default function Header() {
@@ -34,7 +31,6 @@ export default function Header() {
   const myData = useSelector((state: RootState) => state.myData);
 
   const token = localStorage.getItem('Authorization');
-  const myId = localStorage.getItem('MemberId');
 
   const kakaoLink = `${BASE_URL}/oauth2/authorization/kakao`;
   const googleLink = `${BASE_URL}/oauth2/authorization/google`;
@@ -66,7 +62,7 @@ export default function Header() {
 
   const handleMyProfile = (e: React.MouseEvent) => {
     e.preventDefault();
-    navigate(`/user/${myId}`, { state: myId });
+    navigate(`/user/${myData.memberId}`, { state: myData.memberId });
   };
 
   const handleModalOpen = () => {
@@ -86,18 +82,6 @@ export default function Header() {
     <Head>
       <Link
         to="/lists"
-        onClick={() => {
-          dispatch(
-            setSelectedLocation({
-              locationId: 1,
-              city: myData.location.city,
-              province: myData.location.province,
-            }),
-          );
-          dispatch(setSelectedCategory({ categoryId: 1, name: '전체' }));
-          localStorage.removeItem('selectedLocation');
-          navigate('/lists');
-        }}
       >
         <Logo>
           <img src={logo} alt="로고이미지" style={{ height: '39px' }} />
@@ -196,7 +180,7 @@ const Head = styled.header`
   padding: 10px 20px;
   background-color: white;
   color: var(--color-black);
-
+  border-bottom: 1px solid var(--color-gray);
   .margin-small {
     margin: 10px 0 10px 10px;
   }
@@ -223,10 +207,6 @@ const Head = styled.header`
 const MenuContainer = styled.div`
   display: flex;
   align-items: center;
-`;
-const Logo = styled.div`
-  position: relative;
-  display: inline-block;
 `;
 
 const tadaAnimation = keyframes`
@@ -267,7 +247,14 @@ const HoverImage = styled.img`
   top: 0;
   left: 100%;
   opacity: 0;
-  ${Logo}:hover & {
+  cursor: default;
+`;
+
+const Logo = styled.div`
+  position: relative;
+  display: inline-block;
+
+  img:first-child:hover + ${HoverImage} {
     opacity: 1;
     animation: ${tadaAnimation} 1.5s ease-in-out;
   }

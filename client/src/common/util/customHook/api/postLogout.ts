@@ -9,10 +9,7 @@ export const postLogout = async (url: string) => {
     Refresh: refreshToken,
   };
 
-  const res = await axios.post(url, { headers });
+  const res = await axios.post(url, null, { headers });
 
-  if (res.headers.authorization) {
-    localStorage.setItem('Authorization', res.headers.authorization);
-  }
   return res.data;
 };

@@ -10,13 +10,17 @@ import { useMutation, useQueryClient } from 'react-query';
 import { CommentToPost } from '../../../common/type';
 import postComment from '../api/postComment';
 import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../common/store/RootStore';
 
 export default function CommentInput() {
   const [content, setContent] = useState('');
 
   const { id } = useParams();
 
-  const memberId = Number(localStorage.getItem('MemberId'));
+  const memberId = useSelector((state: RootState) => state.myData.memberId);
+
+  const token = localStorage.getItem('Authorization');
 
   const data = {
     memberId: memberId,
@@ -45,12 +49,17 @@ export default function CommentInput() {
     }
   };
 
-  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyUp = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && event.shiftKey) {
       setContent((prevContent) => prevContent + '\n');
     } else if (event.key === 'Enter') {
-      event.preventDefault();
       handleSubmit();
+    }
+  };
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
     }
   };
 
@@ -61,13 +70,17 @@ export default function CommentInput() {
         <textarea
           value={content}
           onChange={handleCommentChange}
-          // onKeyUp={handleKeyUp}
           maxLength={100}
           onKeyDown={handleKeyDown}
+          onKeyUp={handleKeyUp}
+          disabled={!token}
+          placeholder={
+            token ? '댓글을 작성해보세요!' : '로그인 후 댓글 작성이 가능합니다.'
+          }
         />
       </InputSection>
       <ButtonSection>
-        <Button children={REGISTER} onClick={handleSubmit} />
+        <Button children={REGISTER} onClick={handleSubmit} disabled={!token} />
       </ButtonSection>
     </Container>
   );
@@ -107,4 +120,13 @@ const InputSection = styled.section`
 const ButtonSection = styled.section`
   display: flex;
   justify-content: end;
+
+  > button {
+    &:disabled {
+      cursor: default;
+      color: var(--color-gray);
+      background: var(--color-pink-2) !important;
+      border: 2px solid var(--color-gray);
+    }
+  }
 `;

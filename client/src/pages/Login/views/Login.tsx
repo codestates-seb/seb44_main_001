@@ -7,7 +7,7 @@ import { Layout } from '../../../common/style';
 import SemiHeader from '../../../common/components/SemiHeader';
 import { Background, Text, TextInput } from '../../Signup/views/Signup';
 import { RootState } from '../../../common/store/RootStore';
-import { LoginData } from '../../../common/type';
+import { LoginData, TokenType } from '../../../common/type';
 import loginData from '../api/postLogin';
 import { AxiosError } from 'axios';
 import { setLoginUser } from '../store/LoginUser';
@@ -34,40 +34,25 @@ export default function Login() {
 
   const data: LoginData = useSelector((state: RootState) => state.login);
 
-  const loginMutation = useMutation<void, AxiosError, LoginData>(
-    async () => {
-      const result = await loginData(`${BASE_URL}/auth/login`, data);
-      localStorage.setItem('Authorization', result.accessToken);
-      localStorage.setItem('MemberId', result.memberId);
-      localStorage.setItem('RefreshToken', result.refreshToken);
+  const loginMutation = useMutation<TokenType, AxiosError, LoginData>(
+    () => {
+      return loginData(`${BASE_URL}/auth/login`, data);
     },
     {
-      onSuccess: () => {
-        const storedToken = localStorage.getItem('Authorization');
-        const storedMemberId = localStorage.getItem('MemberId');
+      onSuccess: (result: TokenType) => {
+        localStorage.setItem('Authorization', result.accessToken);
+        localStorage.setItem('RefreshToken', result.refreshToken);
 
-        if (!!storedToken && !!storedMemberId) {
-          const memberId = parseInt(storedMemberId, 10);
-          // fetchUser.mutate(memberId);
+        const storedToken = localStorage.getItem('Authorization');
+
+        if (storedToken) {
           dispatch(
             setTokenData({
               token: storedToken,
-              memberId: memberId,
             }),
           );
-
-          fetchUser.mutate(memberId, {
-            // 이 부분을 추가하세요.
-            onError: () => {
-              console.log('An error occurred while fetching UserData');
-            },
-          });
-
-          // navigation(`/user/${memberId}`, { state: memberId });
+          fetchUser.mutate();
           navigation('/lists');
-        } else {
-          // 토큰과 memberId 가져오기 실패
-          dispatch(setTokenData({ token: '', memberId: 0 }));
         }
       },
       onError: (error) => {
@@ -90,10 +75,14 @@ export default function Login() {
     dispatch(setLoginUser({ ...data, password: e.target.value }));
   };
 
-  const fetchUser = useMutation<void, unknown, number>(
-    async (memberId: number) => {
-      const userData = await MyData(`${BASE_URL}/members/${memberId}`);
-      dispatch(setMyData(userData));
+  const fetchUser = useMutation<void, unknown>(
+    () => {
+      return MyData(`${BASE_URL}/members/userInfo`);
+    },
+    {
+      onSuccess: (userData) => {
+        dispatch(setMyData(userData));
+      },
     },
   );
 
@@ -148,7 +137,7 @@ export default function Login() {
                   type="password"
                   onChange={handlePasswordChange}
                   $isValidate={true}
-                  autocomplete="current-password"
+                  autoComplete="current-password"
                 />
               </InputBox>
               <div style={{ padding: '10px' }}></div>

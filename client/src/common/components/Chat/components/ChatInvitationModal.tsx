@@ -4,16 +4,22 @@ import { RootState } from '../../../store/RootStore';
 import { setChatInvitationModal } from '../store/ChatInvitationModal';
 import { chatInvitationModalStyle } from '../chatInvitationModalStyle';
 import { styled } from 'styled-components';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import getUserNickname from '../api/getUserNickname';
 import { BASE_URL } from '../../../util/constantValue';
 import { ChangeEvent, useState } from 'react';
 import profile from '../../../../common/assets/profile.svg';
-import { Nickname } from '../../../type';
+import { Nickname, RoomMember } from '../../../type';
 import postInvitation from '../api/postInvitation';
 import Button from '../../Button';
 
-export default function ChatInvitationModal({ roomId }: { roomId: number }) {
+export default function ChatInvitationModal({
+  roomId,
+  roomMember,
+}: {
+  roomId: number;
+  roomMember: RoomMember[];
+}) {
   const [searchItem, setSearchItem] = useState('');
 
   const [nicknames, setNicknames] = useState<Nickname[] | []>([]);
@@ -22,12 +28,18 @@ export default function ChatInvitationModal({ roomId }: { roomId: number }) {
 
   const isOpen = useSelector((state: RootState) => state.chatInvitationModal);
 
+  const queryClient = useQueryClient();
+
   useQuery(
     ['nickname', searchItem],
     () => getUserNickname(`${BASE_URL}/members/search?nickname=${searchItem}`),
     {
       enabled: isOpen && searchItem.length !== 0,
-      onSuccess: (data) => setNicknames(data),
+      onSuccess: (data) => {
+        setNicknames(data);
+        queryClient.invalidateQueries('roomMember');
+        console.log(data);
+      },
     },
   );
 
@@ -52,8 +64,18 @@ export default function ChatInvitationModal({ roomId }: { roomId: number }) {
     }
   };
 
-  const handleInvite = (memberId: number) => {
-    inviteMutation.mutate(memberId);
+  const handleInvite = async (nickname: Nickname) => {
+    const isInvited = roomMember.some(
+      (member) => member.nickname === nickname.nickname,
+    );
+    if (!isInvited) {
+      const confirmed = confirm(`${nickname.nickname}님을 초대하시겠습니까?`);
+      if (confirmed) {
+        inviteMutation.mutate(nickname.memberId);
+      }
+    } else {
+      alert('이미 초대된 유저입니다.');
+    }
   };
 
   return (
@@ -76,12 +98,10 @@ export default function ChatInvitationModal({ roomId }: { roomId: number }) {
               nicknames.map((nickname) => (
                 <div
                   key={nickname.memberId}
-                  onClick={() => handleInvite(nickname.memberId)}
+                  onClick={() => handleInvite(nickname)}
                 >
                   <img
-                    src={
-                      nickname.profileImage ? nickname.profileImage : profile
-                    }
+                    src={nickname.image ? nickname.image : profile}
                     alt={nickname.nickname}
                   />
                   <div>{nickname.nickname}</div>
@@ -124,6 +144,9 @@ const Nicknames = styled.div`
 
       > img {
         height: 2rem;
+        width: 2rem;
+        object-fit: cover;
+        border-radius: 50%;
         margin-right: 0.5rem;
       }
     }

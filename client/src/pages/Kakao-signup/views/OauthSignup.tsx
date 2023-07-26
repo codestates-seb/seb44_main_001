@@ -30,8 +30,6 @@ export default function OauthSignup() {
   const [isMale, setIsMale] = useState<boolean | null>(null);
   const [welcomeMsg, setWelcomeMsg] = useState('');
 
-  // const myData = useSelector((state: RootState) => state.authSignup);
-  // const myToken = useSelector((state: RootState) => state.token);
   const queryClient = useQueryClient();
 
   const dispatch = useDispatch();
@@ -41,22 +39,12 @@ export default function OauthSignup() {
     (state: RootState) => state.authSignup,
   );
 
-  // const kakaoMutation = useMutation<void, unknown, SignupPatchData>(
-  //   async () => {
-  //     const memberId = localStorage.getItem('memberId');
-  //     if (storedToken) {
-  //       await patchMyData(
-  //         `${BASE_URL}/members/${memberId}`,
-  //         patchData,
-  //       );
-  //     }
-  //   },
-  // );
-
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNickname(e.target.value);
-    dispatch(setUpdatedUser({ ...patchData, nickname: e.target.value }));
-    dispatch(setMyData({ ...patchData, nickname: e.target.value }));
+    const value = e.target.value;
+    const noSpaceValue = value.replace(/\s+/g, '');
+    setNickname(noSpaceValue);
+    dispatch(setUpdatedUser({ ...patchData, nickname: noSpaceValue }));
+    dispatch(setMyData({ ...patchData, nickname: noSpaceValue }));
   };
 
   const handleBirthYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -83,33 +71,42 @@ export default function OauthSignup() {
     dispatch(setMyData({ ...patchData, welcomeMsg: e.target.value }));
   };
 
-  const patchInfoMutation: UseMutationResult<void, AxiosError, MemberPatchDto> =
-    useMutation(
-      (memberPatchDto) => {
-        const memberId = localStorage.getItem('MemberId');
-        const url = `${BASE_URL}/members/${memberId}`;
-        return patchMyData(url, memberPatchDto);
+  const patchInfoMutation: UseMutationResult<
+    void,
+    AxiosError,
+    MemberPatchDto | SignupPatchData
+  > = useMutation(
+    (memberPatchDto) => {
+      const memberId = localStorage.getItem('MemberId');
+      const url = `${BASE_URL}/members/${memberId}`;
+      return patchMyData(url, memberPatchDto as MemberPatchDto);
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('userInfo');
+        navigation('/lists');
       },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries('userInfo');
-          navigation('/lists');
-        },
-        onError: (error) => {
-          if (error.response?.status === 500) {
-            console.log('오예스에서 500이 떴답니다~~~!!!!!!!~');
-          } else {
-            console.error(error);
-          }
-        },
+      onError: (error) => {
+        if (error.response?.status === 500) {
+          console.log('오예스에서 500이 떴답니다~~~!!!!!!!~');
+        } else {
+          console.error(error);
+        }
       },
-    );
+    },
+  );
 
   const handleSignup = () => {
-    const memberId = localStorage.getItem('MemberId');
     const token = localStorage.getItem('Authorization');
+    if (nickname === '' || age === null || isMale === null) {
+      alert('필수 항목을 모두 채워주세요.');
+      window.scrollTo({
+        top: 300,
+        behavior: 'smooth',
+      });
+    }
     if (localStorage.getItem('MemberId')) {
-      dispatch(setTokenData({ token: `Bearer ${token}`, memberId: memberId }));
+      dispatch(setTokenData({ token: `Bearer ${token}`}));
       patchInfoMutation.mutate(patchData);
     }
     navigation('/lists');
@@ -127,7 +124,10 @@ export default function OauthSignup() {
         <Background>
           <ContentWrapper>
             <InputBox>
-              <Text>닉네임</Text>
+              <div style={{ fontSize: '13px', marginBottom: '10px' }}>
+                *가 붙은 항목은 필수 항목입니다.
+              </div>
+              <Text>닉네임 *</Text>
               <TextInput
                 value={nickname}
                 onChange={handleNicknameChange}
@@ -136,7 +136,7 @@ export default function OauthSignup() {
               />
             </InputBox>
             <InputBox>
-              <Text>출생년도</Text>
+              <Text>출생년도 *</Text>
               <DropdownInput
                 value={age === null ? '' : age}
                 onChange={handleBirthYearChange}
@@ -153,7 +153,7 @@ export default function OauthSignup() {
               </DropdownInput>
             </InputBox>
             <InputBox>
-              <Text>성별</Text>
+              <Text>성별 *</Text>
               <div style={{ display: 'flex' }}>
                 <div style={{ marginTop: '10px', marginRight: '30px' }}>
                   <label htmlFor="male" style={{ fontSize: '15px' }}>
@@ -184,7 +184,7 @@ export default function OauthSignup() {
               </div>
             </InputBox>
             <InputBox>
-              <Text>지역</Text>
+              <Text>지역 *</Text>
               <LocationSelector onLocationChange={onLocationChange} />
             </InputBox>
             <InputBox>

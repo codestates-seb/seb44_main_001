@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
 
 import { RootState } from '../../../common/store/RootStore';
@@ -12,6 +12,8 @@ import Button from '../../../common/components/Button';
 
 export default function ListsHeader() {
   const dispatch = useDispatch();
+
+  const navigate = useNavigate();
 
   const params = useParams();
 
@@ -42,14 +44,10 @@ export default function ListsHeader() {
     const LastSelectedLocation = localStorage.getItem('selectedLocation');
     if (LastSelectedLocation) {
       dispatch(setSelectedLocation(JSON.parse(LastSelectedLocation)));
+      dispatch(setLocation(JSON.parse(LastSelectedLocation)));
     } else if (isLogin && myData) {
-      dispatch(
-        setSelectedLocation({
-          locationId: myData.locationId,
-          city: myData.city,
-          province: myData.province,
-        }),
-      );
+      dispatch(setSelectedLocation(myData));
+      dispatch(setLocation(myData));
     } else {
       dispatch(setLocation(selectedLocation));
     }
@@ -66,10 +64,19 @@ export default function ListsHeader() {
         &nbsp;
         <span>{params.keyword ? '검색결과' : '모모리스트'}</span>
       </div>
-      {params.keyword ? null : (
+      {params.keyword ? (
+        <Button
+          children={'목록 페이지로 돌아가기'}
+          onClick={() => navigate('/lists')}
+        />
+      ) : (
         <SelectorWrapper>
           <LocationSelector />
-          <Button children={'지역 선택'} onClick={handleLocationSelection} />
+          <Button
+            className="firstBtn"
+            children={'지역 선택'}
+            onClick={handleLocationSelection}
+          />
         </SelectorWrapper>
       )}
     </Wrapper>
@@ -125,7 +132,7 @@ export const Wrapper = styled.div`
       margin-right: 0;
     }
     select {
-      width: 10.5rem;
+      width: 8rem;
       margin-right: 1rem;
     }
   }
@@ -139,7 +146,13 @@ export const Wrapper = styled.div`
 const SelectorWrapper = styled.div`
   display: flex;
   align-items: center;
+  .firstBtn {
+    margin-right: 1rem;
+  }
   @media (max-width: 832px) {
     margin-top: 1rem;
+    .firstBtn {
+      margin-right: 1rem;
+    }
   }
 `;

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export default async function MyData(url: string) {
+export default async function getRoomMember(url: string) {
   try {
     const accessToken = localStorage.getItem('Authorization');
     const refreshToken = localStorage.getItem('RefreshToken');
@@ -19,6 +19,5 @@ export default async function MyData(url: string) {
     return res.data;
   } catch (err) {
     console.log(err);
-    throw err;
   }
 }
