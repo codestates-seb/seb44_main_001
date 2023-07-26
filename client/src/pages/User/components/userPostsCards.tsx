@@ -22,7 +22,7 @@ export default function UserPostsCards({
   isMine: boolean;
 }) {
   const [isLoading, setIsLoading] = useState(false);
-  const [page, setPage] = useState(3);
+  const [page, setPage] = useState(6);
   const [sort, setSort] = useState('');
   const [pageParamState, setPageParamState] = useState(1);
 
@@ -64,7 +64,7 @@ export default function UserPostsCards({
         top: height,
         behavior: 'smooth',
       });
-      setPage((prev) => prev + 3);
+      setPage((prev) => prev + 6);
       setIsLoading(false);
     }, 300);
     if (hasNextPage) {

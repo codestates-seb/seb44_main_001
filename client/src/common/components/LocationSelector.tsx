@@ -33,7 +33,43 @@ export default function LocationSelector({
   const province = useSelector((state: RootState) => state.location.province);
 
   const handleCityChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    dispatch(setLocation({ city: event.target.value, province: '' }));
+    const selectedCity = event.target.value;
+
+    const cityToLocationIdMap: {
+      [key: string]: number;
+    } = {
+      서울특별시: 1,
+      인천광역시: 2,
+      부산광역시: 3,
+      대전광역시: 4,
+      대구광역시: 5,
+      울산광역시: 6,
+      광주광역시: 7,
+      제주특별자치도: 8,
+      세종특별자치시: 9,
+      경기도: 10,
+      강원도: 11,
+      충청북도: 12,
+      충청남도: 13,
+      경상북도: 14,
+      경상남도: 15,
+      전라북도: 16,
+      전라남도: 17,
+    };
+
+    const selectedLocationId = cityToLocationIdMap[selectedCity];
+
+    if (pathname === '/lists') {
+      dispatch(
+        setLocation({
+          city: selectedCity,
+          province: '전체',
+          locationId: selectedLocationId,
+        }),
+      );
+    } else {
+      dispatch(setLocation({ city: selectedCity, province: '' }));
+    }
   };
 
   const handleProvinceChange = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -67,9 +103,11 @@ export default function LocationSelector({
             ))}
         </select>
         <select id="province" value={province} onChange={handleProvinceChange}>
-          <option disabled value="">
-            {PROVINCE_MESSAGE}
-          </option>
+          {/* {pathname !== '/lists' ? ( */}
+            <option disabled value="">
+              {PROVINCE_MESSAGE}
+            </option>
+          {/* ) : null} */}
           {city ? (
             locations
               ?.filter(

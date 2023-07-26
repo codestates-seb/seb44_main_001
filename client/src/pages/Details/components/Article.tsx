@@ -35,15 +35,15 @@ export default function Article({ data }: { data?: ArticleToGet }) {
 
   const queryClient = useQueryClient();
 
-  const memberId = Number(localStorage.getItem('MemberId'));
-
   const token = localStorage.getItem('Authorization');
-
+  
   const { id } = useParams();
-
+  
   const dispatch = useDispatch();
-
+  
   const navigate = useNavigate();
+  
+  const memberId = useSelector((state: RootState) => state.myData.memberId);
 
   const totalComments = useSelector((state: RootState) => state.totalComments);
 
@@ -203,7 +203,6 @@ export default function Article({ data }: { data?: ArticleToGet }) {
               {memberId === data?.memberInfo.memberId && (
                 <AiFillDelete size={24} onClick={handleDelete} />
               )}
-              {/* 클릭 시 삭제 확인 창 뜨게 수정해야함 */}
             </div>
             <div>
               <div>

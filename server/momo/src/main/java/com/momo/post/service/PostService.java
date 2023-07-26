@@ -1,5 +1,8 @@
 package com.momo.post.service;
 
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.momo.category.entity.Category;
 import com.momo.category.repository.CategoryRepository;
 import com.momo.exception.NotFoundException;
@@ -13,10 +16,14 @@ import com.momo.post.mapper.PostMapper;
 import com.momo.post.repository.PostRepository;
 import com.momo.postlike.entity.PostLike;
 import com.momo.postlike.repository.PostLikeRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.persistence.criteria.*;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -32,14 +39,18 @@ public class PostService {
     private final CategoryRepository categoryRepository;
     private final LocationRepository locationRepository;
     private final PostLikeRepository postLikeRepository;
+    private final AmazonS3Client amazonS3Client;
+    @Value("${cloud.aws.s3}")
+    private String S3Bucket;
 
-    public PostService(PostRepository postRepository, PostMapper postMapper, MemberRepository memberRepository, CategoryRepository categoryRepository, LocationRepository locationRepository, PostLikeRepository postLikeRepository) {
+    public PostService(PostRepository postRepository, PostMapper postMapper, MemberRepository memberRepository, CategoryRepository categoryRepository, LocationRepository locationRepository, PostLikeRepository postLikeRepository, AmazonS3Client amazonS3Client) {
         this.postRepository = postRepository;
         this.postMapper = postMapper;
         this.memberRepository = memberRepository;
         this.categoryRepository = categoryRepository;
         this.locationRepository = locationRepository;
         this.postLikeRepository = postLikeRepository;
+        this.amazonS3Client = amazonS3Client;
     }
 
     private PostResponseDto createPostResponseDto(Post post) {
@@ -512,5 +523,24 @@ public class PostService {
         }
 
         return postResponseDtos;
+    }
+    public String saveImageToS3(MultipartFile image) throws IOException {
+        if (image == null) {
+            // 이미지가 없을 경우 기본 이미지 URL을 반환
+            return null;
+        }
+
+        String randomName = UUID.randomUUID().toString();
+        long size = image.getSize();
+
+        ObjectMetadata objectMetaData = new ObjectMetadata();
+        objectMetaData.setContentType(image.getContentType());
+        objectMetaData.setContentLength(size);
+
+        amazonS3Client.putObject(
+                new PutObjectRequest(S3Bucket, randomName, image.getInputStream(), objectMetaData)
+        );
+
+        return amazonS3Client.getUrl(S3Bucket, randomName).toString();
     }
 }

@@ -28,15 +28,13 @@ export default function User() {
 
   const dispatch = useDispatch();
 
-  const storedMemberId = localStorage.getItem('MemberId');
-
   const isMine = useMemo(() => {
-    if (storedMemberId && data) {
-      const numberId = parseInt(storedMemberId, 10);
-      return numberId === data.memberId;
+    if (data) {
+      const myMemberId = String(data.memberId);
+      return memberId === myMemberId;
     }
     return false;
-  }, [storedMemberId, data]);
+  }, [data, memberId]);
 
   const fetchUser = useMutation<void, unknown, number>(
     (memberId: number) => {
@@ -113,7 +111,11 @@ export default function User() {
                   )}
                 </ProfileContainer>
                 <MsgBox>
-                  <div>{data.welcomeMsg}</div>
+                  {data.welcomeMsg ? (
+                    <div>{data.welcomeMsg}</div>
+                  ) : (
+                    <div>자기소개가 없습니다.</div>
+                  )}
                 </MsgBox>
               </Background>
             </Layout>

@@ -1,5 +1,8 @@
 package com.momo.post.controller;
 
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.momo.exception.NotFoundException;
 import com.momo.post.dto.PostPatchDto;
 import com.momo.post.dto.PostPostDto;
@@ -7,23 +10,29 @@ import com.momo.post.dto.PostResponseDto;
 import com.momo.post.service.PostService;
 import com.momo.postlike.service.PostLikeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/posts")
 public class PostController {
+
     private final PostService postService;
     private final PostLikeService postLikeService;
+
+
     @Autowired
-    public PostController(PostService postService, PostLikeService postLikeService) {
+    public PostController( PostService postService, PostLikeService postLikeService) {
         this.postService = postService;
         this.postLikeService = postLikeService;
     }
-
 
     @GetMapping("/{postId}")
     public ResponseEntity<PostResponseDto> getPostById(
@@ -148,7 +157,6 @@ public class PostController {
     public PostResponseDto createPost(@RequestBody PostPostDto postDto) {
         return postService.createPost(postDto);
     }
-
     @PatchMapping("/{postId}/update")
     public PostResponseDto updatePost(
             @PathVariable("postId") Long postId,
@@ -165,4 +173,16 @@ public class PostController {
     ) {
         postService.deletePost(postId, memberId);
     }
+    @PostMapping("/upload-image")
+    public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
+        try {
+
+            String imageUrl = postService.saveImageToS3(file);
+            return ResponseEntity.ok(imageUrl);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 }
