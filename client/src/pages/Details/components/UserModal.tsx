@@ -2,7 +2,7 @@ import Modal from 'react-modal';
 import { userModalStyle } from '../userModalStyle';
 import { Link } from 'react-router-dom';
 import { ArticleToGet, CommentToGet } from '../../../common/type';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setChatModal } from '../../../common/store/ChatModalStore';
 import { styled } from 'styled-components';
 import { useMutation } from 'react-query';
@@ -13,6 +13,7 @@ import {
   VIEW_PROFILE,
 } from '../../../common/util/constantValue';
 import { setChatRoomInfo } from '../../../common/store/ChatRoomInfoStore';
+import { RootState } from '../../../common/store/RootStore';
 
 export default function UserModal({
   isUserModalOpen,
@@ -25,7 +26,7 @@ export default function UserModal({
 }) {
   const dispatch = useDispatch();
 
-  const myId: number | null = Number(localStorage.getItem('MemberId'));
+  const myId = useSelector((state: RootState) => state.myData.memberId);
 
   const memberId = data?.memberInfo.memberId;
 

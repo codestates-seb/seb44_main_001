@@ -9,8 +9,9 @@ import { ArticleToGet } from '../../../common/type';
 import getArticle from '../api/getArticle';
 import { BASE_URL } from '../../../common/util/constantValue';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setSelectedCategory } from '../../Lists,Search/store/SelectedCategory';
+import { RootState } from '../../../common/store/RootStore';
 
 export default function Details() {
   const { id } = useParams();
@@ -18,11 +19,12 @@ export default function Details() {
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
-
+  
+  const memberId = useSelector((state: RootState) => state.myData.memberId);
+  
   const { data }: UseQueryResult<ArticleToGet, unknown> = useQuery(
     ['getData', id],
     () => {
-      const memberId = localStorage.getItem('MemberId');
       const url = memberId
         ? `${BASE_URL}/posts/${id}?memberId=${memberId}`
         : `${BASE_URL}/posts/${id}`;

@@ -50,7 +50,6 @@ export default function ListsHeader() {
       dispatch(setLocation(myData));
     } else {
       dispatch(setLocation(selectedLocation));
-      dispatch(setLocation(selectedLocation));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [myData]);
@@ -73,7 +72,11 @@ export default function ListsHeader() {
       ) : (
         <SelectorWrapper>
           <LocationSelector />
-          <Button children={'지역 선택'} onClick={handleLocationSelection} />
+          <Button
+            className="firstBtn"
+            children={'지역 선택'}
+            onClick={handleLocationSelection}
+          />
         </SelectorWrapper>
       )}
     </Wrapper>
@@ -129,7 +132,7 @@ export const Wrapper = styled.div`
       margin-right: 0;
     }
     select {
-      width: 10.5rem;
+      width: 8rem;
       margin-right: 1rem;
     }
   }
@@ -143,7 +146,13 @@ export const Wrapper = styled.div`
 const SelectorWrapper = styled.div`
   display: flex;
   align-items: center;
+  .firstBtn {
+    margin-right: 1rem;
+  }
   @media (max-width: 832px) {
     margin-top: 1rem;
+    .firstBtn {
+      margin-right: 1rem;
+    }
   }
 `;

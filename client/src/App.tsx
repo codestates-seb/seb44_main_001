@@ -17,12 +17,10 @@ export default function App() {
   const location = useLocation();
 
   const token: string | null = localStorage.getItem('Authorization');
-  const memberId: string | null = localStorage.getItem('MemberId');
 
   useQuery<void, AxiosError, number>(
     'userInfo',
-    // 요청 url /members/userInfo 로 바뀔예정
-    () => MyData(`${BASE_URL}/members/${memberId}`),
+    () => MyData(`${BASE_URL}/members/userInfo`),
     {
       enabled: !!token,
       onSuccess: (data) => {

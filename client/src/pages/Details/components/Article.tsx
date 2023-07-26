@@ -35,15 +35,15 @@ export default function Article({ data }: { data?: ArticleToGet }) {
 
   const queryClient = useQueryClient();
 
-  const memberId = Number(localStorage.getItem('MemberId'));
-
   const token = localStorage.getItem('Authorization');
-
+  
   const { id } = useParams();
-
+  
   const dispatch = useDispatch();
-
+  
   const navigate = useNavigate();
+  
+  const memberId = useSelector((state: RootState) => state.myData.memberId);
 
   const totalComments = useSelector((state: RootState) => state.totalComments);
 

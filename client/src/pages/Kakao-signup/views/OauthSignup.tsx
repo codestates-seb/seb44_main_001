@@ -30,8 +30,6 @@ export default function OauthSignup() {
   const [isMale, setIsMale] = useState<boolean | null>(null);
   const [welcomeMsg, setWelcomeMsg] = useState('');
 
-  // const myData = useSelector((state: RootState) => state.authSignup);
-  // const myToken = useSelector((state: RootState) => state.token);
   const queryClient = useQueryClient();
 
   const dispatch = useDispatch();
@@ -40,18 +38,6 @@ export default function OauthSignup() {
   const patchData: SignupPatchData = useSelector(
     (state: RootState) => state.authSignup,
   );
-
-  // const kakaoMutation = useMutation<void, unknown, SignupPatchData>(
-  //   async () => {
-  //     const memberId = localStorage.getItem('memberId');
-  //     if (storedToken) {
-  //       await patchMyData(
-  //         `${BASE_URL}/members/${memberId}`,
-  //         patchData,
-  //       );
-  //     }
-  //   },
-  // );
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -111,7 +97,6 @@ export default function OauthSignup() {
   );
 
   const handleSignup = () => {
-    const memberId = localStorage.getItem('MemberId');
     const token = localStorage.getItem('Authorization');
     if (nickname === '' || age === null || isMale === null) {
       alert('필수 항목을 모두 채워주세요.');
@@ -121,7 +106,7 @@ export default function OauthSignup() {
       });
     }
     if (localStorage.getItem('MemberId')) {
-      dispatch(setTokenData({ token: `Bearer ${token}`, memberId: memberId }));
+      dispatch(setTokenData({ token: `Bearer ${token}`}));
       patchInfoMutation.mutate(patchData);
     }
     navigation('/lists');
