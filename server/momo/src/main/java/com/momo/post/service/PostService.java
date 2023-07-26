@@ -171,7 +171,7 @@ public class PostService {
         postRepository.delete(post);
     }
     public List<PostResponseDto> getPostsByMember(Long memberId, int page) {
-        int pageSize = 3;
+        int pageSize = 6;
         Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("postId").descending());
 
         Page<Post> postPage = postRepository.findByMember_MemberId(memberId, pageable);
@@ -452,7 +452,8 @@ public class PostService {
                 .collect(Collectors.toList());
     }
     public List<PostResponseDto> getPostLikedByMember(Long memberId, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+        int pageSize = 6;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<PostLike> likedPostsPage = postLikeRepository.findByMember_MemberIdAndIsLikedTrue(memberId, pageable);
         List<PostResponseDto> postResponseDtos = new ArrayList<>();
 
@@ -512,5 +513,4 @@ public class PostService {
 
         return postResponseDtos;
     }
-
 }
