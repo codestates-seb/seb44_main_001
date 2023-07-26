@@ -37,7 +37,7 @@ function Editor({ data }: { data: ArticleToPost }) {
 
       try {
         const result = await axios.post(
-          `${BASE_URL}/posts/upload-imag`,
+          `${BASE_URL}/posts/upload-image`,
           formData,
         );
 

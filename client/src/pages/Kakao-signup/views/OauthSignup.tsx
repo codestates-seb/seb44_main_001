@@ -39,6 +39,8 @@ export default function OauthSignup() {
     (state: RootState) => state.authSignup,
   );
 
+  const memberId = useSelector((state:RootState)=>state.myData);
+
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     const noSpaceValue = value.replace(/\s+/g, '');
@@ -77,7 +79,6 @@ export default function OauthSignup() {
     MemberPatchDto | SignupPatchData
   > = useMutation(
     (memberPatchDto) => {
-      const memberId = localStorage.getItem('MemberId');
       const url = `${BASE_URL}/members/${memberId}`;
       return patchMyData(url, memberPatchDto as MemberPatchDto);
     },
@@ -88,7 +89,7 @@ export default function OauthSignup() {
       },
       onError: (error) => {
         if (error.response?.status === 500) {
-          console.log('오예스에서 500이 떴답니다~~~!!!!!!!~');
+          console.error('500 error occurred during the OAuth process ');
         } else {
           console.error(error);
         }
