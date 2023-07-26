@@ -97,23 +97,29 @@ export default function Signup() {
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsDuplicateEmail(false);
-    setEmail(e.target.value);
-    dispatch(setSignupUser({ ...data, email: e.target.value }));
+    const value = e.target.value;
+    const noSpaceValue = value.replace(/\s+/g, '');
+    setEmail(noSpaceValue);
+    dispatch(setSignupUser({ ...data, email: noSpaceValue }));
     setIsValidEmail(
-      e.target.value.includes(`@` && `.`) && e.target.value.includes(`com`),
+      noSpaceValue.includes(`@` && `.`) && noSpaceValue.includes(`com`),
     );
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
-    dispatch(setSignupUser({ ...data, password: e.target.value }));
-    setIsValidPassword(e.target.value.length >= 8);
+    const value = e.target.value;
+    const noSpaceValue = value.replace(/\s+/g, '');
+    setPassword(noSpaceValue);
+    dispatch(setSignupUser({ ...data, password: noSpaceValue }));
+    setIsValidPassword(noSpaceValue.length >= 8);
   };
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsDuplicateNickname(false);
-    setNickname(e.target.value);
-    dispatch(setSignupUser({ ...data, nickname: e.target.value }));
+    const value = e.target.value;
+    const noSpaceValue = value.replace(/\s+/g, '');
+    setNickname(noSpaceValue);
+    dispatch(setSignupUser({ ...data, nickname: noSpaceValue }));
   };
 
   const handleBirthYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
