@@ -203,7 +203,6 @@ export default function Article({ data }: { data?: ArticleToGet }) {
               {memberId === data?.memberInfo.memberId && (
                 <AiFillDelete size={24} onClick={handleDelete} />
               )}
-              {/* 클릭 시 삭제 확인 창 뜨게 수정해야함 */}
             </div>
             <div>
               <div>

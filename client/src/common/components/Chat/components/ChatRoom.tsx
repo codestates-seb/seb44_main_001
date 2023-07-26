@@ -94,10 +94,8 @@ export default function ChatRoom({
     return () => {
       setMessages([]);
       setPrevChat([]);
+      dispatch(resetChatRoomInfo());
       setChatInputDisabled(true);
-      if (roomId) {
-        postOfflineMutation.mutate(roomId);
-      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -162,7 +160,13 @@ export default function ChatRoom({
             {roomMember && roomType === 'GROUP' && roomMember?.length < 11 && (
               <BsPersonPlusFill size={24} onClick={handleInvitation} />
             )}
-            <CgCloseR size={24} onClick={handleModalClose} />
+            <CgCloseR
+              size={24}
+              onClick={() => {
+                handleModalClose();
+                postOfflineMutation.mutate(roomId);
+              }}
+            />
           </div>
         </ChatHeader>
         <ChatWrapper ref={chatWrapperRef}>
