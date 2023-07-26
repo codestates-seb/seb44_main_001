@@ -157,6 +157,14 @@ public class PostController {
     public PostResponseDto createPost(@RequestBody PostPostDto postDto) {
         return postService.createPost(postDto);
     }
+    @PatchMapping("/{postId}/update")
+    public PostResponseDto updatePost(
+            @PathVariable("postId") Long postId,
+            @RequestBody PostPatchDto postDto
+    ) {
+        Long memberId = postDto.getMemberId();
+        return postService.updatePost(postId, memberId, postDto);
+    }
 
     @DeleteMapping("/{postId}/{memberId}")
     public void deletePost(
