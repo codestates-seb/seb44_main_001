@@ -144,7 +144,7 @@ export default function Signup() {
 
   const handleSignUp = () => {
     if (!isValidEmail || !isValidPassword) {
-      alert('이메일또는 패스워드의 조건을 다시 확인해주세요.');
+      alert('이메일 또는 패스워드의 조건을 다시 확인해주세요.');
     }
     if (
       email === '' ||
