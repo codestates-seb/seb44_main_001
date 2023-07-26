@@ -106,8 +106,8 @@ export default function OauthSignup() {
         behavior: 'smooth',
       });
     }
-    if (localStorage.getItem('MemberId')) {
-      dispatch(setTokenData({ token: `Bearer ${token}`}));
+    if (token) {
+      dispatch(setTokenData({ token:`${token}`}));
       patchInfoMutation.mutate(patchData);
     }
     navigation('/lists');
