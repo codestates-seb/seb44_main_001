@@ -16,7 +16,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setUpdatedUser } from '../store/UpdatedUserData';
 import { MemberPatchDto, SignupPatchData } from '../../../common/type';
 import { RootState } from '../../../common/store/RootStore';
-import { UseMutationResult, useMutation, useQuery, useQueryClient } from 'react-query';
+import {
+  UseMutationResult,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from 'react-query';
 import { BASE_URL } from '../../../common/util/constantValue';
 import { useNavigate } from 'react-router-dom';
 import { setMyData } from '../../Login/store/MyUserData';
@@ -40,7 +45,8 @@ export default function OauthSignup() {
     (state: RootState) => state.authSignup,
   );
 
-  const memberId = useSelector((state:RootState)=>state.myData.memberId);
+  const memberId = useSelector((state: RootState) => state.myData.memberId);
+  
   const token = localStorage.getItem('Authorization');
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,18 +82,18 @@ export default function OauthSignup() {
   };
 
   useQuery<void, AxiosError, number>(
-    'userInfo',
+    ['userInfo',memberId],
     () => MyData(`${BASE_URL}/members/userInfo`),
     {
       onSuccess: (data) => {
         dispatch(setMyData(data));
       },
       onError: (error) => {
-          console.error('오류가 발생했습니다.', error.message);
+        console.error('오류가 발생했습니다.', error.message);
       },
     },
   );
-  
+
   const patchInfoMutation: UseMutationResult<
     void,
     AxiosError,
@@ -121,7 +127,7 @@ export default function OauthSignup() {
       });
     }
     if (token) {
-      dispatch(setTokenData({ token:`${token}`}));
+      dispatch(setTokenData({ token: `${token}` }));
       patchInfoMutation.mutate(patchData);
     }
     navigation('/lists');
