@@ -106,6 +106,10 @@ export default function Form() {
     dispatch(setCreatedPost({ ...data, categoryId: categoryId }));
   };
 
+  const handleCancel = () => {
+    navigate(-1);
+  };
+
   return (
     <>
       <TitleSection>
@@ -130,6 +134,7 @@ export default function Form() {
       <TagsInput data={data} />
       <ButtonSection>
         <Button children={id ? UPDATE : REGISTER} onClick={handleSubmit} />
+        <Button children="취소" onClick={handleCancel} />
       </ButtonSection>
     </>
   );
@@ -172,6 +177,18 @@ const ContentSection = styled.section`
 
 const ButtonSection = styled.section`
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   margin: 1rem 0 1rem 0;
+
+  > :nth-child(2) {
+    background: var(--color-gray);
+
+    &:hover {
+      background: #dddddd;
+    }
+
+    &:active {
+      background: #eeeeee;
+    }
+  }
 `;
