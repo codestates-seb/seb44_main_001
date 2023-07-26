@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { setCreatedPost } from '../store/CreatedPost';
 import { ArticleToPost } from '../../../common/type';
 import { CONTENT_INPUT_PLACEHOLDER } from '../../../common/util/constantValue';
+import { useMemo } from 'react';
 
 function Editor({ data }: { data: ArticleToPost }) {
   const dispatch = useDispatch();
@@ -12,21 +13,24 @@ function Editor({ data }: { data: ArticleToPost }) {
     dispatch(setCreatedPost({ ...data, content: value }));
   };
 
-  const modules = {
-    toolbar: [
-      [{ header: [1, 2, false] }],
-      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-      [
-        { list: 'ordered' },
-        { list: 'bullet' },
-        { indent: '-1' },
-        { indent: '+1' },
+  const modules = useMemo(
+    () => ({
+      toolbar: [
+        [{ header: [1, 2, false] }],
+        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+        [
+          { list: 'ordered' },
+          { list: 'bullet' },
+          { indent: '-1' },
+          { indent: '+1' },
+        ],
+        ['link', 'image'],
+        [{ align: [] }, { color: [] }, { background: [] }],
+        ['clean'],
       ],
-      ['link', 'image'],
-      [{ align: [] }, { color: [] }, { background: [] }], // dropdown with defaults from theme
-      ['clean'],
-    ],
-  };
+    }),
+    [],
+  );
 
   const formats = [
     'header',

@@ -69,7 +69,10 @@ export default function ChatInvitationModal({
       (member) => member.nickname === nickname.nickname,
     );
     if (!isInvited) {
-      inviteMutation.mutate(nickname.memberId);
+      const confirmed = confirm(`${nickname.nickname}님을 초대하시겠습니까?`);
+      if (confirmed) {
+        inviteMutation.mutate(nickname.memberId);
+      }
     } else {
       alert('이미 초대된 유저입니다.');
     }
