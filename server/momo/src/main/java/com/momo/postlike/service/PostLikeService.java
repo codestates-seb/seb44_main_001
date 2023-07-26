@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,6 +54,7 @@ public class PostLikeService {
         postLike.setPost(post);
         postLike.setMember(memberRepository.getById(memberId));
         postLike.setLiked(true); // 좋아요를 누를 때 is_liked를 true로 설정
+        postLike.setCreatedAt(LocalDateTime.now());
         postLikeRepository.save(postLike);
 
         // 게시글의 좋아요 개수 갱신
