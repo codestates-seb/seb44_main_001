@@ -95,7 +95,9 @@ export default function Form() {
   };
 
   const handleTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    dispatch(setCreatedPost({ ...data, title: event.target.value }));
+    if (event.target.value.length < 21) {
+      dispatch(setCreatedPost({ ...data, title: event.target.value }));
+    }
   };
 
   const onLocationChange = (locationId: number | null) => {
