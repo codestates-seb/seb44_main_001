@@ -1,55 +1,55 @@
 spring:
-mvc:
-  pathmatch:
-    matching-strategy: ant_path_matcher
-datasource:
-  url: jdbc:mysql://localhost:3306/momo?characterEncoding=UTF-8&serverTimezone=UTC
-  username: root
-  password: root
-  driver-class-name: com.mysql.cj.jdbc.Driver
-servlet:
-  multipart:
-    max-file-size: 100MB
-    max-request-size: 100MB
-jpa:
-  hibernate:
-    ddl-auto: update
-  show-sql: true
-  properties:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  datasource:
+    url: jdbc:mysql://localhost:3306/momo?characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+  jpa:
     hibernate:
-      format_sql: true
-      server:
-        port: 8080
-        logging:
-          level:
-            root: DEBUG
-redis:
-  host: your_host
-  port: 6379
-security:
-  oauth2:
-    client:
-      registration:
-        kakao:
-          client-id: ${KAKAO_CLIENT_KEY}
-          client-secret: ${KAKAO_SECRET_KEY}
-          redirect-uri: https://momomomo.shop:8080/login/oauth2/code/kakao
-          client-authentication-method: POST
-          authorization-grant-type: authorization_code
-          client-name: Kakao
-        google:
-          client-id: ${GOOGLE_CLIENT_ID}
-          client-secret: ${GOOGLE_SECRET_KEY}
-          scope:
-            - email
-            - profile
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        server:
+          port: 8080
+          logging:
+            level:
+              root: DEBUG
+  redis:
+    host: your_host
+    port: 6379
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: ${KAKAO_CLIENT_KEY}
+            client-secret: ${KAKAO_SECRET_KEY}
+            redirect-uri: https://momomomo.shop:8080/login/oauth2/code/kakao
+            client-authentication-method: POST
+            authorization-grant-type: authorization_code
+            client-name: Kakao
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_SECRET_KEY}
+            scope:
+              - email
+              - profile
 
-      provider:
-        kakao:
-          authorization-uri: https://kauth.kakao.com/oauth/authorize
-          token-uri: https://kauth.kakao.com/oauth/token
-          user-info-uri: https://kapi.kakao.com/v2/user/me
-          user-name-attribute: id
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
 
 mail:
   address:
@@ -70,3 +70,4 @@ cloud:
       static: ap-northeast-2
     stack:
       auto: false
+
