@@ -19,7 +19,7 @@ export default function OauthCallback() {
       const storedAccessToken = localStorage.getItem('Authorization');
       const storedRefreshToken = localStorage.getItem('RefreshToken');
 
-      fetch(`${BASE_URL}/members/${memberId}`, {
+      fetch(`${BASE_URL}/members/userInfo`, {
         headers: {
           Authorization: `Bearer ${storedAccessToken}`,
           Refresh: `Bearer ${storedRefreshToken}`,
