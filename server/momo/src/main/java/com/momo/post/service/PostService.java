@@ -171,7 +171,7 @@ public class PostService {
         postRepository.delete(post);
     }
     public List<PostResponseDto> getPostsByMember(Long memberId, int page) {
-        int pageSize = 3;
+        int pageSize = 6;
         Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("postId").descending());
 
         Page<Post> postPage = postRepository.findByMember_MemberId(memberId, pageable);
