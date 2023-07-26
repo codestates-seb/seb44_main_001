@@ -100,10 +100,9 @@ export default function Signup() {
     const value = e.target.value;
     const noSpaceValue = value.replace(/\s+/g, '');
     setEmail(noSpaceValue);
+    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,24}$/;
+    setIsValidEmail(regex.test(noSpaceValue));
     dispatch(setSignupUser({ ...data, email: noSpaceValue }));
-    setIsValidEmail(
-      noSpaceValue.includes(`@` && `.`) && noSpaceValue.includes(`com`),
-    );
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
