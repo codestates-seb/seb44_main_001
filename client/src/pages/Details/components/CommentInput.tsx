@@ -47,12 +47,17 @@ export default function CommentInput() {
     }
   };
 
-  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyUp = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && event.shiftKey) {
       setContent((prevContent) => prevContent + '\n');
     } else if (event.key === 'Enter') {
-      event.preventDefault();
       handleSubmit();
+    }
+  };
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
     }
   };
 
@@ -65,6 +70,7 @@ export default function CommentInput() {
           onChange={handleCommentChange}
           maxLength={100}
           onKeyDown={handleKeyDown}
+          onKeyUp={handleKeyUp}
           disabled={!token}
           placeholder={
             token ? '댓글을 작성해보세요!' : '로그인 후 댓글 작성이 가능합니다.'
