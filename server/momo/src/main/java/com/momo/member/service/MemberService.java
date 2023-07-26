@@ -1,5 +1,8 @@
 package com.momo.member.service;
 
+import com.momo.chat.entity.Chatroom;
+import com.momo.chat.repository.ChatroomRepository;
+import com.momo.chat.repository.MemberChatroomRepository;
 import com.momo.exception.BusinessLogicException;
 import com.momo.exception.ExceptionCode;
 import com.momo.location.entity.Location;
@@ -7,6 +10,7 @@ import com.momo.location.repository.LocationRepository;
 import com.momo.member.entity.Member;
 import com.momo.member.repository.MemberRepository;
 import com.momo.security.utils.MomoAuthorityUtils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,19 +21,14 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final MomoAuthorityUtils authorityUtils;
     private final LocationRepository locationRepository;
-
-    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, MomoAuthorityUtils authorityUtils, LocationRepository locationRepository) {
-        this.memberRepository = memberRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.authorityUtils = authorityUtils;
-        this.locationRepository = locationRepository;
-    }
+    private final MemberChatroomRepository memberChatroomRepository;
 
     /* 회원가입 */
     public Member saveMember(Member member) {
@@ -79,7 +78,12 @@ public class MemberService {
         Optional.ofNullable(member.getNickname())
                 .ifPresent(nickname -> {
                     verifiedNicknameExists(nickname);
+
+                    String curNick = findMember.getNickname();
                     findMember.setNickname(nickname);
+                    memberChatroomRepository.findByRoomNameAndChatroom_RoomType(curNick, Chatroom.RoomType.PERSONAL)
+                            .stream()
+                            .forEach(mc -> mc.setRoomName(nickname));
                 });
         Optional.ofNullable(member.getIsMale())
                 .ifPresent(findMember::setIsMale);

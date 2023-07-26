@@ -1,5 +1,6 @@
 package com.momo.security.config;
 
+import com.momo.chat.repository.MemberChatroomRepository;
 import com.momo.location.repository.LocationRepository;
 import com.momo.member.repository.MemberRepository;
 import com.momo.member.service.MemberService;
@@ -14,7 +15,8 @@ public class JavaConfiguration {
     public MemberService dbMemberService(MemberRepository memberRepository,
                                          PasswordEncoder passwordEncoder,
                                          MomoAuthorityUtils authorityUtils,
-                                         LocationRepository locationRepository) {
-        return new MemberService(memberRepository, passwordEncoder, authorityUtils, locationRepository);
+                                         LocationRepository locationRepository,
+                                         MemberChatroomRepository memberChatroomRepository) {
+        return new MemberService(memberRepository, passwordEncoder, authorityUtils, locationRepository, memberChatroomRepository);
     }
 }
