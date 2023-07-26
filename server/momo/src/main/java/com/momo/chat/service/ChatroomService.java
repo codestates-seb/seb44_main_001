@@ -1,11 +1,13 @@
 package com.momo.chat.service;
 
 import com.momo.chat.dto.MessageResponseDto;
+import com.momo.chat.entity.ChatPing;
 import com.momo.chat.entity.Chatroom;
 import com.momo.chat.entity.MemberChatroom;
 import com.momo.chat.entity.Message;
 import com.momo.chat.repository.ChatroomRepository;
 import com.momo.chat.repository.MemberChatroomRepository;
+import com.momo.chat.repository.ChatPingRepository;
 import com.momo.chat.repository.MessageRepository;
 import com.momo.exception.BusinessLogicException;
 import com.momo.exception.ExceptionCode;
@@ -30,6 +32,7 @@ public class ChatroomService {
     private final MemberChatroomRepository memberChatroomRepository;
     private final ChatroomRepository chatroomRepository;
     private final MessageRepository messageRepository;
+    private final ChatPingRepository chatPingRepository;
     private final SimpMessagingTemplate template;
 
     public Chatroom createChatroom(Long memberId, Long otherMemberId, String roomName, String roomType) {
@@ -113,6 +116,20 @@ public class ChatroomService {
         Member member = memberRepository.findById(memberId).get();
 
         List<MemberChatroom> memberChatRooms = memberChatroomRepository.getRooms(member);
+
+        Optional<ChatPing> optionalChatPing = chatPingRepository.findByMember(member);
+        if (optionalChatPing.isEmpty()) {
+            ChatPing ping = ChatPing.builder()
+                    .member(member)
+                    .lastPing(System.currentTimeMillis())
+                    .build();
+            chatPingRepository.save(ping);
+        } else {
+            ChatPing chatPing = optionalChatPing.get();
+            chatPing.updatePing(System.currentTimeMillis());
+            chatPingRepository.save(chatPing);
+        }
+
 
         return memberChatRooms;
     }
