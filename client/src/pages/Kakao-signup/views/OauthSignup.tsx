@@ -39,7 +39,7 @@ export default function OauthSignup() {
     (state: RootState) => state.authSignup,
   );
 
-  const memberId = useSelector((state:RootState)=>state.myData);
+  const memberId = useSelector((state:RootState)=>state.myData.memberId);
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
