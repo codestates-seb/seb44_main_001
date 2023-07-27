@@ -17,7 +17,7 @@ export default function OauthCallback() {
 
     if (token && memberId) {
       localStorage.setItem('Authorization', `Bearer ${token}`);
-      localStorage.setItem('RefreshToken', `Bearer ${refreshToken}`)
+      localStorage.setItem('RefreshToken', `${refreshToken}`)
 
       const storedAccessToken = localStorage.getItem('Authorization');
       const storedRefreshToken = localStorage.getItem('RefreshToken');
