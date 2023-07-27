@@ -1,10 +1,12 @@
 import axios from 'axios';
 
 export const deleteMember = async (url: string) => {
-  const token = localStorage.getItem('Authorization');
+  const accessToken = localStorage.getItem('Authorization');
+  const refreshToken = localStorage.getItem('RefreshToken');
 
   const headers = {
-    Authorization: token,
+    Authorization: accessToken,
+    Refresh: refreshToken,
   };
 
   const res = await axios.delete(url, { headers });
