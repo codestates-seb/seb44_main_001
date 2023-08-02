@@ -16,13 +16,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setUpdatedUser } from '../store/UpdatedUserData';
 import { MemberPatchDto, SignupPatchData } from '../../../common/type';
 import { RootState } from '../../../common/store/RootStore';
-import { UseMutationResult, useMutation, useQueryClient } from 'react-query';
+import {
+  UseMutationResult,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from 'react-query';
 import { BASE_URL } from '../../../common/util/constantValue';
 import { useNavigate } from 'react-router-dom';
 import { setMyData } from '../../Login/store/MyUserData';
 import { AxiosError } from 'axios';
 import { patchMyData } from '../api/patchMyData';
 import { setTokenData } from '../../Login/store/userTokenStore';
+import MyData from '../../Login/api/getMyData';
 
 export default function OauthSignup() {
   const [nickname, setNickname] = useState('');
@@ -38,6 +44,10 @@ export default function OauthSignup() {
   const patchData: SignupPatchData = useSelector(
     (state: RootState) => state.authSignup,
   );
+
+  const memberId = useSelector((state: RootState) => state.myData.memberId);
+  
+  const token = localStorage.getItem('Authorization');
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -71,13 +81,25 @@ export default function OauthSignup() {
     dispatch(setMyData({ ...patchData, welcomeMsg: e.target.value }));
   };
 
+  useQuery<void, AxiosError, number>(
+    ['userInfo',memberId],
+    () => MyData(`${BASE_URL}/members/userInfo`),
+    {
+      onSuccess: (data) => {
+        dispatch(setMyData(data));
+      },
+      onError: (error) => {
+        console.error('오류가 발생했습니다.', error.message);
+      },
+    },
+  );
+
   const patchInfoMutation: UseMutationResult<
     void,
     AxiosError,
     MemberPatchDto | SignupPatchData
   > = useMutation(
     (memberPatchDto) => {
-      const memberId = localStorage.getItem('MemberId');
       const url = `${BASE_URL}/members/${memberId}`;
       return patchMyData(url, memberPatchDto as MemberPatchDto);
     },
@@ -88,7 +110,7 @@ export default function OauthSignup() {
       },
       onError: (error) => {
         if (error.response?.status === 500) {
-          console.log('오예스에서 500이 떴답니다~~~!!!!!!!~');
+          console.error('500 error occurred during the OAuth process ');
         } else {
           console.error(error);
         }
@@ -97,7 +119,6 @@ export default function OauthSignup() {
   );
 
   const handleSignup = () => {
-    const token = localStorage.getItem('Authorization');
     if (nickname === '' || age === null || isMale === null) {
       alert('필수 항목을 모두 채워주세요.');
       window.scrollTo({
@@ -105,8 +126,8 @@ export default function OauthSignup() {
         behavior: 'smooth',
       });
     }
-    if (localStorage.getItem('MemberId')) {
-      dispatch(setTokenData({ token: `Bearer ${token}`}));
+    if (token) {
+      dispatch(setTokenData({ token: `${token}` }));
       patchInfoMutation.mutate(patchData);
     }
     navigation('/lists');

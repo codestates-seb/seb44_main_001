@@ -4,6 +4,7 @@ import { EditMember } from '../../../common/type';
 
 export const patchMyDataImg = async (url: string, data: EditMember) => {
   const token = localStorage.getItem('Authorization');
+  const refreshToken = localStorage.getItem('RefreshToken');
 
   const formData = new FormData();
   if (data.file) {
@@ -18,6 +19,7 @@ export const patchMyDataImg = async (url: string, data: EditMember) => {
 
   const headers = {
     Authorization: token,
+    Refresh: refreshToken,
     'Content-Type': 'multipart/form-data',
   };
 

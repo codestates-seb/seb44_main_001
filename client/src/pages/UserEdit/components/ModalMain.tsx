@@ -26,6 +26,7 @@ export default function ModalMain({
         navigate('/');
       },
       onError: (error) => {
+        alert("서버에 오류가 생겼습니다.")
         console.error(error);
       },
     },

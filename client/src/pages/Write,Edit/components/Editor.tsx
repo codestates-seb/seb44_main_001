@@ -37,19 +37,20 @@ function Editor({ data }: { data: ArticleToPost }) {
 
       try {
         const result = await axios.post(
-          `${BASE_URL}/posts/upload-imag`,
+          `${BASE_URL}/posts/upload-image`,
           formData,
         );
 
         console.log(result);
 
-        const IMG_URL = result.data.url;
+        const IMG_URL = result.data;
 
         const editor = quillRef.current && quillRef.current.getEditor();
 
-        const range = editor?.getSelection();
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+        const range = editor?.getSelection()!;
 
-        range?.index && editor?.insertEmbed(range?.index, 'image', IMG_URL);
+        editor?.insertEmbed(range?.index, 'image', IMG_URL);
       } catch (error) {
         console.log(error);
       }
