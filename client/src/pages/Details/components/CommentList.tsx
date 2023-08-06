@@ -265,7 +265,7 @@ const Container = styled.section`
 
   > :first-child {
     margin-bottom: 1rem;
-    font-family: 'BR-Bold';
+    font-family: 'JamsilBd';
   }
 
   > :nth-child(2) {
@@ -309,7 +309,7 @@ const CommentInfo = styled.div`
       }
 
       > :nth-child(2) {
-        font-family: 'BR-Bold';
+        font-family: 'JamsilBd';
         font-size: var(--font-size-xs);
         cursor: pointer;
       }
@@ -350,7 +350,6 @@ const CommentEditIcons = styled.div`
 const CommentEdit = styled.div`
   > textarea {
     margin-bottom: 1rem;
-    font-family: 'BR-regular';
     font-size: var(--font-size-s);
     width: 100%;
     border: 2px solid var(--color-black);
