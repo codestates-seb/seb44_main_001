@@ -188,7 +188,7 @@ const FeedSection = styled.div`
   margin-top: 1rem;
   .username {
     font-size: var(--font-size-m);
-    font-family: 'BR-Bold';
+    font-family: 'JamsilBd';
   }
 `;
 

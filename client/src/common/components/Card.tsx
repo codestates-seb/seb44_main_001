@@ -109,7 +109,7 @@ const Content = styled.div`
   margin-top: 1rem;
   flex-grow: 1;
   .title {
-    font-family: 'BR-Bold';
+    font-family: 'JamsilBd';
     font-size: var(--font-size-m);
     margin-bottom: 0.5rem;
   }

@@ -26,7 +26,6 @@ const ButtonContainer = styled.button`
   border-style: solid;
   border-color: var(--color-black);
   font-size: 16px;
-  font-family: 'BR-Regular';
 
   &:hover {
     background-color: var(--color-pink-2);
