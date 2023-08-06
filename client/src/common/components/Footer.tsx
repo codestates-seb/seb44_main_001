@@ -45,7 +45,7 @@ export default function Footer() {
   return (
     <Wapper>
       <Content>
-        Copyright 2023. [ FE{' '}
+        Copyright 2023 [ FE{' '}
         {feTeam.map((user, index) => (
           <span key={user.github}>
             <LinkWithTooltip
@@ -71,7 +71,7 @@ export default function Footer() {
             {index < beTeam.length - 1 && ' '}
           </span>
         ))}
-        ]. All rights reserved.
+        ] All rights reserved
       </Content>
     </Wapper>
   );
@@ -85,6 +85,9 @@ const Wapper = styled.footer`
   width: 100%;
   position: absolute;
   border-top: 1px solid var(--color-gray);
+  @media (max-width: 598px) {
+    display: none;
+  }
 `;
 
 const Content = styled.div`

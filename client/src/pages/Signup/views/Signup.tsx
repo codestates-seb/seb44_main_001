@@ -340,7 +340,6 @@ export const TextAreaInput = styled.textarea<TextAreaProps>`
   border-radius: 5px;
   margin-top: 10px;
   font-size: small;
-  font-family: 'BR-Regular';
   resize: none;
   &:focus {
     outline: none;
