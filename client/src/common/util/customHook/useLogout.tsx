@@ -1,10 +1,9 @@
 import { useMutation } from 'react-query';
 import { BASE_URL } from '../constantValue';
-import { postLogout } from './api/postLogout';
+import { postData } from '../../apis';
 
 export default function useLogout() {
-
-    useMutation(['getLocation'], () => postLogout(`${BASE_URL}/auth/logout`));
+  useMutation(() => postData(`${BASE_URL}/auth/logout`, null));
 
   return;
 }
