@@ -5,13 +5,12 @@ import { setChatInvitationModal } from '../store/ChatInvitationModal';
 import { chatInvitationModalStyle } from '../chatInvitationModalStyle';
 import { styled } from 'styled-components';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import getUserNickname from '../api/getUserNickname';
 import { BASE_URL } from '../../../util/constantValue';
 import { ChangeEvent, useState } from 'react';
 import profile from '../../../../common/assets/profile.svg';
 import { Nickname, RoomMember } from '../../../type';
-import postInvitation from '../api/postInvitation';
 import Button from '../../Button';
+import { getData, postData } from '../../../apis';
 
 export default function ChatInvitationModal({
   roomId,
@@ -32,7 +31,7 @@ export default function ChatInvitationModal({
 
   useQuery(
     ['nickname', searchItem],
-    () => getUserNickname(`${BASE_URL}/members/search?nickname=${searchItem}`),
+    () => getData(`${BASE_URL}/members/search?nickname=${searchItem}`),
     {
       enabled: isOpen && searchItem.length !== 0,
       onSuccess: (data) => {
@@ -44,7 +43,7 @@ export default function ChatInvitationModal({
   );
 
   const inviteMutation = useMutation('invite', (memberId: number) =>
-    postInvitation(`${BASE_URL}/rooms/invite`, {
+    postData(`${BASE_URL}/rooms/invite`, {
       memberId: memberId,
       roomId: roomId,
     }),

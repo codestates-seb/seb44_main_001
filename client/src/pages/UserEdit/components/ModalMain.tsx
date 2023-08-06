@@ -1,10 +1,10 @@
 import { styled } from 'styled-components';
 import Button from '../../../common/components/Button';
-import { deleteMember } from '../api/deleteMember';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import { BASE_URL } from '../../../common/util/constantValue';
 import cryingMoMo2 from '../../../common/assets/images/cryingMomo2.svg';
+import { deleteData } from '../../../common/apis';
 
 type HandleModalChangeFunction = () => void;
 
@@ -18,15 +18,15 @@ export default function ModalMain({
   const navigate = useNavigate();
 
   const deleteMemberMutation = useMutation<void, unknown, void>(
-    () => deleteMember(`${BASE_URL}/members/${memberId}`),
+    () => deleteData(`${BASE_URL}/members/${memberId}`),
     {
       onSuccess: () => {
         localStorage.clear();
-        alert("회원 탈퇴 정상 처리 되었습니다. 감사합니다.")
+        alert('회원 탈퇴 정상 처리 되었습니다. 감사합니다.');
         navigate('/');
       },
       onError: (error) => {
-        alert("서버에 오류가 생겼습니다.")
+        alert('서버에 오류가 생겼습니다.');
         console.error(error);
       },
     },

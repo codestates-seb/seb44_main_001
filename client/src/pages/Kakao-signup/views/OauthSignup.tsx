@@ -26,9 +26,8 @@ import { BASE_URL } from '../../../common/util/constantValue';
 import { useNavigate } from 'react-router-dom';
 import { setMyData } from '../../Login/store/MyUserData';
 import { AxiosError } from 'axios';
-import { patchMyData } from '../api/patchMyData';
 import { setTokenData } from '../../Login/store/userTokenStore';
-import MyData from '../../Login/api/getMyData';
+import { getData, patchData } from '../../../common/apis';
 
 export default function OauthSignup() {
   const [nickname, setNickname] = useState('');
@@ -41,49 +40,49 @@ export default function OauthSignup() {
   const dispatch = useDispatch();
   const navigation = useNavigate();
 
-  const patchData: SignupPatchData = useSelector(
+  const data: SignupPatchData = useSelector(
     (state: RootState) => state.authSignup,
   );
 
   const memberId = useSelector((state: RootState) => state.myData.memberId);
-  
+
   const token = localStorage.getItem('Authorization');
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     const noSpaceValue = value.replace(/\s+/g, '');
     setNickname(noSpaceValue);
-    dispatch(setUpdatedUser({ ...patchData, nickname: noSpaceValue }));
-    dispatch(setMyData({ ...patchData, nickname: noSpaceValue }));
+    dispatch(setUpdatedUser({ ...data, nickname: noSpaceValue }));
+    dispatch(setMyData({ ...data, nickname: noSpaceValue }));
   };
 
   const handleBirthYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setAge(parseInt(e.target.value));
-    dispatch(setUpdatedUser({ ...patchData, age: e.target.value }));
-    dispatch(setMyData({ ...patchData, age: e.target.value }));
+    dispatch(setUpdatedUser({ ...data, age: e.target.value }));
+    dispatch(setMyData({ ...data, age: e.target.value }));
   };
 
   const handleIsMaleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const isMale = e.target.value === 'male';
     setIsMale(isMale);
-    dispatch(setUpdatedUser({ ...patchData, isMale: isMale }));
-    dispatch(setMyData({ ...patchData, isMale: isMale }));
+    dispatch(setUpdatedUser({ ...data, isMale: isMale }));
+    dispatch(setMyData({ ...data, isMale: isMale }));
   };
 
   const onLocationChange = (locationId: number | null) => {
-    dispatch(setUpdatedUser({ ...patchData, locationId: locationId }));
-    dispatch(setMyData({ ...patchData, locationId: locationId }));
+    dispatch(setUpdatedUser({ ...data, locationId: locationId }));
+    dispatch(setMyData({ ...data, locationId: locationId }));
   };
 
   const handleWelcomeMsgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setWelcomeMsg(e.target.value);
-    dispatch(setUpdatedUser({ ...patchData, welcomeMsg: e.target.value }));
-    dispatch(setMyData({ ...patchData, welcomeMsg: e.target.value }));
+    dispatch(setUpdatedUser({ ...data, welcomeMsg: e.target.value }));
+    dispatch(setMyData({ ...data, welcomeMsg: e.target.value }));
   };
 
   useQuery<void, AxiosError, number>(
-    ['userInfo',memberId],
-    () => MyData(`${BASE_URL}/members/userInfo`),
+    ['userInfo', memberId],
+    () => getData(`${BASE_URL}/members/userInfo`),
     {
       onSuccess: (data) => {
         dispatch(setMyData(data));
@@ -101,7 +100,7 @@ export default function OauthSignup() {
   > = useMutation(
     (memberPatchDto) => {
       const url = `${BASE_URL}/members/${memberId}`;
-      return patchMyData(url, memberPatchDto as MemberPatchDto);
+      return patchData(url, memberPatchDto as MemberPatchDto);
     },
     {
       onSuccess: () => {
@@ -128,7 +127,7 @@ export default function OauthSignup() {
     }
     if (token) {
       dispatch(setTokenData({ token: `${token}` }));
-      patchInfoMutation.mutate(patchData);
+      patchInfoMutation.mutate(data);
     }
     navigation('/lists');
   };

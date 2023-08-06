@@ -1,6 +1,6 @@
 import { styled } from 'styled-components';
 import { useInfiniteQuery, UseInfiniteQueryResult } from 'react-query';
-import { getUserPosts } from '../api/getUserPosts';
+import { getUserPosts } from '../../../common/apis';
 import { CardData } from '../../../common/type';
 import { BASE_URL } from '../../../common/util/constantValue';
 import Card from '../../../common/components/Card';

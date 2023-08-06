@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const getData = async (
+export const getList = async (
   url: string,
   keyword: string | undefined,
   selectedCategory: number | undefined,

@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import { BASE_URL } from '../constantValue';
-import getLocation from './api/getLocation';
+import { getData } from '../../apis';
 
 export default function useLocationSetter() {
   const queryClient = useQueryClient();
 
-  useQuery(['getLocation'], () => getLocation(`${BASE_URL}/locations`), {
+  useQuery(['getLocation'], () => getData(`${BASE_URL}/locations`), {
     enabled: false,
     onSuccess: (data) => {
       if (data) {

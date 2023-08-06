@@ -8,17 +8,14 @@ import SemiHeader from '../../../common/components/SemiHeader';
 import { Background, Text, TextInput } from '../../Signup/views/Signup';
 import { RootState } from '../../../common/store/RootStore';
 import { LoginData, TokenType } from '../../../common/type';
-import loginData from '../api/postLogin';
+import { loginData, getData } from '../../../common/apis';
 import { AxiosError } from 'axios';
 import { setLoginUser } from '../store/LoginUser';
 import { setTokenData } from '../store/userTokenStore';
-
 import kakao from '../../../common/assets/logo/kakao-logo.png';
 import google from '../../../common/assets/logo/google-logo.png';
 import Button from '../../../common/components/Button';
-
 import { BASE_URL } from '../../../common/util/constantValue';
-import MyData from '../api/getMyData';
 import { setMyData } from '../store/MyUserData';
 import { GoogleBtn, KakaoBtn } from '../../../common/components/Header';
 
@@ -77,7 +74,7 @@ export default function Login() {
 
   const fetchUser = useMutation<void, unknown>(
     () => {
-      return MyData(`${BASE_URL}/members/userInfo`);
+      return getData(`${BASE_URL}/members/userInfo`);
     },
     {
       onSuccess: (userData) => {

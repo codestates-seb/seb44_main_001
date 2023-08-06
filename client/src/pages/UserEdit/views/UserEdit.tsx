@@ -20,14 +20,13 @@ import LocationSelector from '../../../common/components/LocationSelector';
 import { setCategory } from '../../../common/store/CategoryStore';
 import { setLocation } from '../../../common/store/LocationStore';
 import { resetCreatedPost } from '../../Write,Edit/store/CreatedPost';
-import { patchMyDataImg } from '../api/patchMyDataImg';
+import { patchMyDataImg, patchData } from '../../../common/apis';
 import Button from '../../../common/components/Button';
 import { UseMutationResult, useMutation, useQueryClient } from 'react-query';
 import { BASE_URL } from '../../../common/util/constantValue';
 import Modal from 'react-modal';
 import { ModalStyle } from '../ModalStyle';
 import ModalMain from '../components/ModalMain';
-import { patchMyDataInfo } from '../api/patchMyDataInfo';
 import { AxiosError } from 'axios';
 
 export default function UserEdit() {
@@ -36,7 +35,7 @@ export default function UserEdit() {
 
   const myData = useSelector((state: RootState) => state.myData);
   const location = useSelector((state: RootState) => state.location);
-  
+
   const queryClient = useQueryClient();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -104,7 +103,7 @@ export default function UserEdit() {
     useMutation(
       (memberPatchDto) => {
         const url = `${BASE_URL}/members/${myData.memberId}`;
-        return patchMyDataInfo(url, memberPatchDto);
+        return patchData(url, memberPatchDto);
       },
       {
         onSuccess: () => {
@@ -210,7 +209,10 @@ export default function UserEdit() {
               style={ModalStyle}
               onRequestClose={handleModalChange}
             >
-              <ModalMain memberId={myData.memberId} handleModalChange={handleModalChange} />
+              <ModalMain
+                memberId={myData.memberId}
+                handleModalChange={handleModalChange}
+              />
             </Modal>
           </Background>
         </AllContainer>

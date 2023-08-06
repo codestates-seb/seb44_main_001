@@ -8,16 +8,13 @@ import { FiSend } from 'react-icons/fi';
 import { BASE_URL } from '../../../util/constantValue';
 import { PrevChatData, PostChat, ChatData, RoomMember } from '../../../type';
 import { useMutation, useQuery } from 'react-query';
-import getPrevChat from '../api/getPrevChat';
-import postChat from '../api/postChat';
-import postOffline from '../api/postOffline';
 import { calculateTimeDifference } from '../../../util/timeDifferenceCalculator';
 import { BsFillPersonFill, BsPersonPlusFill } from 'react-icons/bs';
 import ChatInvitationModal from './ChatInvitationModal';
 import { setChatInvitationModal } from '../store/ChatInvitationModal';
 import { CgCloseR } from 'react-icons/cg';
-import getRoomMember from '../api/getRoomMember';
 import RoomMemberModal from './RoomMemberModal';
+import { getData, postData } from '../../../apis';
 
 export default function ChatRoom({
   messages,
@@ -58,7 +55,7 @@ export default function ChatRoom({
 
   useQuery<PrevChatData, unknown>(
     'prevChats',
-    () => getPrevChat(`${BASE_URL}/rooms/${roomId}`),
+    () => getData(`${BASE_URL}/rooms/${roomId}`),
     {
       enabled: roomId !== 0 && roomId !== undefined,
       onSuccess: (data) => {
@@ -75,19 +72,19 @@ export default function ChatRoom({
 
   const { data: roomMember } = useQuery<RoomMember[], unknown>(
     'roomMember',
-    () => getRoomMember(`${BASE_URL}/rooms/${roomId}/members`),
+    () => getData(`${BASE_URL}/rooms/${roomId}/members`),
     {
       enabled: roomId !== 0 && roomId !== undefined,
     },
   );
 
   const postMutation = useMutation<void, unknown, PostChat>('postChat', () =>
-    postChat(`${BASE_URL}/chats`, myChat),
+    postData(`${BASE_URL}/chats`, myChat),
   );
 
   const postOfflineMutation = useMutation<void, unknown, number>(
     'postOffline',
-    (roomId) => postOffline(`${BASE_URL}/rooms/${roomId}/offline`),
+    (roomId) => postData(`${BASE_URL}/rooms/${roomId}/offline`, null),
   );
 
   useEffect(() => {

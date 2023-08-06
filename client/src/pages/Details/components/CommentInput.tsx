@@ -8,10 +8,10 @@ import Button from '../../../common/components/Button';
 import { ChangeEvent, KeyboardEvent, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { CommentToPost } from '../../../common/type';
-import postComment from '../api/postComment';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../common/store/RootStore';
+import { postData } from '../../../common/apis';
 
 export default function CommentInput() {
   const [content, setContent] = useState('');
@@ -30,7 +30,7 @@ export default function CommentInput() {
   const queryClient = useQueryClient();
 
   const postMutation = useMutation<void, unknown, CommentToPost>(
-    () => postComment(`${BASE_URL}/comments/${id}`, data),
+    () => postData(`${BASE_URL}/comments/${id}`, data),
     {
       onSuccess: () => {
         queryClient.invalidateQueries('comments');

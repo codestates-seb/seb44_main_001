@@ -14,7 +14,6 @@ import {
 } from 'react-query';
 import { ChangeEvent, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import getComment from '../api/getComment';
 import {
   CommentListToGet,
   CommentToGet,
@@ -23,13 +22,12 @@ import {
 import { setTotalComments } from '../../../common/store/CommentPageStore';
 import { useDispatch, useSelector } from 'react-redux';
 import { MdModeEditOutline } from 'react-icons/md';
-import deleteComment from '../api/deleteComment';
 import Button from '../../../common/components/Button';
-import patchComment from '../api/patchComment';
 import { calculateTimeDifference } from '../../../common/util/timeDifferenceCalculator';
 import profile from '../../../common/assets/profile.svg';
 import UserModal from './UserModal';
 import { RootState } from '../../../common/store/RootStore';
+import { deleteData, getData, patchData } from '../../../common/apis';
 
 export default function CommentList() {
   const queryClient = useQueryClient();
@@ -62,7 +60,7 @@ export default function CommentList() {
     isLoading,
   }: UseQueryResult<CommentListToGet, unknown> = useQuery(
     ['comments', id, page, size],
-    () => getComment(`${BASE_URL}/comments/${id}?page=${page}&size=${size}`),
+    () => getData(`${BASE_URL}/comments/${id}?page=${page}&size=${size}`),
     {
       onSuccess: (response) => {
         dispatch(setTotalComments(response.pageInfo.totalElements));
@@ -71,7 +69,7 @@ export default function CommentList() {
   );
 
   const patchItemMutation = useMutation<void, unknown, CommentToPost>(
-    () => patchComment(`${BASE_URL}/comments/${commentId}`, editedComment),
+    () => patchData(`${BASE_URL}/comments/${commentId}`, editedComment),
     {
       onSuccess: () => {
         queryClient.invalidateQueries('comments');
@@ -81,7 +79,7 @@ export default function CommentList() {
   );
 
   const deleteItemMutation = useMutation<void, unknown, void>(
-    () => deleteComment(`${BASE_URL}/comments/${commentId}/${memberId}`),
+    () => deleteData(`${BASE_URL}/comments/${commentId}/${memberId}`),
     {
       onSuccess: () => {
         queryClient.invalidateQueries('comments');

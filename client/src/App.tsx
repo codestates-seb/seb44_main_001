@@ -2,7 +2,6 @@ import { useQuery } from 'react-query';
 import Router from './Router';
 import Header from './common/components/Header';
 import { GlobalStyle } from './common/style';
-import MyData from './pages/Login/api/getMyData';
 import { BASE_URL } from './common/util/constantValue';
 import { useDispatch } from 'react-redux';
 import { setMyData } from './pages/Login/store/MyUserData';
@@ -12,6 +11,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import ChatModal from './common/components/Chat/views/ChatModal';
 import { Quill } from 'react-quill';
 import { ImageResize } from 'quill-image-resize-module-ts';
+import { getData } from './common/apis';
 
 Quill.register('modules/imageResize', ImageResize);
 
@@ -24,7 +24,7 @@ export default function App() {
 
   useQuery<void, AxiosError, number>(
     'userInfo',
-    () => MyData(`${BASE_URL}/members/userInfo`),
+    () => getData(`${BASE_URL}/members/userInfo`),
     {
       enabled: !!token,
       onSuccess: (data) => {

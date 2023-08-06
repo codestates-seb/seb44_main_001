@@ -7,7 +7,6 @@ import SemiHeader from '../../../common/components/SemiHeader';
 import { Layout } from '../../../common/style';
 import Button from '../../../common/components/Button';
 import LocationSelector from '../../../common/components/LocationSelector';
-import signupData from '../api/postSignup';
 import { SignupData } from '../../../common/type';
 import { RootState } from '../../../common/store/RootStore';
 import { setSignupUser } from '../store/SignupUser';
@@ -16,6 +15,7 @@ import { setCategory } from '../../../common/store/CategoryStore';
 import { setLocation } from '../../../common/store/LocationStore';
 import { resetCreatedPost } from '../../Write,Edit/store/CreatedPost';
 import { AxiosError } from 'axios';
+import { postData } from '../../../common/apis';
 
 interface TextInputProps {
   type?: string;
@@ -61,7 +61,7 @@ export default function Signup() {
     void,
     AxiosError<ErrorResponse>,
     SignupData
-  >((data) => signupData(`${BASE_URL}/members/register`, data), {
+  >((data) => postData(`${BASE_URL}/members/register`, data), {
     onSuccess: () => {
       navigation('/login');
     },
