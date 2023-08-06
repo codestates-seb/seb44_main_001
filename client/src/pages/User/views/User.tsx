@@ -11,11 +11,11 @@ import { Background } from '../../Signup/views/Signup';
 import profile from '../../../common/assets/profile.svg';
 import { RootState } from '../../../common/store/RootStore';
 import { BASE_URL } from '../../../common/util/constantValue';
-import getMember from '../api/getMember';
 import { PiMapPinBold } from 'react-icons/pi';
 import { setUserData } from '../store/MemberStore';
 import UserPostsCards from '../components/userPostsCards';
 import { ALERTLOGIN } from '../../../common/util/constantValue';
+import { getData } from '../../../common/apis';
 
 export default function User() {
   const navigate = useNavigate();
@@ -38,7 +38,7 @@ export default function User() {
 
   const fetchUser = useMutation<void, unknown, number>(
     (memberId: number) => {
-      return getMember(`${BASE_URL}/members/${memberId}`, token as string);
+      return getData(`${BASE_URL}/members/${memberId}`);
     },
     {
       onSuccess: (data) => {

@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import { BASE_URL } from '../constantValue';
-import getCategory from './api/getCategory';
+import { getData } from '../../apis';
 
 export default function useCategorySetter() {
   const queryClient = useQueryClient();
 
-  useQuery(['getCategory'], () => getCategory(`${BASE_URL}/categories`), {
+  useQuery(['getCategory'], () => getData(`${BASE_URL}/categories`), {
     enabled: false,
     onSuccess: (data) => {
       if (data) {

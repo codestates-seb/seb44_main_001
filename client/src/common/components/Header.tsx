@@ -19,10 +19,10 @@ import profile from '../assets/profile.svg';
 import kakao from '../../common/assets/logo/kakao-logo.png';
 import google from '../../common/assets/logo/google-logo.png';
 
-import { postLogout } from '../util/customHook/api/postLogout';
 import { setChatModal } from '../store/ChatModalStore';
 import { useMutation } from 'react-query';
 import { resetCreatedPost } from '../../pages/Write,Edit/store/CreatedPost';
+import { postData } from '../apis';
 Modal.setAppElement('#root');
 
 export default function Header() {
@@ -40,7 +40,7 @@ export default function Header() {
 
   const logoutPostMutaion = useMutation(
     () => {
-      return postLogout(`${BASE_URL}/auth/logout`);
+      return postData(`${BASE_URL}/auth/logout`, null);
     },
     {
       onSuccess: () => {
@@ -80,9 +80,7 @@ export default function Header() {
 
   return (
     <Head>
-      <Link
-        to="/lists"
-      >
+      <Link to="/lists">
         <Logo>
           <img src={logo} alt="로고이미지" style={{ height: '39px' }} />
           <HoverImage

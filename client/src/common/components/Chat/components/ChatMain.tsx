@@ -6,13 +6,13 @@ import { ChatRoomData, Room } from '../../../type';
 import { BASE_URL } from '../../../util/constantValue';
 import { calculateTimeDifference } from '../../../util/timeDifferenceCalculator';
 import { UseQueryResult, useMutation } from 'react-query';
-import deleteRoom from '../api/deleteRoom';
 import { useState } from 'react';
 import { BsPeopleFill } from 'react-icons/bs';
 import CreateRoomModal from './CreateRoomModal';
 import { FaPeopleGroup } from 'react-icons/fa6';
 import { CgCloseR } from 'react-icons/cg';
 import { FiPlusCircle } from 'react-icons/fi';
+import { deleteData } from '../../../apis';
 
 export default function ChatMain({
   handleModalClose,
@@ -33,7 +33,7 @@ export default function ChatMain({
 
   const deleteMutation = useMutation(
     'deleteRoom',
-    () => deleteRoom(`${BASE_URL}/rooms/${roomToDelete}`),
+    () => deleteData(`${BASE_URL}/rooms/${roomToDelete}`),
     {
       onSuccess: () => {
         getRoomQuery.refetch();

@@ -13,8 +13,6 @@ import { ChangeEvent, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
-import postData from '../api/postData';
-import patchData from '../api/patchData';
 import LocationSelector from '../../../common/components/LocationSelector';
 import CategorySelector from '../../../common/components/CategorySelector';
 import TagsInput from './TagsInput';
@@ -25,6 +23,7 @@ import { ArticleToGet, ArticleToPost } from '../../../common/type';
 import { resetCreatedPost, setCreatedPost } from '../store/CreatedPost';
 import { setCategory } from '../../../common/store/CategoryStore';
 import { setLocation } from '../../../common/store/LocationStore';
+import { patchData, postData } from '../../../common/apis';
 
 export default function Form() {
   const navigate = useNavigate();

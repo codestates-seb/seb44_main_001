@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
 
 import { RootState } from '../../../common/store/RootStore';
-import { getData } from '../api/getData';
+import { getList } from '../../../common/apis';
 import { CardData } from '../../../common/type';
 import { BASE_URL } from '../../../common/util/constantValue';
 import { setCategory } from '../../../common/store/CategoryStore';
@@ -46,7 +46,7 @@ export default function Cards() {
       const categoryId =
         selectedCategoryId === 1 ? undefined : selectedCategoryId;
       const locationId = selectedLocationId;
-      return getData(urlPath, searchData, categoryId, locationId, pageParam);
+      return getList(urlPath, searchData, categoryId, locationId, pageParam);
     },
     {
       getNextPageParam: (lastPage, allPages) => {

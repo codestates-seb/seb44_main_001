@@ -2,7 +2,6 @@ import { AiFillDelete } from 'react-icons/ai';
 import { useMutation, useQueryClient } from 'react-query';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
-import deleteArticle from '../api/deleteArticle';
 import { ArticleToGet } from '../../../common/type';
 import { BASE_URL } from '../../../common/util/constantValue';
 import { MdModeEditOutline } from 'react-icons/md';
@@ -20,9 +19,8 @@ import UserModal from './UserModal';
 import profile from '../../../common/assets/profile.svg';
 import { useEffect } from 'react';
 import { calculateTimeDifference } from '../../../common/util/timeDifferenceCalculator';
-import { postLike } from '../api/postLike';
-import { deleteLike } from '../api/deleteLike';
 import { ALERTLOGIN } from '../../../common/util/constantValue';
+import { deleteData, postData } from '../../../common/apis';
 
 export default function Article({ data }: { data?: ArticleToGet }) {
   const [isLiked, setIsLiked] = useState(false);
@@ -36,13 +34,13 @@ export default function Article({ data }: { data?: ArticleToGet }) {
   const queryClient = useQueryClient();
 
   const token = localStorage.getItem('Authorization');
-  
+
   const { id } = useParams();
-  
+
   const dispatch = useDispatch();
-  
+
   const navigate = useNavigate();
-  
+
   const memberId = useSelector((state: RootState) => state.myData.memberId);
 
   const totalComments = useSelector((state: RootState) => state.totalComments);
@@ -56,14 +54,14 @@ export default function Article({ data }: { data?: ArticleToGet }) {
 
   const postLikeMutaion = useMutation(
     () => {
-      return postLike(`${BASE_URL}/likes/${id}/${memberId}`, {
+      return postData(`${BASE_URL}/likes/${id}/${memberId}`, {
         isLiked: !isLiked,
       });
     },
     {
       onSuccess: (responseData) => {
         setIsLiked(true);
-        setTotalLikes(responseData);
+        setTotalLikes(responseData.likeCount);
       },
       onError: (error) => {
         console.error('요청 실패:', error);
@@ -72,11 +70,11 @@ export default function Article({ data }: { data?: ArticleToGet }) {
   );
 
   const deleteLikeMutation = useMutation(
-    () => deleteLike(`${BASE_URL}/likes/${id}/${memberId}`),
+    () => deleteData(`${BASE_URL}/likes/${id}/${memberId}`),
     {
       onSuccess: (responseData) => {
         setIsLiked(false);
-        setTotalLikes(responseData);
+        setTotalLikes(responseData.likeCount);
       },
       onError: (error) => {
         console.error('요청 실패:', error);
@@ -85,7 +83,7 @@ export default function Article({ data }: { data?: ArticleToGet }) {
   );
 
   const deleteItemMutation = useMutation<void, unknown>(
-    () => deleteArticle(`${BASE_URL}/posts/${id}/${memberId}`),
+    () => deleteData(`${BASE_URL}/posts/${id}/${memberId}`),
     {
       onSuccess: () => {
         queryClient.invalidateQueries('filteredLists');

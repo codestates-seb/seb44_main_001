@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setChatModal } from '../../../common/store/ChatModalStore';
 import { styled } from 'styled-components';
 import { useMutation } from 'react-query';
-import postChatMembers from '../api/postChatMembers';
 import {
   BASE_URL,
   SEND_CHAT,
@@ -14,6 +13,7 @@ import {
 } from '../../../common/util/constantValue';
 import { setChatRoomInfo } from '../../../common/store/ChatRoomInfoStore';
 import { RootState } from '../../../common/store/RootStore';
+import { postData } from '../../../common/apis';
 
 export default function UserModal({
   isUserModalOpen,
@@ -35,7 +35,7 @@ export default function UserModal({
   const postPseronalChatMutation = useMutation(
     'ChatMembers',
     () =>
-      postChatMembers(`${BASE_URL}/rooms/register`, {
+      postData(`${BASE_URL}/rooms/register`, {
         memberId: memberId as number,
         roomName: nickname as string,
         roomType: 'PERSONAL',

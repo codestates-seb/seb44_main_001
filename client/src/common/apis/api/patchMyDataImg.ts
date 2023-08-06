@@ -1,11 +1,7 @@
-import axios from 'axios';
-
-import { EditMember } from '../../../common/type';
+import { EditMember } from '../../type';
+import { instance } from '../utils/instance';
 
 export const patchMyDataImg = async (url: string, data: EditMember) => {
-  const token = localStorage.getItem('Authorization');
-  const refreshToken = localStorage.getItem('RefreshToken');
-
   const formData = new FormData();
   if (data.file) {
     formData.append('image', data.file);
@@ -18,11 +14,9 @@ export const patchMyDataImg = async (url: string, data: EditMember) => {
   formData.append('memberPatchDto', jsonBlob);
 
   const headers = {
-    Authorization: token,
-    Refresh: refreshToken,
     'Content-Type': 'multipart/form-data',
   };
 
-  const res = await axios.patch(url, formData, { headers });
+  const res = await instance.patch(url, formData, { headers });
   return res.data;
 };
