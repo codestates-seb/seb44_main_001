@@ -96,14 +96,13 @@ const Container = styled.section`
 
 const TitleSection = styled.section`
   margin-bottom: 1rem;
-  font-family: 'BR-Bold';
+  font-family: 'JamsilBd';
 `;
 
 const InputSection = styled.section`
   margin-bottom: 1rem;
 
   > textarea {
-    font-family: 'BR-regular';
     font-size: var(--font-size-s);
     width: 100%;
     border: 2px solid var(--color-black);
