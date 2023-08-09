@@ -48,7 +48,7 @@ export type ArticleToGet = {
 };
 
 export type CommentToPost = {
-  memberId: number;
+  memberId: number|undefined;
   content: string;
 };
 
@@ -122,7 +122,7 @@ export type LoginData = {
 export type Member = {
   memberId: number;
   email: string;
-  location: Locations;
+  location: Location;
   welcomeMsg: string;
   profileImage: string | null;
   nickname: string;
@@ -200,7 +200,7 @@ export type IsLikedType = {
 };
 
 export type NewRoom = {
-  memberId: number;
+  memberId: number|undefined;
   roomName: string;
   roomType: string;
 };

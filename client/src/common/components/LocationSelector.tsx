@@ -103,11 +103,9 @@ export default function LocationSelector({
             ))}
         </select>
         <select id="province" value={province} onChange={handleProvinceChange}>
-          {/* {pathname !== '/lists' ? ( */}
-            <option disabled value="">
-              {PROVINCE_MESSAGE}
-            </option>
-          {/* ) : null} */}
+          <option disabled value="">
+            {PROVINCE_MESSAGE}
+          </option>
           {city ? (
             locations
               ?.filter(
