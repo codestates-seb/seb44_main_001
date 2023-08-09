@@ -15,6 +15,7 @@ import { setChatInvitationModal } from '../store/ChatInvitationModal';
 import { CgCloseR } from 'react-icons/cg';
 import RoomMemberModal from './RoomMemberModal';
 import { getData, postData } from '../../../apis';
+import useMyInfo from '../../../util/customHook/useMyInfo';
 
 export default function ChatRoom({
   messages,
@@ -48,8 +49,9 @@ export default function ChatRoom({
   const memberCount = useSelector(
     (state: RootState) => state.chatRoomInfo.memberCount,
   );
+  const { myData } = useMyInfo();
 
-  const userName = useSelector((state: RootState) => state.myData.nickname);
+  const userName = myData?.nickname;
 
   const chatWrapperRef = useRef<HTMLDivElement>(null);
 

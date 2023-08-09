@@ -21,6 +21,7 @@ import { useEffect } from 'react';
 import { calculateTimeDifference } from '../../../common/util/timeDifferenceCalculator';
 import { ALERTLOGIN } from '../../../common/util/constantValue';
 import { deleteData, postData } from '../../../common/apis';
+import useMyInfo from '../../../common/util/customHook/useMyInfo';
 
 export default function Article({ data }: { data?: ArticleToGet }) {
   const [isLiked, setIsLiked] = useState(false);
@@ -41,7 +42,9 @@ export default function Article({ data }: { data?: ArticleToGet }) {
 
   const navigate = useNavigate();
 
-  const memberId = useSelector((state: RootState) => state.myData.memberId);
+  const { myData } = useMyInfo();
+
+  const memberId = myData?.memberId;
 
   const totalComments = useSelector((state: RootState) => state.totalComments);
 

@@ -9,16 +9,17 @@ import { ChangeEvent, KeyboardEvent, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { CommentToPost } from '../../../common/type';
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../common/store/RootStore';
 import { postData } from '../../../common/apis';
+import useMyInfo from '../../../common/util/customHook/useMyInfo';
 
 export default function CommentInput() {
   const [content, setContent] = useState('');
 
   const { id } = useParams();
 
-  const memberId = useSelector((state: RootState) => state.myData.memberId);
+  const { myData } = useMyInfo();
+
+  const memberId = myData?.memberId;
 
   const token = localStorage.getItem('Authorization');
 

@@ -20,14 +20,15 @@ import {
   CommentToPost,
 } from '../../../common/type';
 import { setTotalComments } from '../../../common/store/CommentPageStore';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { MdModeEditOutline } from 'react-icons/md';
 import Button from '../../../common/components/Button';
 import { calculateTimeDifference } from '../../../common/util/timeDifferenceCalculator';
 import profile from '../../../common/assets/profile.svg';
 import UserModal from './UserModal';
-import { RootState } from '../../../common/store/RootStore';
+
 import { deleteData, getData, patchData } from '../../../common/apis';
+import useMyInfo from '../../../common/util/customHook/useMyInfo';
 
 export default function CommentList() {
   const queryClient = useQueryClient();
@@ -38,7 +39,9 @@ export default function CommentList() {
 
   const [currentModal, setCurrentModal] = useState(0);
 
-  const memberId = useSelector((state: RootState) => state.myData.memberId);
+  const { myData } = useMyInfo();
+
+  const memberId = myData?.memberId;
 
   const token = localStorage.getItem('Authorization');
 

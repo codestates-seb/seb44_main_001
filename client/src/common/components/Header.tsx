@@ -1,15 +1,13 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import Modal from 'react-modal';
 
-import { RootState } from '../store/RootStore';
 import { FaArrowRightFromBracket } from 'react-icons/fa6';
 import { HiMiniXMark } from 'react-icons/hi2';
 import { FaPersonRunning } from 'react-icons/fa6';
 import Button from './Button';
-import { resetStates } from '../../pages/Login/store/MyUserData';
 import { BASE_URL } from '../../common/util/constantValue';
 
 import logo from '../assets/logo/MOMO.png';
@@ -23,12 +21,14 @@ import { setChatModal } from '../store/ChatModalStore';
 import { useMutation } from 'react-query';
 import { resetCreatedPost } from '../../pages/Write,Edit/store/CreatedPost';
 import { postData } from '../apis';
+import useMyInfo from '../util/customHook/useMyInfo';
+
 Modal.setAppElement('#root');
 
 export default function Header() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const myData = useSelector((state: RootState) => state.myData);
+  const { myData } = useMyInfo();
 
   const token = localStorage.getItem('Authorization');
 
@@ -44,7 +44,6 @@ export default function Header() {
     },
     {
       onSuccess: () => {
-        dispatch(resetStates());
         navigate('/');
         localStorage.clear();
         dispatch(setChatModal(false));
@@ -62,7 +61,7 @@ export default function Header() {
 
   const handleMyProfile = (e: React.MouseEvent) => {
     e.preventDefault();
-    navigate(`/user/${myData.memberId}`, { state: myData.memberId });
+    navigate(`/user/${myData?.memberId}`, { state: myData?.memberId });
   };
 
   const handleModalOpen = () => {
@@ -94,12 +93,12 @@ export default function Header() {
         <MenuContainer>
           <UserContainer className="margin-left" onClick={handleMyProfile}>
             <img
-              src={myData.profileImage ? `${myData.profileImage}` : profile}
+              src={myData?.profileImage ? `${myData?.profileImage}` : profile}
               alt="프로필사진"
               className="icon user-content"
             />
             <div className="text" style={{ marginLeft: '5px' }}>
-              {myData.nickname}
+              {myData?.nickname}
             </div>
           </UserContainer>
           <Button

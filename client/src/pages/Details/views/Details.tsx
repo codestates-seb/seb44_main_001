@@ -8,10 +8,10 @@ import { UseQueryResult, useQuery } from 'react-query';
 import { ArticleToGet } from '../../../common/type';
 import { BASE_URL } from '../../../common/util/constantValue';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setSelectedCategory } from '../../Lists,Search/store/SelectedCategory';
-import { RootState } from '../../../common/store/RootStore';
 import { getData } from '../../../common/apis';
+import useMyInfo from '../../../common/util/customHook/useMyInfo';
 
 export default function Details() {
   const { id } = useParams();
@@ -20,7 +20,9 @@ export default function Details() {
 
   const navigate = useNavigate();
 
-  const memberId = useSelector((state: RootState) => state.myData.memberId);
+  const { myData } = useMyInfo();
+
+  const memberId = myData?.memberId;
 
   const { data }: UseQueryResult<ArticleToGet, unknown> = useQuery(
     ['getData', id],
