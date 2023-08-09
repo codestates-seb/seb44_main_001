@@ -28,19 +28,20 @@ import Modal from 'react-modal';
 import { ModalStyle } from '../ModalStyle';
 import ModalMain from '../components/ModalMain';
 import { AxiosError } from 'axios';
+import useMyInfo from '../../../common/util/customHook/useMyInfo';
 
 export default function UserEdit() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const myData = useSelector((state: RootState) => state.myData);
+  const { myData } = useMyInfo();
   const location = useSelector((state: RootState) => state.location);
 
   const queryClient = useQueryClient();
 
   const [isOpen, setIsOpen] = useState(false);
-  const [nickname, setNickname] = useState(myData.nickname);
-  const [welcomeMsg, setWelcomeMsg] = useState(myData.welcomeMsg);
+  const [nickname, setNickname] = useState(myData?.nickname);
+  const [welcomeMsg, setWelcomeMsg] = useState(myData?.welcomeMsg);
   const [uploadedImage, setUploadedImage] = useState<string>('');
   const [uploadedFile, setUploadedFile] = useState<File | null | string>(null);
   const [isValidate, setIsValidate] = useState(true);
@@ -49,7 +50,7 @@ export default function UserEdit() {
     setIsOpen(!isOpen);
   };
   useEffect(() => {
-    dispatch(setLocation(myData.location));
+    dispatch(setLocation(myData?.location));
     return () => {
       dispatch(setCategory({ categoryId: 0, name: '' }));
       dispatch(setLocation({ locationId: 0, city: '', province: '' }));
@@ -85,13 +86,13 @@ export default function UserEdit() {
   const patchImgMutation: UseMutationResult<void, unknown, EditMember> =
     useMutation(
       (editedInfo) => {
-        const url = `${BASE_URL}/members/${myData.memberId}/image`;
+        const url = `${BASE_URL}/members/${myData?.memberId}/image`;
         return patchMyDataImg(url, editedInfo);
       },
       {
         onSuccess: () => {
           queryClient.invalidateQueries('userInfo');
-          navigate(`/user/${myData.memberId}`);
+          navigate(`/user/${myData?.memberId}`);
         },
         onError: (error) => {
           console.error(error);
@@ -102,13 +103,13 @@ export default function UserEdit() {
   const patchInfoMutation: UseMutationResult<void, AxiosError, MemberPatchDto> =
     useMutation(
       (memberPatchDto) => {
-        const url = `${BASE_URL}/members/${myData.memberId}`;
+        const url = `${BASE_URL}/members/${myData?.memberId}`;
         return patchData(url, memberPatchDto);
       },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries('userInfo');
-          navigate(`/user/${myData.memberId}`);
+          queryClient.invalidateQueries('myInfo');
+          navigate(`/user/${myData?.memberId}`);
         },
         onError: (error) => {
           if (error.response?.status === 500) {
@@ -131,8 +132,8 @@ export default function UserEdit() {
     }
     const editedInfo: EditMember = {
       memberPatchDto: {
-        ...(myData.nickname === nickname ? {} : { nickname }),
-        ...(myData.welcomeMsg === welcomeMsg ? {} : { welcomeMsg }),
+        ...(myData?.nickname === nickname ? {} : { nickname }),
+        ...(myData?.welcomeMsg === welcomeMsg ? {} : { welcomeMsg }),
         locationId: location.locationId,
       },
       file: uploadedFile,
@@ -154,7 +155,7 @@ export default function UserEdit() {
               {uploadedImage ? (
                 <ProfileImage src={uploadedImage} />
               ) : (
-                <ProfileImage src={myData.profileImage || profile} />
+                <ProfileImage src={myData?.profileImage || profile} />
               )}
               <ImgEditButton>
                 <label className="editLabel" htmlFor="file-input">
@@ -172,7 +173,7 @@ export default function UserEdit() {
               <InputBox>
                 <Text>이메일 주소</Text>
                 <TextInput
-                  value={myData.email}
+                  value={myData?.email}
                   $isValidate={true}
                   onChange={handleNicknameChange}
                   disabled
@@ -210,7 +211,7 @@ export default function UserEdit() {
               onRequestClose={handleModalChange}
             >
               <ModalMain
-                memberId={myData.memberId}
+                memberId={myData?.memberId}
                 handleModalChange={handleModalChange}
               />
             </Modal>

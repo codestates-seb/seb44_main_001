@@ -8,15 +8,13 @@ import SemiHeader from '../../../common/components/SemiHeader';
 import { Background, Text, TextInput } from '../../Signup/views/Signup';
 import { RootState } from '../../../common/store/RootStore';
 import { LoginData, TokenType } from '../../../common/type';
-import { loginData, getData } from '../../../common/apis';
+import { loginData } from '../../../common/apis';
 import { AxiosError } from 'axios';
 import { setLoginUser } from '../store/LoginUser';
-import { setTokenData } from '../store/userTokenStore';
 import kakao from '../../../common/assets/logo/kakao-logo.png';
 import google from '../../../common/assets/logo/google-logo.png';
 import Button from '../../../common/components/Button';
 import { BASE_URL } from '../../../common/util/constantValue';
-import { setMyData } from '../store/MyUserData';
 import { GoogleBtn, KakaoBtn } from '../../../common/components/Header';
 
 export default function Login() {
@@ -39,18 +37,7 @@ export default function Login() {
       onSuccess: (result: TokenType) => {
         localStorage.setItem('Authorization', result.accessToken);
         localStorage.setItem('RefreshToken', result.refreshToken);
-
-        const storedToken = localStorage.getItem('Authorization');
-
-        if (storedToken) {
-          dispatch(
-            setTokenData({
-              token: storedToken,
-            }),
-          );
-          fetchUser.mutate();
-          navigation('/lists');
-        }
+        navigation('/lists');
       },
       onError: (error) => {
         if (error.response?.status === 401) {
@@ -71,17 +58,6 @@ export default function Login() {
     setPassword(e.target.value);
     dispatch(setLoginUser({ ...data, password: e.target.value }));
   };
-
-  const fetchUser = useMutation<void, unknown>(
-    () => {
-      return getData(`${BASE_URL}/members/userInfo`);
-    },
-    {
-      onSuccess: (userData) => {
-        dispatch(setMyData(userData));
-      },
-    },
-  );
 
   const handleLogin = (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -170,28 +146,6 @@ const ContentWrapper = styled.form`
   margin-left: 50px;
   margin-right: 50px;
 `;
-
-// const KakaoBtn = styled.button`
-//   background-color: #ffe34e;
-//   display: flex;
-//   width: 30rem;
-//   align-items: center;
-//   justify-content: center;
-//   margin: 100px;
-//   margin-bottom: 0;
-//   border: solid 2px var(--color-black);
-//   border-radius: 10px;
-//   padding: 10px;
-//   font-family: 'BR-Regular';
-//   font-size: medium;
-
-//   &:hover {
-//     background-color: #ffe03d;
-//   }
-//   &:active {
-//     background-color: #f9d724;
-//   }
-// `;
 
 const InputBox = styled.div`
   display: flex;

@@ -24,6 +24,7 @@ import { resetCreatedPost, setCreatedPost } from '../store/CreatedPost';
 import { setCategory } from '../../../common/store/CategoryStore';
 import { setLocation } from '../../../common/store/LocationStore';
 import { patchData, postData } from '../../../common/apis';
+import useMyInfo from '../../../common/util/customHook/useMyInfo';
 
 export default function Form() {
   const navigate = useNavigate();
@@ -32,7 +33,9 @@ export default function Form() {
 
   const { id } = useParams();
 
-  const memberId = useSelector((state: RootState) => state.myData.memberId);
+  const { myData } = useMyInfo();
+
+  const memberId = myData?.memberId;
 
   const data: ArticleToPost = useSelector(
     (state: RootState) => state.createdPost,

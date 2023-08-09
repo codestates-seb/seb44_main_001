@@ -6,6 +6,7 @@ import { styled } from 'styled-components';
 import { RootState } from '../../../common/store/RootStore';
 import { setSelectedLocation } from '../store/SelectedLocation';
 import { setLocation } from '../../../common/store/LocationStore';
+import useMyInfo from '../../../common/util/customHook/useMyInfo';
 
 import LocationSelector from '../../../common/components/LocationSelector';
 import Button from '../../../common/components/Button';
@@ -19,13 +20,12 @@ export default function ListsHeader() {
 
   const isLogin = localStorage.getItem('Authorization') || null;
 
-  const myData =
-    useSelector((state: RootState) => state.myData.location) || null;
+  const { myData } = useMyInfo();
 
-  //셀렉터 지역 상태
+  //지역셀렉터 상태
   const location = useSelector((state: RootState) => state.location);
 
-  //사용자가 셀렉터에서 선택한 지역상태
+  //사용자가 선택한 지역
   const selectedLocation = useSelector(
     (state: RootState) => state.selectedLocation,
   );
@@ -41,13 +41,17 @@ export default function ListsHeader() {
 
   //로그인한 유저는 등록된 지역 비로그인 유저는 기본값인 서울로 랜더링
   useEffect(() => {
+    //유저가 마지막으로 검색한 지역으로 고정
     const LastSelectedLocation = localStorage.getItem('selectedLocation');
     if (LastSelectedLocation) {
       dispatch(setSelectedLocation(JSON.parse(LastSelectedLocation)));
       dispatch(setLocation(JSON.parse(LastSelectedLocation)));
-    } else if (isLogin && myData) {
-      dispatch(setSelectedLocation(myData));
-      dispatch(setLocation(myData));
+      return;
+    }
+    //로그인한 유저의 지역
+    if (isLogin && myData) {
+      dispatch(setSelectedLocation(myData.location));
+      dispatch(setLocation(myData.location));
     } else {
       dispatch(setLocation(selectedLocation));
     }

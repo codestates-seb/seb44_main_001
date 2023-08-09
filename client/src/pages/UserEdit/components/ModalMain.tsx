@@ -13,7 +13,7 @@ export default function ModalMain({
   memberId,
 }: {
   handleModalChange: HandleModalChangeFunction;
-  memberId: number;
+  memberId: number|undefined;
 }) {
   const navigate = useNavigate();
 

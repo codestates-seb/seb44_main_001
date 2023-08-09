@@ -19,7 +19,7 @@ import { postData } from '../../../common/apis';
 
 interface TextInputProps {
   type?: string;
-  value: string;
+  value: string|undefined;
   $isValidate?: boolean;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
@@ -30,7 +30,7 @@ interface TextInputProps {
 }
 
 interface TextAreaProps {
-  value: string;
+  value: string|undefined;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   style?: React.CSSProperties;
