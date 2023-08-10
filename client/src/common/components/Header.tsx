@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import { useDispatch } from 'react-redux';
 import Modal from 'react-modal';
+import {useQueryClient} from 'react-query';
 
 import { FaArrowRightFromBracket } from 'react-icons/fa6';
 import { HiMiniXMark } from 'react-icons/hi2';
@@ -28,6 +29,8 @@ Modal.setAppElement('#root');
 export default function Header() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const queryClient = useQueryClient();
+
   const { myData } = useMyInfo();
 
   const token = localStorage.getItem('Authorization');
@@ -46,6 +49,7 @@ export default function Header() {
       onSuccess: () => {
         navigate('/');
         localStorage.clear();
+        queryClient.clear();
         dispatch(setChatModal(false));
       },
       onError: () => {

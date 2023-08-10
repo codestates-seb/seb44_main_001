@@ -26,8 +26,9 @@ async function makeRequest(method: string, url: string, data?: unknown) {
     }
 
     return res.data;
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.log(error);
+    throw error;
   }
 }
 
