@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import { useDispatch } from 'react-redux';
 import Modal from 'react-modal';
-import {useQueryClient} from 'react-query';
+import { useQueryClient } from 'react-query';
 
 import { FaArrowRightFromBracket } from 'react-icons/fa6';
 import { HiMiniXMark } from 'react-icons/hi2';
@@ -31,8 +31,6 @@ export default function Header() {
 
   const queryClient = useQueryClient();
 
-  const { myData } = useMyInfo();
-
   const token = localStorage.getItem('Authorization');
 
   const kakaoLink = `${BASE_URL}/oauth2/authorization/kakao`;
@@ -40,6 +38,20 @@ export default function Header() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const { myData, error } = useMyInfo();
+
+  if (error) {
+    console.log(error);
+    if (error.response?.status === 401 && token) {
+      navigate('/');
+      localStorage.clear();
+      queryClient.clear();
+      alert('토큰이 만료되었습니다. 다시 로그인해주세요.');
+    } else {
+      console.error('오류가 발생했습니다.', error.message);
+    }
+  }
 
   const logoutPostMutaion = useMutation(
     () => {
