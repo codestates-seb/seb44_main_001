@@ -76,7 +76,8 @@ export default function Cards() {
         observer.unobserve(target);
       }
     };
-  }, [fetchNextPage, hasNextPage]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasNextPage]);
 
   useEffect(() => {
     return () => {

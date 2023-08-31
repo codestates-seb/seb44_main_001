@@ -41,8 +41,7 @@ export default function Header() {
 
   const { myData, error } = useMyInfo();
 
-  if (error) {
-    console.log(error);
+  if (error && token) {
     if (error.response?.status === 401 && token) {
       navigate('/');
       localStorage.clear();
