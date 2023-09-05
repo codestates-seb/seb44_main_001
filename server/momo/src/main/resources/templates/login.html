@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/common-layout">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Hello MOMO</title>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+    <form action="/process_login" method="post">
+        <!-- (1) 로그인 실패에 대한 메시지 표시 -->
+        <div class="row alert alert-danger center" role="alert" th:if="${param.error != null}">
+            <div>로그인 인증에 실패했습니다.</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-2">
+                <input type="email" name="username"  class="form-control" placeholder="Email" />
+            </div>
+        </div>
+        <div class="row" style="margin-top: 20px">
+            <div class="col-xs-2">
+                <input type="password" name="password"  class="form-control" placeholder="Password" />
+            </div>
+        </div>
+
+        <button class="btn btn-outline-secondary" style="margin-top: 20px">로그인</button>
+    </form>
+    <div style="margin-top: 20px">
+        <a href="/members/register">회원가입</a>
+    </div>
+</div>
+</body>
+</html>
