@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { BASE_URL } from '../../util/constantValue';
+import { AUTHORIZATION, REFRESHTOKEN } from '../../util/constantValue';
 
 export const instance = axios.create({
   baseURL: BASE_URL,
@@ -7,8 +8,8 @@ export const instance = axios.create({
 });
 
 instance.interceptors.request.use((config) => {
-  const accessToken = localStorage.getItem('Authorization');
-  const refreshToken = localStorage.getItem('RefreshToken');
+  const accessToken = localStorage.getItem(AUTHORIZATION);
+  const refreshToken = localStorage.getItem(REFRESHTOKEN);
 
   if (accessToken) {
     config.headers.Authorization = accessToken;

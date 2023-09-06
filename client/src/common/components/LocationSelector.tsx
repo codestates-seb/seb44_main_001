@@ -11,7 +11,7 @@ import { styled } from 'styled-components';
 import useLocationSetter from '../util/customHook/useLocationSetter';
 import { Locations } from '../type';
 import { Location } from '../type';
-
+import { LOCATIONS } from '../util/constantValue';
 interface LocationSelectorProps {
   onLocationChange?: (locationId: number | null) => void;
 }
@@ -25,7 +25,7 @@ export default function LocationSelector({
 
   const dispatch = useDispatch();
 
-  const locationsString = localStorage.getItem('locations');
+  const locationsString = localStorage.getItem(LOCATIONS);
   const locations: Locations = locationsString && JSON.parse(locationsString);
 
   const city = useSelector((state: RootState) => state.location.city);

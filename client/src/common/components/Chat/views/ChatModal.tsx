@@ -15,6 +15,7 @@ import * as StompJs from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { resetChatRoomInfo } from '../../../store/ChatRoomInfoStore';
 import { getData, postData } from '../../../apis';
+import { AUTHORIZATION } from '../../../util/constantValue';
 
 export default function ChatModal() {
   const [messages, setMessages] = useState<ChatData[]>([]);
@@ -26,7 +27,7 @@ export default function ChatModal() {
   const [subscription, setSubscription] =
     useState<StompJs.StompSubscription | null>(null);
 
-  const token = localStorage.getItem('Authrization');
+  const token = localStorage.getItem(AUTHORIZATION);
 
   const dispatch = useDispatch();
 

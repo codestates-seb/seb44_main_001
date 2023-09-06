@@ -7,12 +7,13 @@ import { GlobalStyle } from './common/style';
 import Header from './common/components/Header';
 import Footer from './common/components/Footer';
 import ChatModal from './common/components/Chat/views/ChatModal';
+import { AUTHORIZATION } from './common/util/constantValue';
 
 Quill.register('modules/imageResize', ImageResize);
 
 export default function App() {
   const location = useLocation();
-  const token: string | null = localStorage.getItem('Authorization');
+  const token: string | null = localStorage.getItem(AUTHORIZATION);
 
   return (
     <>

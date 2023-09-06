@@ -12,6 +12,7 @@ import { useDispatch } from 'react-redux';
 import { setSelectedCategory } from '../../Lists,Search/store/SelectedCategory';
 import { getData } from '../../../common/apis';
 import useMyInfo from '../../../common/util/customHook/useMyInfo';
+import { SELECTEDLOCATION } from '../../../common/util/constantValue';
 
 export default function Details() {
   const { id } = useParams();
@@ -41,7 +42,7 @@ export default function Details() {
   };
 
   const handleLocationClick = () => {
-    localStorage.setItem('selectedLocation', JSON.stringify(locationData));
+    localStorage.setItem(SELECTEDLOCATION, JSON.stringify(locationData));
 
     dispatch(
       setSelectedCategory({
@@ -54,7 +55,7 @@ export default function Details() {
   };
 
   const handleCategoryClick = () => {
-    localStorage.setItem('selectedLocation', JSON.stringify(locationData));
+    localStorage.setItem(SELECTEDLOCATION, JSON.stringify(locationData));
 
     dispatch(
       setSelectedCategory({

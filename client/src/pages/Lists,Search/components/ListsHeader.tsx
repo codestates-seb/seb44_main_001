@@ -10,6 +10,7 @@ import useMyInfo from '../../../common/util/customHook/useMyInfo';
 
 import LocationSelector from '../../../common/components/LocationSelector';
 import Button from '../../../common/components/Button';
+import { AUTHORIZATION,SELECTEDLOCATION } from '../../../common/util/constantValue';
 
 export default function ListsHeader() {
   const dispatch = useDispatch();
@@ -18,7 +19,7 @@ export default function ListsHeader() {
 
   const params = useParams();
 
-  const isLogin = localStorage.getItem('Authorization') || null;
+  const isLogin = localStorage.getItem(AUTHORIZATION) || null;
 
   const { myData } = useMyInfo();
 
@@ -36,13 +37,13 @@ export default function ListsHeader() {
       return;
     }
     dispatch(setSelectedLocation(location));
-    localStorage.setItem('selectedLocation', JSON.stringify(location));
+    localStorage.setItem(SELECTEDLOCATION, JSON.stringify(location));
   };
 
   //로그인한 유저는 등록된 지역 비로그인 유저는 기본값인 서울로 랜더링
   useEffect(() => {
     //유저가 마지막으로 검색한 지역으로 고정
-    const LastSelectedLocation = localStorage.getItem('selectedLocation');
+    const LastSelectedLocation = localStorage.getItem(SELECTEDLOCATION);
     if (LastSelectedLocation) {
       dispatch(setSelectedLocation(JSON.parse(LastSelectedLocation)));
       dispatch(setLocation(JSON.parse(LastSelectedLocation)));

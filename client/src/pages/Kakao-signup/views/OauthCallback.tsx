@@ -1,6 +1,10 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BASE_URL } from '../../../common/util/constantValue';
+import {
+  AUTHORIZATION,
+  REFRESHTOKEN,
+} from '../../../common/util/constantValue';
 
 export default function OauthCallback() {
   const navigation = useNavigate();
@@ -13,11 +17,11 @@ export default function OauthCallback() {
     const memberId = params.get('member_id');
 
     if (token && memberId) {
-      localStorage.setItem('Authorization', `Bearer ${token}`);
-      localStorage.setItem('RefreshToken', `${refreshToken}`)
+      localStorage.setItem(AUTHORIZATION, `Bearer ${token}`);
+      localStorage.setItem(REFRESHTOKEN, `${refreshToken}`);
 
-      const storedAccessToken = localStorage.getItem('Authorization');
-      const storedRefreshToken = localStorage.getItem('RefreshToken');
+      const storedAccessToken = localStorage.getItem(AUTHORIZATION);
+      const storedRefreshToken = localStorage.getItem(REFRESHTOKEN);
 
       fetch(`${BASE_URL}/members/${memberId}`, {
         headers: {
@@ -45,7 +49,7 @@ export default function OauthCallback() {
     } else {
       navigation('/err');
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigation]);
 
   return <></>;

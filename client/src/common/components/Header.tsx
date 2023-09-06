@@ -23,6 +23,7 @@ import { useMutation } from 'react-query';
 import { resetCreatedPost } from '../../pages/Write,Edit/store/CreatedPost';
 import { postData } from '../apis';
 import useMyInfo from '../util/customHook/useMyInfo';
+import { AUTHORIZATION } from '../../common/util/constantValue';
 
 Modal.setAppElement('#root');
 
@@ -31,7 +32,7 @@ export default function Header() {
 
   const queryClient = useQueryClient();
 
-  const token = localStorage.getItem('Authorization');
+  const token = localStorage.getItem(AUTHORIZATION);
 
   const kakaoLink = `${BASE_URL}/oauth2/authorization/kakao`;
   const googleLink = `${BASE_URL}/oauth2/authorization/google`;

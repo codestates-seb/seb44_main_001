@@ -21,12 +21,13 @@ import momo from '../../../common/assets/logo/onlyPeach.svg';
 import { BASE_URL } from '../../../common/util/constantValue';
 import ChatImages from '../components/ChatImages';
 import { useEffect } from 'react';
+import { AUTHORIZATION } from '../../../common/util/constantValue';
 
 export default function Home() {
   const kakaoLink = `${BASE_URL}/oauth2/authorization/kakao`;
   const googleLink = `${BASE_URL}/oauth2/authorization/google`;
 
-  const token = localStorage.getItem('Authorization');
+  const token = localStorage.getItem(AUTHORIZATION);
 
   const navigate = useNavigate();
 

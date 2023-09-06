@@ -26,6 +26,7 @@ import { useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import { patchData } from '../../../common/apis';
 import useMyInfo from '../../../common/util/customHook/useMyInfo';
+import { AUTHORIZATION } from '../../../common/util/constantValue';
 
 export default function OauthSignup() {
   const [nickname, setNickname] = useState('');
@@ -46,7 +47,7 @@ export default function OauthSignup() {
 
   const memberId = myData?.memberId;
 
-  const token = localStorage.getItem('Authorization');
+  const token = localStorage.getItem(AUTHORIZATION);
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
