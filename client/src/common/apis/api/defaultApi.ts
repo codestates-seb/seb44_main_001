@@ -1,4 +1,5 @@
 import { instance } from '../utils/instance';
+import { AUTHORIZATION } from '../../util/constantValue';
 
 async function makeRequest(method: string, url: string, data?: unknown) {
   try {
@@ -22,7 +23,7 @@ async function makeRequest(method: string, url: string, data?: unknown) {
     }
 
     if (res.headers.authorization) {
-      localStorage.setItem('Authorization', res.headers.authorization);
+      localStorage.setItem(AUTHORIZATION, res.headers.authorization);
     }
 
     return res.data;

@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import { BASE_URL } from '../constantValue';
 import { getData } from '../../apis';
+import { LOCATIONS } from '../constantValue';
 
 export default function useLocationSetter() {
   const queryClient = useQueryClient();
@@ -10,13 +11,13 @@ export default function useLocationSetter() {
     enabled: false,
     onSuccess: (data) => {
       if (data) {
-        localStorage.setItem('locations', JSON.stringify(data));
+        localStorage.setItem(LOCATIONS, JSON.stringify(data));
       }
     },
   });
 
   useEffect(() => {
-    const locations = localStorage.getItem('locations');
+    const locations = localStorage.getItem(LOCATIONS);
 
     if (!locations) {
       queryClient.prefetchQuery(['getLocation']);

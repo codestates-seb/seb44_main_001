@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import { BASE_URL } from '../constantValue';
 import { getData } from '../../apis';
+import { CATEGORIES } from '../constantValue';
 
 export default function useCategorySetter() {
   const queryClient = useQueryClient();
@@ -10,13 +11,13 @@ export default function useCategorySetter() {
     enabled: false,
     onSuccess: (data) => {
       if (data) {
-        localStorage.setItem('categories', JSON.stringify(data));
+        localStorage.setItem(CATEGORIES, JSON.stringify(data));
       }
     },
   });
 
   useEffect(() => {
-    const categories = localStorage.getItem('categories');
+    const categories = localStorage.getItem(CATEGORIES);
 
     if (!categories) {
       queryClient.prefetchQuery(['getCategory']);

@@ -22,6 +22,7 @@ import { calculateTimeDifference } from '../../../common/util/timeDifferenceCalc
 import { ALERTLOGIN } from '../../../common/util/constantValue';
 import { deleteData, postData } from '../../../common/apis';
 import useMyInfo from '../../../common/util/customHook/useMyInfo';
+import { AUTHORIZATION } from '../../../common/util/constantValue';
 
 export default function Article({ data }: { data?: ArticleToGet }) {
   const [isLiked, setIsLiked] = useState(false);
@@ -34,7 +35,7 @@ export default function Article({ data }: { data?: ArticleToGet }) {
 
   const queryClient = useQueryClient();
 
-  const token = localStorage.getItem('Authorization');
+  const token = localStorage.getItem(AUTHORIZATION);
 
   const { id } = useParams();
 

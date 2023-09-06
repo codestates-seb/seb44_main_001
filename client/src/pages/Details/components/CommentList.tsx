@@ -29,6 +29,7 @@ import UserModal from './UserModal';
 
 import { deleteData, getData, patchData } from '../../../common/apis';
 import useMyInfo from '../../../common/util/customHook/useMyInfo';
+import { AUTHORIZATION } from '../../../common/util/constantValue';
 
 export default function CommentList() {
   const queryClient = useQueryClient();
@@ -43,7 +44,7 @@ export default function CommentList() {
 
   const memberId = myData?.memberId;
 
-  const token = localStorage.getItem('Authorization');
+  const token = localStorage.getItem(AUTHORIZATION);
 
   const [editedComment, setEditedComment] = useState({
     memberId: memberId,

@@ -16,6 +16,10 @@ import google from '../../../common/assets/logo/google-logo.png';
 import Button from '../../../common/components/Button';
 import { BASE_URL } from '../../../common/util/constantValue';
 import { GoogleBtn, KakaoBtn } from '../../../common/components/Header';
+import {
+  AUTHORIZATION,
+  REFRESHTOKEN,
+} from '../../../common/util/constantValue';
 
 export default function Login() {
   const [username, setUsername] = useState('');
@@ -35,8 +39,8 @@ export default function Login() {
     },
     {
       onSuccess: (result: TokenType) => {
-        localStorage.setItem('Authorization', result.accessToken);
-        localStorage.setItem('RefreshToken', result.refreshToken);
+        localStorage.setItem(AUTHORIZATION, result.accessToken);
+        localStorage.setItem(REFRESHTOKEN, result.refreshToken);
         navigation('/lists');
       },
       onError: (error) => {

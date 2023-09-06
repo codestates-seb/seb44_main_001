@@ -15,13 +15,14 @@ import { ALERTLOGIN } from '../../../common/util/constantValue';
 import { getData } from '../../../common/apis';
 import { Member } from '../../../common/type';
 import useMyInfo from '../../../common/util/customHook/useMyInfo';
+import { AUTHORIZATION } from '../../../common/util/constantValue';
 
 export default function User() {
   const navigate = useNavigate();
 
   const memberId = useParams().memberId || '';
 
-  const token: string | null = localStorage.getItem('Authorization');
+  const token: string | null = localStorage.getItem(AUTHORIZATION);
 
   const { myData } = useMyInfo();
 

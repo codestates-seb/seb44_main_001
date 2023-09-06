@@ -5,8 +5,10 @@ import { getData } from '../../apis';
 import { BASE_URL } from '../constantValue';
 import { Member } from '../../type';
 
+import { AUTHORIZATION } from '../constantValue';
+
 export default function useMyInfo() {
-  const token = localStorage.getItem('Authorization');
+  const token = localStorage.getItem(AUTHORIZATION);
   const {
     data: myData,
     isLoading,

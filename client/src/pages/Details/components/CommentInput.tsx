@@ -11,6 +11,7 @@ import { CommentToPost } from '../../../common/type';
 import { useParams } from 'react-router-dom';
 import { postData } from '../../../common/apis';
 import useMyInfo from '../../../common/util/customHook/useMyInfo';
+import { AUTHORIZATION } from '../../../common/util/constantValue';
 
 export default function CommentInput() {
   const [content, setContent] = useState('');
@@ -21,7 +22,7 @@ export default function CommentInput() {
 
   const memberId = myData?.memberId;
 
-  const token = localStorage.getItem('Authorization');
+  const token = localStorage.getItem(AUTHORIZATION);
 
   const data = {
     memberId: memberId,
