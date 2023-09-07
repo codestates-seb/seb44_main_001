@@ -7,7 +7,7 @@ import chatRoom2 from '../../../common/assets/images/chatRoom2.png';
 const images = [chatList, chatRoom, chatRoom2];
 
 type AnimatedImageProps = {
-  visible: number;
+  $isVisible: number;
 };
 
 export default function ChatImages() {
@@ -29,7 +29,7 @@ export default function ChatImages() {
             key={index}
             src={image}
             alt={`Chat Image ${index + 1}`}
-            visible={currentIndex === index ? 1 : 0}
+            $isVisible={currentIndex === index ? 1 : 0}
           />
         ))}
       </ImageContainer>
@@ -47,6 +47,6 @@ const AnimatedImage = styled.img<AnimatedImageProps>`
   position: absolute;
   top: 0;
   left: 0;
-  opacity: ${(props) => props.visible};
+  opacity: ${(props) => props.$isVisible};
   transition: opacity 1s ease-in-out;
 `;
