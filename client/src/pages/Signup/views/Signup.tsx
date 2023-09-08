@@ -10,7 +10,7 @@ import LocationSelector from '../../../common/components/LocationSelector';
 import { SignupData } from '../../../common/type';
 import { RootState } from '../../../common/store/RootStore';
 import { setSignupUser } from '../store/SignupUser';
-import { BASE_URL } from '../../../common/util/constantValue';
+import { AUTHORIZATION, BASE_URL } from '../../../common/util/constantValue';
 import { setCategory } from '../../../common/store/CategoryStore';
 import { setLocation } from '../../../common/store/LocationStore';
 import { resetCreatedPost } from '../../Write,Edit/store/CreatedPost';
@@ -19,7 +19,7 @@ import { postData } from '../../../common/apis';
 
 interface TextInputProps {
   type?: string;
-  value: string|undefined;
+  value: string | undefined;
   $isValidate?: boolean;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
@@ -30,7 +30,7 @@ interface TextInputProps {
 }
 
 interface TextAreaProps {
-  value: string|undefined;
+  value: string | undefined;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   style?: React.CSSProperties;
@@ -56,6 +56,8 @@ export default function Signup() {
   const navigation = useNavigate();
 
   const data: SignupData = useSelector((state: RootState) => state.signup);
+
+  const token = localStorage.getItem(AUTHORIZATION);
 
   const signupMutation = useMutation<
     void,
@@ -87,6 +89,9 @@ export default function Signup() {
   });
 
   useEffect(() => {
+    if (token) {
+      navigation('/lists');
+    }
     return () => {
       dispatch(setCategory({ categoryId: 0, name: '' }));
       dispatch(setLocation({ locationId: 0, city: '', province: '' }));
