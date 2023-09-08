@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
@@ -32,6 +32,8 @@ export default function Login() {
   const googleLink = `${BASE_URL}/oauth2/authorization/google`;
 
   const data: LoginData = useSelector((state: RootState) => state.login);
+
+  const token = localStorage.getItem(AUTHORIZATION);
 
   const loginMutation = useMutation<TokenType, AxiosError, LoginData>(
     () => {
@@ -67,6 +69,13 @@ export default function Login() {
     e.preventDefault();
     loginMutation.mutate(data);
   };
+
+  useEffect(() => {
+    if (token) {
+      navigation('/lists');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <main>
