@@ -27,10 +27,6 @@ const Container = styled.div`
   border-radius: 10px;
   background: var(--color-white);
 
-  & label {
-    font-family: 'BR-Bold';
-  }
-
   & input {
     margin: 1rem 0 2rem 0;
     font-size: var(--font-size-s);
