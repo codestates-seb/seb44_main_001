@@ -42,16 +42,15 @@ export default function Home() {
     <Layout>
       <Wrapper>
         <GotoList>
-          <Link to="/lists">
-            <LinkStyle
-              style={{
-                fontSize: '15px',
-                marginRight: '30px',
-              }}
-            >
-              가입하지않고 모모 구경해보기
-            </LinkStyle>
-          </Link>
+          <LinkStyle
+            to="/lists"
+            style={{
+              fontSize: '15px',
+              marginRight: '30px',
+            }}
+          >
+            가입하지않고 모모 구경해보기
+          </LinkStyle>
         </GotoList>
         <Page1>
           <TextContainer>
@@ -94,15 +93,11 @@ export default function Home() {
               <LinkContainer>
                 <div>
                   <TextStyle>이미 모모의 회원이세요?&nbsp;👉</TextStyle>
-                  <Link to="/login">
-                    <LinkStyle>로그인하기</LinkStyle>
-                  </Link>
+                  <LinkStyle to="/login">로그인하기</LinkStyle>
                 </div>
                 <div>
                   <TextStyle>먼저 만나볼래요?&nbsp;👉</TextStyle>
-                  <Link to="/lists">
-                    <LinkStyle>둘러보기</LinkStyle>
-                  </Link>
+                  <LinkStyle to="/lists">둘러보기</LinkStyle>
                 </div>
               </LinkContainer>
             </TextBox>
@@ -274,7 +269,7 @@ const LinkContainer = styled.div`
   }
 `;
 
-const LinkStyle = styled.a`
+const LinkStyle = styled(Link)`
   font-size: large;
   color: #0075ff;
   margin-left: 20px;
