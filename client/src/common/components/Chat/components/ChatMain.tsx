@@ -207,7 +207,6 @@ const Chat = styled.div`
         display: flex;
         align-items: center;
         justify-content: start;
-        font-family: 'BR-bold';
 
         > :first-child {
           display: flex;
