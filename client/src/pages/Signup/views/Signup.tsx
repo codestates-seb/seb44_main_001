@@ -274,7 +274,7 @@ export default function Signup() {
               />
             </InputBox>
           </ContentWrapper>
-          <Button children={'가입하기'} onClick={handleSignUp} />
+          <Button children={'가입하기'} onClick={handleSignUp} type="submit" />
         </Background>
       </Layout>
     </main>
@@ -312,7 +312,7 @@ export const InputBox = styled.div`
   margin: 20px;
 `;
 
-export const Text = styled.span`
+export const Text = styled.label`
   font-size: medium;
 `;
 
