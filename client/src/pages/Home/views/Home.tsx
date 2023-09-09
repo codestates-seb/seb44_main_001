@@ -242,7 +242,6 @@ const TextBox = styled.div`
   background-color: white;
   border-radius: 30px;
   color: var(--color-black);
-  font-family: 'BR-Bold';
   min-width: 500px;
 
   padding: 50px;
