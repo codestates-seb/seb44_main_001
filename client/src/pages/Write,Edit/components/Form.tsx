@@ -171,7 +171,6 @@ const ContentSection = styled.section`
     > :nth-child(2) {
       border: 2px solid var(--color-black);
       border-radius: 0 0 5px 5px;
-      font-family: 'BR-Regular';
       font-size: var(--font-size-s);
       color: var(--color-black);
       min-height: 10rem;

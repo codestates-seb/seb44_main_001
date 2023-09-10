@@ -15,12 +15,9 @@ export default function SemiHeader({
 }: SemiHeaderProps) {
   return (
     <SemiContainer>
-      {/* <div style={{ height: '400px' }}></div> */}
-      <div>
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <Title>{children ? children : title}</Title>
-          <Content>{content}</Content>
-        </div>
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <Title>{children ? children : title}</Title>
+        <Content>{content}</Content>
       </div>
       <Picture src={friends} style={{ width: '500px' }} />
     </SemiContainer>
@@ -41,7 +38,6 @@ const Title = styled.h1`
   color: var(--color-black);
   white-space: nowrap;
   padding-bottom: 20px;
-  padding-left: calc((100vw - 50rem) / 2);
 `;
 
 const Content = styled.span`
