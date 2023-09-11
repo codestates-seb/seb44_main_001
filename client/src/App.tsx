@@ -16,9 +16,9 @@ Quill.register('modules/imageResize', ImageResize);
 export default function App() {
   const location = useLocation();
   const token: string | null = localStorage.getItem(AUTHORIZATION);
-  <ScrllToTopInstant />;
   return (
     <>
+      <ScrllToTopInstant />
       <GlobalStyle />
       {!(
         location.pathname === '/' ||
