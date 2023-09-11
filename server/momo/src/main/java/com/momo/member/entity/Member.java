@@ -3,11 +3,14 @@ package com.momo.member.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.momo.audit.BaseEntity;
 import com.momo.category.entity.Category;
+import com.momo.chat.entity.ChatPing;
+import com.momo.chat.entity.MemberChatroom;
 import com.momo.comment.entity.Comment;
 
 import com.momo.location.entity.Location;
 
 import com.momo.post.entity.Post;
+import com.momo.postlike.entity.PostLike;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -45,6 +48,18 @@ public class Member extends BaseEntity {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Comment> comments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Post> posts = new ArrayList<>();
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<PostLike> postLikes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<ChatPing> chatPings = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<MemberChatroom> memberChatrooms = new ArrayList<>();
 }
