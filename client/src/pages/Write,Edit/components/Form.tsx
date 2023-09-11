@@ -13,8 +13,6 @@ import { ChangeEvent, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
-import postData from '../api/postData';
-import patchData from '../api/patchData';
 import LocationSelector from '../../../common/components/LocationSelector';
 import CategorySelector from '../../../common/components/CategorySelector';
 import TagsInput from './TagsInput';
@@ -25,6 +23,8 @@ import { ArticleToGet, ArticleToPost } from '../../../common/type';
 import { resetCreatedPost, setCreatedPost } from '../store/CreatedPost';
 import { setCategory } from '../../../common/store/CategoryStore';
 import { setLocation } from '../../../common/store/LocationStore';
+import { patchData, postData } from '../../../common/apis';
+import useMyInfo from '../../../common/util/customHook/useMyInfo';
 
 export default function Form() {
   const navigate = useNavigate();
@@ -33,7 +33,9 @@ export default function Form() {
 
   const { id } = useParams();
 
-  const memberId = useSelector((state: RootState) => state.myData.memberId);
+  const { myData } = useMyInfo();
+
+  const memberId = myData?.memberId;
 
   const data: ArticleToPost = useSelector(
     (state: RootState) => state.createdPost,
@@ -169,7 +171,6 @@ const ContentSection = styled.section`
     > :nth-child(2) {
       border: 2px solid var(--color-black);
       border-radius: 0 0 5px 5px;
-      font-family: 'BR-Regular';
       font-size: var(--font-size-s);
       color: var(--color-black);
       min-height: 10rem;

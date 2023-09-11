@@ -9,14 +9,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store/RootStore';
 import { useMutation, useQuery } from 'react-query';
 import { BASE_URL } from '../../../util/constantValue';
-import getRoomList from '../api/getRoomList';
 import { setChatModal } from '../../../store/ChatModalStore';
 import { ChatData, ChatRoomData, Room } from '../../../type';
 import * as StompJs from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import postOnline from '../api/postOnline';
 import { resetChatRoomInfo } from '../../../store/ChatRoomInfoStore';
-import postOffline from '../api/postOffline';
+import { getData, postData } from '../../../apis';
+import { AUTHORIZATION } from '../../../util/constantValue';
 
 export default function ChatModal() {
   const [messages, setMessages] = useState<ChatData[]>([]);
@@ -28,7 +27,7 @@ export default function ChatModal() {
   const [subscription, setSubscription] =
     useState<StompJs.StompSubscription | null>(null);
 
-  const token = localStorage.getItem('Authrization');
+  const token = localStorage.getItem(AUTHORIZATION);
 
   const dispatch = useDispatch();
 
@@ -55,7 +54,7 @@ export default function ChatModal() {
 
   const getRoomQuery = useQuery<ChatRoomData, unknown>(
     'roomList',
-    () => getRoomList(`${BASE_URL}/rooms/list`),
+    () => getData(`${BASE_URL}/rooms/list`),
     {
       enabled: chatRoom === 0,
       refetchInterval: 5000,
@@ -73,12 +72,12 @@ export default function ChatModal() {
 
   const postOnlineMutation = useMutation<void, unknown, number>(
     'postOnline',
-    (roomId) => postOnline(`${BASE_URL}/rooms/${roomId}/online`),
+    (roomId) => postData(`${BASE_URL}/rooms/${roomId}/online`, null),
   );
 
   const postOfflineMutation = useMutation<void, unknown, number>(
     'postOffline',
-    (roomId) => postOffline(`${BASE_URL}/rooms/${roomId}/offline`),
+    (roomId) => postData(`${BASE_URL}/rooms/${roomId}/offline`, null),
   );
 
   const handleModalOpen = () => {

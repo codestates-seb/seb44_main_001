@@ -1,8 +1,7 @@
 import axios from 'axios';
-import { LoginData } from '../../../common/type';
+import { LoginData } from '../../type';
 
-export default async function loginData(url: string, data: LoginData) {
-
+export async function loginData(url: string, data: LoginData) {
   const res = await axios.post(url, data);
 
   const accessToken = res.headers['authorization'];

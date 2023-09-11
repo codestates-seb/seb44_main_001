@@ -14,22 +14,22 @@ import {
 } from 'react-query';
 import { ChangeEvent, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import getComment from '../api/getComment';
 import {
   CommentListToGet,
   CommentToGet,
   CommentToPost,
 } from '../../../common/type';
 import { setTotalComments } from '../../../common/store/CommentPageStore';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { MdModeEditOutline } from 'react-icons/md';
-import deleteComment from '../api/deleteComment';
 import Button from '../../../common/components/Button';
-import patchComment from '../api/patchComment';
 import { calculateTimeDifference } from '../../../common/util/timeDifferenceCalculator';
 import profile from '../../../common/assets/profile.svg';
 import UserModal from './UserModal';
-import { RootState } from '../../../common/store/RootStore';
+
+import { deleteData, getData, patchData } from '../../../common/apis';
+import useMyInfo from '../../../common/util/customHook/useMyInfo';
+import { AUTHORIZATION } from '../../../common/util/constantValue';
 
 export default function CommentList() {
   const queryClient = useQueryClient();
@@ -40,9 +40,11 @@ export default function CommentList() {
 
   const [currentModal, setCurrentModal] = useState(0);
 
-  const memberId = useSelector((state: RootState) => state.myData.memberId);
+  const { myData } = useMyInfo();
 
-  const token = localStorage.getItem('Authorization');
+  const memberId = myData?.memberId;
+
+  const token = localStorage.getItem(AUTHORIZATION);
 
   const [editedComment, setEditedComment] = useState({
     memberId: memberId,
@@ -62,7 +64,7 @@ export default function CommentList() {
     isLoading,
   }: UseQueryResult<CommentListToGet, unknown> = useQuery(
     ['comments', id, page, size],
-    () => getComment(`${BASE_URL}/comments/${id}?page=${page}&size=${size}`),
+    () => getData(`${BASE_URL}/comments/${id}?page=${page}&size=${size}`),
     {
       onSuccess: (response) => {
         dispatch(setTotalComments(response.pageInfo.totalElements));
@@ -71,7 +73,7 @@ export default function CommentList() {
   );
 
   const patchItemMutation = useMutation<void, unknown, CommentToPost>(
-    () => patchComment(`${BASE_URL}/comments/${commentId}`, editedComment),
+    () => patchData(`${BASE_URL}/comments/${commentId}`, editedComment),
     {
       onSuccess: () => {
         queryClient.invalidateQueries('comments');
@@ -81,7 +83,7 @@ export default function CommentList() {
   );
 
   const deleteItemMutation = useMutation<void, unknown, void>(
-    () => deleteComment(`${BASE_URL}/comments/${commentId}/${memberId}`),
+    () => deleteData(`${BASE_URL}/comments/${commentId}/${memberId}`),
     {
       onSuccess: () => {
         queryClient.invalidateQueries('comments');
@@ -267,7 +269,7 @@ const Container = styled.section`
 
   > :first-child {
     margin-bottom: 1rem;
-    font-family: 'BR-Bold';
+    font-family: 'JamsilBd';
   }
 
   > :nth-child(2) {
@@ -311,7 +313,7 @@ const CommentInfo = styled.div`
       }
 
       > :nth-child(2) {
-        font-family: 'BR-Bold';
+        font-family: 'JamsilBd';
         font-size: var(--font-size-xs);
         cursor: pointer;
       }
@@ -352,7 +354,6 @@ const CommentEditIcons = styled.div`
 const CommentEdit = styled.div`
   > textarea {
     margin-bottom: 1rem;
-    font-family: 'BR-regular';
     font-size: var(--font-size-s);
     width: 100%;
     border: 2px solid var(--color-black);

@@ -8,19 +8,21 @@ import Button from '../../../common/components/Button';
 import { ChangeEvent, KeyboardEvent, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { CommentToPost } from '../../../common/type';
-import postComment from '../api/postComment';
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../common/store/RootStore';
+import { postData } from '../../../common/apis';
+import useMyInfo from '../../../common/util/customHook/useMyInfo';
+import { AUTHORIZATION } from '../../../common/util/constantValue';
 
 export default function CommentInput() {
   const [content, setContent] = useState('');
 
   const { id } = useParams();
 
-  const memberId = useSelector((state: RootState) => state.myData.memberId);
+  const { myData } = useMyInfo();
 
-  const token = localStorage.getItem('Authorization');
+  const memberId = myData?.memberId;
+
+  const token = localStorage.getItem(AUTHORIZATION);
 
   const data = {
     memberId: memberId,
@@ -30,7 +32,7 @@ export default function CommentInput() {
   const queryClient = useQueryClient();
 
   const postMutation = useMutation<void, unknown, CommentToPost>(
-    () => postComment(`${BASE_URL}/comments/${id}`, data),
+    () => postData(`${BASE_URL}/comments/${id}`, data),
     {
       onSuccess: () => {
         queryClient.invalidateQueries('comments');
@@ -96,14 +98,13 @@ const Container = styled.section`
 
 const TitleSection = styled.section`
   margin-bottom: 1rem;
-  font-family: 'BR-Bold';
+  font-family: 'JamsilBd';
 `;
 
 const InputSection = styled.section`
   margin-bottom: 1rem;
 
   > textarea {
-    font-family: 'BR-regular';
     font-size: var(--font-size-s);
     width: 100%;
     border: 2px solid var(--color-black);

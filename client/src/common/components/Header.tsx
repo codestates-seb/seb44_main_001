@@ -1,15 +1,14 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import Modal from 'react-modal';
+import { useQueryClient } from 'react-query';
 
-import { RootState } from '../store/RootStore';
 import { FaArrowRightFromBracket } from 'react-icons/fa6';
 import { HiMiniXMark } from 'react-icons/hi2';
 import { FaPersonRunning } from 'react-icons/fa6';
 import Button from './Button';
-import { resetStates } from '../../pages/Login/store/MyUserData';
 import { BASE_URL } from '../../common/util/constantValue';
 
 import logo from '../assets/logo/MOMO.png';
@@ -19,18 +18,21 @@ import profile from '../assets/profile.svg';
 import kakao from '../../common/assets/logo/kakao-logo.png';
 import google from '../../common/assets/logo/google-logo.png';
 
-import { postLogout } from '../util/customHook/api/postLogout';
 import { setChatModal } from '../store/ChatModalStore';
 import { useMutation } from 'react-query';
 import { resetCreatedPost } from '../../pages/Write,Edit/store/CreatedPost';
+import { postData } from '../apis';
+import useMyInfo from '../util/customHook/useMyInfo';
+import { AUTHORIZATION } from '../../common/util/constantValue';
+
 Modal.setAppElement('#root');
 
 export default function Header() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const myData = useSelector((state: RootState) => state.myData);
+  const queryClient = useQueryClient();
 
-  const token = localStorage.getItem('Authorization');
+  const token = localStorage.getItem(AUTHORIZATION);
 
   const kakaoLink = `${BASE_URL}/oauth2/authorization/kakao`;
   const googleLink = `${BASE_URL}/oauth2/authorization/google`;
@@ -38,15 +40,28 @@ export default function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const { myData, error } = useMyInfo();
+
+  if (error && token) {
+    if (error.response?.status === 401 && token) {
+      navigate('/');
+      localStorage.clear();
+      queryClient.clear();
+      alert('토큰이 만료되었습니다. 다시 로그인해주세요.');
+    } else {
+      console.error('오류가 발생했습니다.', error.message);
+    }
+  }
+
   const logoutPostMutaion = useMutation(
     () => {
-      return postLogout(`${BASE_URL}/auth/logout`);
+      return postData(`${BASE_URL}/auth/logout`, null);
     },
     {
       onSuccess: () => {
-        dispatch(resetStates());
         navigate('/');
         localStorage.clear();
+        queryClient.clear();
         dispatch(setChatModal(false));
       },
       onError: () => {
@@ -62,7 +77,7 @@ export default function Header() {
 
   const handleMyProfile = (e: React.MouseEvent) => {
     e.preventDefault();
-    navigate(`/user/${myData.memberId}`, { state: myData.memberId });
+    navigate(`/user/${myData?.memberId}`, { state: myData?.memberId });
   };
 
   const handleModalOpen = () => {
@@ -80,9 +95,7 @@ export default function Header() {
 
   return (
     <Head>
-      <Link
-        to="/lists"
-      >
+      <Link to="/lists">
         <Logo>
           <img src={logo} alt="로고이미지" style={{ height: '39px' }} />
           <HoverImage
@@ -96,12 +109,12 @@ export default function Header() {
         <MenuContainer>
           <UserContainer className="margin-left" onClick={handleMyProfile}>
             <img
-              src={myData.profileImage ? `${myData.profileImage}` : profile}
+              src={myData?.profileImage ? `${myData?.profileImage}` : profile}
               alt="프로필사진"
               className="icon user-content"
             />
             <div className="text" style={{ marginLeft: '5px' }}>
-              {myData.nickname}
+              {myData?.nickname}
             </div>
           </UserContainer>
           <Button

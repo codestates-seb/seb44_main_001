@@ -4,12 +4,12 @@ import { styled } from 'styled-components';
 import { ChangeEvent, useState, KeyboardEvent } from 'react';
 import Button from '../../Button';
 import { useMutation } from 'react-query';
-import postNewRoomName from '../api/postNewRoomName';
 import { BASE_URL } from '../../../util/constantValue';
 import { NewRoom } from '../../../type';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setChatRoomInfo } from '../../../store/ChatRoomInfoStore';
-import { RootState } from '../../../store/RootStore';
+import { postData } from '../../../apis';
+import useMyInfo from '../../../util/customHook/useMyInfo';
 
 export default function CreateRoomModal({
   isOpen,
@@ -22,7 +22,9 @@ export default function CreateRoomModal({
 
   const dispatch = useDispatch();
 
-  const memberId = useSelector((state: RootState) => state.myData.memberId);
+  const { myData } = useMyInfo();
+
+  const memberId = myData?.memberId;
 
   const data: NewRoom = {
     memberId: memberId,
@@ -32,7 +34,7 @@ export default function CreateRoomModal({
 
   const postMutation = useMutation(
     'createRoom',
-    () => postNewRoomName(`${BASE_URL}/rooms/register`, data),
+    () => postData(`${BASE_URL}/rooms/register`, data),
     {
       onSuccess: (data) => {
         dispatch(

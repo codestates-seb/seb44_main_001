@@ -6,7 +6,7 @@ import { setCategory } from '../store/CategoryStore';
 import { styled } from 'styled-components';
 import useCategorySetter from '../util/customHook/useCategorySetter';
 import { Categories, Category } from '../type';
-
+import { CATEGORIES } from '../util/constantValue';
 interface CategorySelectorProps {
   onCategoryChange?: (categoryId: number | null) => void;
 }
@@ -20,7 +20,7 @@ export default function CategorySelector({
 
   const pathName = window.location.pathname;
 
-  const categoriesString = localStorage.getItem('categories');
+  const categoriesString = localStorage.getItem(CATEGORIES);
   const categories: Categories =
     categoriesString && JSON.parse(categoriesString);
 

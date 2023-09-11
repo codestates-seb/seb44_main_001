@@ -7,19 +7,19 @@ import SemiHeader from '../../../common/components/SemiHeader';
 import { Layout } from '../../../common/style';
 import Button from '../../../common/components/Button';
 import LocationSelector from '../../../common/components/LocationSelector';
-import signupData from '../api/postSignup';
 import { SignupData } from '../../../common/type';
 import { RootState } from '../../../common/store/RootStore';
 import { setSignupUser } from '../store/SignupUser';
-import { BASE_URL } from '../../../common/util/constantValue';
+import { AUTHORIZATION, BASE_URL } from '../../../common/util/constantValue';
 import { setCategory } from '../../../common/store/CategoryStore';
 import { setLocation } from '../../../common/store/LocationStore';
 import { resetCreatedPost } from '../../Write,Edit/store/CreatedPost';
 import { AxiosError } from 'axios';
+import { postData } from '../../../common/apis';
 
 interface TextInputProps {
   type?: string;
-  value: string;
+  value: string | undefined;
   $isValidate?: boolean;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
@@ -30,7 +30,7 @@ interface TextInputProps {
 }
 
 interface TextAreaProps {
-  value: string;
+  value: string | undefined;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   style?: React.CSSProperties;
@@ -57,11 +57,13 @@ export default function Signup() {
 
   const data: SignupData = useSelector((state: RootState) => state.signup);
 
+  const token = localStorage.getItem(AUTHORIZATION);
+
   const signupMutation = useMutation<
     void,
     AxiosError<ErrorResponse>,
     SignupData
-  >((data) => signupData(`${BASE_URL}/members/register`, data), {
+  >((data) => postData(`${BASE_URL}/members/register`, data), {
     onSuccess: () => {
       navigation('/login');
     },
@@ -87,6 +89,9 @@ export default function Signup() {
   });
 
   useEffect(() => {
+    if (token) {
+      navigation('/lists');
+    }
     return () => {
       dispatch(setCategory({ categoryId: 0, name: '' }));
       dispatch(setLocation({ locationId: 0, city: '', province: '' }));
@@ -269,7 +274,7 @@ export default function Signup() {
               />
             </InputBox>
           </ContentWrapper>
-          <Button children={'가입하기'} onClick={handleSignUp} />
+          <Button children={'가입하기'} onClick={handleSignUp} type="submit" />
         </Background>
       </Layout>
     </main>
@@ -307,7 +312,7 @@ export const InputBox = styled.div`
   margin: 20px;
 `;
 
-export const Text = styled.span`
+export const Text = styled.label`
   font-size: medium;
 `;
 
@@ -340,7 +345,6 @@ export const TextAreaInput = styled.textarea<TextAreaProps>`
   border-radius: 5px;
   margin-top: 10px;
   font-size: small;
-  font-family: 'BR-Regular';
   resize: none;
   &:focus {
     outline: none;

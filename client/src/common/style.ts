@@ -1,13 +1,13 @@
 import styled, { createGlobalStyle } from 'styled-components';
-import BRRegularFont from '../common/fonts/BR-Regular.ttf';
-import BRBoldFont from '../common/fonts/BR-Bold.ttf';
+import JamsilRg from '../common/fonts/TheJamsil3Regular.ttf';
+import JamsilBd from '../common/fonts/TheJamsil5Bold.ttf';
 
 export const GlobalStyle = createGlobalStyle`
   * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: BR-Regular;
+    font-family: JamsilRg;
   }
 
   a {
@@ -56,16 +56,15 @@ export const GlobalStyle = createGlobalStyle`
   --font-size-xxl: 3.75rem;
   }
   @font-face {
-    font-family: 'BR-Regular';
-    src: local('BR-Regular'), url(${BRRegularFont}) format('truetype');
+    font-family: 'JamsilRg';
+    src: local('JamsilRg'), url(${JamsilRg}) format('truetype');
   }
   @font-face {
-    font-family: 'BR-Bold';
-    src: local('BR-Bold'), url(${BRBoldFont}) format('truetype');
+    font-family: 'JamsilBd';
+    src: local('JamsilBd'), url(${JamsilBd}) format('truetype');
   }
 
   input,select {
-    font-family: 'BR-Regular';
     border-radius: 5px;
     padding: 0.5rem;
     border: 2px solid var(--color-black);

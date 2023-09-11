@@ -1,12 +1,13 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BASE_URL } from '../../../common/util/constantValue';
-import { useDispatch } from 'react-redux';
-import { setMyData } from '../../Login/store/MyUserData';
+import {
+  AUTHORIZATION,
+  REFRESHTOKEN,
+} from '../../../common/util/constantValue';
 
 export default function OauthCallback() {
   const navigation = useNavigate();
-  const dispatch = useDispatch();
 
   useEffect(() => {
     const params = new URL(window.location.href).searchParams;
@@ -16,11 +17,11 @@ export default function OauthCallback() {
     const memberId = params.get('member_id');
 
     if (token && memberId) {
-      localStorage.setItem('Authorization', `Bearer ${token}`);
-      localStorage.setItem('RefreshToken', `${refreshToken}`)
+      localStorage.setItem(AUTHORIZATION, `Bearer ${token}`);
+      localStorage.setItem(REFRESHTOKEN, `${refreshToken}`);
 
-      const storedAccessToken = localStorage.getItem('Authorization');
-      const storedRefreshToken = localStorage.getItem('RefreshToken');
+      const storedAccessToken = localStorage.getItem(AUTHORIZATION);
+      const storedRefreshToken = localStorage.getItem(REFRESHTOKEN);
 
       fetch(`${BASE_URL}/members/${memberId}`, {
         headers: {
@@ -38,7 +39,6 @@ export default function OauthCallback() {
           if (data.nickname === null) {
             navigation('/oauth-signup');
           } else {
-            dispatch(setMyData(data));
             navigation('/lists');
           }
         })
@@ -49,7 +49,7 @@ export default function OauthCallback() {
     } else {
       navigation('/err');
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigation]);
 
   return <></>;

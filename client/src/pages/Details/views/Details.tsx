@@ -6,12 +6,13 @@ import CommentInput from '../components/CommentInput';
 import CommentList from '../components/CommentList';
 import { UseQueryResult, useQuery } from 'react-query';
 import { ArticleToGet } from '../../../common/type';
-import getArticle from '../api/getArticle';
 import { BASE_URL } from '../../../common/util/constantValue';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setSelectedCategory } from '../../Lists,Search/store/SelectedCategory';
-import { RootState } from '../../../common/store/RootStore';
+import { getData } from '../../../common/apis';
+import useMyInfo from '../../../common/util/customHook/useMyInfo';
+import { SELECTEDLOCATION } from '../../../common/util/constantValue';
 
 export default function Details() {
   const { id } = useParams();
@@ -19,16 +20,18 @@ export default function Details() {
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
-  
-  const memberId = useSelector((state: RootState) => state.myData.memberId);
-  
+
+  const { myData } = useMyInfo();
+
+  const memberId = myData?.memberId;
+
   const { data }: UseQueryResult<ArticleToGet, unknown> = useQuery(
     ['getData', id],
     () => {
       const url = memberId
         ? `${BASE_URL}/posts/${id}?memberId=${memberId}`
         : `${BASE_URL}/posts/${id}`;
-      return getArticle(url);
+      return getData(url);
     },
   );
 
@@ -39,7 +42,7 @@ export default function Details() {
   };
 
   const handleLocationClick = () => {
-    localStorage.setItem('selectedLocation', JSON.stringify(locationData));
+    localStorage.setItem(SELECTEDLOCATION, JSON.stringify(locationData));
 
     dispatch(
       setSelectedCategory({
@@ -52,7 +55,7 @@ export default function Details() {
   };
 
   const handleCategoryClick = () => {
-    localStorage.setItem('selectedLocation', JSON.stringify(locationData));
+    localStorage.setItem(SELECTEDLOCATION, JSON.stringify(locationData));
 
     dispatch(
       setSelectedCategory({

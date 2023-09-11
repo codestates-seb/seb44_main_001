@@ -12,13 +12,14 @@ import sports from '../../../common/assets/icons/sports.svg';
 import game from '../../../common/assets/icons/game.svg';
 import all from '../../../common/assets/icons/home.svg';
 import etc from '../../../common/assets/icons/etc.svg';
+import { CATEGORIES } from '../../../common/util/constantValue';
 
 export default function CategoryIcons() {
   useCategorySetter();
 
   const dispatch = useDispatch();
   const categories: Categories | null = JSON.parse(
-    localStorage.getItem('categories') || 'null',
+    localStorage.getItem(CATEGORIES) || 'null',
   );
   const selectedCategory = useSelector(
     (state: RootState) => state.selectedCategory,
