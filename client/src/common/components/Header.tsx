@@ -95,7 +95,7 @@ export default function Header() {
 
   return (
     <Head>
-      <Link to="/lists">
+      <a href="/lists">
         <Logo>
           <img src={logo} alt="로고이미지" style={{ height: '39px' }} />
           <HoverImage
@@ -104,7 +104,7 @@ export default function Header() {
             style={{ height: '39px' }}
           />
         </Logo>
-      </Link>
+      </a>
       {token ? (
         <MenuContainer>
           <UserContainer className="margin-left" onClick={handleMyProfile}>
