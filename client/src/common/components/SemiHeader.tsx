@@ -15,11 +15,11 @@ export default function SemiHeader({
 }: SemiHeaderProps) {
   return (
     <SemiContainer>
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <ContentWrapper style={{}}>
         <Title>{children ? children : title}</Title>
         <Content>{content}</Content>
-      </div>
-      <Picture src={friends} style={{ width: '500px' }} />
+      </ContentWrapper>
+      <Picture src={friends} />
     </SemiContainer>
   );
 }
@@ -32,25 +32,34 @@ const SemiContainer = styled.div`
   width: 100%;
   height: 200px;
   min-width: 700px;
+  justify-content: space-around;
+  @media screen and (max-width: 1023px) {
+    justify-content: left;
+  }
+`;
+
+const ContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2rem;
+  @media screen and (max-width: 1023px) {
+    margin-left: calc((100vw - 50rem) / 2);
+  }
 `;
 
 const Title = styled.h1`
   color: var(--color-black);
-  white-space: nowrap;
-  padding-bottom: 20px;
 `;
 
 const Content = styled.span`
   color: var(--color-black);
   font-size: medium;
-  white-space: nowrap;
-  padding-left: 100px;
-  padding-bottom: 40px;
-  padding-left: calc((100vw - 50rem) / 2);
+  margin-top: 0.5rem;
 `;
 
 const Picture = styled.img`
-  position: relative;
-  padding-right: 50px;
-  padding-bottom: 20px;
+  margin-bottom: 1rem;
+  @media screen and (max-width: 1023px) {
+    display: none;
+  }
 `;
