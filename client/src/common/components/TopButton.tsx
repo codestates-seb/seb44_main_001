@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { styled } from 'styled-components';
 import goTopMomo from '../assets/icons/goTopMomo.svg';
-import useScrollToToop from '../util/customHook/useScrollToTop';
 
 export default function TopButton() {
   const [isVisible, setIsVisible] = useState(false);
@@ -21,10 +20,12 @@ export default function TopButton() {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
-  
+
   const handleClickTop = () => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    useScrollToToop();
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
   };
 
   return (

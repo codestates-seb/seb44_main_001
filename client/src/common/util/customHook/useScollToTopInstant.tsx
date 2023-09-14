@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-export default function ScrllToTopInstant() {
+export default function useScrllToTopInstant() {
   const { pathname } = useLocation();
 
   useEffect(() => {
