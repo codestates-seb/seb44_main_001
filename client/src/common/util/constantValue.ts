@@ -45,14 +45,14 @@ export const VIEW_PROFILE = '프로필 보기';
 
 export const INVITE = '초대하기';
 
-export const ALERTLOGIN = '로그인이 필요한 서비스입니다.'
+export const ALERTLOGIN = '로그인이 필요한 서비스입니다.';
 
-export const AUTHORIZATION = 'Authorization'
+export const AUTHORIZATION = 'Authorization';
 
-export const REFRESHTOKEN = 'RefreshToken'
+export const REFRESHTOKEN = 'RefreshToken';
 
-export const CATEGORIES = 'categories'
+export const CATEGORIES = 'categories';
 
-export const LOCATIONS = 'locations'
+export const LOCATIONS = 'locations';
 
-export const SELECTEDLOCATION = 'selectedLocation'
+export const SELECTEDLOCATION = 'selectedLocation';
