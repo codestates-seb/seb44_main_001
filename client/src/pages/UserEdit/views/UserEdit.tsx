@@ -91,7 +91,7 @@ export default function UserEdit() {
       },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries('userInfo');
+          queryClient.invalidateQueries('myInfo');
           navigate(`/user/${myData?.memberId}`);
         },
         onError: (error) => {
