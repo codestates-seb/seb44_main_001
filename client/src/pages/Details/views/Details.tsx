@@ -33,6 +33,10 @@ export default function Details() {
         : `${BASE_URL}/posts/${id}`;
       return getData(url);
     },
+    {
+      staleTime: Infinity,
+      cacheTime: Infinity,
+    },
   );
 
   const locationData = {
@@ -108,6 +112,11 @@ const TitleWrapper = styled.div`
 
   > .link {
     cursor: pointer;
+    &:hover {
+      text-decoration: underline;
+      text-underline-offset: 10px;
+      text-decoration-thickness: 4px;
+    }
   }
 
   & h1 {

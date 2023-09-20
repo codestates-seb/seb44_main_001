@@ -61,7 +61,7 @@ export default function UserEdit() {
 
   const handleImgChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const input = event.target;
-    if (input.files && input.files[0]) {
+    if (input.files) {
       const file = input.files[0]; // 파일 추출
 
       const reader = new FileReader();
