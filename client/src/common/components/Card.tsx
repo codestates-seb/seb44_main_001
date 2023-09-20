@@ -32,7 +32,7 @@ export default function Card({
       <Content>
         <div className="title">{title}</div>
         <div className="content">
-          {content.length >= 57 ? `${content?.slice(0, 57)}...` : content}
+          {content.length >= 50 ? `${content?.slice(0, 50)}...` : content}
         </div>
       </Content>
       <TagSection>
