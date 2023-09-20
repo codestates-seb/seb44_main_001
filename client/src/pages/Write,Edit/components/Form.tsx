@@ -10,7 +10,7 @@ import {
   UPDATE,
 } from '../../../common/util/constantValue';
 import { ChangeEvent, useEffect } from 'react';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
 import LocationSelector from '../../../common/components/LocationSelector';
@@ -30,6 +30,8 @@ export default function Form() {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
+
+  const queryClient = useQueryClient();
 
   const { id } = useParams();
 
@@ -81,6 +83,7 @@ export default function Form() {
     if (id) {
       patchMutation.mutate(data, {
         onSuccess: () => {
+          queryClient.invalidateQueries('getData');
           navigate(`/details/${id}`);
         },
       });
