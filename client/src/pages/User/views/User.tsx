@@ -24,7 +24,7 @@ export default function User() {
 
   const token: string | null = localStorage.getItem(AUTHORIZATION);
 
-  const { myData } = useMyInfo();
+  const { myData, error } = useMyInfo();
 
   const isMine = memberId === String(myData?.memberId);
 
@@ -55,6 +55,12 @@ export default function User() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  if(error){
+    console.log(error)
+    alert('찾을 수 없는 회원입니다!');
+    navigate(-1);
+  }
+
   const profileData = userInfo || myData;
 
   return (
@@ -81,7 +87,7 @@ export default function User() {
                       <ProfileItem style={{ display: 'flex' }}>
                         <LocationIcon />
                         &nbsp;
-                        <div>{`${profileData.location.city} ${profileData.location.province}`}</div>
+                        <div>{profileData.location ? `${profileData.location.city} ${profileData.location.province}`: "미설정"}</div>
                       </ProfileItem>
                       <ProfileItem>
                         {profileData.isMale ? `남자` : `여자`}
