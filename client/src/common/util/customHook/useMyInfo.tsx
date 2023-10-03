@@ -20,6 +20,7 @@ export default function useMyInfo() {
       enabled: !!token,
       staleTime: 30 * 60 * 1000,
       cacheTime: 30 * 60 * 1000,
+      retry:3
     },
   );
   return { myData, isLoading, error };
