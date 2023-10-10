@@ -1,6 +1,8 @@
 import { Route, Routes } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 
+import Loading from './common/components/Loading';
+
 const Home = lazy(() => import('./pages/Home/views/Home'));
 const Signup = lazy(() => import('./pages/Signup/views/Signup'));
 const OauthSignup = lazy(
@@ -19,112 +21,23 @@ const NotFound404 = lazy(() => import('./pages/NotFound/views/NotFound404'));
 
 const Router = () => {
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <Suspense fallback={<div>Loading...</div>}>
-            <Home />
-          </Suspense>
-        }
-      />
-      <Route
-        path="/signup"
-        element={
-          <Suspense fallback={<div>Loading...</div>}>
-            <Signup />
-          </Suspense>
-        }
-      />
-      <Route
-        path="/oauth-signup"
-        element={
-          <Suspense fallback={<div>Loading...</div>}>
-            <OauthSignup />
-          </Suspense>
-        }
-      />
-      <Route
-        path="/oauth-callback"
-        element={
-          <Suspense fallback={<div>Loading...</div>}>
-            <OauthCallback />
-          </Suspense>
-        }
-      />
-      <Route
-        path="/login"
-        element={
-          <Suspense fallback={<div>Loading...</div>}>
-            <Login />
-          </Suspense>
-        }
-      />
-      <Route
-        path="/user/:memberId"
-        element={
-          <Suspense fallback={<div>Loading...</div>}>
-            <User />
-          </Suspense>
-        }
-      />
-      <Route
-        path="/user/edit"
-        element={
-          <Suspense fallback={<div>Loading...</div>}>
-            <UserEdit />
-          </Suspense>
-        }
-      />
-      <Route
-        path="/lists"
-        element={
-          <Suspense fallback={<div>Loading...</div>}>
-            <Lists />
-          </Suspense>
-        }
-      />
-      <Route
-        path="/search/:keyword"
-        element={
-          <Suspense fallback={<div>Loading...</div>}>
-            <Lists />
-          </Suspense>
-        }
-      />
-      <Route
-        path="/details/:id/"
-        element={
-          <Suspense fallback={<div>Loading...</div>}>
-            <Details />
-          </Suspense>
-        }
-      />
-      <Route
-        path="/write"
-        element={
-          <Suspense fallback={<div>Loading...</div>}>
-            <Write />
-          </Suspense>
-        }
-      />
-      <Route
-        path="/write/:id"
-        element={
-          <Suspense fallback={<div>Loading...</div>}>
-            <Write />
-          </Suspense>
-        }
-      />
-      <Route
-        path="*"
-        element={
-          <Suspense fallback={<div>Loading...</div>}>
-            <NotFound404 />
-          </Suspense>
-        }
-      />
-    </Routes>
+    <Suspense fallback={<Loading />}>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/oauth-signup" element={<OauthSignup />} />
+        <Route path="/oauth-callback" element={<OauthCallback />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/user/:memberId" element={<User />} />
+        <Route path="/user/edit" element={<UserEdit />} />
+        <Route path="/lists" element={<Lists />} />
+        <Route path="/search/:keyword" element={<Lists />} />
+        <Route path="/details/:id/" element={<Details />} />
+        <Route path="/write" element={<Write />} />
+        <Route path="/write/:id" element={<Write />} />
+        <Route path="*" element={<NotFound404 />} />
+      </Routes>
+    </Suspense>
   );
 };
 

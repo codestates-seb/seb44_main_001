@@ -11,10 +11,10 @@ import { BASE_URL } from '../../../common/util/constantValue';
 import { setCategory } from '../../../common/store/CategoryStore';
 import { setLocation } from '../../../common/store/LocationStore';
 import { resetCreatedPost } from '../../Write,Edit/store/CreatedPost';
+import Loading from '../../../common/components/Loading';
 
 import TopButton from '../../../common/components/TopButton';
 import Card from '../../../common/components/Card';
-import roundingMomo from '../../../common/assets/images/roundingMomo.svg';
 import cryingMomo from '../../../common/assets/images/cryingMomo1.svg';
 import momoFriends from '../../../common/assets/logo/momofriends.svg';
 
@@ -90,10 +90,7 @@ export default function Cards() {
 
   if (isLoading)
     return (
-      <Loading>
-        <img src={roundingMomo} alt="loading" />
-        <div className="message">로딩중...</div>
-      </Loading>
+      <Loading/>
     );
 
   if (isError)
@@ -168,31 +165,6 @@ const Message = styled.div`
   align-items: center;
   justify-content: center;
   font-size: var(--font-size-l);
-`;
-
-const Loading = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 3rem;
-
-  @keyframes rotateAnimation {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  > img {
-    animation: rotateAnimation 2s linear infinite;
-  }
-
-  .message {
-    margin-top: 1rem;
-    font-size: var(--font-size-l);
-  }
 `;
 
 const Error = styled.div`
