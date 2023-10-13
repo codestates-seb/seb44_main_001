@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import { useDispatch } from 'react-redux';
@@ -42,16 +42,18 @@ export default function Header() {
 
   const { myData, error } = useMyInfo();
 
-  if (error && token) {
-    if (error.response?.status === 401 && token) {
-      navigate('/');
-      localStorage.clear();
-      queryClient.clear();
-      alert('토큰이 만료되었습니다. 다시 로그인해주세요.');
-    } else {
-      console.error('오류가 발생했습니다.', error.message);
+  useEffect(() => {
+    if (error !== null && !!token) {
+      if (error.response?.status === 401) {
+        navigate('/');
+        localStorage.clear();
+        queryClient.clear();
+        alert('토큰이 만료되었습니다. 다시 로그인해주세요.');
+      } else {
+        console.error('오류가 발생했습니다.', error.message);
+      }
     }
-  }
+  }, [error, navigate, queryClient, token]);
 
   const logoutPostMutaion = useMutation(
     () => {
