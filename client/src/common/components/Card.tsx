@@ -46,11 +46,11 @@ export default function Card({
           <div className="category">{category}</div>
         </SortSection>
         <IconSection>
-          <img width="1.5rem" height="1.5rem" src={peach_off} alt="likes" />
+          <img width={24} height={24} src={peach_off} alt="likes" />
           <span className="marginRight">
             {postLikeCount === null ? 0 : postLikeCount}
           </span>
-          <img width="1.5rem" height="1.5rem" src={comment} alt="comment" />
+          <img width={24} height={24} src={comment} alt="comment" />
           <span>{commentCount === null ? 0 : commentCount}</span>
         </IconSection>
       </SortAndIcon>

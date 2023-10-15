@@ -124,7 +124,7 @@ export default function Cards() {
             ))}
           </Lists>
           <div className="momoFriendsImg">
-            <img width='31.25rem' height='6.75rem' src={momoFriends} alt="momoFriends" />
+            <img width={500} height={108} src={momoFriends} alt="momoFriends" />
           </div>
         </ListWrapper>
       ) : (
