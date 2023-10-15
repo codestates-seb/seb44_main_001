@@ -112,6 +112,8 @@ export default function Header() {
           <UserContainer className="margin-left" onClick={handleMyProfile}>
             <img
               src={myData?.profileImage ? `${myData?.profileImage}` : profile}
+              width='5.8863rem'
+              height='2.4375rem'
               alt="프로필사진"
               className="icon user-content"
             />

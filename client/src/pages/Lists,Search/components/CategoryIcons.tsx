@@ -45,7 +45,7 @@ export default function CategoryIcons() {
                   selectedCategory.categoryId === category.categoryId
                 }
               >
-                <img src={Icons[index]} alt={`Icon ${index}`} />
+                <img width='2.5rem' height='2.5rem' src={Icons[index]} alt={`Icon ${index}`} />
               </Button>
               <div className="categoryName">{category.name}</div>
             </IconWrapper>
