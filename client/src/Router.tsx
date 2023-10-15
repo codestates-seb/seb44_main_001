@@ -6,10 +6,10 @@ import Loading from './common/components/Loading';
 const Home = lazy(() => import('./pages/Home/views/Home'));
 const Signup = lazy(() => import('./pages/Signup/views/Signup'));
 const OauthSignup = lazy(
-  () => import('./pages/Kakao-signup/views/OauthSignup'),
+  () => import('./pages/Oauth-Signup/views/OauthSignup'),
 );
 const OauthCallback = lazy(
-  () => import('./pages/Kakao-signup/views/OauthCallback'),
+  () => import('./pages/Oauth-Signup/views/OauthCallback'),
 );
 const Login = lazy(() => import('./pages/Login/views/Login'));
 const User = lazy(() => import('./pages/User/views/User'));
