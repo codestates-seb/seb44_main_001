@@ -99,7 +99,7 @@ export default function Header() {
     <Head>
       <Link to="/lists">
         <Logo>
-          <img src={logo} alt="로고이미지" style={{ height: '39px' }} />
+          <img src={logo} alt="로고이미지" height={39} width={94.18} />
           <HoverImage
             src={singMomo}
             alt="노래모모"
@@ -112,8 +112,8 @@ export default function Header() {
           <UserContainer className="margin-left" onClick={handleMyProfile}>
             <img
               src={myData?.profileImage ? `${myData?.profileImage}` : profile}
-              width='5.8863rem'
-              height='2.4375rem'
+              width={32}
+              height={32}
               alt="프로필사진"
               className="icon user-content"
             />

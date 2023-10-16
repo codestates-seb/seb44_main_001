@@ -1,6 +1,6 @@
 import styled, { createGlobalStyle } from 'styled-components';
-import JamsilRg from '../common/fonts/TheJamsil3Regular.ttf';
-import JamsilBd from '../common/fonts/TheJamsil5Bold.ttf';
+import JamsilRg from '../common/fonts/TheJamsil3Regular.woff2';
+import JamsilBd from '../common/fonts/TheJamsil5Bold.woff2';
 
 export const GlobalStyle = createGlobalStyle`
   * {
@@ -57,11 +57,11 @@ export const GlobalStyle = createGlobalStyle`
   }
   @font-face {
     font-family: 'JamsilRg';
-    src: local('JamsilRg'), url(${JamsilRg}) format('truetype');
+    src: local('JamsilRg'), url(${JamsilRg}) format('woff2');
   }
   @font-face {
     font-family: 'JamsilBd';
-    src: local('JamsilBd'), url(${JamsilBd}) format('truetype');
+    src: local('JamsilBd'), url(${JamsilBd}) format('woff2');
   }
 
   input,select {
