@@ -126,7 +126,7 @@ export default function Header() {
             onClick={handleWriteButtonClick}
             children={'모집 글 작성'}
           />
-          <LogoutButton onClick={handleLogout}>
+          <LogoutButton aria-label='logout' onClick={handleLogout}>
             <FaPersonRunning className="hoverIcon" size={25} />
             <LogOut className="originalIcon" size={25} />
           </LogoutButton>

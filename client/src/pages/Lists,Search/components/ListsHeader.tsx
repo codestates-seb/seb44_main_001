@@ -10,7 +10,10 @@ import useMyInfo from '../../../common/util/customHook/useMyInfo';
 
 import LocationSelector from '../../../common/components/LocationSelector';
 import Button from '../../../common/components/Button';
-import { AUTHORIZATION,SELECTEDLOCATION } from '../../../common/util/constantValue';
+import {
+  AUTHORIZATION,
+  SELECTEDLOCATION,
+} from '../../../common/util/constantValue';
 
 export default function ListsHeader() {
   const dispatch = useDispatch();
@@ -99,7 +102,7 @@ export const Wrapper = styled.div`
   padding: 1rem;
   border-radius: 10px;
   border: 2px solid var(--color-black);
-
+  color: var(--color-black);
   select {
     width: 12rem;
     margin-right: 1rem;
@@ -107,9 +110,12 @@ export const Wrapper = styled.div`
   .listName {
     margin-right: 2rem;
     display: flex;
+    align-items: center;
   }
   .location {
-    color: var(--color-pink-1);
+    background-color: var(--color-pink-1);
+    padding: 3px;
+    border-radius: 5px;
   }
 
   //카드1개
