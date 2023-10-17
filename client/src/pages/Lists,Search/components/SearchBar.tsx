@@ -87,7 +87,7 @@ export default function SearchBar() {
             <MdCancel />
           </DeleteButton>
         )}
-        <SearchButton type="submit">
+        <SearchButton type="submit" aria-label="search">
           <AiOutlineSearch />
         </SearchButton>
       </form>

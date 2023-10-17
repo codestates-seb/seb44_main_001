@@ -24,8 +24,11 @@ export default function Card({
     <Wrapper to={`/details/${postId}`}>
       <UserInfo>
         <img
+          width={32}
+          height={32}
           className="profileImage"
           src={profileImage ? profileImage : profile}
+          alt="profile-image"
         />
         <span className="nickname">{nickname}</span>
       </UserInfo>
