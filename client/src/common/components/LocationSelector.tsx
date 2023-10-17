@@ -87,7 +87,7 @@ export default function LocationSelector({
   return (
     <Container>
       <div>
-        <select id="city" value={city} onChange={handleCityChange}>
+        <select aria-label="city" id="city" value={city} onChange={handleCityChange}>
           <option disabled value="">
             {CITY_MESSAGE}
           </option>
@@ -102,7 +102,7 @@ export default function LocationSelector({
               </option>
             ))}
         </select>
-        <select id="province" value={province} onChange={handleProvinceChange}>
+        <select aria-label="province" id="province" value={province} onChange={handleProvinceChange}>
           <option disabled value="">
             {PROVINCE_MESSAGE}
           </option>
