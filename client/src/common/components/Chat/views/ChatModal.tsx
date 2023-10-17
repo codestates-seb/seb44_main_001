@@ -144,6 +144,7 @@ export default function ChatModal() {
       <button
         onClick={isOpen ? handleModalClose : handleModalOpen}
         className={isDataDifferent ? 'colorOn' : ''}
+        aria-label="chatting-list"
       >
         <AiFillWechat
           size={48}
