@@ -58,10 +58,12 @@ export const GlobalStyle = createGlobalStyle`
   @font-face {
     font-family: 'JamsilRg';
     src: local('JamsilRg'), url(${JamsilRg}) format('woff2');
+    font-display: swap;
   }
   @font-face {
     font-family: 'JamsilBd';
     src: local('JamsilBd'), url(${JamsilBd}) format('woff2');
+    font-display: swap;
   }
 
   input,select {
