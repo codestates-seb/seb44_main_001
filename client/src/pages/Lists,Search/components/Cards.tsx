@@ -88,15 +88,12 @@ export default function Cards() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (isLoading)
-    return (
-      <Loading/>
-    );
+  if (isLoading) return <Loading />;
 
   if (isError)
     return (
       <Error>
-        <img src={cryingMomo} alt="error" />
+        <img width={300} height={300} src={cryingMomo} alt="error" />
         <div>서버와의 연결이 끊어졌어요</div>
       </Error>
     );
@@ -129,7 +126,7 @@ export default function Cards() {
         </ListWrapper>
       ) : (
         <Message>
-          <img src={cryingMomo} alt="no-data" />
+          <img width={300} height={300} src={cryingMomo} alt="no-data" />
           <div>조건과 일치하는 모임이 없어요ㅠㅠ</div>
         </Message>
       )}
