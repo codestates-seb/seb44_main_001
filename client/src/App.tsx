@@ -7,16 +7,22 @@ import { GlobalStyle } from './common/style';
 import Header from './common/components/Header';
 import Footer from './common/components/Footer';
 import ChatModal from './common/components/Chat/views/ChatModal';
-import useScrllToTopInstant from './common/util/customHook/useScollToTopInstant';
 
 import { AUTHORIZATION } from './common/util/constantValue';
+import { useEffect } from 'react';
 
 Quill.register('modules/imageResize', ImageResize);
 
 export default function App() {
   const location = useLocation();
   const token: string | null = localStorage.getItem(AUTHORIZATION);
-  useScrllToTopInstant();
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    if (pathname !== "/lists") {
+      window.scrollTo(0, 0);
+    }
+  }, [pathname]);
   
   return (
     <>
