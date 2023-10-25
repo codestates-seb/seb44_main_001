@@ -109,6 +109,7 @@ export default function UserEdit() {
       {
         onSuccess: () => {
           queryClient.invalidateQueries('myInfo');
+          localStorage.removeItem('selectedLocation')
           navigate(`/user/${myData?.memberId}`);
         },
         onError: (error) => {

@@ -43,10 +43,6 @@ export default function User() {
   );
 
   useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
     if (!token) {
       alert(ALERTLOGIN);
       navigate(-1);

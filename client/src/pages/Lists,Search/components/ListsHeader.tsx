@@ -26,15 +26,13 @@ export default function ListsHeader() {
 
   const { myData } = useMyInfo();
 
-  //지역셀렉터 상태
+
   const location = useSelector((state: RootState) => state.location);
 
-  //사용자가 선택한 지역
   const selectedLocation = useSelector(
     (state: RootState) => state.selectedLocation,
   );
 
-  //소분류까지 선택 안하면 동작 안됨
   const handleLocationSelection = () => {
     if (!location.province) {
       return;
@@ -43,16 +41,15 @@ export default function ListsHeader() {
     localStorage.setItem(SELECTEDLOCATION, JSON.stringify(location));
   };
 
-  //로그인한 유저는 등록된 지역 비로그인 유저는 기본값인 서울로 랜더링
+
   useEffect(() => {
-    //유저가 마지막으로 검색한 지역으로 고정
     const LastSelectedLocation = localStorage.getItem(SELECTEDLOCATION);
     if (LastSelectedLocation) {
       dispatch(setSelectedLocation(JSON.parse(LastSelectedLocation)));
       dispatch(setLocation(JSON.parse(LastSelectedLocation)));
       return;
     }
-    //로그인한 유저의 지역
+
     if (isLogin && myData) {
       dispatch(setSelectedLocation(myData.location));
       dispatch(setLocation(myData.location));
@@ -118,7 +115,6 @@ export const Wrapper = styled.div`
     border-radius: 5px;
   }
 
-  //카드1개
   @media (max-width: 832px) {
     width: 400px;
     flex-direction: column;
@@ -135,7 +131,6 @@ export const Wrapper = styled.div`
     }
   }
 
-  //카드2개
   @media (min-width: 832px) and (max-width: 1264px) {
     width: 832px;
 
@@ -148,7 +143,6 @@ export const Wrapper = styled.div`
     }
   }
 
-  //카드3개
   @media (min-width: 1265px) {
     width: 1264px;
   }

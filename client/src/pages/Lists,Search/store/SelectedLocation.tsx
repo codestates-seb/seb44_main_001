@@ -8,7 +8,6 @@ const initialState = {
 
 export const selectedLocationSlice = createSlice({
   name: 'selectedLocation',
-  //유저의 지역으로 바꾸기
   initialState,
   reducers: {
     setSelectedLocation: (_state, action) => {
