@@ -5,12 +5,13 @@ import {
   useRef,
   useState,
 } from 'react';
-import { useSelector } from 'react-redux';
+
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { AiOutlineSearch } from 'react-icons/ai';
-import { RootState } from '../../../common/store/RootStore';
+
 import { MdCancel } from 'react-icons/md';
+import { Location, Category } from '../../../common/type';
 
 type SearchInputProps = {
   $isClicked: boolean;
@@ -21,17 +22,16 @@ type SearchInputProps = {
   style?: CSSProperties;
 };
 
-export default function SearchBar() {
+export default function SearchBar({
+  selectedLocation,
+  selectedCategory,
+}: {
+  selectedLocation: Location;
+  selectedCategory: Category;
+}) {
   const navigate = useNavigate();
   const [inputValue, setInputValue] = useState('');
   const [isCliked, setIsClicked] = useState(false);
-  const selectedLocation = useSelector(
-    (state: RootState) => state.selectedLocation,
-  );
-
-  const selectedCategory = useSelector(
-    (state: RootState) => state.selectedCategory,
-  );
 
   const handleInputChange = (e: {
     target: { value: SetStateAction<string> };

@@ -1,7 +1,6 @@
 import { styled } from 'styled-components';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setSelectedCategory } from '../store/SelectedCategory';
-import { RootState } from '../../../common/store/RootStore';
 import { Categories, Category } from '../../../common/type';
 import useCategorySetter from '../../../common/util/customHook/useCategorySetter';
 import pet from '../../../common/assets/icons/pet.svg';
@@ -14,15 +13,16 @@ import all from '../../../common/assets/icons/home.svg';
 import etc from '../../../common/assets/icons/etc.svg';
 import { CATEGORIES } from '../../../common/util/constantValue';
 
-export default function CategoryIcons() {
+export default function CategoryIcons({
+  selectedCategory,
+}: {
+  selectedCategory: Category;
+}) {
   useCategorySetter();
 
   const dispatch = useDispatch();
   const categories: Categories | null = JSON.parse(
     localStorage.getItem(CATEGORIES) || 'null',
-  );
-  const selectedCategory = useSelector(
-    (state: RootState) => state.selectedCategory,
   );
 
   const Icons = [all, pet, sports, study, game, food, culture, etc];
@@ -45,7 +45,12 @@ export default function CategoryIcons() {
                   selectedCategory.categoryId === category.categoryId
                 }
               >
-                <img width={40} height={40} src={Icons[index]} alt={`Icon ${index}`} />
+                <img
+                  width={40}
+                  height={40}
+                  src={Icons[index]}
+                  alt={`Icon ${index}`}
+                />
               </Button>
               <div className="categoryName">{category.name}</div>
             </IconWrapper>
