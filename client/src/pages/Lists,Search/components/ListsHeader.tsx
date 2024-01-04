@@ -14,13 +14,16 @@ import {
   SELECTEDLOCATION,
 } from '../../../common/util/constantValue';
 import { Location, Member } from '../../../common/type';
+import Loading from '../../../common/components/Loading';
 
 export default function ListsHeader({
   selectedLocation,
   myData,
+  isLoading,
 }: {
   selectedLocation: Location;
   myData?: Member;
+  isLoading?: boolean;
 }) {
   const dispatch = useDispatch();
 
@@ -42,23 +45,29 @@ export default function ListsHeader({
 
   useEffect(() => {
     const LastSelectedLocation = localStorage.getItem(SELECTEDLOCATION);
+
     if (LastSelectedLocation) {
       dispatch(setSelectedLocation(JSON.parse(LastSelectedLocation)));
       dispatch(setLocation(JSON.parse(LastSelectedLocation)));
       return;
     }
 
-    if (isLogin && myData) {
+    if (isLogin && myData?.location) {
       dispatch(setSelectedLocation(myData.location));
       dispatch(setLocation(myData.location));
-    } else {
-      dispatch(setLocation(selectedLocation));
+      return;
     }
+
+    dispatch(setLocation(selectedLocation));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [myData]);
 
   const listName =
     params.keyword || `${selectedLocation.city} ${selectedLocation.province}`;
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <Wrapper>
