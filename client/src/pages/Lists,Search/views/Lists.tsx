@@ -7,7 +7,6 @@ import ListsHeader from '../components/ListsHeader';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../common/store/RootStore';
 import useMyInfo from '../../../common/util/customHook/useMyInfo';
-import Loading from '../../../common/components/Loading';
 
 export default function Lists() {
   const { myData, isLoading } = useMyInfo();
@@ -24,10 +23,6 @@ export default function Lists() {
     (state: RootState) => state.selectedLocation,
   );
 
-  if (isLoading) {
-    return <Loading />;
-  }
-
   return (
     <Wrapper>
       <SearchBar
@@ -37,7 +32,7 @@ export default function Lists() {
       {isPathLists ? (
         <CategoryIcons selectedCategory={selectedCategory} />
       ) : null}
-      <ListsHeader selectedLocation={selectedLocation} myData={myData} />
+      <ListsHeader selectedLocation={selectedLocation} myData={myData} isLoading={isLoading} />
       <Cards
         selectedLocationId={selectedLocation.locationId}
         selectedCategoryId={selectedCategory.categoryId}
