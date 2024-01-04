@@ -48,7 +48,7 @@ export type ArticleToGet = {
 };
 
 export type CommentToPost = {
-  memberId: number|undefined;
+  memberId: number | undefined;
   content: string;
 };
 
@@ -200,7 +200,7 @@ export type IsLikedType = {
 };
 
 export type NewRoom = {
-  memberId: number|undefined;
+  memberId: number | undefined;
   roomName: string;
   roomType: string;
 };
@@ -221,4 +221,22 @@ export type TokenType = {
   accessToken: string;
   refreshToken: string;
   memberId: string;
+};
+
+export type MyData = {
+  age: number;
+  createdAt: string;
+  editedAt: string;
+  email: string;
+  isMale: boolean;
+  location: {
+    city: string;
+    locationId: number;
+    province: string;
+  };
+  memberId: number;
+  nickname: string;
+  profileImage: string;
+  roles: string[];
+  welcomeMsg: string;
 };

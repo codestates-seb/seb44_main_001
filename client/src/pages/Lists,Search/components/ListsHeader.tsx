@@ -6,7 +6,6 @@ import { styled } from 'styled-components';
 import { RootState } from '../../../common/store/RootStore';
 import { setSelectedLocation } from '../store/SelectedLocation';
 import { setLocation } from '../../../common/store/LocationStore';
-import useMyInfo from '../../../common/util/customHook/useMyInfo';
 
 import LocationSelector from '../../../common/components/LocationSelector';
 import Button from '../../../common/components/Button';
@@ -14,8 +13,15 @@ import {
   AUTHORIZATION,
   SELECTEDLOCATION,
 } from '../../../common/util/constantValue';
+import { Location, Member } from '../../../common/type';
 
-export default function ListsHeader() {
+export default function ListsHeader({
+  selectedLocation,
+  myData,
+}: {
+  selectedLocation: Location;
+  myData?: Member;
+}) {
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
@@ -24,14 +30,7 @@ export default function ListsHeader() {
 
   const isLogin = localStorage.getItem(AUTHORIZATION) || null;
 
-  const { myData } = useMyInfo();
-
-
   const location = useSelector((state: RootState) => state.location);
-
-  const selectedLocation = useSelector(
-    (state: RootState) => state.selectedLocation,
-  );
 
   const handleLocationSelection = () => {
     if (!location.province) {
@@ -40,7 +39,6 @@ export default function ListsHeader() {
     dispatch(setSelectedLocation(location));
     localStorage.setItem(SELECTEDLOCATION, JSON.stringify(location));
   };
-
 
   useEffect(() => {
     const LastSelectedLocation = localStorage.getItem(SELECTEDLOCATION);
